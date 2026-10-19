@@ -1,0 +1,266 @@
+// Migration'ları boş bir Postgres'e uygular ve RLS kurallarını gerçek sorgularla dener.
+// Kullanım: TEST_DATABASE_URL=postgresql://postgres@localhost:54329/postgres npm run test:db
+import { readdirSync, readFileSync } from 'node:fs'
+import { randomUUID } from 'node:crypto'
+import assert from 'node:assert/strict'
+import pg from 'pg'
+
+const baseUrl = process.env.TEST_DATABASE_URL ?? 'postgresql://postgres@localhost:54329/postgres'
+const dbName = 'sinavika_test'
+const migrationsDir = new URL('../supabase/migrations/', import.meta.url)
+
+const supabaseStub = `
+create schema if not exists extensions;
+create extension if not exists pgcrypto with schema extensions;
+do $$ begin
+  create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
+exception when duplicate_object then null; end $$;
+create schema auth;
+create table auth.users (id uuid primary key, email text);
+create function auth.uid() returns uuid language sql stable as $$
+  select (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')::uuid $$;
+grant usage on schema auth to anon, authenticated, service_role;
+grant execute on function auth.uid() to anon, authenticated, service_role;
+grant usage on schema extensions to anon, authenticated, service_role;
+`
+
+const admin = new pg.Client({ connectionString: baseUrl })
+await admin.connect()
+await admin.query(`drop database if exists ${dbName} with (force)`)
+await admin.query(`create database ${dbName}`)
+await admin.end()
+
+const url = new URL(baseUrl)
+url.pathname = `/${dbName}`
+const db = new pg.Client({ connectionString: url.toString() })
+await db.connect()
+await db.query(supabaseStub)
+for (const file of readdirSync(migrationsDir).filter((f) => f.endsWith('.sql')).sort()) {
+  await db.query(readFileSync(new URL(file, migrationsDir), 'utf8'))
+}
+
+async function as(user, sql, params = []) {
+  await db.query('begin')
+  try {
+    await db.query(`set local role ${user ? 'authenticated' : 'anon'}`)
+    await db.query(`select set_config('request.jwt.claims', $1, true)`, [
+      JSON.stringify(user ? { sub: user, role: 'authenticated' } : { role: 'anon' }),
+    ])
+    const res = await db.query(sql, params)
+    await db.query('commit')
+    return res.rows
+  } catch (err) {
+    await db.query('rollback')
+    throw err
+  }
+}
+const service = async (sql, params = []) => (await db.query(sql, params)).rows
+
+async function rejects(promise, pattern, label) {
+  await assert.rejects(promise, pattern, label)
+}
+
+let passed = 0
+async function test(name, fn) {
+  try {
+    await fn()
+    passed++
+    console.log(`  ok  ${name}`)
+  } catch (err) {
+    console.error(`  FAIL  ${name}\n${err.stack}`)
+    process.exitCode = 1
+  }
+}
+
+async function user(email) {
+  const id = randomUUID()
+  await service('insert into auth.users (id, email) values ($1, $2)', [id, email])
+  return id
+}
+
+const adminId = await user('admin@x.test')
+const teacherA = await user('a@x.test')
+const teacherB = await user('b@x.test')
+await service(`select public.register_teacher($1, 'Yönetici', 'admin@x.test', null, null, null, true)`, [adminId])
+await service(`select public.register_teacher($1, 'Ayşe Öğretmen', 'a@x.test', 'Okul', 'Matematik', null, false)`, [teacherA])
+await service(`select public.register_teacher($1, 'Burak Öğretmen', 'b@x.test', null, null, null, false)`, [teacherB])
+
+async function redeem(code, name, username) {
+  const id = await user(`${username}@u.test`)
+  await service('select public.redeem_invite($1, $2, $3, $4)', [code, id, name, username])
+  return id
+}
+
+console.log('Veritabanı testleri')
+
+await test('bekleyen öğretmen davet oluşturamaz', async () => {
+  await rejects(as(teacherA, `select public.create_student_invite('Ali', 'lgs', 8::smallint)`), /onaylı öğretmen/)
+})
+
+await test('admin olmayan öğretmen onaylayamaz', async () => {
+  await rejects(as(teacherB, `select public.set_teacher_status($1, 'active')`, [teacherA]), /Yetkin yok/)
+})
+
+await test('admin öğretmeni onaylar ve bildirim gider', async () => {
+  await as(adminId, `select public.set_teacher_status($1, 'active')`, [teacherA])
+  await as(adminId, `select public.set_teacher_status($1, 'active')`, [teacherB])
+  const n = await as(teacherA, `select kind from public.notifications`)
+  assert.deepEqual(n.map((r) => r.kind), ['approved'])
+})
+
+await test('admin öğretmen listesini görür, öğretmen göremez', async () => {
+  assert.equal((await as(adminId, 'select * from public.admin_teachers()')).length, 3)
+  await rejects(as(teacherA, 'select * from public.admin_teachers()'), /Yetkin yok/)
+})
+
+const codes = []
+await test('10 öğrenci sınırı davetlerle birlikte uygulanır', async () => {
+  for (let i = 0; i < 10; i++) {
+    const [row] = await as(teacherA, `select (public.create_student_invite('Öğrenci ${i}', 'yks', 12::smallint, 'say')).code`)
+    codes.push(row.code)
+  }
+  await rejects(as(teacherA, `select public.create_student_invite('Fazla', 'lgs', 8::smallint)`), /kontenjanı dolu/)
+  await as(teacherA, 'delete from public.invites where code = $1', [codes.pop()])
+  const [row] = await as(teacherA, `select (public.create_student_invite('Elif', 'lgs', 8::smallint)).code`)
+  codes.push(row.code)
+})
+
+let s1, s2, parent
+await test('davet kodu ile öğrenci katılır', async () => {
+  const preview = await as(null, 'select * from public.preview_invite($1)', [codes[0].toLowerCase()])
+  assert.equal(preview[0].teacher_name, 'Ayşe Öğretmen')
+  s1 = await redeem(codes[0], 'Deniz Yılmaz', 'deniz')
+  s2 = await redeem(codes[1], 'Kerem Kaya', 'kerem')
+  await rejects(redeem(codes[0], 'Tekrar', 'tekrar'), /geçersiz/)
+  const [s] = await as(s1, 'select track, grade, field, teacher_id from public.students where id = $1', [s1])
+  assert.deepEqual(s, { track: 'yks', grade: 12, field: 'say', teacher_id: teacherA })
+})
+
+await test('kod kullanılınca kontenjan dolu kalır', async () => {
+  await rejects(as(teacherA, `select public.create_student_invite('X', 'lgs', 8::smallint)`), /kontenjanı dolu/)
+})
+
+await test('öğrenci başka öğrenciyi göremez, diğer öğretmen hiç göremez', async () => {
+  assert.equal((await as(s1, 'select id from public.students')).length, 1)
+  assert.equal((await as(teacherB, 'select id from public.students')).length, 0)
+  assert.equal((await as(teacherB, 'select id from public.profiles where id = $1', [s1])).length, 0)
+  assert.equal((await as(teacherA, 'select id from public.students')).length, 2)
+})
+
+await test('öğrenci kendi profilini ve öğretmenini görür', async () => {
+  const rows = await as(s1, 'select id from public.profiles order by full_name')
+  assert.deepEqual(new Set(rows.map((r) => r.id)), new Set([s1, teacherA]))
+})
+
+await test('öğrenci soru kaydı ekler, başkasına ekleyemez', async () => {
+  await as(s1, `insert into public.question_logs (student_id, subject_id, correct, wrong, blank) values ($1, 'tyt-mat', 30, 5, 5)`, [s1])
+  await rejects(
+    as(s1, `insert into public.question_logs (student_id, subject_id, correct) values ($1, 'tyt-mat', 3)`, [s2]),
+    /row-level security/,
+  )
+})
+
+await test('öğrenci sınav türünü değiştiremez, öğretmen değiştirir', async () => {
+  await rejects(as(s1, `update public.students set grade = 11 where id = $1`, [s1]), /sadece öğretmenin/)
+  await as(s1, `update public.students set daily_minutes_goal = 180 where id = $1`, [s1])
+  await as(teacherA, `update public.students set grade = 11 where id = $1`, [s1])
+})
+
+await test('öğrenci yetki alanlarını değiştiremez', async () => {
+  await rejects(as(s1, `update public.profiles set is_admin = true where id = $1`, [s1]), /permission denied/)
+  await as(s1, `update public.profiles set full_name = 'Deniz Y.' where id = $1`, [s1])
+})
+
+let taskId
+await test('öğretmen görev verir, öğrenciye bildirim gider', async () => {
+  const [t] = await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'Türev 40 soru', current_date) returning id`, [s1])
+  taskId = t.id
+  await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'İntegral tekrar', current_date) returning id`, [s1])
+  const n = await as(s1, `select title from public.notifications where kind = 'task'`)
+  assert.equal(n.length, 1)
+  assert.equal(n[0].title, '2 yeni görev')
+})
+
+await test('öğrenci öğretmen görevini düzenleyemez ama tamamlayabilir', async () => {
+  await rejects(as(s1, `update public.tasks set title = 'x' where id = $1`, [taskId]), /tamamlandı olarak/)
+  const rows = await as(s1, `update public.tasks set done_at = now() where id = $1 returning id`, [taskId])
+  assert.equal(rows.length, 1)
+  await rejects(as(s1, `delete from public.tasks where id = $1 returning id`, [taskId]).then((r) => { if (!r.length) throw new Error('row-level security') }), /row-level security/)
+})
+
+await test('deneme neti doğru hesaplanır, fazla soru reddedilir', async () => {
+  const [e] = await as(s1, `insert into public.mock_exams (student_id, kind, title) values ($1, 'TYT', 'Deneme 1') returning id`, [s1])
+  await as(s1, `insert into public.mock_exam_scores (mock_exam_id, subject_id, correct, wrong, blank) values ($1, 'tyt-mat', 30, 8, 2), ($1, 'tyt-tr', 35, 4, 1)`, [e.id])
+  const [r] = await as(s1, `select net from public.mock_exam_results where id = $1`, [e.id])
+  assert.equal(Number(r.net), 30 - 2 + 35 - 1)
+  await rejects(as(s1, `insert into public.mock_exam_scores (mock_exam_id, subject_id, correct) values ($1, 'tyt-fiz', 8)`, [e.id]), /en fazla 7/)
+  await rejects(as(s1, `insert into public.mock_exam_scores (mock_exam_id, subject_id, correct) values ($1, 'lgs-mat', 3)`, [e.id]), /sınav türüne/)
+})
+
+await test('veli davet koduyla bağlanır ve sadece okur', async () => {
+  const [inv] = await as(s1, `select (public.create_parent_invite($1)).code`, [s1])
+  parent = await redeem(inv.code, 'Fatma Yılmaz', 'fatma.yilmaz')
+  assert.equal((await as(parent, 'select id from public.students')).length, 1)
+  assert.equal((await as(parent, 'select id from public.question_logs')).length, 1)
+  await rejects(
+    as(parent, `insert into public.question_logs (student_id, subject_id, correct) values ($1, 'tyt-mat', 3)`, [s1]),
+    /row-level security/,
+  )
+  const seen = await as(parent, 'select id from public.profiles')
+  assert.deepEqual(new Set(seen.map((r) => r.id)), new Set([parent, s1, teacherA]))
+  assert.equal((await as(teacherA, 'select * from public.parent_links')).length, 1)
+})
+
+await test('notlar görünürlüğe göre paylaşılır', async () => {
+  await as(teacherA, `insert into public.notes (student_id, body) values ($1, 'özel not')`, [s1])
+  await as(teacherA, `insert into public.notes (student_id, body, visibility) values ($1, 'veliye not', 'parent')`, [s1])
+  await as(teacherA, `insert into public.notes (student_id, body, visibility) values ($1, 'herkese not', 'both')`, [s1])
+  assert.deepEqual((await as(s1, 'select body from public.notes order by id')).map((r) => r.body), ['herkese not'])
+  assert.deepEqual((await as(parent, 'select body from public.notes order by id')).map((r) => r.body), ['veliye not', 'herkese not'])
+  assert.equal((await as(teacherB, 'select body from public.notes')).length, 0)
+  await rejects(as(teacherB, `insert into public.notes (student_id, body) values ($1, 'x')`, [s1]), /row-level security/)
+})
+
+await test('mesaj kanalları ayrıdır', async () => {
+  await as(s1, `insert into public.messages (student_id, channel, body) values ($1, 'student', 'Hocam merhaba')`, [s1])
+  await as(parent, `insert into public.messages (student_id, channel, body) values ($1, 'parent', 'İyi günler')`, [s1])
+  assert.equal((await as(parent, 'select id from public.messages')).length, 1)
+  assert.equal((await as(s1, 'select id from public.messages')).length, 1)
+  assert.equal((await as(teacherA, 'select id from public.messages')).length, 2)
+  await rejects(as(parent, `insert into public.messages (student_id, channel, body) values ($1, 'student', 'x')`, [s1]), /row-level security/)
+  const n = await as(teacherA, `select title from public.notifications where kind = 'message'`)
+  assert.equal(n.length, 2)
+})
+
+await test('öğretmen özeti doğru döner', async () => {
+  const rows = await as(teacherA, 'select * from public.teacher_overview()')
+  const d = rows.find((r) => r.id === s1)
+  assert.equal(d.questions_7d, 40)
+  assert.equal(Number(d.last_net), 62)
+  assert.equal(d.parent_count, 1)
+  assert.equal(d.tasks_week, 2)
+  assert.equal((await as(teacherB, 'select * from public.teacher_overview()')).length, 0)
+})
+
+await test('arşivlenen öğrenci yer açar, dolu kontenjanda geri alınamaz', async () => {
+  await as(teacherA, 'update public.students set archived_at = now() where id = $1', [s2])
+  const [row] = await as(teacherA, `select (public.create_student_invite('Yeni', 'lgs', 8::smallint)).code`)
+  assert.ok(row.code)
+  await rejects(as(teacherA, 'update public.students set archived_at = null where id = $1', [s2]), /kontenjanı dolu/)
+})
+
+await test('anonim kullanıcı müfredatı okur, kişisel veriyi okuyamaz', async () => {
+  assert.ok((await as(null, 'select id from public.subjects')).length > 20)
+  await rejects(as(null, 'select id from public.profiles'), /permission denied/)
+  await rejects(as(null, 'select id from public.students'), /permission denied/)
+})
+
+await test('müfredat tam yüklendi', async () => {
+  const [r] = await service('select count(*)::int as n from public.topics')
+  assert.ok(r.n > 300, `topic sayısı ${r.n}`)
+  const empty = await service('select s.id from public.subjects s where not exists (select 1 from public.topics t where t.subject_id = s.id)')
+  assert.deepEqual(empty, [])
+})
+
+await db.end()
+console.log(`\n${passed} test geçti`)

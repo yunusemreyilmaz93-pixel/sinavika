@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Sınavika · LGS ve YKS koçluğu</title>
+    <meta name="description" content="Öğretmen, öğrenci ve veli için ücretsiz LGS ve YKS koçluk uygulaması. Haftalık plan, soru takibi ve deneme analizi tek yerde." />
+    <meta name="theme-color" content="#f4f6f1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:title" content="Sınavika · LGS ve YKS koçluğu" />
+    <meta property="og:description" content="Öğretmen planlar, öğrenci çalışır, veli takip eder. Tamamen ücretsiz." />
+    <meta property="og:image" content="/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      try {
+        var t = localStorage.getItem('sinavika-theme')
+        if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark')
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Sınavika'yı kullanmak için tarayıcında JavaScript'i açman gerekiyor.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
