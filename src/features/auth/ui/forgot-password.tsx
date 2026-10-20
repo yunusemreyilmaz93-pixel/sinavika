@@ -1,7 +1,8 @@
+import { CONTACT_EMAIL } from '@/lib/contact'
 import { GraduationCap, Presentation, X } from 'lucide-react'
 import { Popover } from 'radix-ui'
 
-const contactEmail = (import.meta.env.VITE_CONTACT_EMAIL as string | undefined)?.trim()
+const contactEmail = CONTACT_EMAIL
 
 export function ForgotPassword() {
   return (

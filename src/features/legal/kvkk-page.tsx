@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL } from '@/lib/contact'
 import { ArrowLeft, ChevronDown, Eye, ShieldCheck, Trash2 } from 'lucide-react'
 import { useEffect, useRef, type MouseEvent, type ReactNode } from 'react'
 import { Link } from 'react-router'
@@ -28,7 +29,10 @@ const sections: Section[] = [
     body: (
       <p>
         Kişisel verilerin, veri sorumlusu sıfatıyla Sınavika tarafından işlenir. Sınavika, LGS ve YKS'ye hazırlanan öğrenciler
-        için gönüllü olarak geliştirilen, ücretsiz ve reklamsız bir koçluk uygulamasıdır.
+        için gönüllü olarak geliştirilen, ücretsiz ve reklamsız bir koçluk uygulamasıdır. İletişim:{' '}
+        <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline-offset-4 hover:underline">
+          {CONTACT_EMAIL}
+        </a>
       </p>
     ),
   },
@@ -166,7 +170,7 @@ const sections: Section[] = [
           öğrencilerinin hesaplarını silmen gerekir.
         </p>
         <p>
-          Diğer talepler için öğretmenine başvurabilirsin. Öğretmenin talebini bize iletir. Başvurular en geç 30 gün içinde
+          Diğer talepler için öğretmenine başvurabilir ya da {CONTACT_EMAIL} adresine yazabilirsin. Başvurular en geç 30 gün içinde
           ücretsiz olarak sonuçlandırılır.
         </p>
       </>
