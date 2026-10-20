@@ -275,6 +275,14 @@ await test('deneme tek işlemde kaydedilir, hatada hiçbir şey kalmaz', async (
   await rejects(as(s2, `select public.create_mock_exam($1, 'TYT', 'Başkası', current_date, '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]')`, [s1]), /row-level security/)
 })
 
+await test('aynı öğrencinin velileri birbirini görür', async () => {
+  const [inv] = await as(teacherA, `select (public.create_parent_invite($1)).code`, [s1])
+  const parent2 = await redeem(inv.code, 'Ali Yılmaz', 'ali.yilmaz')
+  const seen = await as(parent2, 'select id from public.profiles')
+  assert.ok(seen.some((r) => r.id === parent))
+  assert.ok(!seen.some((r) => r.id === s2))
+})
+
 await test('davet önizlemesi YKS alanını döner', async () => {
   const [row] = await as(teacherB, `select (public.create_student_invite('Alanlı', 'yks', 11::smallint, 'ea')).code`)
   const [p] = await as(null, 'select field from public.preview_invite($1)', [row.code])
