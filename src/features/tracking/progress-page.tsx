@@ -15,7 +15,7 @@ export default function ProgressPage() {
         <EmptyState
           icon={UserRound}
           title="Bağlı öğrenci yok"
-          description="Öğretmeninden aldığın veli davet koduyla çocuğunun hesabını bağladığında ilerlemesi burada görünür."
+          description="Öğretmenin ya da çocuğunun oluşturduğu veli koduyla çocuğunun hesabını bağladığında ilerlemesi burada görünür."
         />
       </>
     )

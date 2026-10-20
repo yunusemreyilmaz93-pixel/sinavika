@@ -18,7 +18,7 @@ export default function ExamsPage() {
     return (
       <>
         <PageHeader title="Denemeler" />
-        <EmptyState icon={Users} title="Bağlı öğrenci yok" description="Öğretmenin gönderdiği veli davet koduyla çocuğunun hesabını bağlayabilirsin." />
+        <EmptyState icon={Users} title="Bağlı öğrenci yok" description="Öğretmenin ya da çocuğunun oluşturduğu veli koduyla çocuğunun hesabını bağlayabilirsin." />
       </>
     )
   }

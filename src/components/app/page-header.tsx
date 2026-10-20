@@ -19,7 +19,7 @@ export function PageHeader({
   return (
     <div className={cn('mb-5 sm:mb-7', className)}>
       {back && (
-        <Link to={back.to} className="mb-2 inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-fg">
+        <Link to={back.to} className="-ml-1.5 mb-1 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-1.5 text-sm font-semibold text-muted hover:text-fg">
           <ArrowLeft className="size-4" />
           {back.label}
         </Link>

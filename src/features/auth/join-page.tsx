@@ -119,7 +119,7 @@ export default function JoinPage() {
               title={parentLinking ? 'Çocuğunu bağla' : 'Davet koduyla katıl'}
               description={
                 parentLinking
-                  ? 'Öğretmeninden aldığın veli davet kodunu gir. Çocuğun hesabına bağlanırsın.'
+                  ? 'Öğretmeninin ya da çocuğunun verdiği veli kodunu gir. Çocuğunun hesabına bağlanırsın.'
                   : `Öğretmeninden aldığın ${CODE_LENGTH} karakterlik kodu gir.`
               }
               code={code}

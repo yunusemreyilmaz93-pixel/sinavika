@@ -43,9 +43,9 @@ export function Modal({ open, onOpenChange, title, description, children, footer
               <X className="size-5" />
             </Dialog.Close>
           </div>
-          <div className="overflow-y-auto px-5 pt-2 pb-5">{children}</div>
+          <div className="min-h-0 flex-1 overflow-y-auto px-5 pt-2 pb-5">{children}</div>
           {footer && (
-            <div className="pb-safe flex gap-2 border-t border-line px-5 py-3 [&>*]:flex-1 sm:justify-end sm:[&>*]:flex-none">
+            <div className="flex shrink-0 gap-2 border-t border-line px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] [&>*]:flex-1 sm:justify-end sm:[&>*]:flex-none">
               {footer}
             </div>
           )}

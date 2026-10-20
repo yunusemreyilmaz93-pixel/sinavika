@@ -32,7 +32,7 @@ export default function ParentHomePage() {
         <EmptyState
           icon={UserPlus}
           title="Henüz bağlı çocuğun yok"
-          description="Çocuğunun Ayarlar sayfasında oluşturduğu veli kodunu girerek hesabına bağla."
+          description="Öğretmenin ya da çocuğunun oluşturduğu veli koduyla çocuğunun hesabını bağlayabilirsin."
           action={
             <Button asChild>
               <Link to="/app/ayarlar">

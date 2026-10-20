@@ -51,7 +51,7 @@ export default function NotificationsPage() {
           count > 0 ? (
             <Button variant="secondary" size="sm" onClick={() => void markAllRead()}>
               <CheckCheck />
-              Tümünü okundu say
+              Tümünü okundu işaretle
             </Button>
           ) : null
         }

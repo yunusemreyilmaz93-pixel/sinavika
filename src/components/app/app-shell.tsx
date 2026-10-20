@@ -29,7 +29,7 @@ export function AppShell() {
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[248px_1fr]">
       <aside className="sticky top-0 hidden h-dvh flex-col border-r border-line bg-surface lg:flex">
-        <Link to="/app" className="flex h-16 items-center px-5">
+        <Link to="/" aria-label="Sınavika ana sayfa" className="flex h-16 items-center px-5">
           <Logo />
         </Link>
         {isStudent && (
@@ -53,7 +53,7 @@ export function AppShell() {
       <div className="flex min-w-0 flex-col">
         <header className="pt-safe sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur-md">
           <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-4 sm:px-6 lg:h-16">
-            <Link to="/app" className="lg:hidden" aria-label="Ana sayfa">
+            <Link to="/" className="-ml-1.5 grid size-11 place-items-center rounded-xl lg:hidden" aria-label="Sınavika ana sayfa">
               <LogoMark />
             </Link>
             <ChildSwitcher />

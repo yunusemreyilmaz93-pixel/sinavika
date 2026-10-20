@@ -23,7 +23,7 @@ export default function NotesPage() {
         <EmptyState
           icon={UserRound}
           title="Bağlı öğrenci yok"
-          description="Öğretmenin verdiği veli davet koduyla çocuğunu hesabına bağlayabilirsin."
+          description="Öğretmenin ya da çocuğunun oluşturduğu veli koduyla çocuğunun hesabını bağlayabilirsin."
           action={
             <Button asChild variant="secondary">
               <Link to="/app/ayarlar">Ayarlara git</Link>

@@ -5,20 +5,20 @@ import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/ui/logo'
 
-const UPDATED = '19 Ekim 2026'
+const UPDATED = '20 Ekim 2026'
 
 type Section = { id: string; title: string; body: ReactNode }
 
 const rights = [
-  'Kişisel verilerinin işlenip işlenmediğini öğrenme',
-  'İşlenmişse buna ilişkin bilgi talep etme',
-  'İşlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme',
-  'Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme',
-  'Eksik veya yanlış işlenmişse düzeltilmesini isteme',
-  'KVKK 7. madde çerçevesinde silinmesini veya yok edilmesini isteme',
-  'Düzeltme, silme veya yok etme işlemlerinin verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme',
-  'İşlenen verilerin yalnızca otomatik sistemlerle analiz edilmesi sonucunda aleyhine bir sonuç çıkmasına itiraz etme',
-  'Kanuna aykırı işleme nedeniyle zarara uğrarsan zararın giderilmesini talep etme',
+  'Kişisel verilerinizin işlenip işlenmediğini öğrenme',
+  'Kişisel verileriniz işlenmişse buna ilişkin bilgi talep etme',
+  'Kişisel verilerinizin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme',
+  'Yurt içinde veya yurt dışında kişisel verilerinizin aktarıldığı üçüncü kişileri bilme',
+  'Kişisel verileriniz eksik veya yanlış işlenmişse bunların düzeltilmesini isteme',
+  'KVKK\'nın 7. maddesinde öngörülen şartlar çerçevesinde kişisel verilerinizin silinmesini veya yok edilmesini isteme',
+  'Düzeltme, silme veya yok etme işlemlerinin kişisel verilerinizin aktarıldığı üçüncü kişilere bildirilmesini isteme',
+  'İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle aleyhinize bir sonucun ortaya çıkmasına itiraz etme',
+  'Kişisel verilerinizin kanuna aykırı olarak işlenmesi sebebiyle zarara uğramanız hâlinde zararın giderilmesini talep etme',
 ]
 const rightLetters = ['a', 'b', 'c', 'ç', 'd', 'e', 'f', 'g', 'ğ']
 
@@ -28,8 +28,8 @@ const sections: Section[] = [
     title: 'Veri sorumlusu',
     body: (
       <p>
-        Kişisel verilerin, veri sorumlusu sıfatıyla Sınavika tarafından işlenir. Sınavika, LGS ve YKS'ye hazırlanan öğrenciler
-        için gönüllü olarak geliştirilen, ücretsiz ve reklamsız bir koçluk uygulamasıdır. İletişim:{' '}
+        Kişisel verileriniz, veri sorumlusu sıfatıyla Sınavika tarafından işlenmektedir. Sınavika, LGS ve YKS'ye hazırlanan
+        öğrenciler için gönüllü olarak geliştirilen, ücretsiz ve reklamsız bir koçluk uygulamasıdır. İletişim:{' '}
         <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline-offset-4 hover:underline">
           {CONTACT_EMAIL}
         </a>
@@ -42,25 +42,25 @@ const sections: Section[] = [
     body: (
       <ul>
         <li>
-          <strong>Kimlik ve hesap:</strong> ad soyad, kullanıcı adı, hesap türü (öğretmen, öğrenci, veli). Şifren geri döndürülemez
-          biçimde saklanır, kimse göremez.
+          <strong>Kimlik ve hesap bilgileri:</strong> Ad soyad, kullanıcı adı ve hesap türü (öğretmen, öğrenci, veli). Şifreniz geri
+          döndürülemez biçimde saklanır ve kimse tarafından görüntülenemez.
         </li>
         <li>
-          <strong>İletişim:</strong> öğretmenlerin e-posta adresi. Öğrenci ve veliler e-posta vermez.
+          <strong>İletişim bilgileri:</strong> Öğretmenlerin e-posta adresi. Öğrenci ve velilerden e-posta adresi istenmez.
         </li>
         <li>
-          <strong>Öğretmen başvurusu:</strong> okul, branş ve başvuru notu.
+          <strong>Öğretmen başvurusu:</strong> Okul, branş ve başvuru notu.
         </li>
         <li>
-          <strong>Çalışma kayıtları:</strong> çalışma süreleri, soru kayıtları, deneme sonuçları ve netler, konu durumları, görevler ve
-          hedefler.
+          <strong>Çalışma kayıtları:</strong> Çalışma süreleri, soru kayıtları, deneme sonuçları ve netler, konu durumları, görevler
+          ve hedefler.
         </li>
         <li>
-          <strong>Notlar ve mesajlar:</strong> öğretmenin aldığı notlar, görüşme kayıtları ve uygulama içi mesajlar.
+          <strong>Notlar ve mesajlar:</strong> Öğretmenin aldığı notlar, görüşme kayıtları ve uygulama içi mesajlar.
         </li>
         <li>
-          <strong>Kullanım:</strong> son giriş zamanı, bildirimler ve hizmetin güvenliği için tutulan teknik kayıtlar (IP adresi ve
-          tarayıcı bilgisi gibi).
+          <strong>Kullanım bilgileri:</strong> Son giriş zamanı, bildirimler ve hizmetin güvenliği için tutulan teknik kayıtlar (IP
+          adresi ve tarayıcı bilgisi gibi).
         </li>
       </ul>
     ),
@@ -70,14 +70,14 @@ const sections: Section[] = [
     title: 'İşleme amacı',
     body: (
       <>
-        <p>Verilerin yalnızca koçluk hizmetini sunmak için işlenir. Bu kapsamda:</p>
+        <p>Kişisel verileriniz yalnızca koçluk hizmetinin sunulması amacıyla, aşağıdaki kapsamda işlenir:</p>
         <ul>
-          <li>Hesabını oluşturmak ve giriş yapmanı sağlamak</li>
+          <li>Hesabınızın oluşturulması ve uygulamaya giriş yapmanızın sağlanması</li>
           <li>Öğretmenin haftalık program hazırlaması, görev vermesi ve öğrencisinin ilerlemesini takip etmesi</li>
-          <li>Öğrencinin çalışma, soru ve deneme kayıtlarını tutması</li>
-          <li>Velinin çocuğunun çalışmasını görmesi ve öğretmenle yazışması</li>
-          <li>Bildirim göndermek ve öğretmen başvurularını değerlendirmek</li>
-          <li>Hizmetin güvenliğini sağlamak ve kötüye kullanımı önlemek</li>
+          <li>Öğrencinin çalışma, soru ve deneme kayıtlarının tutulması</li>
+          <li>Velinin çocuğunun çalışmalarını görmesi ve öğretmenle yazışması</li>
+          <li>Bildirimlerin gönderilmesi ve öğretmen başvurularının değerlendirilmesi</li>
+          <li>Hizmetin güvenliğinin sağlanması ve kötüye kullanımın önlenmesi</li>
         </ul>
       </>
     ),
@@ -88,11 +88,12 @@ const sections: Section[] = [
     body: (
       <>
         <p>
-          Kişisel verilerin KVKK'nın 5. maddesindeki şu sebeplere dayanarak işlenir: koçluk hizmetinin sunulabilmesi için
-          sözleşmenin kurulması ve ifası ile doğrudan ilgili olması ve kayıt sırasında verdiğin açık rıza.
+          Kişisel verileriniz, KVKK'nın 5. maddesinde yer alan iki hukuki sebebe dayanılarak işlenir. Birincisi, koçluk hizmetinin
+          sunulabilmesi için bir sözleşmenin kurulması veya ifasıyla doğrudan ilgili olmasıdır. İkincisi, kayıt sırasında
+          verdiğiniz açık rızadır.
         </p>
         <p>
-          Veriler öğretmen başvuru formu, davet koduyla katılım formu ve uygulamayı kullanırken girdiğin bilgiler aracılığıyla
+          Verileriniz öğretmen başvuru formu, davet koduyla katılım formu ve uygulamayı kullanırken girdiğiniz bilgiler aracılığıyla
           elektronik ortamda toplanır.
         </p>
       </>
@@ -103,29 +104,30 @@ const sections: Section[] = [
     title: '18 yaşından küçük kullanıcılar',
     body: (
       <p>
-        Öğrencilerin çoğu 18 yaşından küçüktür. 18 yaşını doldurmamış bir öğrenci hesap açmadan önce velisinin onayını almalıdır.
-        Kayıt sırasında verilen onay, velinin bilgisi ve izniyle verilmiş sayılır. Veli, çocuğunun hesabının silinmesini
-        istediğinde öğretmene başvurabilir.
+        Öğrencilerimizin çoğu 18 yaşından küçüktür. 18 yaşını doldurmamış öğrencilerin hesap açmadan önce velilerinin onayını
+        almaları gerekir. Kayıt sırasında verilen onay, velinin bilgisi ve izniyle verilmiş kabul edilir. Veliler, çocuklarının
+        hesabının silinmesi için öğretmene başvurabilir.
       </p>
     ),
   },
   {
     id: 'aktarim',
-    title: 'Kimler görebilir, kime aktarılır',
+    title: 'Verileri kimler görebilir, kimlere aktarılır',
     body: (
       <>
         <p>
-          Uygulama içinde bir öğrencinin verilerini sadece öğrencinin kendisi, öğretmeni ve bağlı velisi görür. Öğretmenin özel
-          olarak tuttuğu notları öğrenci ve veli göremez. Veliler kayıtları sadece görüntüleyebilir.
+          Uygulama içinde bir öğrencinin verilerini yalnızca öğrencinin kendisi, öğretmeni ve bağlı velisi görebilir. Öğretmenin
+          kendisi için tuttuğu özel notları öğrenci ve veli göremez. Veliler kayıtları yalnızca görüntüleyebilir, değiştiremez.
         </p>
         <p>
-          Sınavika'nın çalışması için veriler barındırma hizmeti aldığımız sağlayıcılara aktarılır: Supabase (veritabanı ve
-          oturum açma) ve Vercel (web sitesi ve sunucu işlemleri). Bu sağlayıcılar verileri yurt dışındaki sunucularda
-          saklayabilir. Bu nedenle kayıt sırasında, KVKK'nın 9. maddesi kapsamında yurt dışına aktarım için açık rızan alınır.
+          Sınavika'nın çalışabilmesi için verileriniz barındırma hizmeti aldığımız iki sağlayıcıya aktarılır. Bunlar Supabase
+          (veritabanı ve oturum açma) ve Vercel (web sitesi ve sunucu işlemleri) şirketleridir. Bu sağlayıcılar verileri yurt
+          dışındaki sunucularda saklayabilir. Bu nedenle kayıt sırasında, KVKK'nın 9. maddesi kapsamında yurt dışına aktarım için
+          açık rızanız alınır.
         </p>
         <p>
-          Veriler bunların dışında kimseye satılmaz, kiralanmaz ve reklam amacıyla paylaşılmaz. Yetkili kamu kurumları kanuna
-          dayanarak talep ederse, yalnızca bu yükümlülük kapsamında paylaşılabilir.
+          Verileriniz bunların dışında hiç kimseye satılmaz, kiralanmaz ve reklam amacıyla paylaşılmaz. Yetkili kamu kurum ve
+          kuruluşlarının kanuna dayanan talepleri olması hâlinde, yalnızca bu yükümlülük kapsamında paylaşılabilir.
         </p>
       </>
     ),
@@ -136,19 +138,19 @@ const sections: Section[] = [
     body: (
       <>
         <p>
-          Verilerin hesabın silinene kadar saklanır. Hesap silindiğinde ona bağlı çalışma kayıtları, notlar ve mesajlar da
-          silinir. Bir öğrencinin hesabı silindiğinde, başka bir çocuğa bağlı olmayan veli hesabı da silinir.
+          Verileriniz hesabınız silinene kadar saklanır. Hesap silindiğinde ona bağlı çalışma kayıtları, notlar ve mesajlar da
+          silinir. Bir öğrencinin hesabı silindiğinde, başka bir öğrenciye bağlı olmayan veli hesapları da silinir.
         </p>
-        <p>Barındırma sağlayıcısının teknik yedeklerindeki kopyalar, yedekleme süresi dolduğunda kendiliğinden silinir.</p>
+        <p>Barındırma sağlayıcısının teknik yedeklerinde bulunan kopyalar, yedekleme süresi dolduğunda kendiliğinden silinir.</p>
       </>
     ),
   },
   {
     id: 'haklar',
-    title: 'KVKK 11. madde kapsamındaki hakların',
+    title: 'KVKK\'nın 11. maddesi kapsamındaki haklarınız',
     body: (
       <>
-        <p>KVKK'nın 11. maddesine göre kişisel verilerinle ilgili şu haklara sahipsin:</p>
+        <p>KVKK'nın 11. maddesi uyarınca kişisel verilerinizle ilgili aşağıdaki haklara sahipsiniz:</p>
         <ol>
           {rights.map((r, i) => (
             <li key={r} className="flex gap-3">
@@ -162,16 +164,16 @@ const sections: Section[] = [
   },
   {
     id: 'basvuru',
-    title: 'Başvuru',
+    title: 'Başvuru yolları',
     body: (
       <>
         <p>
-          Hesabını <strong>Ayarlar</strong> sayfasından istediğin zaman kendin silebilirsin. Öğretmen hesabını silmeden önce
-          öğrencilerinin hesaplarını silmen gerekir.
+          Hesabınızı istediğiniz zaman <strong>Ayarlar</strong> sayfasından kendiniz silebilirsiniz. Öğretmenlerin kendi
+          hesaplarını silmeden önce öğrencilerinin hesaplarını silmeleri gerekir.
         </p>
         <p>
-          Diğer talepler için öğretmenine başvurabilir ya da {CONTACT_EMAIL} adresine yazabilirsin. Başvurular en geç 30 gün içinde
-          ücretsiz olarak sonuçlandırılır.
+          Diğer talepleriniz için öğretmeninize başvurabilir ya da {CONTACT_EMAIL} adresine yazabilirsiniz. Başvurularınız en geç
+          30 gün içinde ücretsiz olarak sonuçlandırılır.
         </p>
       </>
     ),
@@ -181,23 +183,23 @@ const sections: Section[] = [
     title: 'Çerezler ve yerel depolama',
     body: (
       <p>
-        Sınavika reklam ya da izleme çerezi kullanmaz. Oturumunu açık tutmak, tema tercihini ve veli hesabında seçili çocuğu
-        hatırlamak için tarayıcının yerel depolama alanını kullanır. Uygulamanın hızlı açılması için bazı dosyalar cihazında
-        önbelleğe alınır.
+        Sınavika reklam veya izleme amaçlı çerez kullanmaz. Oturumunuzu açık tutmak, tema tercihinizi ve veli hesabında seçili
+        çocuğu hatırlamak için tarayıcınızın yerel depolama alanından yararlanır. Uygulamanın hızlı açılması için bazı dosyalar
+        cihazınızda önbelleğe alınır.
       </p>
     ),
   },
   {
     id: 'degisiklikler',
     title: 'Değişiklikler',
-    body: <p>Bu metni güncellediğimizde sayfanın başındaki son güncelleme tarihini değiştiririz.</p>,
+    body: <p>Bu metinde bir değişiklik yaptığımızda, sayfanın başındaki son güncelleme tarihini de güncelleriz.</p>,
   },
 ]
 
 const summary = [
-  { icon: ShieldCheck, text: 'Verilerin sadece koçluk hizmeti için kullanılır. Satılmaz, reklam için kullanılmaz.' },
-  { icon: Eye, text: 'Bir öğrencinin kayıtlarını sadece kendisi, öğretmeni ve bağlı velisi görür.' },
-  { icon: Trash2, text: 'Hesabını istediğin zaman Ayarlar sayfasından silebilirsin.' },
+  { icon: ShieldCheck, text: 'Verileriniz yalnızca koçluk hizmeti için kullanılır. Satılmaz ve reklam amacıyla kullanılmaz.' },
+  { icon: Eye, text: 'Bir öğrencinin kayıtlarını yalnızca kendisi, öğretmeni ve bağlı velisi görebilir.' },
+  { icon: Trash2, text: 'Hesabınızı istediğiniz zaman Ayarlar sayfasından silebilirsiniz.' },
 ]
 
 function jumpTo(e: MouseEvent<HTMLAnchorElement>, id: string) {
@@ -264,7 +266,7 @@ export default function KvkkPage() {
             <p className="mt-3 text-sm text-subtle">Son güncelleme: {UPDATED}</p>
             <p className="mt-6 text-[17px] leading-relaxed text-muted">
               Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında Sınavika'yı kullanan öğretmen, öğrenci
-              ve velilerin kişisel verilerinin nasıl işlendiğini anlatır.
+              ve velileri, kişisel verilerinin nasıl işlendiği konusunda bilgilendirmek amacıyla hazırlanmıştır.
             </p>
 
             <div className="mt-8 rounded-2xl border border-line bg-surface p-5 shadow-card sm:p-6">

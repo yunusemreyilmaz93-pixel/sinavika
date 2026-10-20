@@ -16,7 +16,7 @@ export default function TopicsPage() {
         <EmptyState
           icon={UserRound}
           title="Bağlı öğrenci yok"
-          description="Öğretmenden aldığın veli koduyla öğrencini hesabına bağlayabilirsin."
+          description="Öğretmenin ya da çocuğunun oluşturduğu veli koduyla çocuğunun hesabını bağlayabilirsin."
           action={
             <Button asChild>
               <Link to="/katil">Kodu gir</Link>

@@ -43,7 +43,7 @@ export function TopicSummary({
       </div>
       <div className="mt-4 border-t border-line pt-3.5">
         <p className="sr-only">
-          {canEdit ? 'Durumlar dokundukça bu sırayla değişir' : 'Durumlar'}
+          {canEdit ? 'Konuya her dokunduğunda durum bu sırayla değişir' : 'Durumlar'}
         </p>
         <ul className="flex flex-wrap items-center gap-x-1.5 gap-y-2 text-xs font-medium">
           {statusCycle.map((status, i) => {

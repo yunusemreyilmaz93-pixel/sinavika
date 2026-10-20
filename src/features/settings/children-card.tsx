@@ -48,7 +48,7 @@ export function ChildrenCard() {
         <EmptyState
           icon={UserPlus}
           title="Henüz bağlı çocuğun yok"
-          description="Çocuğunun Ayarlar sayfasında oluşturduğu veli kodunu gir."
+          description="Öğretmenin ya da çocuğunun oluşturduğu veli kodunu gir."
           action={<Button onClick={() => setLinking(true)}>Çocuk bağla</Button>}
         />
       ) : (
@@ -78,7 +78,7 @@ export function ChildrenCard() {
 
 function LinkChildModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   return (
-    <Modal open={open} onOpenChange={onOpenChange} title="Çocuk bağla" description="Çocuğunun Ayarlar sayfasındaki veli davet kodunu gir." size="sm">
+    <Modal open={open} onOpenChange={onOpenChange} title="Çocuk bağla" description="Öğretmenin ya da çocuğunun oluşturduğu veli kodunu gir." size="sm">
       {open && <LinkChildForm onDone={() => onOpenChange(false)} />}
     </Modal>
   )
@@ -102,8 +102,8 @@ function LinkChildForm({ onDone }: { onDone: () => void }) {
     setError(null)
     try {
       const row = unwrap(await supabase.rpc('preview_invite', { p_code: value }))[0]
-      if (!row) setError('Kod geçersiz ya da süresi dolmuş. Çocuğundan yeni kod iste.')
-      else if (row.kind !== 'parent') setError('Bu bir öğrenci davet kodu. Veli kodu, çocuğunun Ayarlar sayfasında oluşturulur.')
+      if (!row) setError('Kod geçersiz ya da süresi dolmuş. Öğretmeninden ya da çocuğundan yeni kod iste.')
+      else if (row.kind !== 'parent') setError('Bu bir öğrenci davet kodu. Veli kodunu öğretmenin ya da çocuğun oluşturabilir.')
       else setPreview(row)
     } catch (err) {
       setError(errorMessage(err))
@@ -114,7 +114,7 @@ function LinkChildForm({ onDone }: { onDone: () => void }) {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (code.length !== CODE_LENGTH) return setError('Kodun 8 karakter olmalı')
+    if (code.length !== CODE_LENGTH) return setError('Kod 8 karakter olmalı')
     if (!preview) return void check(code)
     setLinking(true)
     setError(null)

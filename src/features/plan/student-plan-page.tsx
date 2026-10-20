@@ -14,7 +14,7 @@ export default function StudentPlanPage() {
         <EmptyState
           icon={UserPlus}
           title="Bağlı öğrenci yok"
-          description="Öğretmenden veli davet kodu iste. Kodu girince çocuğunun planı burada görünür."
+          description="Öğretmenin ya da çocuğunun oluşturduğu veli kodunu girince çocuğunun planı burada görünür."
         />
       </>
     )

@@ -80,7 +80,7 @@ function BellButton({ userId }: { userId: string }) {
             {count > 0 && (
               <Button variant="ghost" size="sm" className="text-primary" onClick={() => void markAllRead()}>
                 <CheckCheck />
-                Tümünü okundu say
+                Tümünü okundu işaretle
               </Button>
             )}
           </div>

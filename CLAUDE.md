@@ -21,6 +21,8 @@ LGS ve YKS koçluğu için ücretsiz web uygulaması. Öğretmen, öğrenci ve v
 
 - Uzun tire (—) ve orta tire (–) kullanma. Gerekirse nokta ya da virgül kullan
 - Arayüz metninde noktalı virgül kullanma
+- İki noktadan sonra büyük harfle başla
+- Arayüz "sen" diliyle yazılır. KVKK ve hukuki metinler "siz" diliyle yazılır
 - Kısa yaz. Bir şeyi açıklamak gerekmiyorsa açıklama
 - Emoji kullanma. İkon gerekiyorsa `lucide-react`
 - Abartılı pazarlama dili yok: "yolculuk", "seviyeyi atla", "sorunsuz", "kusursuz", "devrim", "benzersiz", "keşfedin", "potansiyelini açığa çıkar" gibi

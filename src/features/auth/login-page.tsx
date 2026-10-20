@@ -14,7 +14,7 @@ const points: ValuePoint[] = [
   { icon: CalendarCheck2, title: 'Haftalık plan', text: 'Öğretmenin görevleri verir, sen yaptıkça işaretlersin.' },
   { icon: Timer, title: 'Çalışma ve soru takibi', text: 'Süreni ve çözdüğün soruları ders ders kaydedersin.' },
   { icon: TrendingUp, title: 'Deneme netleri', text: 'Her denemeden sonra netlerin ve konu durumun görünür.' },
-  { icon: MessagesSquare, title: 'Öğretmen, öğrenci ve veli', text: 'Herkes aynı tabloya kendi ekranından bakar ve yazışır.' },
+  { icon: MessagesSquare, title: 'Öğretmen, öğrenci ve veli', text: 'Herkes aynı planı kendi ekranından görür, gerektiğinde yazışır.' },
 ]
 
 export default function LoginPage() {
