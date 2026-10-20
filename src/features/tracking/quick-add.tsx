@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, type Variants } from 'motion/react'
-import { ArrowLeft, Clock, ListChecks, Timer, Trophy, type LucideIcon } from 'lucide-react'
+import { ArrowLeft, Clock, ListChecks, NotebookTabs, Timer, Trophy, type LucideIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { Modal } from '@/components/ui/modal'
@@ -107,6 +107,13 @@ export function QuickAddModal({ open, onOpenChange }: SheetProps) {
                   onClick={() => leave('/app/sayac')}
                 />
                 <Tile icon={Trophy} title="Deneme ekle" hint="Sonuçları gir" tone="neutral" onClick={() => leave('/app/deneme-ekle')} />
+                <Tile
+                  icon={NotebookTabs}
+                  title="Yanlış soru"
+                  hint="Fotoğrafını deftere ekle"
+                  tone="neutral"
+                  onClick={() => leave('/app/yanlislar?ekle=1')}
+                />
               </div>
             )}
             {step === 'questions' && <QuestionLogForm studentId={student.id} onDone={close} />}

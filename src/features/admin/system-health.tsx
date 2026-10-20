@@ -15,7 +15,8 @@ const labels: Record<string, string> = {
   table_app_settings: 'Uygulama ayarları',
   table_subjects: 'Ders listesi',
   table_topics: 'Konu listesi',
-  table_push_subscriptions: 'Bildirim tablosu (son veritabanı güncellemesi)',
+  table_push_subscriptions: 'Bildirim tablosu',
+  table_wrong_questions: 'Yanlış soru defteri',
   curriculum: 'Müfredat yüklü',
 }
 
@@ -23,7 +24,8 @@ const fixes: Record<string, string> = {
   supabase_url: 'Vercel ortam değişkenlerine SUPABASE_URL ekle, sonra yeniden yayınla.',
   service_key: 'Vercel ortam değişkenlerine SUPABASE_SERVICE_ROLE_KEY ekle, sonra yeniden yayınla.',
   curriculum: 'Veritabanı şeması kurulmamış olabilir. Supabase migration kayıtlarına bak.',
-  table_push_subscriptions: 'Son veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bak.',
+  table_push_subscriptions: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bak.',
+  table_wrong_questions: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bak.',
 }
 
 async function fetchHealth(): Promise<Health> {

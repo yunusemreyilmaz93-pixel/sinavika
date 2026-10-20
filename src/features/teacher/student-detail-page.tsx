@@ -12,6 +12,7 @@ import { ExamsOverview } from '@/features/exams/exams-overview'
 import { TeacherNotes } from '@/features/notes/teacher-notes'
 import { WeekPlan } from '@/features/plan/week-plan'
 import { TopicMap } from '@/features/topics/topic-map'
+import { WrongList } from '@/features/wrong/wrong-list'
 import { errorMessage } from '@/lib/supabase'
 import { riskSignals, useTeacherOverview } from './overview'
 import { StudentHeader } from './student-detail/header'
@@ -24,6 +25,7 @@ const tabs = [
   { value: 'plan', label: 'Plan' },
   { value: 'denemeler', label: 'Denemeler' },
   { value: 'konular', label: 'Konular' },
+  { value: 'yanlislar', label: 'Yanlışlar' },
   { value: 'notlar', label: 'Notlar' },
   { value: 'ayarlar', label: 'Ayarlar' },
 ] as const
@@ -127,6 +129,7 @@ export default function StudentDetailPage() {
         >
           {tab === 'ozet' && <OverviewTab studentId={student.id} onOpenExams={() => setTab('denemeler')} />}
           {tab === 'plan' && <WeekPlan studentId={student.id} viewer="teacher" />}
+          {tab === 'yanlislar' && <WrongList studentId={student.id} viewer="teacher" />}
           {tab === 'denemeler' && (
             <div className="space-y-4 sm:space-y-5">
               <ExamsOverview

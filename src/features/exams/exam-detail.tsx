@@ -16,6 +16,7 @@ import { CountTiles } from './overview-cards'
 import { useDeleteExam, useExamDetail, type ExamDetailData, type Score } from './queries'
 import { accuracy, bySubjectOrder, round2 } from './stats'
 import { SubjectNetChart } from './subject-net-chart'
+import { ExamTopicMisses } from './topic-misses'
 
 type Row = Score & { subject?: Subject; net: number; accuracy: number | null; diff: number | null }
 
@@ -186,6 +187,8 @@ export function ExamDetail({ examId, canEdit, onDeleted }: { examId: number; can
           </table>
         </Card>
       )}
+
+      <ExamTopicMisses examId={exam.id} scores={data.scores} canEdit={canEdit} />
 
       {canEdit && (
         <div className={cn('flex', rows.length ? 'justify-end' : 'justify-start')}>

@@ -46,6 +46,7 @@ export const router = createBrowserRouter([
                   { path: 'denemeler/:examId', ...page(() => import('@/features/exams/exam-detail-page')) },
                   { path: 'konular', ...page(() => import('@/features/topics/topics-page')) },
                   { path: 'notlar', ...page(() => import('@/features/notes/notes-page')) },
+                  { path: 'yanlislar', ...page(() => import('@/features/wrong/wrong-page')) },
                 ],
               },
               {

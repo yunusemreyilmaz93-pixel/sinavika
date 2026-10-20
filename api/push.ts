@@ -8,9 +8,15 @@ const schema = z.discriminatedUnion('action', [
   z.object({
     action: z.literal('subscribe'),
     endpoint: z.url().max(1000),
-    keys: z.object({ p256dh: z.string().min(1).max(200), auth: z.string().min(1).max(100) }),
+    keys: z.object({
+      p256dh: z.string().min(1).max(200),
+      auth: z.string().min(1).max(100),
+    }),
   }),
-  z.object({ action: z.literal('unsubscribe'), endpoint: z.string().max(1000) }),
+  z.object({
+    action: z.literal('unsubscribe'),
+    endpoint: z.string().max(1000),
+  }),
 ])
 
 type Keys = { public_key: string; private_key: string }
@@ -20,7 +26,14 @@ async function vapidKeys(): Promise<Keys> {
   const { data } = await db.from('push_keys').select('public_key, private_key').maybeSingle()
   if (data) return data
   const generated = webpush.generateVAPIDKeys()
-  await db.from('push_keys').upsert({ id: true, public_key: generated.publicKey, private_key: generated.privateKey }, { onConflict: 'id', ignoreDuplicates: true })
+  await db.from('push_keys').upsert(
+    {
+      id: true,
+      public_key: generated.publicKey,
+      private_key: generated.privateKey,
+    },
+    { onConflict: 'id', ignoreDuplicates: true },
+  )
   const { data: stored, error } = await db.from('push_keys').select('public_key, private_key').single()
   if (error || !stored) throw new HttpError(500, 'Bildirim anahtarı oluşturulamadı')
   return stored
@@ -58,8 +71,16 @@ async function dispatch() {
         .map(async (s) => {
           try {
             await webpush.sendNotification(
-              { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
-              JSON.stringify({ title: n.title, body: n.body ?? '', link: n.link ?? '/app', tag: `n${n.id}` }),
+              {
+                endpoint: s.endpoint,
+                keys: { p256dh: s.p256dh, auth: s.auth },
+              },
+              JSON.stringify({
+                title: n.title,
+                body: n.body ?? '',
+                link: n.link ?? '/app',
+                tag: `n${n.id}`,
+              }),
               { TTL: 60 * 60 * 12 },
             )
             sent++
@@ -86,9 +107,15 @@ export const POST = handle(async (request) => {
   const db = admin()
   if (input.action === 'subscribe') {
     await syncSiteUrl()
-    const { error } = await db
-      .from('push_subscriptions')
-      .upsert({ endpoint: input.endpoint, user_id: userId, p256dh: input.keys.p256dh, auth: input.keys.auth }, { onConflict: 'endpoint' })
+    const { error } = await db.from('push_subscriptions').upsert(
+      {
+        endpoint: input.endpoint,
+        user_id: userId,
+        p256dh: input.keys.p256dh,
+        auth: input.keys.auth,
+      },
+      { onConflict: 'endpoint' },
+    )
     if (error) throw new HttpError(500, 'Bildirim açılamadı, tekrar dene')
     return json({ ok: true })
   }

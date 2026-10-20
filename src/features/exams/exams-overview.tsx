@@ -10,6 +10,7 @@ import { useCurriculum } from '@/lib/data'
 import { examKindsFor, examLabel, type ExamKind, type Field, type Track } from '@/lib/exam'
 import { errorMessage } from '@/lib/supabase'
 import { ExamDetail } from './exam-detail'
+import { WeakTopicsCard } from './topic-misses'
 import { ExamList, type ExamOpener } from './exam-list'
 import { NetTrendChart } from './net-trend-chart'
 import { examDateLabel, LastExamCard, OverviewSkeleton, SubjectAverages } from './overview-cards'
@@ -132,6 +133,7 @@ export function ExamsOverview({ studentId, student, canEdit, newExamHref, examHr
             />
             <ExamList kind={kind} exams={kindExams} opener={opener} addHref={addHref} className="lg:col-span-2" />
           </div>
+          <WeakTopicsCard studentId={studentId} kind={kind} examIds={kindExams.slice(0, 5).map((e) => e.id)} />
         </>
       )}
 

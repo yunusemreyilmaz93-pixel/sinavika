@@ -8,7 +8,14 @@ export type StarterTemplate = {
   parsed: TemplateItem[]
 }
 
-type Row = [weekday: number, kind: TemplateItem['kind'], subject: string | null, title: string, questions?: number, minutes?: number]
+type Row = [
+  weekday: number,
+  kind: TemplateItem['kind'],
+  subject: string | null,
+  title: string,
+  questions?: number,
+  minutes?: number,
+]
 
 function items(rows: Row[]): TemplateItem[] {
   return rows.map(([weekday, kind, subject_id, title, questions, minutes]) => ({

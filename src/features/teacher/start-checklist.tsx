@@ -10,7 +10,13 @@ import { cn } from '@/lib/cn'
 import { supabase } from '@/lib/supabase'
 import type { OverviewRow } from './overview'
 
-type Step = { id: string; title: string; text: string; to: string; done: boolean }
+type Step = {
+  id: string
+  title: string
+  text: string
+  to: string
+  done: boolean
+}
 
 function readDismissed(key: string) {
   try {

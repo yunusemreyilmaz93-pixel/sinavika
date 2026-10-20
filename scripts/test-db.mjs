@@ -327,6 +327,42 @@ await test('push anahtarlarını ve başkasının aboneliğini kimse göremez', 
   )
 })
 
+await test('yanlış soru defteri: öğrenci ve öğretmen ekler, veli sadece görür, başkası göremez', async () => {
+  const [w] = await as(s1, `insert into public.wrong_questions (student_id, subject_id, note) values ($1, 'tyt-mat', 'Üslü sayı') returning id, next_review_on`, [s1])
+  await as(teacherA, `insert into public.wrong_questions (student_id, subject_id, note) values ($1, 'tyt-fiz', 'Hareket') returning id`, [s1])
+  assert.equal((await as(parent, 'select id from public.wrong_questions')).length, 2)
+  await rejects(as(parent, `insert into public.wrong_questions (student_id, subject_id, note) values ($1, 'tyt-mat', 'x')`, [s1]), /row-level security/)
+  assert.equal((await as(teacherB, 'select id from public.wrong_questions')).length, 0)
+  await rejects(as(s1, `insert into public.wrong_questions (student_id, subject_id) values ($1, 'tyt-mat')`, [s1]), /check/)
+  const [r1] = await as(s1, 'select review_count, next_review_on - private.today() as gap, learned_at from public.review_wrong_question($1, false)', [w.id])
+  assert.deepEqual([r1.review_count, r1.gap, r1.learned_at], [1, 3, null])
+  const [r2] = await as(s1, 'select review_count, next_review_on - private.today() as gap from public.review_wrong_question($1, false)', [w.id])
+  assert.deepEqual([r2.review_count, r2.gap], [2, 7])
+  const [r3] = await as(s1, 'select learned_at is not null as learned from public.review_wrong_question($1, true)', [w.id])
+  assert.equal(r3.learned, true)
+  await rejects(as(parent, 'select public.review_wrong_question($1, true)', [w.id]), /bulunamadı/)
+})
+
+await test('tekrar zamanı gelen yanlışlar hatırlatmaya eklenir', async () => {
+  await service(`update public.wrong_questions set next_review_on = private.today() where note = 'Hareket'`)
+  await service(`delete from public.notifications where kind = 'reminder'`)
+  await service('select public.send_daily_reminders()')
+  const [n] = await as(s1, `select body from public.notifications where kind = 'reminder'`)
+  assert.match(n.body, /tekrar zamanı gelen 1 yanlış sorun var/)
+})
+
+await test('denemede konu yanlışları dersin yanlış ve boş toplamını aşamaz', async () => {
+  const [e] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Konu analizi', current_date, '[{"subject_id":"tyt-fiz","correct":3,"wrong":2,"blank":2}]') as id`, [s1])
+  const [t1, t2] = await service(`select id from public.topics where subject_id = 'tyt-fiz' order by sort limit 2`)
+  const [mat] = await service(`select id from public.topics where subject_id = 'tyt-mat' order by sort limit 1`)
+  await as(s1, 'insert into public.mock_exam_topic_misses (mock_exam_id, topic_id, misses) values ($1, $2, 3)', [e.id, t1.id])
+  await rejects(as(s1, 'insert into public.mock_exam_topic_misses (mock_exam_id, topic_id, misses) values ($1, $2, 2)', [e.id, t2.id]), /aşıyor/)
+  await as(s1, 'insert into public.mock_exam_topic_misses (mock_exam_id, topic_id, misses) values ($1, $2, 1)', [e.id, t2.id])
+  await rejects(as(s1, 'insert into public.mock_exam_topic_misses (mock_exam_id, topic_id, misses) values ($1, $2, 1)', [e.id, mat.id]), /aşıyor/)
+  await rejects(as(parent, 'delete from public.mock_exam_topic_misses where mock_exam_id = $1 returning 1', [e.id]).then((r) => { if (!r.length) throw new Error('row-level security') }), /row-level security/)
+  assert.equal((await as(parent, 'select * from public.mock_exam_topic_misses where mock_exam_id = $1', [e.id])).length, 2)
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

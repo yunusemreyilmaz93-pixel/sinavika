@@ -170,6 +170,40 @@ export type Database = {
           },
         ];
       };
+      mock_exam_topic_misses: {
+        Row: {
+          misses: number;
+          mock_exam_id: number;
+          topic_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          misses: number;
+          mock_exam_id: number;
+          topic_id: number;
+        };
+        Update: {
+          misses?: number;
+          mock_exam_id?: number;
+          topic_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "mock_exam_topic_misses_mock_exam_id_fkey";
+            columns: ["mock_exam_id"];
+            isOneToOne: false;
+            referencedRelation: "mock_exams";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "mock_exam_topic_misses_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       mock_exam_scores: {
         Row: {
           blank: number;
@@ -323,6 +357,7 @@ export type Database = {
           id: number;
           kind: string;
           link: string | null;
+          pushed_at: string | null;
           read_at: string | null;
           title: string;
           user_id: string;
@@ -478,6 +513,39 @@ export type Database = {
           username?: string | null;
         };
         Relationships: [];
+      };
+      push_subscriptions: {
+        Row: {
+          auth: string;
+          created_at: string;
+          endpoint: string;
+          p256dh: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          auth: string;
+          created_at?: string;
+          endpoint: string;
+          p256dh: string;
+          user_id?: string;
+        };
+        Update: {
+          auth?: string;
+          created_at?: string;
+          endpoint?: string;
+          p256dh?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       question_logs: {
         Row: {
@@ -858,6 +926,84 @@ export type Database = {
           },
         ];
       };
+      wrong_questions: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          id: number;
+          last_reviewed_at: string | null;
+          learned_at: string | null;
+          next_review_on: string;
+          note: string | null;
+          photo_path: string | null;
+          review_count: number;
+          source: string | null;
+          student_id: string;
+          subject_id: string;
+          topic_id: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: never;
+          last_reviewed_at?: string | null;
+          learned_at?: string | null;
+          next_review_on?: string;
+          note?: string | null;
+          photo_path?: string | null;
+          review_count?: number;
+          source?: string | null;
+          student_id: string;
+          subject_id: string;
+          topic_id?: number | null;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: never;
+          last_reviewed_at?: string | null;
+          learned_at?: string | null;
+          next_review_on?: string;
+          note?: string | null;
+          photo_path?: string | null;
+          review_count?: number;
+          source?: string | null;
+          student_id?: string;
+          subject_id?: string;
+          topic_id?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "wrong_questions_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wrong_questions_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wrong_questions_subject_id_fkey";
+            columns: ["subject_id"];
+            isOneToOne: false;
+            referencedRelation: "subjects";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wrong_questions_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       mock_exam_results: {
@@ -1001,6 +1147,10 @@ export type Database = {
           p_user: string;
         };
         Returns: Database["public"]["Enums"]["account_status"];
+      };
+      review_wrong_question: {
+        Args: { p_id: number; p_learned: boolean };
+        Returns: Database["public"]["Tables"]["wrong_questions"]["Row"];
       };
       set_teacher_status: {
         Args: { p_status: Database["public"]["Enums"]["account_status"]; p_teacher: string };

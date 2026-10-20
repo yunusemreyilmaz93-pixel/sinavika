@@ -57,9 +57,16 @@ export function PushCard() {
       }
       const { key } = await callApi<{ key: string }>('push', { action: 'key' })
       const reg = await navigator.serviceWorker.ready
-      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: toKey(key) })
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: toKey(key),
+      })
       const json = sub.toJSON()
-      await callApi('push', { action: 'subscribe', endpoint: json.endpoint, keys: json.keys })
+      await callApi('push', {
+        action: 'subscribe',
+        endpoint: json.endpoint,
+        keys: json.keys,
+      })
       setState('on')
       toast.success('Bildirimler açıldı')
     } catch (error) {
@@ -74,7 +81,10 @@ export function PushCard() {
     try {
       const sub = await currentSubscription()
       if (sub) {
-        await callApi('push', { action: 'unsubscribe', endpoint: sub.endpoint }).catch(() => undefined)
+        await callApi('push', {
+          action: 'unsubscribe',
+          endpoint: sub.endpoint,
+        }).catch(() => undefined)
         await sub.unsubscribe()
       }
       setState('off')
