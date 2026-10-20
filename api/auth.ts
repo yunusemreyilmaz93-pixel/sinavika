@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { PASSWORD_MIN, USERNAME_PATTERN, usernameToEmail } from '../shared/accounts.js'
+import { passwordProblem } from './_lib/password.js'
 import { admin, adminEmail, dbMessage, handle, HttpError, json, readJson } from './_lib/server.js'
 
 const teacherSchema = z.object({
@@ -33,15 +34,24 @@ async function createUser(email: string, password: string, fullName: string) {
     user_metadata: { full_name: fullName },
   })
   if (error || !data.user) {
-    if (error?.status === 422 || /already/i.test(error?.message ?? '')) {
+    const code = (error as { code?: string } | null)?.code ?? ''
+    const message = error?.message ?? ''
+    if (code === 'weak_password' || /password/i.test(message)) throw new HttpError(400, passwordProblem(error))
+    if (code === 'email_exists' || code === 'user_already_exists' || /already/i.test(message)) {
       throw new HttpError(409, 'Bu bilgilerle kayıtlı bir hesap zaten var')
     }
-    if (/password/i.test(error?.message ?? '')) {
-      throw new HttpError(400, 'Şifre çok zayıf, daha uzun ve tahmin edilmesi zor bir şifre seç')
-    }
-    throw new HttpError(500, 'Hesap oluşturulamadı')
+    await logServerError('Hesap oluşturulamadı', `${code} ${message}`)
+    throw new HttpError(500, 'Hesap oluşturulamadı. Biraz bekleyip tekrar dene')
   }
   return data.user.id
+}
+
+async function logServerError(message: string, detail: string) {
+  try {
+    await admin().from('client_errors').insert({ message: `Sunucu: ${message}`, shown: message, path: '/api/auth', detail: detail.slice(0, 2000) })
+  } catch {
+    return
+  }
 }
 
 async function registerTeacher(input: z.infer<typeof teacherSchema>) {
@@ -83,6 +93,7 @@ async function join(input: z.infer<typeof joinSchema>) {
   })
   if (error) {
     await admin().auth.admin.deleteUser(id)
+    if (!/[çğıöşüÇĞİÖŞÜ]/.test(error.message ?? '')) await logServerError('Davetle katılım başarısız', `${error.code ?? ''} ${error.message}`)
     throw new HttpError(400, dbMessage(error))
   }
   return json({ role: data })

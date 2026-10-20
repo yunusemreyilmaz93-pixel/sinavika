@@ -70,3 +70,21 @@ describe('api/health', () => {
     expect(body.checks).toEqual({ supabase_url: false, service_key: false })
   })
 })
+
+describe('passwordProblem', () => {
+  it('Supabase şifre hatalarını öğrencinin anlayacağı dile çevirir', async () => {
+    const { passwordProblem } = await import('../api/_lib/password.ts')
+    expect(
+      passwordProblem({
+        code: 'weak_password',
+        message:
+          'Password should contain at least one character of each: abcdefghijklmnopqrstuvwxyz, ABCDEFGHIJKLMNOPQRSTUVWXYZ, 0123456789, !@#$%^&*()_+-=[]{};\'\\:"|<>?,./`~.',
+        reasons: ['characters'],
+      }),
+    ).toBe('Şifren en az bir küçük harf, bir büyük harf, bir rakam, bir sembol (örneğin ! ya da ?) içermeli')
+    expect(passwordProblem({ message: 'Password should be at least 10 characters.', reasons: ['length'] })).toBe('Şifren en az 10 karakter olmalı')
+    expect(passwordProblem({ message: 'Password is known to be weak and easy to guess, please choose a different one.', reasons: ['pwned'] })).toMatch(
+      /sızdırılmış/,
+    )
+  })
+})
