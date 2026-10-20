@@ -12,7 +12,7 @@ import { useOpenSession } from './hooks'
 import { weekdayShort } from './lib'
 import { invalidateTasks } from './queries'
 import { StudentChips, type PlannerStudent } from './student-picker'
-import { draftFromTask, draftValues, TaskFields, type TaskDraft } from './task-fields'
+import { draftFromTask, draftValues, TaskFields, videoUrlInvalid, type TaskDraft } from './task-fields'
 import { WeekNav } from './week-nav'
 
 type Props = {
@@ -59,6 +59,7 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
     event.preventDefault()
     const values = draftValues(draft, curriculum.data)
     if (!values) return setTitleError('Başlık yaz ya da bir ders seç')
+    if (videoUrlInvalid(draft)) return void toast.error('YouTube bağlantısı geçersiz. Videonun adresini kopyalayıp yapıştır')
     if (!studentIds.length) return setError('En az bir öğrenci seç')
     if (!dates.length) return setError('En az bir gün seç')
     setBusy(true)

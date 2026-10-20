@@ -17,6 +17,7 @@ const labels: Record<string, string> = {
   table_topics: 'Konu listesi',
   table_push_subscriptions: 'Bildirim tablosu',
   table_wrong_questions: 'Yanlış soru defteri',
+  table_video_progress: 'Video izleme kayıtları',
   curriculum: 'Müfredat yüklü',
 }
 
@@ -26,6 +27,7 @@ const fixes: Record<string, string> = {
   curriculum: 'Veritabanı şeması kurulmamış olabilir. Supabase migration kayıtlarına bak.',
   table_push_subscriptions: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bak.',
   table_wrong_questions: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bak.',
+  table_video_progress: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bak.',
 }
 
 async function fetchHealth(): Promise<Health> {

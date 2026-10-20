@@ -7,7 +7,10 @@ import type { Enums, Tables } from '@/lib/supabase'
 export type Task = Tables<'tasks'>
 export type TaskKind = Enums<'task_kind'>
 export type PlanViewer = 'student' | 'teacher' | 'parent'
-export type TaskValues = Pick<Task, 'title' | 'kind' | 'subject_id' | 'topic_id' | 'target_questions' | 'target_minutes' | 'note'>
+export type TaskValues = Pick<
+  Task,
+  'title' | 'kind' | 'subject_id' | 'topic_id' | 'target_questions' | 'target_minutes' | 'note' | 'video_id' | 'video_title'
+>
 
 export const weekdayShort = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 export const weekdayLong = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar']

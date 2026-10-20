@@ -52,14 +52,14 @@ const sections: Section[] = [
           <strong>Öğretmen başvurusu:</strong> Okul, branş ve başvuru notu.
         </li>
         <li>
-          <strong>Çalışma kayıtları:</strong> Çalışma süreleri, soru kayıtları, deneme sonuçları ve netler, konu durumları, görevler
-          ve hedefler.
+          <strong>Çalışma kayıtları:</strong> Çalışma süreleri, soru kayıtları, deneme sonuçları ve netler, konu durumları, görevler,
+          hedefler, yanlış soru defterine eklenen fotoğraflar ve notlar, görev olarak verilen videoların izlenme bilgisi.
         </li>
         <li>
           <strong>Notlar ve mesajlar:</strong> Öğretmenin aldığı notlar, görüşme kayıtları ve uygulama içi mesajlar.
         </li>
         <li>
-          <strong>Kullanım bilgileri:</strong> Son giriş zamanı, bildirimler ve hizmetin güvenliği için tutulan teknik kayıtlar (IP
+          <strong>Kullanım bilgileri:</strong> Son giriş zamanı, bildirimler, telefona bildirim almayı açtıysanız cihazınızın bildirim adresi ve hizmetin güvenliği için tutulan teknik kayıtlar (IP
           adresi ve tarayıcı bilgisi gibi).
         </li>
       </ul>
@@ -124,6 +124,12 @@ const sections: Section[] = [
           (veritabanı ve oturum açma) ve Vercel (web sitesi ve sunucu işlemleri) şirketleridir. Bu sağlayıcılar verileri yurt
           dışındaki sunucularda saklayabilir. Bu nedenle kayıt sırasında, KVKK'nın 9. maddesi kapsamında yurt dışına aktarım için
           açık rızanız alınır.
+        </p>
+        <p>
+          Öğretmeninizin görev olarak eklediği YouTube videoları, YouTube'un çerez kullanmayan oynatıcısıyla (youtube-nocookie.com)
+          uygulamanın içinde oynatılır. Video oynatıldığında IP adresiniz ve tarayıcı bilginiz YouTube'a (Google) iletilir. Videonun
+          ne kadarının izlendiği ve nerede kalındığı, öğretmenin takip edebilmesi için Yolumnet'in kendi veritabanında
+          saklanır ve YouTube ile paylaşılmaz.
         </p>
         <p>
           Verileriniz bunların dışında hiç kimseye satılmaz, kiralanmaz ve reklam amacıyla paylaşılmaz. Yetkili kamu kurum ve

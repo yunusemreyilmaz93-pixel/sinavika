@@ -21,6 +21,7 @@ const routes: Record<string, () => Promise<Record<string, Handler>>> = {
   cron: () => import('../api/cron.ts'),
   health: () => import('../api/health.ts'),
   push: () => import('../api/push.ts'),
+  video: () => import('../api/video.ts'),
 }
 
 createServer(async (req, res) => {

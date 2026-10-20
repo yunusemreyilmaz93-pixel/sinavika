@@ -3,6 +3,8 @@ import { Stepper } from '@/components/ui/stepper'
 import { cn } from '@/lib/cn'
 import type { Curriculum } from '@/lib/data'
 import { examLabel, type Subject } from '@/lib/exam'
+import { VideoField } from '@/features/video/video-field'
+import { parseYouTubeId, watchUrl } from '@/features/video/youtube'
 import { suggestTitle, taskKinds, type Task, type TaskKind, type TaskValues } from './lib'
 
 export type TaskDraft = {
@@ -14,6 +16,8 @@ export type TaskDraft = {
   targetQuestions: number
   targetMinutes: number
   note: string
+  videoUrl: string
+  videoTitle: string | null
 }
 
 export function draftFromTask(task: Task | null | undefined, dueOn: string): TaskDraft {
@@ -26,10 +30,13 @@ export function draftFromTask(task: Task | null | undefined, dueOn: string): Tas
     targetQuestions: task?.target_questions ?? 0,
     targetMinutes: task?.target_minutes ?? 0,
     note: task?.note ?? '',
+    videoUrl: task?.video_id ? watchUrl(task.video_id) : '',
+    videoTitle: task?.video_title ?? null,
   }
 }
 
 export function draftSuggestion(draft: TaskDraft, curriculum: Curriculum | undefined) {
+  if (draft.kind === 'video' && draft.videoTitle) return draft.videoTitle.slice(0, 140)
   return suggestTitle({
     kind: draft.kind,
     subject: curriculum?.subjectById.get(draft.subjectId),
@@ -49,7 +56,13 @@ export function draftValues(draft: TaskDraft, curriculum: Curriculum | undefined
     target_questions: draft.targetQuestions > 0 ? Math.min(draft.targetQuestions, 2000) : null,
     target_minutes: draft.targetMinutes > 0 ? Math.min(draft.targetMinutes, 600) : null,
     note: draft.note.trim() || null,
+    video_id: draft.kind === 'video' ? parseYouTubeId(draft.videoUrl) : null,
+    video_title: draft.kind === 'video' && parseYouTubeId(draft.videoUrl) ? draft.videoTitle : null,
   }
+}
+
+export function videoUrlInvalid(draft: TaskDraft) {
+  return draft.kind === 'video' && draft.videoUrl.trim() !== '' && !parseYouTubeId(draft.videoUrl)
 }
 
 export function TaskFields({
@@ -141,6 +154,15 @@ export function TaskFields({
           })}
         </div>
       </fieldset>
+
+      {draft.kind === 'video' && (
+        <VideoField
+          value={draft.videoUrl}
+          currentTitle={draft.videoTitle}
+          onChange={(videoUrl) => onChange({ videoUrl })}
+          onTitle={(videoTitle) => onChange({ videoTitle })}
+        />
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Ders">

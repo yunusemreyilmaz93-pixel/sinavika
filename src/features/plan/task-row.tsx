@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/components/ui/menu'
 import { cn } from '@/lib/cn'
 import { subjectColor, type Subject } from '@/lib/exam'
+import { VideoChip } from '@/features/video/video-player'
 import { isTeacherTask, kindLabel, targetsText, type PlanViewer, type Task, type TaskPermissions } from './lib'
 
 export function TaskCheck({
@@ -182,6 +183,7 @@ export function TaskRow({
           )}
         </div>
         {task.note && !compact && <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-muted">{task.note}</p>}
+        {task.video_id && <VideoChip task={task} tracking={viewer === 'student'} compact={compact} />}
       </motion.div>
       {menu && (
         <Menu modal={false}>

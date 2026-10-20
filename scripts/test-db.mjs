@@ -363,6 +363,24 @@ await test('denemede konu yanlışları dersin yanlış ve boş toplamını aşa
   assert.equal((await as(parent, 'select * from public.mock_exam_topic_misses where mock_exam_id = $1', [e.id])).length, 2)
 })
 
+await test('video izleme: ileri sarılan kısım sayılmaz, yüzde 90 izlenince görev tamamlanır', async () => {
+  const [t] = await as(teacherA, `insert into public.tasks (student_id, title, kind, due_on, video_id) values ($1, 'Basınç anlatımı', 'video', private.today(), 'dQw4w9WgXcQ') returning id`, [s1])
+  await rejects(as(teacherA, 'select public.save_video_progress($1, 10, 100, array[0], 1, true)', [t.id]), /yetkin yok/)
+  await rejects(as(s1, `update public.tasks set video_id = 'aaaaaaaaaaa' where id = $1`, [t.id]), /sadece tamamlandı/)
+  const [p1] = await as(s1, 'select watched_seconds, sessions, completed_at from public.save_video_progress($1, 30, 100, array[0,1,2], 1.5, true)', [t.id])
+  assert.deepEqual([p1.watched_seconds, p1.sessions, p1.completed_at], [30, 1, null])
+  const [p2] = await as(s1, 'select watched_seconds, buckets, max_rate from public.save_video_progress($1, 90, 100, array[2,8], 1, false)', [t.id])
+  assert.equal(p2.watched_seconds, 40)
+  assert.deepEqual(p2.buckets.slice(0, 3), [1, 1, 2])
+  assert.equal(Number(p2.max_rate), 1.5)
+  await as(s1, 'select public.save_video_progress($1, 100, 100, array[3,4,5,6,7,9], 1, false)', [t.id])
+  const [task] = await as(s1, 'select done_at is not null as done, video_seconds from public.tasks where id = $1', [t.id])
+  assert.deepEqual([task.done, task.video_seconds], [true, 100])
+  assert.equal((await as(parent, 'select 1 from public.video_progress where task_id = $1', [t.id])).length, 1)
+  assert.equal((await as(teacherB, 'select 1 from public.video_progress where task_id = $1', [t.id])).length, 0)
+  await rejects(as(s1, `insert into public.tasks (student_id, title, kind, due_on, video_id) values ($1, 'x', 'video', private.today(), 'kisa')`, [s1]), /check/)
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

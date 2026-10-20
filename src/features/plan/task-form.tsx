@@ -10,7 +10,7 @@ import { errorMessage } from '@/lib/supabase'
 import { useOpenSession } from './hooks'
 import type { Task } from './lib'
 import { usePlanStudent, useTaskActions } from './queries'
-import { draftFromTask, draftValues, TaskFields, type TaskDraft } from './task-fields'
+import { draftFromTask, draftValues, TaskFields, videoUrlInvalid, type TaskDraft } from './task-fields'
 
 export type TaskFormModalProps = {
   open: boolean
@@ -47,6 +47,7 @@ function TaskFormDialog({ open, onOpenChange, studentId, task, defaultDate, onSa
       setTitleError('Başlık yaz ya da bir ders seç')
       return
     }
+    if (videoUrlInvalid(draft)) return void toast.error('YouTube bağlantısı geçersiz. Videonun adresini kopyalayıp yapıştır')
     try {
       const saved = await save.mutateAsync({ id: task?.id, values: { ...values, due_on: draft.dueOn } })
       toast.success(editing ? 'Görev güncellendi' : 'Görev eklendi')

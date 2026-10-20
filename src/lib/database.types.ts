@@ -793,6 +793,9 @@ export type Database = {
           target_minutes: number | null;
           target_questions: number | null;
           title: string;
+          video_id: string | null;
+          video_seconds: number | null;
+          video_title: string | null;
           topic_id: number | null;
         };
         ComputedFields: never;
@@ -810,6 +813,9 @@ export type Database = {
           target_minutes?: number | null;
           target_questions?: number | null;
           title: string;
+          video_id?: string | null;
+          video_seconds?: number | null;
+          video_title?: string | null;
           topic_id?: number | null;
         };
         Update: {
@@ -826,6 +832,9 @@ export type Database = {
           target_minutes?: number | null;
           target_questions?: number | null;
           title?: string;
+          video_id?: string | null;
+          video_seconds?: number | null;
+          video_title?: string | null;
           topic_id?: number | null;
         };
         Relationships: [
@@ -922,6 +931,64 @@ export type Database = {
             columns: ["subject_id"];
             isOneToOne: false;
             referencedRelation: "subjects";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      video_progress: {
+        Row: {
+          buckets: number[];
+          completed_at: string | null;
+          duration_seconds: number;
+          first_seen_at: string;
+          max_rate: number;
+          position_seconds: number;
+          sessions: number;
+          student_id: string;
+          task_id: number;
+          updated_at: string;
+          watched_seconds: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          buckets?: number[];
+          completed_at?: string | null;
+          duration_seconds?: number;
+          first_seen_at?: string;
+          max_rate?: number;
+          position_seconds?: number;
+          sessions?: number;
+          student_id: string;
+          task_id: number;
+          updated_at?: string;
+          watched_seconds?: number;
+        };
+        Update: {
+          buckets?: number[];
+          completed_at?: string | null;
+          duration_seconds?: number;
+          first_seen_at?: string;
+          max_rate?: number;
+          position_seconds?: number;
+          sessions?: number;
+          student_id?: string;
+          task_id?: number;
+          updated_at?: string;
+          watched_seconds?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "video_progress_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "video_progress_task_id_fkey";
+            columns: ["task_id"];
+            isOneToOne: true;
+            referencedRelation: "tasks";
             referencedColumns: ["id"];
           },
         ];
@@ -1151,6 +1218,17 @@ export type Database = {
       review_wrong_question: {
         Args: { p_id: number; p_learned: boolean };
         Returns: Database["public"]["Tables"]["wrong_questions"]["Row"];
+      };
+      save_video_progress: {
+        Args: {
+          p_duration: number;
+          p_new_session: boolean;
+          p_position: number;
+          p_rate: number;
+          p_task: number;
+          p_watched: number[];
+        };
+        Returns: Database["public"]["Tables"]["video_progress"]["Row"];
       };
       set_teacher_status: {
         Args: { p_status: Database["public"]["Enums"]["account_status"]; p_teacher: string };
