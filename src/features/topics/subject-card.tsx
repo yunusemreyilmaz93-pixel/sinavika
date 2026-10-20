@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { ChevronDown, CircleCheck, RotateCcw } from 'lucide-react'
+import { BookOpen, ChevronDown, CircleCheck, RotateCcw } from 'lucide-react'
 import { useId } from 'react'
+import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { ProgressBar } from '@/components/ui/progress'
+import { lessonFor } from '@/features/lessons/registry'
 import { cn } from '@/lib/cn'
 import { subjectColor, type Subject, type Topic } from '@/lib/exam'
 import { formatPercent, nextStatus, statusMeta, type TopicState } from './status'
@@ -84,13 +86,22 @@ export function SubjectCard({ subject, topics, visible, statusOf, accuracy, open
           >
             <ul className="flex flex-wrap gap-2 border-t border-line px-4 py-3.5 sm:px-5 sm:py-4">
               {visible.map((topic) => (
-                <li key={topic.id} className="max-w-full">
+                <li key={topic.id} className="flex max-w-full items-stretch gap-1">
                   <TopicChip
                     name={topic.name}
                     status={statusOf(topic.id)}
                     accuracy={accuracy?.[topic.id]}
                     onCycle={onCycle ? () => onCycle(topic) : undefined}
                   />
+                  {lessonFor(topic) && (
+                    <Link
+                      to={`/app/konular/${topic.id}`}
+                      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-accent-soft px-3 text-sm font-semibold text-accent-soft-fg transition-colors hover:brightness-95"
+                    >
+                      <BookOpen className="size-4" aria-hidden />
+                      Konu anlatımı
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

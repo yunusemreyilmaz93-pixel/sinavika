@@ -34,6 +34,7 @@ export const router = createBrowserRouter([
             children: [
               { index: true, ...page(() => import('@/features/home/home-page')) },
               { path: 'bildirimler', ...page(() => import('@/features/notifications/notifications-page')) },
+              { path: 'konular/:topicId', ...page(() => import('@/features/lessons/lesson-page')) },
               { path: 'ayarlar', ...page(() => import('@/features/settings/settings-page')) },
               { path: 'mesajlar', ...page(() => import('@/features/messages/inbox-page')) },
               { path: 'mesajlar/:studentId/:channel', ...page(() => import('@/features/messages/thread-page')) },

@@ -1,13 +1,15 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { ArrowDown, ArrowLeft, ArrowUp, MoreVertical, Pencil, Plus, Trash2 } from 'lucide-react'
+import { ArrowDown, ArrowLeft, ArrowUp, BookOpen, MoreVertical, Pencil, Plus, Trash2 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useRef, useState, type FormEvent } from 'react'
+import { Link } from 'react-router'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Confirm } from '@/components/ui/confirm'
 import { Input } from '@/components/ui/field'
 import { Menu, MenuContent, MenuItem, MenuTrigger } from '@/components/ui/menu'
+import { lessonFor } from '@/features/lessons/registry'
 import { keys, type Curriculum } from '@/lib/data'
 import { examLabel, type Subject, type Topic } from '@/lib/exam'
 import { errorMessage, supabase, unwrap } from '@/lib/supabase'
@@ -144,6 +146,15 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
                   <div className="flex items-center gap-0.5 py-1 pr-1 pl-4 sm:pr-2 sm:pl-5">
                     <span className="tabular w-7 shrink-0 text-sm text-subtle">{index + 1}</span>
                     <span className="min-w-0 flex-1 py-2 text-[15px] leading-snug break-words">{topic.name}</span>
+                    {lessonFor(topic) && (
+                      <Button variant="soft" size="sm" asChild className="mr-1">
+                        <Link to={`/app/konular/${topic.id}`}>
+                          <BookOpen />
+                          <span className="hidden sm:inline">Konu anlatımı</span>
+                          <span className="sm:hidden">Anlatım</span>
+                        </Link>
+                      </Button>
+                    )}
                     <Button
                       variant="ghost"
                       size="icon"
