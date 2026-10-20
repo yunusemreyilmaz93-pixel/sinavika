@@ -262,6 +262,19 @@ await test('müfredat tam yüklendi', async () => {
   assert.deepEqual(empty, [])
 })
 
+await test('deneme tek işlemde kaydedilir, hatada hiçbir şey kalmaz', async () => {
+  const before = (await service('select count(*)::int as n from public.mock_exams'))[0].n
+  await rejects(
+    as(s1, `select public.create_mock_exam($1, 'TYT', 'Bozuk', current_date, '[{"subject_id":"tyt-fiz","correct":9,"wrong":0,"blank":0}]')`, [s1]),
+    /en fazla 7/,
+  )
+  assert.equal((await service('select count(*)::int as n from public.mock_exams'))[0].n, before)
+  const [r] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Tam', current_date, '[{"subject_id":"tyt-fiz","correct":5,"wrong":1,"blank":1}]') as id`, [s1])
+  await rejects(as(s1, `update public.mock_exams set kind = 'AYT' where id = $1`, [r.id]), /türü değiştirilemez/)
+  await rejects(as(s1, `select public.create_mock_exam($1, 'TYT', 'Gelecek', current_date + 5, '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]')`, [s1]), /not_future/)
+  await rejects(as(s2, `select public.create_mock_exam($1, 'TYT', 'Başkası', current_date, '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]')`, [s1]), /row-level security/)
+})
+
 await test('davet önizlemesi YKS alanını döner', async () => {
   const [row] = await as(teacherB, `select (public.create_student_invite('Alanlı', 'yks', 11::smallint, 'ea')).code`)
   const [p] = await as(null, 'select field from public.preview_invite($1)', [row.code])

@@ -913,6 +913,16 @@ export type Database = {
           student_count: number;
         }[];
       };
+      create_mock_exam: {
+        Args: {
+          p_kind: Database["public"]["Enums"]["exam_kind"];
+          p_scores: Json;
+          p_student_id: string;
+          p_taken_on: string;
+          p_title: string;
+        };
+        Returns: number;
+      };
       create_parent_invite: {
         Args: { p_student_id: string };
         Returns: {
