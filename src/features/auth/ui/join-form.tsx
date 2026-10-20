@@ -28,9 +28,10 @@ const schema = z.object({
     .max(72, 'Şifren en fazla 72 karakter olabilir'),
   passwordAgain: z.string().min(1, 'Şifreni tekrar yaz'),
   consent: z.literal(true, 'Devam etmek için onaylaman gerekiyor'),
+  transfer: z.literal(true, 'Hesap açmak için bu onay gerekiyor'),
 })
 
-type Values = { fullName: string; username: string; password: string; passwordAgain: string; consent: boolean }
+type Values = { fullName: string; username: string; password: string; passwordAgain: string; consent: boolean; transfer: boolean }
 type Key = keyof Values
 
 const turkish: Record<string, string> = { ç: 'c', ğ: 'g', ı: 'i', ö: 'o', ş: 's', ü: 'u', â: 'a', î: 'i', û: 'u' }
@@ -63,6 +64,7 @@ export function JoinForm({ code, invite, flow }: JoinFormProps) {
     password: '',
     passwordAgain: '',
     consent: false,
+    transfer: false,
   })
   const [usernameEdited, setUsernameEdited] = useState(false)
   const [attempted, setAttempted] = useState(false)
@@ -242,6 +244,10 @@ export function JoinForm({ code, invite, flow }: JoinFormProps) {
             <KvkkLink>KVKK aydınlatma metnini</KvkkLink> okudum ve onaylıyorum.
           </>
         )}
+      </ConsentCheckbox>
+
+      <ConsentCheckbox checked={values.transfer} onCheckedChange={(transfer) => update({ transfer })} error={errors.transfer}>
+        Verilerimin hizmetin sunulması için yurt dışındaki sunucularda saklanmasına açık rıza veriyorum.
       </ConsentCheckbox>
 
       {shownError && <FormAlert>{shownError}</FormAlert>}

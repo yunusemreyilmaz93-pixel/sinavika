@@ -37,12 +37,13 @@ const schema = z.object({
   branch: z.string().max(60, 'En fazla 60 karakter olabilir'),
   note: z.string().max(NOTE_MAX, `En fazla ${NOTE_MAX} karakter olabilir`),
   consent: z.literal(true, 'Devam etmek için onaylaman gerekiyor'),
+  transfer: z.literal(true, 'Hesap açmak için bu onay gerekiyor'),
 })
 
-type Values = { fullName: string; email: string; password: string; school: string; branch: string; note: string; consent: boolean }
+type Values = { fullName: string; email: string; password: string; school: string; branch: string; note: string; consent: boolean; transfer: boolean }
 type Key = keyof Values
 
-const empty: Values = { fullName: '', email: '', password: '', school: '', branch: '', note: '', consent: false }
+const empty: Values = { fullName: '', email: '', password: '', school: '', branch: '', note: '', consent: false, transfer: false }
 
 const points: ValuePoint[] = [
   { icon: Users, title: 'En fazla 10 öğrenci', text: 'Her öğrenciyle yakından ilgilenebilmen için sınır 10.' },
@@ -337,6 +338,10 @@ function ApplyForm() {
 
         <ConsentCheckbox checked={values.consent} onCheckedChange={(checked) => set('consent', checked)} error={errors.consent}>
           <KvkkLink>KVKK aydınlatma metnini</KvkkLink> okudum ve onaylıyorum.
+        </ConsentCheckbox>
+
+        <ConsentCheckbox checked={values.transfer} onCheckedChange={(checked) => set('transfer', checked)} error={errors.transfer}>
+          Verilerimin hizmetin sunulması için yurt dışındaki sunucularda saklanmasına açık rıza veriyorum.
         </ConsentCheckbox>
 
         {shownError && <FormAlert>{shownError}</FormAlert>}
