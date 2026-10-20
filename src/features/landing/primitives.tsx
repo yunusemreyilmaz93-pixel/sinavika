@@ -50,8 +50,7 @@ export function Reveal({ children, className, delay = 0 }: { children: ReactNode
 
 export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <p className={cn('inline-flex items-center gap-2.5 text-sm font-bold text-primary', className)}>
-      <span aria-hidden className="h-0.5 w-6 rounded-full bg-primary/50" />
+    <p className={cn('text-sm font-bold text-primary', className)}>
       {children}
     </p>
   )

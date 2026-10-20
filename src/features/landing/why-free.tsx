@@ -10,12 +10,12 @@ export function WhyFree() {
         <Reveal>
           <div className="grid-paper grid gap-8 rounded-3xl border border-line bg-surface p-6 shadow-card sm:p-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:p-12">
             <div>
-              <Eyebrow>Açık konuşalım</Eyebrow>
+              <Eyebrow>Ücret ve sınırlar</Eyebrow>
               <h2 className="mt-3 text-[1.85rem] leading-[1.12] font-extrabold sm:text-[2.5rem]">
                 Neden ücretsiz, neden <StudentCapacity /> öğrenci?
               </h2>
               <p className="mt-4 text-[17px] leading-relaxed text-muted">
-                Kısıtların nereden geldiğini baştan söylemek istiyoruz.
+                Bu soruların cevabını en baştan vermek istiyoruz.
               </p>
             </div>
             <ul className="space-y-6">
@@ -30,11 +30,11 @@ export function WhyFree() {
                   </>
                 }
               >
-                Sunucu kapasitemiz sınırlı. Onu öğretmenler arasında adil paylaşmak için bir sınır koyduk. Bu sayı, her
-                öğrenciyi haftalık olarak yakından takip etmeye de uygun.
+                Sunucu kapasitemiz sınırlı ve bunu öğretmenler arasında adil paylaştırmak istiyoruz. Bu sayı, her
+                öğrenciyle haftalık olarak yakından ilgilenmeye de imkân veriyor.
               </Point>
               <Point icon={ShieldCheck} title="Öğretmen hesapları onaydan sonra açılır">
-                Başvuruları tek tek inceliyoruz. Öğrencilerle çalışacak bir hesabı açmadan önce kimin açtığını bilmek istiyoruz.
+                Başvuruları tek tek inceliyoruz. Öğrencilerle çalışacak bir hesabı açmadan önce başvuranın kim olduğunu bilmek istiyoruz.
               </Point>
             </ul>
           </div>

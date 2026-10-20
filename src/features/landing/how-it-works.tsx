@@ -12,8 +12,8 @@ export function HowItWorks() {
       <div className={container}>
         <SectionHeading
           eyebrow="Nasıl çalışır"
-          title="Üç adımda hazır"
-          lead="Öğrenci ve veliler kendi başına kayıt olmaz. Herkes öğretmeninin verdiği kodla katılır, böylece kim kimin öğrencisi baştan bellidir."
+          title="Üç adımda başlarsınız"
+          lead="Öğrenci ve veliler kendi başlarına kayıt olmaz, öğretmenin verdiği kodla katılır. Böylece hangi öğrencinin hangi öğretmene bağlı olduğu baştan bellidir."
         />
         <ol className="mt-12 grid gap-4 lg:grid-cols-3 lg:gap-6">
           <Step n={1} delay={0} title="Öğretmen başvurur" text="Kısa bir form doldurursun. Başvurun onaylanınca hesabın açılır.">
@@ -47,8 +47,8 @@ export function HowItWorks() {
           <Step
             n={3}
             delay={0.16}
-            title="Öğrenci katılır, velisini bağlar"
-            text="Öğrenci kodla kullanıcı adını ve şifresini belirler. Sonra velisi için ayrı bir kod oluşturur."
+            title="Öğrenci katılır, velisini ekler"
+            text="Öğrenci kodu girip kendi kullanıcı adını ve şifresini belirler. Ardından velisi için ayrı bir kod oluşturur."
           >
             <div className="space-y-2">
               <StatusRow icon={<UserRoundCheck className="size-4 text-primary" />} text="elif.kaya katıldı" />

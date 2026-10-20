@@ -29,8 +29,8 @@ export function ExamsSection() {
       <div className={container}>
         <SectionHeading
           eyebrow="Sınavlar"
-          title="Her sınav kendi kuralıyla"
-          lead="Dersler, soru sayıları ve net hesabı sınavın gerçek düzenine göre. Deneme girerken soru sayısını aşamazsın, netin kendiliğinden hesaplanır."
+          title="Sınavın gerçek düzeniyle"
+          lead="Dersler, soru sayıları ve net hesabı LGS ve YKS'deki gibidir. Deneme sonucunu girerken soru sayısını aşamazsın, netin kendiliğinden hesaplanır."
         />
 
         <div className="mt-12 grid gap-4 md:grid-cols-2 md:gap-6">

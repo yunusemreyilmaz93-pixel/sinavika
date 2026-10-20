@@ -1,11 +1,41 @@
-import { ArrowRight, ChevronRight, Menu as MenuIcon, X } from 'lucide-react'
+import { ArrowRight, ChevronRight, Menu as MenuIcon, Moon, Sun, X } from 'lucide-react'
 import { Dialog } from 'radix-ui'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/ui/logo'
 import { cn } from '@/lib/cn'
+import { useTheme } from '@/lib/theme'
 import { container, isPlainClick, sectionLinks, useSignedIn, type SectionLink } from './primitives'
+
+const darkQuery = '(prefers-color-scheme: dark)'
+
+function subscribeSystemTheme(onChange: () => void) {
+  const query = window.matchMedia(darkQuery)
+  query.addEventListener('change', onChange)
+  return () => query.removeEventListener('change', onChange)
+}
+
+function ThemeToggle({ className }: { className?: string }) {
+  const [choice, setChoice] = useTheme()
+  const systemDark = useSyncExternalStore(
+    subscribeSystemTheme,
+    () => window.matchMedia(darkQuery).matches,
+    () => false,
+  )
+  const dark = choice === 'system' ? systemDark : choice === 'dark'
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className={className}
+      aria-label={dark ? 'Açık temaya geç' : 'Koyu temaya geç'}
+      onClick={() => setChoice(dark ? 'light' : 'dark')}
+    >
+      {dark ? <Sun className="!size-5" /> : <Moon className="!size-5" />}
+    </Button>
+  )
+}
 
 export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => void }) {
   const signedIn = useSignedIn()
@@ -58,9 +88,10 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
           </ul>
         </nav>
 
-        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+          <ThemeToggle />
           {signedIn ? (
-            <Button asChild>
+            <Button asChild className="px-3 sm:px-4">
               <Link to="/app">
                 Panele git
                 <ArrowRight className="hidden min-[400px]:block" />
@@ -99,8 +130,9 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
                 <Dialog.Title className="sr-only">Menü</Dialog.Title>
                 <div className={cn(container, 'flex h-16 items-center')}>
                   <Logo />
+                  <ThemeToggle className="ml-auto" />
                   <Dialog.Close asChild>
-                    <Button variant="ghost" size="icon" className="-mr-2 ml-auto" aria-label="Menüyü kapat">
+                    <Button variant="ghost" size="icon" className="-mr-2" aria-label="Menüyü kapat">
                       <X className="!size-6" />
                     </Button>
                   </Dialog.Close>

@@ -20,7 +20,7 @@ const faqs: { id: string; q: ReactNode; a: ReactNode }[] = [
     ),
     a: (
       <>
-        Sunucu kapasitemiz sınırlı ve onu öğretmenler arasında adil paylaşmak istiyoruz. Bu yüzden her öğretmen aynı anda en
+        Sunucu kapasitemiz sınırlı ve bunu öğretmenler arasında adil paylaştırmak istiyoruz. Bu yüzden her öğretmen aynı anda en
         fazla <StudentCapacity /> aktif öğrenciyle çalışır. Arşivlenen öğrenciler bu sayıya girmez, henüz kullanılmamış davet
         kodları girer.
       </>
@@ -53,7 +53,7 @@ const faqs: { id: string; q: ReactNode; a: ReactNode }[] = [
   {
     id: 'sifre',
     q: 'Şifremi unutursam ne olur?',
-    a: 'Öğretmenine haber vermen yeterli. Öğretmen, öğrencisinin ve bağlı velilerin şifresini kendi panelinden sıfırlar. Yeni şifrenle hemen giriş yapabilirsin.',
+    a: 'Öğretmenine haber vermen yeterli. Öğretmenin, senin ve velinin şifresini kendi panelinden sıfırlayabilir. Yeni şifrenle hemen giriş yapabilirsin.',
   },
   {
     id: 'uygulama',

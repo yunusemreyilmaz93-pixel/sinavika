@@ -27,8 +27,8 @@ type Feature = { icon: LucideIcon; title: ReactNode; text: string }
 const roles: Record<Role, { label: string; title: string; lead: string; features: Feature[]; preview: () => ReactNode }> = {
   teacher: {
     label: 'Öğretmen',
-    title: 'Öğretmen planı kurar',
-    lead: 'Öğrencilerinin haftasını planla, kimin nerede zorlandığını erken gör.',
+    title: 'Öğretmen için',
+    lead: 'Öğrencilerinin haftalık programını hazırlarsın, kimin nerede zorlandığını erkenden görürsün.',
     preview: () => <TeacherPreview />,
     features: [
       {
@@ -38,22 +38,22 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
             <StudentCapacity /> öğrenci tek ekranda
           </>
         ),
-        text: 'Bu haftaki çalışma süresi, çözülen soru, görevler ve son deneme neti yan yana.',
+        text: 'Her öğrencinin bu haftaki çalışma süresini, çözdüğü soruyu, görevlerini ve son deneme netini bir arada görürsün.',
       },
       {
         icon: TriangleAlert,
-        title: 'Risk sinyalleri',
-        text: 'Birkaç gündür kayıt girmeyen, görevleri geciken ya da neti düşen öğrenci öne çıkar.',
+        title: 'Geride kalan öne çıkar',
+        text: 'Birkaç gündür kayıt girmeyen, görevini aksatan ya da neti düşen öğrenciyi hemen fark edersin.',
       },
       {
         icon: CalendarRange,
         title: 'Sürükle bırak haftalık program',
-        text: 'Görevleri günler arasında taşı. Sık kullandığın görevleri şablona kaydet, tek seferde haftaya ekle.',
+        text: 'Görevleri sürükleyip başka bir güne taşırsın. Sık verdiğin görevleri şablon olarak kaydedip haftaya tek seferde eklersin.',
       },
       {
         icon: ChartLine,
         title: 'Deneme analizi',
-        text: 'Ders ders net değişimini gör, hangi derste geri kalındığını erkenden fark et.',
+        text: 'Netlerin ders ders nasıl değiştiğini görür, hangi derste geride kalındığını erkenden anlarsın.',
       },
       {
         icon: NotebookPen,
@@ -64,67 +64,67 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
   },
   student: {
     label: 'Öğrenci',
-    title: 'Öğrenci çalışır ve kaydeder',
-    lead: 'Ne çalışacağını düşünmekle vakit kaybetme. Planın hazır, sen kaydını gir.',
+    title: 'Öğrenci için',
+    lead: 'Ne çalışacağını düşünmekle vakit kaybetmezsin. Programın hazırdır, sen çalıştığını kaydedersin.',
     preview: () => <StudentPreview />,
     features: [
       {
         icon: ListChecks,
-        title: 'Bugün ne çalışacağını bil',
-        text: 'Öğretmeninin verdiği görevler gün gün önünde. Bitirdiğini tikle.',
+        title: 'Günün görevleri hazır',
+        text: 'Öğretmeninin verdiği görevleri gün gün görürsün. Bitirdiğini işaretlersin.',
       },
       {
         icon: Timer,
         title: 'Odak sayacı',
-        text: 'Sayacı başlat, çalıştığın süre ders ve konusuyla birlikte kaydedilsin.',
+        text: 'Sayacı başlatırsın, çalıştığın süre dersi ve konusuyla birlikte kaydedilir.',
       },
       {
         icon: PencilLine,
-        title: '3 dokunuşla soru kaydı',
-        text: 'Dersi seç, doğru ve yanlış sayını gir. Netin anında hesaplanır.',
+        title: 'Üç dokunuşta soru kaydı',
+        text: 'Dersi seçip doğru ve yanlış sayını girersin. Netin hemen hesaplanır.',
       },
       {
         icon: TrendingUp,
         title: 'Deneme netleri',
-        text: 'Her denemeyi ders ders gir, netinin nasıl değiştiğini grafikte gör.',
+        text: 'Her denemeyi ders ders girersin, netlerinin nasıl değiştiğini grafikte görürsün.',
       },
       {
         icon: MapIcon,
         title: 'Konu haritası',
-        text: 'Hangi konuyu bitirdin, hangisi tekrar istiyor, tek bakışta gör.',
+        text: 'Hangi konuyu bitirdiğini, hangisini tekrar etmen gerektiğini bir bakışta görürsün.',
       },
     ],
   },
   parent: {
     label: 'Veli',
-    title: 'Veli takip eder',
-    lead: 'Çocuğunun nasıl çalıştığını sormadan gör. Gerekince öğretmenle doğrudan konuş.',
+    title: 'Veli için',
+    lead: 'Çocuğunun nasıl çalıştığını ona sormadan görürsün. Gerektiğinde öğretmenle doğrudan yazışırsın.',
     preview: () => <ParentPreview />,
     features: [
       {
         icon: CalendarCheck,
         title: 'Haftalık çalışma özeti',
-        text: 'Bu hafta kaç saat çalışıldığını ve kaç soru çözüldüğünü gün gün gör.',
+        text: 'Çocuğunun bu hafta kaç saat çalıştığını ve kaç soru çözdüğünü gün gün görürsün.',
       },
       {
         icon: ChartLine,
-        title: 'Deneme trendi',
-        text: 'Deneme netlerinin seyrini ve hangi derste ilerleme olduğunu takip et.',
+        title: 'Deneme sonuçları',
+        text: 'Deneme netlerinin nasıl gittiğini ve hangi derste ilerlediğini takip edersin.',
       },
       {
         icon: MessagesSquare,
         title: 'Öğretmenle mesajlaşma',
-        text: 'Velilere ayrılmış bir kanaldan öğretmene doğrudan yaz.',
+        text: 'Öğretmenle velilere ayrılmış bir mesaj bölümünden doğrudan yazışırsın.',
       },
       {
         icon: Users,
         title: 'Birden fazla çocuk',
-        text: 'İki çocuğun da hazırlanıyorsa ikisini aynı hesaptan takip et.',
+        text: 'İki çocuğun birden sınava hazırlanıyorsa ikisini de aynı hesaptan takip edersin.',
       },
       {
         icon: Eye,
-        title: 'Sadece görüntüleme',
-        text: 'Veli hesabı kayıtları değiştiremez. Plan öğretmende, kayıtlar öğrencide kalır.',
+        title: 'Yalnızca izleme',
+        text: 'Veli hesabıyla kayıtlar değiştirilemez. Programı öğretmen hazırlar, kayıtları öğrenci girer.',
       },
     ],
   },
@@ -143,8 +143,8 @@ export function RolesSection({ role, onRoleChange }: { role: Role; onRoleChange:
         <SectionHeading
           center
           eyebrow="Roller"
-          title="Herkes ihtiyacı kadarını görür"
-          lead="Aynı plan, üç ayrı ekran. Bir öğrencinin kayıtlarını sadece öğretmeni ve bağlı velisi görebilir."
+          title="Herkes kendi ekranını kullanır"
+          lead="Öğretmen, öğrenci ve veli aynı programı kendi ekranından görür. Bir öğrencinin kayıtlarını sadece kendisi, öğretmeni ve velisi görebilir."
         />
 
         <Reveal className="mx-auto mt-10 max-w-md">

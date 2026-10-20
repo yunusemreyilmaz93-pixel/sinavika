@@ -18,11 +18,7 @@ export function Hero() {
       )}
     >
       <div className="max-w-xl lg:pt-14">
-        <p className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-[13px] font-semibold text-muted shadow-card">
-          <span aria-hidden className="size-1.5 rounded-full bg-primary" />
-          LGS ve YKS için ücretsiz koçluk
-        </p>
-        <h1 className="mt-5 text-[2rem] leading-[1.06] font-extrabold min-[400px]:text-[2.35rem] sm:text-[3.25rem] lg:text-[3.5rem] xl:text-[3.85rem]">
+        <h1 className="text-[2rem] leading-[1.06] font-extrabold min-[400px]:text-[2.35rem] sm:text-[3.25rem] lg:text-[3.5rem] xl:text-[3.85rem]">
           <span className="block">Öğretmen planlar,</span>
           <span className="block">
             öğrenci{' '}
@@ -39,8 +35,8 @@ export function Hero() {
           <span className="block">veli takip eder.</span>
         </h1>
         <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-muted sm:text-lg">
-          LGS ve YKS'ye hazırlanan öğrenciler için ücretsiz koçluk uygulaması. Haftalık program, soru takibi ve deneme analizi
-          tek yerde.
+          LGS ve YKS'ye hazırlanan öğrenciler için ücretsiz bir koçluk uygulaması. Haftalık program, soru takibi ve deneme
+          analizi bir arada.
         </p>
         <div className="mt-8 flex flex-col gap-2.5 sm:flex-row">
           {signedIn ? (
