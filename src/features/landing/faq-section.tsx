@@ -48,17 +48,17 @@ const faqs: { id: string; q: ReactNode; a: ReactNode }[] = [
   {
     id: 'puan',
     q: 'Neden puan tahmini yok?',
-    a: "LGS ve YKS puanı, o yıl sınava girenlerin sonuçlarına göre hesaplanır. Resmi hesaplama sınavdan sonra belli olur. Tahmini bir puan yanıltabilir, bu yüzden doğru ve yanlışlarından hesaplanan neti gösteriyoruz.",
+    a: "LGS ve YKS puanı, o yıl sınava girenlerin sonuçlarına göre hesaplanır. Resmi hesaplama sınavdan sonra belli olur. Tahmini bir puan yanıltabilir, bu yüzden doğru ve yanlış sayısından hesaplanan neti gösteriyoruz.",
   },
   {
     id: 'sifre',
     q: 'Şifremi unutursam ne olur?',
-    a: 'Öğretmenine haber vermen yeterli. Öğretmenin, senin ve velinin şifresini kendi panelinden sıfırlayabilir. Yeni şifrenle hemen giriş yapabilirsin.',
+    a: 'Öğrenci ve veliler öğretmenlerine haber vermeli. Öğretmen, öğrencinin ve velinin şifresini kendi panelinden sıfırlar, yeni şifreyle hemen giriş yapılabilir.',
   },
   {
     id: 'uygulama',
     q: 'Telefona uygulama gibi eklenebilir mi?',
-    a: "Evet. Yolumnet'i telefonunun tarayıcısında aç, paylaş ya da menü düğmesinden Ana Ekrana Ekle'yi seç. Uygulama mağazasından bir şey indirmen gerekmez.",
+    a: "Evet. Yolumnet'i telefonunuzun tarayıcısında açın, paylaş ya da menü düğmesinden Ana Ekrana Ekle'yi seçin. Uygulama mağazasından bir şey indirmeniz gerekmez.",
   },
 ]
 

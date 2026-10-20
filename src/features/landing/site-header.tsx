@@ -93,7 +93,7 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
           {signedIn ? (
             <Button asChild className="px-3 sm:px-4">
               <Link to="/app">
-                Panele git
+                Panele gidin
                 <ArrowRight className="hidden min-[400px]:block" />
               </Link>
             </Button>
@@ -103,7 +103,7 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
                 <Link to="/giris">Giriş yap</Link>
               </Button>
               <Button asChild className="hidden sm:inline-flex">
-                <Link to="/ogretmen-basvurusu">Öğretmen olarak başla</Link>
+                <Link to="/ogretmen-basvurusu">Öğretmen olarak başlayın</Link>
               </Button>
             </>
           )}
@@ -162,14 +162,14 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
                   {signedIn ? (
                     <Button asChild size="lg">
                       <Link to="/app">
-                        Panele git
+                        Panele gidin
                         <ArrowRight />
                       </Link>
                     </Button>
                   ) : (
                     <>
                       <Button asChild size="lg">
-                        <Link to="/ogretmen-basvurusu">Öğretmen olarak başla</Link>
+                        <Link to="/ogretmen-basvurusu">Öğretmen olarak başlayın</Link>
                       </Button>
                       <div className="grid grid-cols-2 gap-2">
                         <Button asChild size="lg" variant="secondary" className="px-3">

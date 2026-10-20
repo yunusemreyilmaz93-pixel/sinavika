@@ -30,7 +30,7 @@ export function ExamsSection() {
         <SectionHeading
           eyebrow="Sınavlar"
           title="Sınavın gerçek düzeniyle"
-          lead="Dersler, soru sayıları ve net hesabı LGS ve YKS'deki gibidir. Deneme sonucunu girerken soru sayısını aşamazsın, netin kendiliğinden hesaplanır."
+          lead="Dersler, soru sayıları ve net hesabı LGS ve YKS'deki gibidir. Deneme sonucu girilirken soru sayısı aşılamaz, net kendiliğinden hesaplanır."
         />
 
         <div className="mt-12 grid gap-4 md:grid-cols-2 md:gap-6">

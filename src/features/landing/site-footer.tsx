@@ -14,24 +14,24 @@ export function ClosingCta() {
         <Reveal>
           <div className="grid-paper relative overflow-hidden rounded-3xl bg-primary px-6 py-12 text-center text-primary-fg [--grid-line:color-mix(in_srgb,var(--primary-fg)_9%,transparent)] sm:px-12 sm:py-16">
             <h2 className="mx-auto max-w-2xl text-[1.85rem] leading-[1.12] font-extrabold sm:text-[2.5rem]">
-              Programı sen hazırla, takibi birlikte yapın.
+              Programı siz hazırlayın, takibi birlikte yapalım.
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-[17px] leading-relaxed opacity-85">
-              Başvurun onaylandıktan sonra en fazla <StudentCapacity /> öğrencin için davet kodu oluşturabilirsin. Öğrenci ve
+              Başvurunuz onaylandıktan sonra en fazla <StudentCapacity /> öğrenciniz için davet kodu oluşturabilirsiniz. Öğrenci ve
               veliler de hiçbir ücret ödemez.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-2.5 sm:flex-row">
               {signedIn ? (
                 <Button asChild size="lg" variant="secondary" className="border-transparent">
                   <Link to="/app">
-                    Panele git
+                    Panele gidin
                     <ArrowRight />
                   </Link>
                 </Button>
               ) : (
                 <Button asChild size="lg" variant="secondary" className="border-transparent">
                   <Link to="/ogretmen-basvurusu">
-                    Öğretmen olarak başla
+                    Öğretmen olarak başlayın
                     <ArrowRight />
                   </Link>
                 </Button>

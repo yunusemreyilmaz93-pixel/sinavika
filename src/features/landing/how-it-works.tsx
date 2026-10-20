@@ -16,17 +16,17 @@ export function HowItWorks() {
           lead="Öğrenci ve veliler kendi başlarına kayıt olmaz, öğretmenin verdiği kodla katılır. Böylece hangi öğrencinin hangi öğretmene bağlı olduğu baştan bellidir."
         />
         <ol className="mt-12 grid gap-4 lg:grid-cols-3 lg:gap-6">
-          <Step n={1} delay={0} title="Öğretmen başvurur" text="Kısa bir form doldurursun. Başvurun onaylanınca hesabın açılır.">
+          <Step n={1} delay={0} title="Öğretmen başvurur" text="Kısa bir form doldurursunuz. Başvurunuz onaylanınca hesabınız açılır.">
             <div className="space-y-2">
               <StatusRow icon={<Clock3 className="size-4 text-warning" />} text="Başvuru inceleniyor" muted />
-              <StatusRow icon={<CircleCheck className="size-4 text-primary" />} text="Hesabın açıldı" />
+              <StatusRow icon={<CircleCheck className="size-4 text-primary" />} text="Hesabınız açıldı" />
             </div>
           </Step>
           <Step
             n={2}
             delay={0.08}
             title="Davet kodu verir"
-            text="Her öğrencin için 8 karakterlik bir kod oluşturursun. Kod 14 gün geçerlidir."
+            text="Her öğrenciniz için 8 karakterlik bir kod oluşturursunuz. Kod 14 gün geçerlidir."
           >
             <div className="flex justify-center gap-1" aria-label={`Örnek davet kodu ${sampleCode}`} role="img">
               {sampleCode.split('').map((ch, i) => (

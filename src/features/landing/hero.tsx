@@ -42,14 +42,14 @@ export function Hero() {
           {signedIn ? (
             <Button asChild size="lg">
               <Link to="/app">
-                Panele git
+                Panele gidin
                 <ArrowRight />
               </Link>
             </Button>
           ) : (
             <Button asChild size="lg">
               <Link to="/ogretmen-basvurusu">
-                Öğretmen olarak başla
+                Öğretmen olarak başlayın
                 <ArrowRight />
               </Link>
             </Button>

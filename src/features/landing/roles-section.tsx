@@ -28,7 +28,7 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
   teacher: {
     label: 'Öğretmen',
     title: 'Öğretmen için',
-    lead: 'Öğrencilerinin haftalık programını hazırlarsın, kimin nerede zorlandığını erkenden görürsün.',
+    lead: 'Öğrencilerinizin haftalık programını hazırlarsınız, kimin nerede zorlandığını erkenden görürsünüz.',
     preview: () => <TeacherPreview />,
     features: [
       {
@@ -38,88 +38,88 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
             <StudentCapacity /> öğrenci tek ekranda
           </>
         ),
-        text: 'Her öğrencinin bu haftaki çalışma süresini, çözdüğü soruyu, görevlerini ve son deneme netini bir arada görürsün.',
+        text: 'Her öğrencinin bu haftaki çalışma süresini, çözdüğü soruyu, görevlerini ve son deneme netini bir arada görürsünüz.',
       },
       {
         icon: TriangleAlert,
         title: 'Geride kalan öne çıkar',
-        text: 'Birkaç gündür kayıt girmeyen, görevini aksatan ya da neti düşen öğrenciyi hemen fark edersin.',
+        text: 'Birkaç gündür kayıt girmeyen, görevini aksatan ya da neti düşen öğrenciyi hemen fark edersiniz.',
       },
       {
         icon: CalendarRange,
         title: 'Sürükle bırak haftalık program',
-        text: 'Görevleri sürükleyip başka bir güne taşırsın. Sık verdiğin görevleri şablon olarak kaydedip haftaya tek seferde eklersin.',
+        text: 'Görevleri sürükleyip başka bir güne taşırsınız. Sık verdiğiniz görevleri şablon olarak kaydedip haftaya tek seferde eklersiniz.',
       },
       {
         icon: ChartLine,
         title: 'Deneme analizi',
-        text: 'Netlerin ders ders nasıl değiştiğini görür, hangi derste geride kalındığını erkenden anlarsın.',
+        text: 'Netlerin ders ders nasıl değiştiğini görür, hangi derste geride kalındığını erkenden anlarsınız.',
       },
       {
         icon: NotebookPen,
         title: 'Notlar ve görüşme kayıtları',
-        text: 'Özel notlarını sadece sen görürsün. İstediğin notu öğrenciyle ya da veliyle paylaşırsın.',
+        text: 'Özel notlarınızı yalnızca siz görürsünüz. İstediğiniz notu öğrenciyle ya da veliyle paylaşırsınız.',
       },
     ],
   },
   student: {
     label: 'Öğrenci',
     title: 'Öğrenci için',
-    lead: 'Ne çalışacağını düşünmekle vakit kaybetmezsin. Programın hazırdır, sen çalıştığını kaydedersin.',
+    lead: 'Öğrenci ne çalışacağını düşünmekle vakit kaybetmez. Programı hazırdır, o da çalıştığını kaydeder.',
     preview: () => <StudentPreview />,
     features: [
       {
         icon: ListChecks,
         title: 'Günün görevleri hazır',
-        text: 'Öğretmeninin verdiği görevleri gün gün görürsün. Bitirdiğini işaretlersin.',
+        text: 'Öğretmenin verdiği görevleri gün gün görür, bitirdiğini işaretler.',
       },
       {
         icon: Timer,
         title: 'Odak sayacı',
-        text: 'Sayacı başlatırsın, çalıştığın süre dersi ve konusuyla birlikte kaydedilir.',
+        text: 'Sayacı başlatır, çalıştığı süre dersi ve konusuyla birlikte kaydedilir.',
       },
       {
         icon: PencilLine,
         title: 'Üç dokunuşta soru kaydı',
-        text: 'Dersi seçip doğru ve yanlış sayını girersin. Netin hemen hesaplanır.',
+        text: 'Dersi seçip doğru ve yanlış sayısını girer. Neti hemen hesaplanır.',
       },
       {
         icon: TrendingUp,
         title: 'Deneme netleri',
-        text: 'Her denemeyi ders ders girersin, netlerinin nasıl değiştiğini grafikte görürsün.',
+        text: 'Her denemeyi ders ders girer, netlerinin nasıl değiştiğini grafikte görür.',
       },
       {
         icon: MapIcon,
         title: 'Konu haritası',
-        text: 'Hangi konuyu bitirdiğini, hangisini tekrar etmen gerektiğini bir bakışta görürsün.',
+        text: 'Hangi konuyu bitirdiğini, hangisini tekrar etmesi gerektiğini bir bakışta görür.',
       },
     ],
   },
   parent: {
     label: 'Veli',
     title: 'Veli için',
-    lead: 'Çocuğunun nasıl çalıştığını ona sormadan görürsün. Gerektiğinde öğretmenle doğrudan yazışırsın.',
+    lead: 'Çocuğunuzun nasıl çalıştığını ona sormadan görürsünüz. Gerektiğinde öğretmenle doğrudan yazışırsınız.',
     preview: () => <ParentPreview />,
     features: [
       {
         icon: CalendarCheck,
         title: 'Haftalık çalışma özeti',
-        text: 'Çocuğunun bu hafta kaç saat çalıştığını ve kaç soru çözdüğünü gün gün görürsün.',
+        text: 'Çocuğunuzun bu hafta kaç saat çalıştığını ve kaç soru çözdüğünü gün gün görürsünüz.',
       },
       {
         icon: ChartLine,
         title: 'Deneme sonuçları',
-        text: 'Deneme netlerinin nasıl gittiğini ve hangi derste ilerlediğini takip edersin.',
+        text: 'Deneme netlerinin nasıl gittiğini ve hangi derste ilerlediğini takip edersiniz.',
       },
       {
         icon: MessagesSquare,
         title: 'Öğretmenle mesajlaşma',
-        text: 'Öğretmenle velilere ayrılmış bir mesaj bölümünden doğrudan yazışırsın.',
+        text: 'Öğretmenle, velilere ayrılmış bir mesaj bölümünden doğrudan yazışırsınız.',
       },
       {
         icon: Users,
         title: 'Birden fazla çocuk',
-        text: 'İki çocuğun birden sınava hazırlanıyorsa ikisini de aynı hesaptan takip edersin.',
+        text: 'İki çocuğunuz birden sınava hazırlanıyorsa ikisini de aynı hesaptan takip edersiniz.',
       },
       {
         icon: Eye,
