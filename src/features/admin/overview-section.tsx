@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/cn'
 import { useSettings } from '@/lib/data'
 import { useAdminOverview } from './queries'
+import { SystemHealthCard } from './system-health'
 import { CountUp, LoadError } from './ui'
 
 const list = { show: { transition: { staggerChildren: 0.05 } } }
@@ -120,6 +121,8 @@ export function OverviewSection({ onNavigate }: { onNavigate: (section: 'basvuru
           </Button>
         </Card>
       )}
+
+      <SystemHealthCard />
     </div>
   )
 }

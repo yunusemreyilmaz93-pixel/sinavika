@@ -17,6 +17,10 @@ export default defineConfig(({ mode }) => {
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     ''
 
+  if (process.env.VERCEL && (!supabaseUrl || !supabaseKey)) {
+    throw new Error('Supabase adresi ya da herkese açık anahtar eksik. Vercel ortam değişkenlerini kontrol et.')
+  }
+
   return {
     resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
     define: {
@@ -55,7 +59,7 @@ export default defineConfig(({ mode }) => {
     ],
     test: {
       environment: 'jsdom',
-      include: ['src/**/*.test.{ts,tsx}'],
+      include: ['src/**/*.test.{ts,tsx}', 'tests/**/*.test.ts'],
     },
   }
 })
