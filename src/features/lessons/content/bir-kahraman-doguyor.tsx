@@ -3,6 +3,7 @@ import {
   CauseEffect,
   Connect,
   DataTable,
+  Figure,
   Lead,
   LifeTimeline,
   Question,
@@ -10,6 +11,7 @@ import {
   SelfCheck,
   Tip,
   TraitTable,
+  Video,
   YearScale,
 } from '../blocks'
 import type { LessonBodyProps, LessonOutline } from '../types'
@@ -25,6 +27,8 @@ export const outline: LessonOutline = [
   { id: 'lgs', title: 'LGS’de nasıl sorulur' },
   { id: 'kendini-dene', title: 'Kendini dene' },
 ]
+
+const img = (name: string) => `/lessons/bir-kahraman-doguyor/${name}.webp`
 
 const lifeEvents = [
   { year: 1881, label: 'Selanik’te doğdu', group: 'Çocukluk' },
@@ -67,6 +71,7 @@ export default function BirKahramanDoguyor({ role }: LessonBodyProps) {
           Bu ünitede ezberden çok <strong>neden-sonuç ilişkisi</strong> önemli. LGS’de “Mustafa Kemal kaç yılında doğdu?” gibi
           sorulardan çok, “Bu olay onun hangi özelliğini gösterir?” gibi sorular çıkar.
         </Tip>
+        <Video id="F7iM0-3PmG8" label="Konu anlatımı videosu" title="Tekte Bitir: Bir Kahraman Doğuyor" channel="Hız Yayınları Ortaokul" />
       </Section>
 
       <Section id="avrupa" number={1} title="Avrupa değişiyor, Osmanlı zorlanıyor">
@@ -127,10 +132,25 @@ export default function BirKahramanDoguyor({ role }: LessonBodyProps) {
       </Section>
 
       <Section id="cocukluk" number={2} title="Selanik’te bir çocuk: Çocukluk ve okul yılları">
+        <Figure
+          side
+          aspect="aspect-[3/4]"
+          src={img('selanik-ev')}
+          alt="Selanik’te Mustafa Kemal’in doğduğu üç katlı pembe ev"
+          caption="Mustafa Kemal’in doğduğu ev, Selanik. Bugün müze olarak ziyaret ediliyor."
+          credit="Fotoğraf: CeeGee, Wikimedia Commons, CC BY-SA 4.0"
+        />
         <p>
           Mustafa, 1881’de Selanik’te doğdu. Babası Ali Rıza Efendi önce gümrük memuruydu, sonra kereste ticaretiyle uğraştı. Annesi
           Zübeyde Hanım’dı. Kardeşlerinden yalnızca Makbule yaşadı.
         </p>
+        <Figure
+          aspect="aspect-[900/382]"
+          src={img('aile')}
+          alt="Makbule Hanım, Zübeyde Hanım ve Mustafa Kemal’in portreleri yan yana"
+          caption="Soldan sağa: Kız kardeşi Makbule, annesi Zübeyde Hanım ve Mustafa Kemal."
+          credit="Wikimedia Commons, CC0"
+        />
         <Lead title="Selanik neden önemli?">
           Selanik, Osmanlı’nın Avrupa’daki en gelişmiş şehirlerinden biriydi. Limanı ve demiryolu sayesinde Avrupa ile bağlantısı
           güçlüydü. Farklı dinlerden ve milletlerden insanlar bir arada yaşıyordu. Avrupa’daki yeni fikirler buraya çok çabuk
@@ -151,6 +171,13 @@ export default function BirKahramanDoguyor({ role }: LessonBodyProps) {
           Rüştiyesi’ni kazandı. Matematik öğretmeni Mustafa Sabri Bey, onun başarısını görünce adına <strong>“Kemal”</strong> adını
           ekledi. Bu ad “olgunluk, mükemmellik” anlamına gelir.
         </Lead>
+        <Figure
+          aspect="aspect-[748/410]"
+          src={img('harp-okulu')}
+          alt="Harp Okulu öğrencileri üniformalarıyla toplu fotoğrafta"
+          caption="İstanbul Harp Okulu’nda arkadaşlarıyla, yaklaşık 1902. Mustafa Kemal ön sırada, soldan ikinci oturan. Bilinen en eski fotoğrafıdır."
+          credit="Askeri Müze arşivi, renklendirilmiş. Wikimedia Commons, kamu malı"
+        />
         <DataTable
           head={['Okul', 'Yıl', 'Onun hakkında ne söyler?']}
           rows={[
@@ -218,6 +245,13 @@ export default function BirKahramanDoguyor({ role }: LessonBodyProps) {
           <strong>Derne</strong>’de yerel halkı örgütleyerek İtalyanlara karşı başarılı savaştı. Ancak Balkan Savaşları başlayınca
           Osmanlı, 1912’de Uşi Antlaşması ile Trablusgarp’ı İtalya’ya bırakmak zorunda kaldı.
         </Lead>
+        <Figure
+          aspect="aspect-[760/550]"
+          src={img('derne-1912')}
+          alt="Mustafa Kemal çölde çadırın önünde, yanında yerel savaşçılar"
+          caption="Kurmay Binbaşı Mustafa Kemal (solda), Derne’de yerel savaşçıların önünde emirlerini yazdırıyor, 1912."
+          credit="Anıtkabir arşivi. Wikimedia Commons, kamu malı"
+        />
         <Lead title="Balkan Savaşları (1912-1913).">
           Balkan devletleri birleşerek Osmanlı’ya saldırdı. Mustafa Kemal, Gelibolu Yarımadası’nda Bolayır’daki kolordunun kurmay
           başkanıydı. Bu savaşlarda Osmanlı Balkanlar’daki topraklarının büyük bölümünü kaybetti. Mustafa Kemal’in doğduğu şehir
@@ -286,6 +320,7 @@ export default function BirKahramanDoguyor({ role }: LessonBodyProps) {
             </li>
           ))}
         </ul>
+        <Video id="ZGT93gr3IX4" label="Tekrar videosu" title="5 dakikada Bir Kahraman Doğuyor" channel="Tonguç 8. Sınıf" />
       </Section>
 
       <Section id="karistirilanlar" title="Sık karıştırılanlar">

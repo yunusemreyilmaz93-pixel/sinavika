@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
-import { ArrowRight, Check, ChevronDown, Lightbulb, Link2, X } from 'lucide-react'
+import { ArrowRight, Check, ChevronDown, CirclePlay, ExternalLink, Lightbulb, Link2, X } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
+import { watchUrl } from '@/features/video/youtube'
 import { cn } from '@/lib/cn'
 
 export function Section({ id, number, title, children }: { id: string; number?: number; title: string; children: ReactNode }) {
@@ -10,7 +11,7 @@ export function Section({ id, number, title, children }: { id: string; number?: 
         {number != null && <span className="font-display text-primary tabular">{number}.</span>}
         {title}
       </h2>
-      <div className="mt-4 space-y-4 text-[16px] leading-relaxed text-fg/90 [&_strong]:font-semibold [&_strong]:text-fg">
+      <div className="mt-4 flow-root space-y-4 text-[16px] leading-relaxed text-fg/90 [&_strong]:font-semibold [&_strong]:text-fg">
         {children}
       </div>
     </section>
@@ -117,7 +118,7 @@ export function YearScale({ title, from, to, events }: { title: string; from: nu
   return (
     <figure className="rounded-2xl border border-line bg-surface p-4 sm:p-5">
       <figcaption className="text-sm font-semibold text-muted">{title}</figcaption>
-      <div className="relative mt-8 mb-14 h-1.5 rounded-full bg-surface-2" role="img" aria-label={events.map((e) => `${e.year} ${e.label}`).join(', ')}>
+      <div className="relative mt-16 mb-14 h-1.5 rounded-full bg-surface-2" role="img" aria-label={events.map((e) => `${e.year} ${e.label}`).join(', ')}>
         <motion.div
           className="absolute inset-y-0 left-0 rounded-full bg-primary"
           initial={{ width: 0 }}
@@ -391,5 +392,77 @@ export function SelfCheck({ items }: { items: { question: string; answer: string
         {all ? 'Cevapları gizle' : 'Cevap anahtarının tamamını göster'}
       </button>
     </div>
+  )
+}
+
+export function Figure({
+  src,
+  alt,
+  caption,
+  credit,
+  aspect = 'aspect-[4/3]',
+  side,
+}: {
+  src: string
+  alt: string
+  caption: ReactNode
+  credit: string
+  aspect?: string
+  side?: boolean
+}) {
+  return (
+    <figure className={cn('overflow-hidden rounded-2xl border border-line bg-surface', side && 'sm:float-right sm:mb-3 sm:ml-5 sm:w-64')}>
+      <div className={cn('overflow-hidden bg-surface-2', aspect)}>
+        <img src={src} alt={alt} loading="lazy" decoding="async" className="size-full object-cover" />
+      </div>
+      <figcaption className="px-4 py-3 text-sm leading-snug">
+        <span className="text-fg">{caption}</span>
+        <span className="mt-1 block text-xs text-subtle">{credit}</span>
+      </figcaption>
+    </figure>
+  )
+}
+
+export function Video({ id, title, channel, label = 'Video' }: { id: string; title: string; channel: string; label?: string }) {
+  const [playing, setPlaying] = useState(false)
+  return (
+    <figure className="overflow-hidden rounded-2xl border border-line bg-surface">
+      <div className="relative aspect-video bg-black">
+        {playing ? (
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`}
+            title={title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="absolute inset-0 size-full"
+          />
+        ) : (
+          <button type="button" onClick={() => setPlaying(true)} className="group absolute inset-0" aria-label={`${title} videosunu oynat`}>
+            <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" className="size-full object-cover opacity-90 transition-opacity group-hover:opacity-100" />
+            <span className="absolute inset-0 grid place-items-center">
+              <span className="grid size-16 place-items-center rounded-full bg-black/60 text-white transition-transform group-hover:scale-110">
+                <CirclePlay className="size-9" />
+              </span>
+            </span>
+          </button>
+        )}
+      </div>
+      <figcaption className="flex items-start justify-between gap-3 px-4 py-3">
+        <span className="min-w-0 text-sm leading-snug">
+          <span className="text-xs font-semibold text-muted">{label}</span>
+          <span className="block font-semibold text-fg">{title}</span>
+          <span className="block text-xs text-subtle">{channel}</span>
+        </span>
+        <a
+          href={watchUrl(id)}
+          target="_blank"
+          rel="noreferrer"
+          className="grid size-10 shrink-0 place-items-center rounded-lg text-muted hover:bg-surface-2"
+          aria-label="YouTube'da aç"
+        >
+          <ExternalLink className="size-4" />
+        </a>
+      </figcaption>
+    </figure>
   )
 }
