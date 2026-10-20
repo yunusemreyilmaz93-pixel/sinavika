@@ -9,7 +9,7 @@ export function PasswordChecklist({ password, id }: { password: string; id?: str
       <p className="sr-only" aria-live="polite">
         Şifre kurallarının {PASSWORD_RULES.length} tanesinden {done} tanesi sağlandı
       </p>
-      <ul className="grid gap-1.5 text-[13px] sm:grid-cols-2">
+      <ul className="grid gap-1.5 text-[13px]">
         {PASSWORD_RULES.map((rule) => {
           const ok = rule.test(password)
           return (

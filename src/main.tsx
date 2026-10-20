@@ -8,11 +8,13 @@ import { AuthProvider } from '@/features/auth/session'
 import { installGlobalErrorLogging, reportError } from '@/lib/error-log'
 import '@/lib/install'
 import { applyTheme } from '@/lib/theme'
+import { watchForUpdates } from '@/lib/update'
 import { router } from './router'
 import './index.css'
 
 applyTheme()
 installGlobalErrorLogging()
+watchForUpdates()
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({ onError: (error, query) => reportError(error, `query ${String(query.queryKey[0])}`) }),
