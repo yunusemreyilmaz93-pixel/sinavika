@@ -968,6 +968,7 @@ export type Database = {
       preview_invite: {
         Args: { p_code: string };
         Returns: {
+          field: Database["public"]["Enums"]["yks_field"];
           grade: number;
           kind: Database["public"]["Enums"]["invite_kind"];
           student_name: string;

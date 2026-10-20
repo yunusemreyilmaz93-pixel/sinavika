@@ -262,5 +262,18 @@ await test('müfredat tam yüklendi', async () => {
   assert.deepEqual(empty, [])
 })
 
+await test('davet önizlemesi YKS alanını döner', async () => {
+  const [row] = await as(teacherB, `select (public.create_student_invite('Alanlı', 'yks', 11::smallint, 'ea')).code`)
+  const [p] = await as(null, 'select field from public.preview_invite($1)', [row.code])
+  assert.equal(p.field, 'ea')
+})
+
+await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
+  await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
+  await service('delete from auth.users where id = $1', [s1])
+  const [r] = await service('select count(*)::int as n from public.tasks where student_id = $1', [s1])
+  assert.equal(r.n, 0)
+})
+
 await db.end()
 console.log(`\n${passed} test geçti`)
