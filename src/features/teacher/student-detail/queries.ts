@@ -102,5 +102,6 @@ export function readablePassword() {
   const bytes = crypto.getRandomValues(new Uint8Array(10))
   const syllable = (i: number) => pick(consonants, bytes, i) + pick(vowels, bytes, i + 1)
   const digits = String(10 + ((bytes[8] * 256 + bytes[9]) % 90))
-  return `${syllable(0)}${syllable(2)}-${syllable(4)}${syllable(6)}${digits}`
+  const first = syllable(0)
+  return `${first[0].toUpperCase()}${first.slice(1)}${syllable(2)}-${syllable(4)}${syllable(6)}${digits}`
 }

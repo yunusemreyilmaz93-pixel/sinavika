@@ -1,13 +1,12 @@
 import { z } from 'zod'
-import { PASSWORD_MIN, USERNAME_PATTERN, usernameToEmail } from '../shared/accounts.js'
-import { passwordProblem } from './_lib/password.js'
+import { PASSWORD_MAX, passwordIssueMessage, passwordProblem, USERNAME_PATTERN, usernameToEmail } from '../shared/accounts.js'
 import { admin, adminEmail, dbMessage, handle, HttpError, json, readJson } from './_lib/server.js'
 
 const teacherSchema = z.object({
   action: z.literal('register-teacher'),
   fullName: z.string().trim().min(2).max(80),
   email: z.email().max(160),
-  password: z.string().min(PASSWORD_MIN).max(72),
+  password: z.string().max(PASSWORD_MAX),
   school: z.string().trim().max(120).optional().default(''),
   branch: z.string().trim().max(60).optional().default(''),
   note: z.string().trim().max(600).optional().default(''),
@@ -20,7 +19,7 @@ const joinSchema = z.object({
   code: z.string().trim().toUpperCase().regex(/^[A-Z0-9]{8}$/),
   fullName: z.string().trim().min(2).max(80),
   username: z.string().trim().toLowerCase().regex(USERNAME_PATTERN),
-  password: z.string().min(PASSWORD_MIN).max(72),
+  password: z.string().max(PASSWORD_MAX),
   consent: z.literal(true),
 })
 
@@ -54,7 +53,13 @@ async function logServerError(message: string, detail: string) {
   }
 }
 
+function checkPassword(password: string) {
+  const issue = passwordIssueMessage(password)
+  if (issue) throw new HttpError(400, issue)
+}
+
 async function registerTeacher(input: z.infer<typeof teacherSchema>) {
+  checkPassword(input.password)
   const email = input.email.toLowerCase()
   const isAdmin = email === adminEmail()
   const id = await createUser(email, input.password, input.fullName)
@@ -75,6 +80,7 @@ async function registerTeacher(input: z.infer<typeof teacherSchema>) {
 }
 
 async function join(input: z.infer<typeof joinSchema>) {
+  checkPassword(input.password)
   const { data: preview } = await admin().rpc('preview_invite', { p_code: input.code })
   if (!preview?.length) throw new HttpError(404, 'Davet kodu geçersiz veya süresi dolmuş')
 

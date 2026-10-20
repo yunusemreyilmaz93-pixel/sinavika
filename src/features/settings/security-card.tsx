@@ -1,20 +1,19 @@
 import { LockKeyhole } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
-import { PASSWORD_MIN } from '../../../shared/accounts'
+import { PASSWORD_MAX, passwordIssueMessage, passwordProblem } from '../../../shared/accounts'
 import { Button } from '@/components/ui/button'
 import { Field } from '@/components/ui/field'
+import { PasswordChecklist } from '@/features/auth/ui/password-checklist'
 import { PasswordInput } from '@/features/auth/ui/password-input'
 import { useProfile } from '@/features/auth/session'
 import { errorMessage, supabase } from '@/lib/supabase'
 import { SettingsCard } from './ui'
 
-const PASSWORD_MAX = 72
-
 function passwordError(message: string) {
   if (/different from the old/i.test(message)) return 'Yeni şifren eskisiyle aynı olamaz'
   if (/reauth/i.test(message)) return 'Güvenlik için çıkış yapıp tekrar giriş yaptıktan sonra dene'
-  if (/weak|at least|pwned|characters/i.test(message)) return 'Daha güçlü bir şifre seç'
+  if (/weak|at least|pwned|characters|password/i.test(message)) return passwordProblem({ message })
   return errorMessage(message)
 }
 
@@ -28,8 +27,8 @@ export function SecurityCard() {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const next: typeof errors = {}
-    if (password.length < PASSWORD_MIN) next.password = `En az ${PASSWORD_MIN} karakter olmalı`
-    else if (password.length > PASSWORD_MAX) next.password = `En fazla ${PASSWORD_MAX} karakter olabilir`
+    const issue = passwordIssueMessage(password)
+    if (issue) next.password = issue
     if (!next.password && repeat !== password) next.repeat = 'Şifreler aynı değil'
     setErrors(next)
     if (next.password || next.repeat) return
@@ -50,7 +49,7 @@ export function SecurityCard() {
       <form onSubmit={submit} noValidate className="space-y-3">
         <input type="text" autoComplete="username" value={profile.username ?? profile.email ?? ''} readOnly hidden />
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Yeni şifre" error={errors.password} hint={`En az ${PASSWORD_MIN} karakter`}>
+          <Field label="Yeni şifre" error={errors.password}>
             {(props) => (
               <PasswordInput
                 {...props}
@@ -79,6 +78,7 @@ export function SecurityCard() {
             )}
           </Field>
         </div>
+        {password && <PasswordChecklist password={password} />}
         <Button type="submit" loading={saving} disabled={!password && !repeat} className="w-full sm:w-auto">
           Şifreyi değiştir
         </Button>

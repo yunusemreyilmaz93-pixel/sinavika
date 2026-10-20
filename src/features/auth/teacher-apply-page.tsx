@@ -10,7 +10,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { callApi } from '@/lib/api'
 import { keys, useSettings } from '@/lib/data'
 import { errorMessage } from '@/lib/supabase'
-import { PASSWORD_MIN } from '../../../shared/accounts'
+import { passwordIssueMessage } from '../../../shared/accounts'
+import { PasswordChecklist } from './ui/password-checklist'
 import { AuthHeading, AuthLayout, ValuePanel, type ValuePoint } from './ui/auth-layout'
 import {
   ConsentCheckbox,
@@ -29,10 +30,10 @@ const NOTE_MAX = 600
 const schema = z.object({
   fullName: z.string().min(2, 'Adını ve soyadını yaz').max(80, 'En fazla 80 karakter olabilir'),
   email: z.email('Geçerli bir e-posta adresi yaz').max(160, 'En fazla 160 karakter olabilir'),
-  password: z
-    .string()
-    .min(PASSWORD_MIN, `Şifren en az ${PASSWORD_MIN} karakter olmalı`)
-    .max(72, 'Şifren en fazla 72 karakter olabilir'),
+  password: z.string().superRefine((value, ctx) => {
+    const issue = passwordIssueMessage(value)
+    if (issue) ctx.addIssue({ code: 'custom', message: issue })
+  }),
   school: z.string().max(120, 'En fazla 120 karakter olabilir'),
   branch: z.string().max(60, 'En fazla 60 karakter olabilir'),
   note: z.string().max(NOTE_MAX, `En fazla ${NOTE_MAX} karakter olabilir`),
@@ -266,7 +267,7 @@ function ApplyForm() {
             />
           )}
         </Field>
-        <Field label="Şifre" hint={`En az ${PASSWORD_MIN} karakter.`} error={errors.password}>
+        <Field label="Şifre" error={errors.password}>
           {(props) => (
             <PasswordInput
               {...props}
@@ -278,6 +279,7 @@ function ApplyForm() {
             />
           )}
         </Field>
+        <PasswordChecklist password={values.password} />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={<OptionalLabel>Okul</OptionalLabel>} error={errors.school}>
             {(props) => (

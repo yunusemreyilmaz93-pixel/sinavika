@@ -49,7 +49,7 @@ describe('api/auth', () => {
         code: 'ABCD1234',
         fullName: 'Deneme Öğrenci',
         username: 'deneme.ogrenci',
-        password: 'uzun-bir-sifre-123',
+        password: 'Uzun-bir-sifre-123',
         consent: true,
       }),
     )
@@ -73,7 +73,7 @@ describe('api/health', () => {
 
 describe('passwordProblem', () => {
   it('Supabase şifre hatalarını öğrencinin anlayacağı dile çevirir', async () => {
-    const { passwordProblem } = await import('../api/_lib/password.ts')
+    const { passwordProblem } = await import('../shared/accounts.ts')
     expect(
       passwordProblem({
         code: 'weak_password',
@@ -86,5 +86,20 @@ describe('passwordProblem', () => {
     expect(passwordProblem({ message: 'Password is known to be weak and easy to guess, please choose a different one.', reasons: ['pwned'] })).toMatch(
       /sızdırılmış/,
     )
+  })
+})
+
+describe('api/auth şifre kuralları', () => {
+  it('kurala uymayan şifreyi Supabase\'e göndermeden neyin eksik olduğunu söyler', async () => {
+    const { POST } = await import('../api/auth.ts')
+    const res = await POST(
+      new Request('http://localhost/api/auth', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'join', code: 'ABCD1234', fullName: 'Deneme', username: 'deneme', password: 'Kalemkalem', consent: true }),
+      }),
+    )
+    expect(res.status).toBe(400)
+    expect(((await res.json()) as { error: string }).error).toBe('Şifrende eksik olanlar: bir rakam, bir sembol')
   })
 })

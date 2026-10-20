@@ -2,7 +2,8 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Ban, Check, Copy, Dices, KeyRound, MoreVertical, RotateCcw, Trash2 } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
-import { PASSWORD_MIN } from '../../../shared/accounts'
+import { PASSWORD_MAX, passwordIssueMessage } from '../../../shared/accounts'
+import { PasswordChecklist } from '@/features/auth/ui/password-checklist'
 import { Button } from '@/components/ui/button'
 import { Confirm } from '@/components/ui/confirm'
 import { Field, Input } from '@/components/ui/field'
@@ -13,13 +14,14 @@ import { keys } from '@/lib/data'
 import { errorMessage } from '@/lib/supabase'
 import { useTeacherStatus, type AdminTeacher } from './queries'
 
-const PASSWORD_MAX = 72
 const alphabet = 'abcdefghjkmnpqrstuvwxyz23456789'
 
 function randomPassword() {
   const bytes = crypto.getRandomValues(new Uint8Array(10))
   const chars = Array.from(bytes, (b) => alphabet[b % alphabet.length])
   if (!chars.some((c) => /\d/.test(c))) chars[bytes[0] % chars.length] = String(2 + (bytes[1] % 8))
+  chars[0] = chars[0].toUpperCase()
+  if (!chars.some((c) => /[a-z]/.test(c))) chars[1] = 'k'
   return `${chars.slice(0, 5).join('')}-${chars.slice(5).join('')}`
 }
 
@@ -133,8 +135,8 @@ function ResetPasswordForm({ teacher, onDone }: { teacher: AdminTeacher; onDone:
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const value = password.trim()
-    if (value.length < PASSWORD_MIN) return setError(`Şifre en az ${PASSWORD_MIN} karakter olmalı`)
-    if (value.length > PASSWORD_MAX) return setError(`Şifre en fazla ${PASSWORD_MAX} karakter olabilir`)
+    const issue = passwordIssueMessage(value)
+    if (issue) return setError(issue)
     setSaving(true)
     setError(null)
     try {
@@ -167,7 +169,7 @@ function ResetPasswordForm({ teacher, onDone }: { teacher: AdminTeacher; onDone:
   return (
     <form onSubmit={submit} className="space-y-4" noValidate>
       <input type="text" autoComplete="username" value={teacher.email ?? ''} readOnly hidden />
-      <Field label="Yeni şifre" hint={`En az ${PASSWORD_MIN} karakter`} error={error}>
+      <Field label="Yeni şifre" error={error}>
         {(props) => (
           <div className="flex gap-2">
             <Input
@@ -201,6 +203,7 @@ function ResetPasswordForm({ teacher, onDone }: { teacher: AdminTeacher; onDone:
           </div>
         )}
       </Field>
+      {password && <PasswordChecklist password={password.trim()} />}
       <div className="flex gap-2 [&>*]:flex-1">
         <Button type="button" variant="secondary" onClick={onDone}>
           Vazgeç

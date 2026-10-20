@@ -8,7 +8,8 @@ import { Confirm } from '@/components/ui/confirm'
 import { Field, Input, Select } from '@/components/ui/field'
 import { callApi } from '@/lib/api'
 import { errorMessage } from '@/lib/supabase'
-import { PASSWORD_MIN } from '../../../../shared/accounts'
+import { passwordIssueMessage } from '../../../../shared/accounts'
+import { PasswordChecklist } from '@/features/auth/ui/password-checklist'
 import { copyText } from '../invites'
 import { readablePassword, useLinkedParents, type StudentDetail } from './queries'
 
@@ -28,7 +29,7 @@ export function PasswordSection({ student }: { student: StudentDetail }) {
 
   const target = people.find((p) => p.id === targetId) ?? people[0]
   const trimmed = password.trim()
-  const error = trimmed.length < PASSWORD_MIN ? `En az ${PASSWORD_MIN} karakter` : trimmed.length > 72 ? 'En fazla 72 karakter' : null
+  const error = passwordIssueMessage(trimmed)
 
   const reset = useMutation({
     mutationFn: async () => callApi('account', { action: 'reset-password', userId: target.id, password: trimmed }),
@@ -73,7 +74,7 @@ export function PasswordSection({ student }: { student: StudentDetail }) {
             </Field>
           )}
 
-          <Field label="Yeni şifre" error={touched ? error : null} hint={`En az ${PASSWORD_MIN} karakter`}>
+          <Field label="Yeni şifre" error={touched ? error : null}>
             {(p) => (
               <div className="flex gap-2">
                 <Input
@@ -91,6 +92,7 @@ export function PasswordSection({ student }: { student: StudentDetail }) {
               </div>
             )}
           </Field>
+          {password && <PasswordChecklist password={trimmed} />}
 
           <Button type="submit" loading={reset.isPending} className="w-full sm:w-auto">
             {!reset.isPending && <KeyRound />}

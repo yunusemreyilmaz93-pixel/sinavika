@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Field, Input } from '@/components/ui/field'
 import { callApi } from '@/lib/api'
 import { errorMessage } from '@/lib/supabase'
-import { PASSWORD_MIN, suggestUsername, USERNAME_PATTERN } from '../../../../shared/accounts'
+import { passwordIssueMessage, suggestUsername, USERNAME_PATTERN } from '../../../../shared/accounts'
 import { ConsentCheckbox, focusFirstInvalid, FormAlert, issuesToErrors, KvkkLink, type FieldErrors } from './form-bits'
 import type { InvitePreview } from './invite-card'
+import { PasswordChecklist } from './password-checklist'
 import { PasswordInput } from './password-input'
 import type { SignInFlow } from './use-sign-in'
 
@@ -22,10 +23,10 @@ const usernameSchema = z
 const schema = z.object({
   fullName: z.string().min(2, 'Adını ve soyadını yaz').max(80, 'En fazla 80 karakter olabilir'),
   username: usernameSchema,
-  password: z
-    .string()
-    .min(PASSWORD_MIN, `Şifren en az ${PASSWORD_MIN} karakter olmalı`)
-    .max(72, 'Şifren en fazla 72 karakter olabilir'),
+  password: z.string().superRefine((value, ctx) => {
+    const issue = passwordIssueMessage(value)
+    if (issue) ctx.addIssue({ code: 'custom', message: issue })
+  }),
   passwordAgain: z.string().min(1, 'Şifreni tekrar yaz'),
   consent: z.literal(true, 'Devam etmek için onaylaman gerekiyor'),
   transfer: z.literal(true, 'Hesap açmak için bu onay gerekiyor'),
@@ -209,7 +210,7 @@ export function JoinForm({ code, invite, flow }: JoinFormProps) {
         </p>
       </div>
 
-      <Field label="Şifre" hint={`En az ${PASSWORD_MIN} karakter.`} error={errors.password}>
+      <Field label="Şifre" error={errors.password}>
         {(props) => (
           <PasswordInput
             {...props}
@@ -221,6 +222,7 @@ export function JoinForm({ code, invite, flow }: JoinFormProps) {
           />
         )}
       </Field>
+      <PasswordChecklist password={values.password} />
       <Field label="Şifre tekrar" error={errors.passwordAgain ?? mismatch}>
         {(props) => (
           <PasswordInput

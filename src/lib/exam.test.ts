@@ -47,3 +47,21 @@ describe('hesaplar', () => {
     expect(loginEmail('Ayse@Ornek.com')).toBe('ayse@ornek.com')
   })
 })
+
+describe('passwordIssues', () => {
+  it('eksik kuralları sırayla döner', async () => {
+    const { passwordIssues, passwordIssueMessage } = await import('../../shared/accounts')
+    expect(passwordIssues('Kalem2026!')).toEqual([])
+    expect(passwordIssues('kalemkalem')).toEqual(['Bir büyük harf (A, B, C gibi)', 'Bir rakam', 'Bir sembol (! ? . * gibi)'])
+    expect(passwordIssueMessage('Kalemkalem')).toBe('Şifrende eksik olanlar: bir rakam, bir sembol')
+    expect(passwordIssueMessage('Kalem2026!')).toBeNull()
+  })
+})
+
+describe('otomatik şifreler', () => {
+  it('kurallara uyar', async () => {
+    const { passwordIssues } = await import('../../shared/accounts')
+    const { readablePassword } = await import('@/features/teacher/student-detail/queries')
+    for (let i = 0; i < 50; i++) expect(passwordIssues(readablePassword())).toEqual([])
+  })
+})

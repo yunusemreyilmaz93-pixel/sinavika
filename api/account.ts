@@ -1,9 +1,9 @@
 import { z } from 'zod'
-import { PASSWORD_MIN } from '../shared/accounts.js'
+import { PASSWORD_MAX, passwordIssueMessage, passwordProblem } from '../shared/accounts.js'
 import { admin, callerId, handle, HttpError, json, readJson } from './_lib/server.js'
 
 const schema = z.discriminatedUnion('action', [
-  z.object({ action: z.literal('reset-password'), userId: z.uuid(), password: z.string().min(PASSWORD_MIN).max(72) }),
+  z.object({ action: z.literal('reset-password'), userId: z.uuid(), password: z.string().max(PASSWORD_MAX) }),
   z.object({ action: z.literal('delete-student'), studentId: z.uuid() }),
   z.object({ action: z.literal('delete-teacher'), teacherId: z.uuid() }),
   z.object({ action: z.literal('delete-self') }),
@@ -86,8 +86,10 @@ export const POST = handle(async (request) => {
   if (!target || !(await canManage(caller, target))) throw new HttpError(403, 'Bu işlem için yetkin yok')
 
   if (input.action === 'reset-password') {
+    const issue = passwordIssueMessage(input.password)
+    if (issue) throw new HttpError(400, issue)
     const { error } = await admin().auth.admin.updateUserById(target.id, { password: input.password })
-    if (error) throw new HttpError(400, 'Şifre güncellenemedi, daha güçlü bir şifre dene')
+    if (error) throw new HttpError(400, passwordProblem(error))
     return json({ ok: true })
   }
 
