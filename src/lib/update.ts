@@ -15,7 +15,7 @@ export function watchForUpdates() {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (!hadController || handled) return
     handled = true
-    if (Date.now() - loadedAt < 15_000 && !editing()) {
+    if (Date.now() - loadedAt < 90_000 && !editing()) {
       window.location.reload()
       return
     }
