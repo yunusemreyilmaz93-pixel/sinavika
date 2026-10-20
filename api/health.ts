@@ -1,6 +1,6 @@
 import { admin, handle, json } from './_lib/server.js'
 
-const tables = ['profiles', 'invites', 'app_settings', 'subjects', 'topics'] as const
+const tables = ['profiles', 'invites', 'app_settings', 'subjects', 'topics', 'push_subscriptions'] as const
 
 export const GET = handle(async () => {
   const checks: Record<string, boolean> = {

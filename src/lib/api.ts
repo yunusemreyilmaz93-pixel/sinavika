@@ -1,6 +1,6 @@
 import { supabase } from './supabase'
 
-export async function callApi<T = { ok: true }>(path: 'auth' | 'account', body: Record<string, unknown>): Promise<T> {
+export async function callApi<T = { ok: true }>(path: 'auth' | 'account' | 'push', body: Record<string, unknown>): Promise<T> {
   const { data } = await supabase.auth.getSession()
   const headers: Record<string, string> = { 'content-type': 'application/json' }
   if (data.session) headers.authorization = `Bearer ${data.session.access_token}`

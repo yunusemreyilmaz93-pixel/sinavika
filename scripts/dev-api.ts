@@ -20,6 +20,7 @@ const routes: Record<string, () => Promise<Record<string, Handler>>> = {
   account: () => import('../api/account.ts'),
   cron: () => import('../api/cron.ts'),
   health: () => import('../api/health.ts'),
+  push: () => import('../api/push.ts'),
 }
 
 createServer(async (req, res) => {

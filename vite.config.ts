@@ -53,6 +53,7 @@ export default defineConfig(({ mode }) => {
         workbox: {
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api\//],
+          importScripts: ['/push-sw.js'],
           globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         },
       }),

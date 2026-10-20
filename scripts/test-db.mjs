@@ -289,6 +289,44 @@ await test('davet önizlemesi YKS alanını döner', async () => {
   assert.equal(p.field, 'ea')
 })
 
+await test('haftalık veli raporu bir kez gider ve geçen haftayı özetler', async () => {
+  await service(
+    `insert into public.study_sessions (student_id, minutes, studied_on)
+     values ($1, 95, private.today() - extract(isodow from private.today())::int - 2)`,
+    [s1],
+  )
+  await service('select public.send_weekly_reports()')
+  await service('select public.send_weekly_reports()')
+  const rows = await as(parent, `select title, body from public.notifications where kind = 'report'`)
+  assert.equal(rows.length, 1)
+  assert.match(rows[0].body, /1 sa 35 dk çalıştı/)
+})
+
+await test('günlük hatırlatma bugünkü görevleri söyler, arşivdekine gitmez, öğrenci tetikleyemez', async () => {
+  await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'Paragraf', private.today())`, [s1])
+  await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'Problemler', private.today())`, [s2])
+  await service('select public.send_daily_reminders()')
+  const rows = await as(s1, `select title from public.notifications where kind = 'reminder'`)
+  const [{ n }] = await service(
+    `select count(*)::int as n from public.tasks where student_id = $1 and due_on = private.today() and done_at is null`,
+    [s1],
+  )
+  assert.deepEqual(rows.map((r) => r.title), [n === 1 ? 'Bugün 1 görevin var' : `Bugün ${n} görevin var`])
+  assert.equal((await as(s2, `select 1 from public.notifications where kind = 'reminder'`)).length, 0)
+  await rejects(as(s1, 'select public.send_daily_reminders()'), /permission denied/)
+})
+
+await test('push anahtarlarını ve başkasının aboneliğini kimse göremez', async () => {
+  await service(`insert into public.push_keys (public_key, private_key) values ('pub', 'priv')`)
+  await rejects(as(s2, 'select * from public.push_keys'), /permission denied/)
+  await as(s2, `insert into public.push_subscriptions (endpoint, p256dh, auth) values ('https://push.test/a', 'k', 'a')`)
+  assert.equal((await as(s1, 'select * from public.push_subscriptions')).length, 0)
+  await rejects(
+    as(s1, `insert into public.push_subscriptions (endpoint, user_id, p256dh, auth) values ('https://push.test/b', $1, 'k', 'a')`, [s2]),
+    /row-level security/,
+  )
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

@@ -61,3 +61,9 @@ export function handle(fn: (request: Request) => Promise<Response>) {
 export function dbMessage(error: { message?: string; hint?: string } | null) {
   return error?.message?.replace(/^.*?ERROR:\s*/, '') || 'İşlem tamamlanamadı'
 }
+
+export async function syncSiteUrl() {
+  const host = process.env.VERCEL_ENV === 'production' ? process.env.VERCEL_PROJECT_PRODUCTION_URL : undefined
+  if (!host) return
+  await admin().from('app_settings').upsert({ key: 'site_url', value: `https://${host}` }, { onConflict: 'key' })
+}

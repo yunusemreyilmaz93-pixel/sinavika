@@ -8,6 +8,7 @@ import { GoalsCard } from './goals-card'
 import { InstallCard } from './install-card'
 import { ParentInviteCard } from './parent-invite-card'
 import { ProfileCard } from './profile-card'
+import { PushCard } from './push-card'
 import { SecurityCard } from './security-card'
 import { TeacherCard } from './teacher-card'
 import { listVariants } from './ui'
@@ -28,6 +29,7 @@ export default function SettingsPage() {
         {profile.role === 'parent' && <ChildrenCard />}
         {profile.role === 'teacher' && <TeacherCard />}
         <SecurityCard />
+        <PushCard />
         <AppearanceCard />
         <InstallCard />
         <AccountCard />
