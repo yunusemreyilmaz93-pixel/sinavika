@@ -9,7 +9,7 @@ export function AuthLayout({ children, aside }: { children: ReactNode; aside: Re
     <div className="min-h-dvh lg:grid lg:grid-cols-2">
       <div className="flex min-h-dvh min-w-0 flex-col overflow-x-clip px-4 pt-safe pb-safe sm:px-8">
         <header className="flex h-16 shrink-0 items-center sm:h-20">
-          <Link to="/" aria-label="Sınavika ana sayfa" className="-m-1.5 rounded-xl p-1.5">
+          <Link to="/" aria-label="Yolumnet ana sayfa" className="-m-1.5 rounded-xl p-1.5">
             <Logo />
           </Link>
         </header>

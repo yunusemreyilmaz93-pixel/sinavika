@@ -64,7 +64,7 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
       )}
     >
       <div className={cn(container, 'flex h-16 items-center gap-2')}>
-        <Link to="/" aria-label="Sınavika ana sayfa" className="-ml-1 shrink-0 rounded-lg p-1">
+        <Link to="/" aria-label="Yolumnet ana sayfa" className="-ml-1 shrink-0 rounded-lg p-1">
           <Logo />
         </Link>
 

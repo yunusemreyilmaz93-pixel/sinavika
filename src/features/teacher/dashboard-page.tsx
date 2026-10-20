@@ -14,6 +14,7 @@ import { errorMessage } from '@/lib/supabase'
 import { CapacityMeter } from './capacity-meter'
 import { useCapacity } from './invites'
 import { rankByAttention, useTeacherOverview } from './overview'
+import { StartChecklist, useStartChecklist } from './start-checklist'
 import { Duration, StudentCard } from './student-card'
 
 type Filter = 'aktif' | 'arsiv'
@@ -49,6 +50,7 @@ export default function DashboardPage() {
   const firstName = profile.full_name.trim().split(/\s+/)[0]
   const shown = filter === 'arsiv' ? archived : active
   const noStudents = overview.isSuccess && active.length === 0 && archived.length === 0
+  const start = useStartChecklist(overview.data, capacity.pending)
 
   const setFilter = (next: Filter) => setParams(next === 'arsiv' ? { liste: 'arsiv' } : {}, { replace: true })
 
@@ -76,6 +78,8 @@ export default function DashboardPage() {
           </Button>
         </div>
       </header>
+
+      {start.visible && <StartChecklist steps={start.steps} onDismiss={start.dismiss} />}
 
       <div className={cn('mb-8 grid gap-3 sm:gap-4', !noStudents && 'lg:grid-cols-[minmax(0,1fr)_300px]')}>
         {!noStudents && (
@@ -125,7 +129,7 @@ export default function DashboardPage() {
             Tekrar dene
           </Button>
         </div>
-      ) : noStudents ? (
+      ) : noStudents && start.visible ? null : noStudents ? (
         <EmptyState
           icon={UserPlus}
           className="py-14 sm:py-20 [&_h3]:text-xl"

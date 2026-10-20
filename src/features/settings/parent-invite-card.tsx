@@ -78,10 +78,10 @@ export function ParentInviteCard() {
 
   async function share(code: string) {
     const link = inviteLink(code)
-    const text = `${profile!.full_name} seni Sınavika'da veli olarak ekliyor. Bağlantıyı açıp hesabını oluştur. Davet kodu: ${formatCode(code)}`
+    const text = `${profile!.full_name} seni Yolumnet'te veli olarak ekliyor. Bağlantıyı açıp hesabını oluştur. Davet kodu: ${formatCode(code)}`
     if (typeof navigator.share === 'function') {
       try {
-        await navigator.share({ title: 'Sınavika veli daveti', text, url: link })
+        await navigator.share({ title: 'Yolumnet veli daveti', text, url: link })
       } catch (err) {
         if ((err as Error).name !== 'AbortError') void copyText(link, 'Bağlantı kopyalandı')
       }

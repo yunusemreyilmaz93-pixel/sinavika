@@ -40,7 +40,7 @@ export function InstallCard() {
     try {
       await event.prompt()
       const choice = await event.userChoice
-      if (choice.outcome === 'accepted') toast.success('Sınavika ana ekrana eklendi')
+      if (choice.outcome === 'accepted') toast.success('Yolumnet ana ekrana eklendi')
     } finally {
       setBusy(false)
     }
@@ -50,7 +50,7 @@ export function InstallCard() {
     <SettingsCard
       icon={Smartphone}
       title={env.mobile ? 'Uygulamayı telefona ekle' : 'Uygulamayı yükle'}
-      description="Sınavika'yı ana ekrandan tek dokunuşla aç."
+      description="Yolumnet'i ana ekrandan tek dokunuşla aç."
     >
       {prompt ? (
         <Button onClick={() => void install()} loading={busy} className="w-full sm:w-auto">

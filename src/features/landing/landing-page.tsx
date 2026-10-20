@@ -10,7 +10,7 @@ import { SiteHeader } from './site-header'
 import { WhyFree } from './why-free'
 import './landing.css'
 
-const TITLE = 'Sınavika · LGS ve YKS koçluğu'
+const TITLE = 'Yolumnet · LGS ve YKS koçluğu'
 
 function roleFromHash(): Role {
   if (typeof window === 'undefined') return 'teacher'

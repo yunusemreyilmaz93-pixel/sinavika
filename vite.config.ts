@@ -35,8 +35,8 @@ export default defineConfig(({ mode }) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
         manifest: {
-          name: 'Sınavika',
-          short_name: 'Sınavika',
+          name: 'Yolumnet',
+          short_name: 'Yolumnet',
           description: 'LGS ve YKS için ücretsiz koçluk uygulaması',
           lang: 'tr',
           start_url: '/app',

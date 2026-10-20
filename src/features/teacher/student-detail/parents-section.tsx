@@ -18,7 +18,7 @@ import { canShare, copyText, inviteLink } from '../invites'
 import { parentInviteKey, refreshStudent, useLinkedParents, useParentInvite, type LinkedParent, type StudentDetail } from './queries'
 
 function inviteText(studentName: string, code: string) {
-  return `${studentName} için Sınavika veli davet kodu: ${code}. Bu bağlantıdan hesabını oluşturabilirsin: ${inviteLink(code)}`
+  return `${studentName} için Yolumnet veli davet kodu: ${code}. Bu bağlantıdan hesabını oluşturabilirsin: ${inviteLink(code)}`
 }
 
 async function share(studentName: string, code: string) {
@@ -28,7 +28,7 @@ async function share(studentName: string, code: string) {
     return
   }
   try {
-    await navigator.share({ title: 'Sınavika veli daveti', text })
+    await navigator.share({ title: 'Yolumnet veli daveti', text })
   } catch (error) {
     if ((error as Error)?.name !== 'AbortError') toast.error('Paylaşılamadı, kodu kopyalayıp gönderebilirsin')
   }

@@ -66,7 +66,7 @@ export default function LoginPage() {
         <ValuePanel
           title="Plan, takip ve deneme netleri tek yerde"
           points={points}
-          footer="Sınavika ücretsiz. Her öğretmen en fazla 10 öğrenciyle çalışır."
+          footer="Yolumnet ücretsiz. Her öğretmen en fazla 10 öğrenciyle çalışır."
         />
       }
     >

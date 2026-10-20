@@ -71,7 +71,7 @@ export function inviteLink(code: string) {
 }
 
 export function inviteMessage(code: string) {
-  return `Sınavika'ya katılmak için davet kodun: ${code}. Buradan katılabilirsin: ${inviteLink(code)}`
+  return `Yolumnet'e katılmak için davet kodun: ${code}. Buradan katılabilirsin: ${inviteLink(code)}`
 }
 
 export function whatsappLink(code: string) {
@@ -86,7 +86,7 @@ export async function shareInvite(code: string) {
     return
   }
   try {
-    await navigator.share({ title: 'Sınavika daveti', text: inviteMessage(code) })
+    await navigator.share({ title: 'Yolumnet daveti', text: inviteMessage(code) })
   } catch (error) {
     if ((error as Error)?.name !== 'AbortError') toast.error('Paylaşılamadı, kodu kopyalayıp gönderebilirsin')
   }

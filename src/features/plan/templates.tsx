@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, LayoutTemplate, Trash2 } from 'lucide-react'
+import { ArrowLeft, LayoutTemplate, Sparkles, Trash2 } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -15,10 +15,12 @@ import { useOpenSession } from './hooks'
 import { parseTemplateItems, weekRangeLabel, type TemplateItem } from './lib'
 import { LoadError } from './load-error'
 import { invalidateTasks, useTasks } from './queries'
+import { starterTemplates } from './starter-templates'
 import { firstName, StudentChips, type PlannerStudent } from './student-picker'
 import { WeekNav } from './week-nav'
 
 type Template = Tables<'plan_templates'> & { parsed: TemplateItem[] }
+type Applicable = Pick<Template, 'name' | 'parsed'>
 
 type Props = {
   open: boolean
@@ -45,7 +47,7 @@ export function TemplatesModal(props: Props) {
 }
 
 function TemplatesDialog({ open, onOpenChange, students, student, week }: Props) {
-  const [applying, setApplying] = useState<Template | null>(null)
+  const [applying, setApplying] = useState<Applicable | null>(null)
   return (
     <Modal
       open={open}
@@ -67,6 +69,7 @@ function TemplatesDialog({ open, onOpenChange, students, student, week }: Props)
         <div className="space-y-6">
           <SaveWeek student={student} week={week} />
           <TemplateList onApply={setApplying} />
+          <StarterList track={student.track} onApply={setApplying} />
         </div>
       )}
     </Modal>
@@ -128,7 +131,34 @@ function SaveWeek({ student, week }: { student: PlannerStudent; week: string }) 
   )
 }
 
-function TemplateList({ onApply }: { onApply: (template: Template) => void }) {
+function StarterList({ track, onApply }: { track: PlannerStudent['track']; onApply: (template: Applicable) => void }) {
+  const list = starterTemplates.filter((t) => t.track === track)
+  return (
+    <section>
+      <h3 className="mb-2 flex items-center gap-1.5 text-sm font-bold">
+        <Sparkles className="size-4 text-primary" />
+        Hazır şablonlar
+      </h3>
+      <ul className="divide-y divide-line rounded-2xl border border-line">
+        {list.map((t) => (
+          <li key={t.id} className="flex items-center gap-2 py-2 pr-2 pl-4">
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-semibold">{t.name}</p>
+              <p className="text-sm text-muted">
+                {t.description}, {t.parsed.length} görev
+              </p>
+            </div>
+            <Button variant="soft" size="md" onClick={() => onApply(t)}>
+              Uygula
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function TemplateList({ onApply }: { onApply: (template: Applicable) => void }) {
   const qc = useQueryClient()
   const templates = useTemplates()
   const [deleting, setDeleting] = useState<{ open: boolean; template: Template | null }>({ open: false, template: null })
@@ -207,7 +237,7 @@ function ApplyTemplate({
   onBack,
   onDone,
 }: {
-  template: Template
+  template: Applicable
   students: PlannerStudent[]
   initialStudentId: string
   initialWeek: string

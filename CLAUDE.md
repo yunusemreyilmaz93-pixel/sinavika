@@ -1,4 +1,4 @@
-# Sınavika
+# Yolumnet
 
 LGS ve YKS koçluğu için ücretsiz web uygulaması. Öğretmen, öğrenci ve veli rolleri var. Bir öğretmen en fazla 10 aktif öğrenciyle çalışır.
 
@@ -42,6 +42,8 @@ LGS ve YKS koçluğu için ücretsiz web uygulaması. Öğretmen, öğrenci ve v
 - Boş ekranlar ne yapılacağını söyler ve tek bir eylem sunar
 
 ## Kod kuralları
+
+- Uygulamanın adı Yolumnet. Eski adı Sınavika'ydı. `hesap.sinavika.app` giriş alan adı, `sinavika-auth` ve diğer `sinavika-*` tarayıcı anahtarları bilerek değiştirilmedi. Değişirse mevcut hesaplar giriş yapamaz ya da herkesin oturumu kapanır
 
 - Yorum yazma, kod kendini anlatmıyorsa kısa bir yorum yeter
 - Gerçek bir problemi çözmeyen soyutlama, kütüphane veya katman ekleme

@@ -65,7 +65,7 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
         <div className="col-span-2 lg:col-span-1">
           <Logo />
           <p className="mt-4 max-w-xs text-[15px] leading-relaxed text-muted">
-            LGS ve YKS'ye hazırlanan öğrenciler için koçluk uygulaması. Sınavika ücretsiz ve reklamsızdır.
+            LGS ve YKS'ye hazırlanan öğrenciler için koçluk uygulaması. Yolumnet ücretsiz ve reklamsızdır.
           </p>
         </div>
         <nav aria-label="Hesap">
@@ -118,7 +118,7 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
       </div>
       <div className="border-t border-line">
         <div className={cn(container, 'flex flex-col gap-1 py-6 text-sm text-subtle sm:flex-row sm:justify-between')}>
-          <p>&copy; {year} Sınavika</p>
+          <p>&copy; {year} Yolumnet</p>
           <p>Gönüllü bir proje olarak geliştiriliyor.</p>
         </div>
       </div>

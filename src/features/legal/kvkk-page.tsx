@@ -28,7 +28,7 @@ const sections: Section[] = [
     title: 'Veri sorumlusu',
     body: (
       <p>
-        Kişisel verileriniz, veri sorumlusu sıfatıyla Sınavika tarafından işlenmektedir. Sınavika, LGS ve YKS'ye hazırlanan
+        Kişisel verileriniz, veri sorumlusu sıfatıyla Yolumnet tarafından işlenmektedir. Yolumnet, LGS ve YKS'ye hazırlanan
         öğrenciler için gönüllü olarak geliştirilen, ücretsiz ve reklamsız bir koçluk uygulamasıdır. İletişim:{' '}
         <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline-offset-4 hover:underline">
           {CONTACT_EMAIL}
@@ -120,7 +120,7 @@ const sections: Section[] = [
           kendisi için tuttuğu özel notları öğrenci ve veli göremez. Veliler kayıtları yalnızca görüntüleyebilir, değiştiremez.
         </p>
         <p>
-          Sınavika'nın çalışabilmesi için verileriniz barındırma hizmeti aldığımız iki sağlayıcıya aktarılır. Bunlar Supabase
+          Yolumnet'in çalışabilmesi için verileriniz barındırma hizmeti aldığımız iki sağlayıcıya aktarılır. Bunlar Supabase
           (veritabanı ve oturum açma) ve Vercel (web sitesi ve sunucu işlemleri) şirketleridir. Bu sağlayıcılar verileri yurt
           dışındaki sunucularda saklayabilir. Bu nedenle kayıt sırasında, KVKK'nın 9. maddesi kapsamında yurt dışına aktarım için
           açık rızanız alınır.
@@ -183,7 +183,7 @@ const sections: Section[] = [
     title: 'Çerezler ve yerel depolama',
     body: (
       <p>
-        Sınavika reklam veya izleme amaçlı çerez kullanmaz. Oturumunuzu açık tutmak, tema tercihinizi ve veli hesabında seçili
+        Yolumnet reklam veya izleme amaçlı çerez kullanmaz. Oturumunuzu açık tutmak, tema tercihinizi ve veli hesabında seçili
         çocuğu hatırlamak için tarayıcınızın yerel depolama alanından yararlanır. Uygulamanın hızlı açılması için bazı dosyalar
         cihazınızda önbelleğe alınır.
       </p>
@@ -217,7 +217,7 @@ export default function KvkkPage() {
 
   useEffect(() => {
     const previous = document.title
-    document.title = 'KVKK Aydınlatma Metni · Sınavika'
+    document.title = 'KVKK Aydınlatma Metni · Yolumnet'
     return () => {
       document.title = previous
     }
@@ -227,7 +227,7 @@ export default function KvkkPage() {
     <div className="min-h-dvh">
       <header className="pt-safe grid-paper sticky top-0 z-30 border-b border-line bg-bg">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
-          <Link to="/" aria-label="Sınavika ana sayfa" className="-ml-1 rounded-lg p-1">
+          <Link to="/" aria-label="Yolumnet ana sayfa" className="-ml-1 rounded-lg p-1">
             <Logo />
           </Link>
           <Button asChild variant="ghost" className="-mr-2 px-3">
@@ -265,7 +265,7 @@ export default function KvkkPage() {
             <h1 className="mt-2 text-[1.85rem] leading-[1.15] font-extrabold sm:text-[2.5rem]">Kişisel verilerin korunması aydınlatma metni</h1>
             <p className="mt-3 text-sm text-subtle">Son güncelleme: {UPDATED}</p>
             <p className="mt-6 text-[17px] leading-relaxed text-muted">
-              Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında Sınavika'yı kullanan öğretmen, öğrenci
+              Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında Yolumnet'i kullanan öğretmen, öğrenci
               ve velileri, kişisel verilerinin nasıl işlendiği konusunda bilgilendirmek amacıyla hazırlanmıştır.
             </p>
 
@@ -324,8 +324,8 @@ export default function KvkkPage() {
 
       <footer className="border-t border-line bg-surface">
         <div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 py-6 text-sm text-subtle sm:flex-row sm:justify-between sm:px-6">
-          <p>&copy; {new Date().getFullYear()} Sınavika</p>
-          <p>Sınavika ücretsiz ve reklamsızdır.</p>
+          <p>&copy; {new Date().getFullYear()} Yolumnet</p>
+          <p>Yolumnet ücretsiz ve reklamsızdır.</p>
         </div>
       </footer>
     </div>

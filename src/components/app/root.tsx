@@ -39,7 +39,7 @@ export function RouteError() {
         <LogoMark className="mx-auto size-10" />
         <h1 className="mt-5 text-2xl font-extrabold">{chunk ? 'Yeni sürüm hazır' : 'Bir şeyler ters gitti'}</h1>
         <p className="mt-2 text-muted">
-          {chunk ? 'Sınavika güncellendi. Sayfayı yenileyince devam edebilirsin.' : 'Sayfayı yenilemeyi dene. Sorun devam ederse öğretmenine haber ver.'}
+          {chunk ? 'Yolumnet güncellendi. Sayfayı yenileyince devam edebilirsin.' : 'Sayfayı yenilemeyi dene. Sorun devam ederse öğretmenine haber ver.'}
         </p>
         <Button className="mt-6" onClick={() => window.location.reload()}>
           <RotateCw />

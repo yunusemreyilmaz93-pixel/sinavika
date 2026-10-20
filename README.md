@@ -1,4 +1,4 @@
-# Sınavika
+# Yolumnet
 
 LGS ve YKS'ye hazırlanan öğrenciler için ücretsiz koçluk uygulaması. Öğretmen planlar, öğrenci çalışır, veli takip eder.
 
