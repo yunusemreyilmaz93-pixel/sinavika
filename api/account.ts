@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { PASSWORD_MIN } from '../shared/accounts.ts'
-import { admin, callerId, handle, HttpError, json, readJson } from './_lib/server.ts'
+import { PASSWORD_MIN } from '../shared/accounts.js'
+import { admin, callerId, handle, HttpError, json, readJson } from './_lib/server.js'
 
 const schema = z.discriminatedUnion('action', [
   z.object({ action: z.literal('reset-password'), userId: z.uuid(), password: z.string().min(PASSWORD_MIN).max(72) }),

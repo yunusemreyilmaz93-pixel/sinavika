@@ -1,4 +1,4 @@
-import { admin, handle, HttpError, json } from './_lib/server.ts'
+import { admin, handle, HttpError, json } from './_lib/server.js'
 
 export const GET = handle(async (request) => {
   const secret = process.env.CRON_SECRET

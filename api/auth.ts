@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { PASSWORD_MIN, USERNAME_PATTERN, usernameToEmail } from '../shared/accounts.ts'
-import { admin, adminEmail, dbMessage, handle, HttpError, json, readJson } from './_lib/server.ts'
+import { PASSWORD_MIN, USERNAME_PATTERN, usernameToEmail } from '../shared/accounts.js'
+import { admin, adminEmail, dbMessage, handle, HttpError, json, readJson } from './_lib/server.js'
 
 const teacherSchema = z.object({
   action: z.literal('register-teacher'),

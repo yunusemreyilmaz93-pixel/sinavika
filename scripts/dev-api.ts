@@ -1,5 +1,18 @@
 // Yerel geliştirmede api/ fonksiyonlarını Vercel olmadan çalıştırır.
 import { createServer } from 'node:http'
+import { registerHooks } from 'node:module'
+
+// api/ dosyaları Vercel'de derlendiği için .js ile import eder. Yerelde .ts kaynağına yönlendir.
+registerHooks({
+  resolve(specifier, context, next) {
+    try {
+      return next(specifier, context)
+    } catch (error) {
+      if (!specifier.startsWith('.') || !specifier.endsWith('.js')) throw error
+      return next(specifier.slice(0, -3) + '.ts', context)
+    }
+  },
+})
 
 type Handler = (request: Request) => Promise<Response>
 const routes: Record<string, () => Promise<Record<string, Handler>>> = {
