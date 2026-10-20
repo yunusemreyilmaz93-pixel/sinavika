@@ -6,6 +6,7 @@ import { Segmented } from '@/components/ui/segmented'
 import { AppSettingsSection } from './app-settings-section'
 import { ApplicationsSection } from './applications-section'
 import { CurriculumSection } from './curriculum-section'
+import { ErrorsSection } from './errors-section'
 import { OverviewSection } from './overview-section'
 import { useAdminOverview } from './queries'
 import { TeachersSection } from './teachers-section'
@@ -16,6 +17,7 @@ const sections = [
   { value: 'ogretmenler', label: 'Öğretmenler' },
   { value: 'ayarlar', label: 'Ayarlar' },
   { value: 'mufredat', label: 'Müfredat' },
+  { value: 'hatalar', label: 'Hatalar' },
 ] as const
 
 type Section = (typeof sections)[number]['value']
@@ -63,6 +65,7 @@ export default function AdminPage() {
           {section === 'ogretmenler' && <TeachersSection />}
           {section === 'ayarlar' && <AppSettingsSection />}
           {section === 'mufredat' && <CurriculumSection />}
+          {section === 'hatalar' && <ErrorsSection />}
         </motion.div>
       </AnimatePresence>
     </div>

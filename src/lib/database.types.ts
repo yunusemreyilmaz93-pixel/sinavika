@@ -22,6 +22,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      client_errors: {
+        Row: {
+          created_at: string;
+          detail: string | null;
+          id: number;
+          message: string;
+          path: string | null;
+          role: Database["public"]["Enums"]["user_role"] | null;
+          shown: string | null;
+          user_agent: string | null;
+          user_id: string | null;
+          version: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          detail?: string | null;
+          id?: never;
+          message: string;
+          path?: string | null;
+          role?: Database["public"]["Enums"]["user_role"] | null;
+          shown?: string | null;
+          user_agent?: string | null;
+          user_id?: string | null;
+          version?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          detail?: string | null;
+          id?: never;
+          message?: string;
+          path?: string | null;
+          role?: Database["public"]["Enums"]["user_role"] | null;
+          shown?: string | null;
+          user_agent?: string | null;
+          user_id?: string | null;
+          version?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "client_errors_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       invites: {
         Row: {
           code: string;
@@ -1188,6 +1236,17 @@ export type Database = {
         };
       };
       link_parent: { Args: { p_code: string }; Returns: undefined };
+      log_client_error: {
+        Args: {
+          p_detail: string | null;
+          p_message: string;
+          p_path: string | null;
+          p_shown: string | null;
+          p_user_agent: string | null;
+          p_version: string | null;
+        };
+        Returns: undefined;
+      };
       preview_invite: {
         Args: { p_code: string };
         Returns: {

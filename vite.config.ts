@@ -26,6 +26,7 @@ export default defineConfig(({ mode }) => {
     define: {
       'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(supabaseUrl),
       'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(supabaseKey),
+      'import.meta.env.VITE_COMMIT': JSON.stringify((env.VERCEL_GIT_COMMIT_SHA ?? 'local').slice(0, 7)),
     },
     server: { proxy: { '/api': 'http://localhost:3001' } },
     plugins: [

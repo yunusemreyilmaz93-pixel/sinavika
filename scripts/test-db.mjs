@@ -381,6 +381,18 @@ await test('video izleme: ileri sarılan kısım sayılmaz, yüzde 90 izlenince 
   await rejects(as(s1, `insert into public.tasks (student_id, title, kind, due_on, video_id) values ($1, 'x', 'video', private.today(), 'kisa')`, [s1]), /check/)
 })
 
+await test('hata kaydı: herkes yazabilir, sadece admin okur, sınır aşılınca yazılmaz', async () => {
+  await as(s1, `select public.log_client_error('TypeError: x is undefined', 'Beklenmeyen bir hata oluştu', '/app/plan', null, 'test', 'abc1234')`)
+  await as(null, `select public.log_client_error('Giriş sayfası hatası', null, '/giris', null, null, null)`)
+  const rows = await as(adminId, 'select role, message from public.client_errors order by id')
+  assert.deepEqual(rows.map((r) => r.role), ['student', null])
+  assert.equal((await as(s1, 'select * from public.client_errors')).length, 0)
+  assert.equal((await as(teacherA, 'select * from public.client_errors')).length, 0)
+  for (let i = 0; i < 35; i++) await as(s1, `select public.log_client_error('tekrar', null, null, null, null, null)`)
+  const [{ n }] = await service('select count(*)::int as n from public.client_errors where user_id = $1', [s1])
+  assert.equal(n, 30)
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

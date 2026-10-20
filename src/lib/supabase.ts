@@ -17,13 +17,40 @@ export type RpcReturn<T extends keyof Database['public']['Functions']> = Databas
 
 export class AppError extends Error {}
 
+export const GENERIC_ERROR = 'Beklenmeyen bir hata oluştu. Tekrar dene, sorun sürerse sayfayı yenile'
+
+function rawMessage(error: unknown) {
+  if (typeof error === 'object' && error && 'message' in error) return String((error as { message: unknown }).message)
+  return String(error)
+}
+
+function looksForeign(message: string) {
+  if (/[çğıöşüÇĞİÖŞÜ]/.test(message)) return false
+  return /\b(the|is|not|of|to|for|an?|failed|error|cannot|could|unexpected|undefined|null|invalid|unknown|denied)\b/i.test(message)
+}
+
 export function errorMessage(error: unknown) {
-  if (!error) return 'Bir hata oluştu'
-  const message = typeof error === 'object' && 'message' in error ? String((error as { message: unknown }).message) : String(error)
-  if (/Failed to fetch|NetworkError|Load failed/i.test(message)) return 'Bağlantı kurulamadı. İnternetini kontrol edip tekrar dene'
-  if (/JWT|session/i.test(message)) return 'Oturumun sona ermiş, tekrar giriş yap'
-  if (/row-level security|permission denied/i.test(message)) return 'Bu işlem için yetkin yok'
+  if (!error) return GENERIC_ERROR
+  if (error instanceof AppError) return error.message
+  const message = rawMessage(error).trim()
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    return 'İnternet bağlantın yok. Bağlantı gelince tekrar dene'
+  }
+  if (/Failed to fetch|NetworkError|Load failed|network request failed/i.test(message)) {
+    return 'Bağlantı kurulamadı. İnternetini kontrol edip tekrar dene'
+  }
+  if (/JWT|session|refresh token/i.test(message)) return 'Oturumun sona ermiş. Çıkış yapıp tekrar giriş yap'
+  if (/row-level security|permission denied/i.test(message)) return 'Bu işlem için yetkin yok. Sayfayı yenileyip tekrar dene'
   if (/duplicate key/i.test(message)) return 'Bu kayıt zaten var'
+  if (/foreign key/i.test(message)) return 'İlgili kayıt artık yok. Sayfayı yenileyip tekrar dene'
+  if (/check constraint|invalid input syntax|value too long/i.test(message)) {
+    return 'Girdiğin bilgilerden biri geçerli değil. Kontrol edip tekrar dene'
+  }
+  if (/timeout|timed out|502|503|504|gateway|upstream/i.test(message)) {
+    return 'Sunucu şu an yanıt vermiyor. Biraz bekleyip tekrar dene'
+  }
+  if (/rate limit|too many/i.test(message)) return 'Çok fazla deneme yaptın. Biraz bekleyip tekrar dene'
+  if (!message || looksForeign(message)) return GENERIC_ERROR
   return message
 }
 

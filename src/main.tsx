@@ -1,18 +1,22 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MotionConfig } from 'motion/react'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router/dom'
 import { Toaster } from 'sonner'
 import { AuthProvider } from '@/features/auth/session'
+import { installGlobalErrorLogging, reportError } from '@/lib/error-log'
 import '@/lib/install'
 import { applyTheme } from '@/lib/theme'
 import { router } from './router'
 import './index.css'
 
 applyTheme()
+installGlobalErrorLogging()
 
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({ onError: (error, query) => reportError(error, `query ${String(query.queryKey[0])}`) }),
+  mutationCache: new MutationCache({ onError: (error) => reportError(error, 'mutation') }),
   defaultOptions: {
     queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: true },
     mutations: { retry: 0 },

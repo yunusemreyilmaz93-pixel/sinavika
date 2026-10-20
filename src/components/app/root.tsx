@@ -1,8 +1,10 @@
-import { RotateCw } from 'lucide-react'
+import { RotateCw, WifiOff } from 'lucide-react'
+import { useEffect, useSyncExternalStore } from 'react'
 import { Outlet, ScrollRestoration, useNavigation, useRouteError } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { LogoMark } from '@/components/ui/logo'
 import { Spinner } from '@/components/ui/spinner'
+import { reportError } from '@/lib/error-log'
 
 export function RootLayout() {
   const navigation = useNavigation()
@@ -14,8 +16,31 @@ export function RootLayout() {
         </div>
       )}
       <ScrollRestoration />
+      <OfflineBanner />
       <Outlet />
     </>
+  )
+}
+
+function subscribeOnline(onChange: () => void) {
+  window.addEventListener('online', onChange)
+  window.addEventListener('offline', onChange)
+  return () => {
+    window.removeEventListener('online', onChange)
+    window.removeEventListener('offline', onChange)
+  }
+}
+
+function OfflineBanner() {
+  const online = useSyncExternalStore(subscribeOnline, () => navigator.onLine, () => true)
+  if (online) return null
+  return (
+    <div role="status" className="pt-safe fixed inset-x-0 top-0 z-[70] border-b border-warning/30 bg-warning-soft text-warning">
+      <p className="mx-auto flex max-w-5xl items-center justify-center gap-2 px-4 py-2 text-sm font-semibold">
+        <WifiOff className="size-4 shrink-0" />
+        İnternet bağlantın yok. Bağlantı gelince kaldığın yerden devam edebilirsin.
+      </p>
+    </div>
   )
 }
 
@@ -33,13 +58,16 @@ export function FullPageSpinner() {
 export function RouteError() {
   const error = useRouteError() as Error | undefined
   const chunk = error && /dynamically imported module|Importing a module script failed|Failed to fetch/i.test(error.message)
+  useEffect(() => {
+    if (!chunk) reportError(error, 'route')
+  }, [error, chunk])
   return (
     <div className="grid min-h-dvh place-items-center px-6">
       <div className="max-w-sm text-center">
         <LogoMark className="mx-auto size-10" />
         <h1 className="mt-5 text-2xl font-extrabold">{chunk ? 'Yeni sürüm hazır' : 'Bir şeyler ters gitti'}</h1>
         <p className="mt-2 text-muted">
-          {chunk ? 'Yolumnet güncellendi. Sayfayı yenileyince devam edebilirsin.' : 'Sayfayı yenilemeyi dene. Sorun devam ederse öğretmenine haber ver.'}
+          {chunk ? 'Yolumnet güncellendi. Sayfayı yenileyince devam edebilirsin.' : 'Bu hata bize otomatik olarak bildirildi. Sayfayı yenilemeyi dene. Sorun devam ederse öğretmenine haber ver.'}
         </p>
         <Button className="mt-6" onClick={() => window.location.reload()}>
           <RotateCw />
