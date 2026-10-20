@@ -1,9 +1,10 @@
-import { RotateCw, WifiOff } from 'lucide-react'
+import { ArrowRight, RotateCw, WifiOff } from 'lucide-react'
 import { useEffect, useSyncExternalStore } from 'react'
 import { Outlet, ScrollRestoration, useNavigation, useRouteError } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { LogoMark } from '@/components/ui/logo'
 import { Spinner } from '@/components/ui/spinner'
+import { SITE_HOST } from '@/lib/api'
 import { reportError } from '@/lib/error-log'
 
 export function RootLayout() {
@@ -17,8 +18,27 @@ export function RootLayout() {
       )}
       <ScrollRestoration />
       <OfflineBanner />
+      <MovedBanner />
       <Outlet />
     </>
+  )
+}
+
+const OLD_HOSTS = ['sinavika-app.vercel.app']
+
+function MovedBanner() {
+  if (typeof window === 'undefined' || !OLD_HOSTS.includes(window.location.hostname)) return null
+  const target = `https://${SITE_HOST}${window.location.pathname}${window.location.search}`
+  return (
+    <div role="status" className="pt-safe sticky top-0 z-[65] border-b border-accent/30 bg-accent-soft text-accent-soft-fg">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-sm">
+        <span className="font-semibold">Yolumnet'in adresi değişti.</span>
+        <a href={target} className="inline-flex min-h-9 items-center gap-1 font-bold underline underline-offset-4">
+          {SITE_HOST} adresine geç
+          <ArrowRight className="size-4" />
+        </a>
+      </div>
+    </div>
   )
 }
 
