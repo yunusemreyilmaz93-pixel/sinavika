@@ -31,7 +31,7 @@ export default function TopicsPage() {
     <>
       <PageHeader
         title="Konular"
-        description={viewed.canEdit ? 'Konuya dokununca durum değişir.' : `${viewed.name} için konu durumları.`}
+        description={viewed.canEdit ? 'Soldaki simgeye dokununca konunun durumu değişir. Kitap simgeli konuların anlatımı vardır.' : `${viewed.name} için konu durumları.`}
       />
       <TopicMap key={viewed.studentId} studentId={viewed.studentId} student={viewed.student} canEdit={viewed.canEdit} />
     </>

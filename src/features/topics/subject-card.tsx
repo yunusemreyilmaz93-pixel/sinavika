@@ -8,7 +8,7 @@ import { useLessonIndex } from '@/features/lessons/queries'
 import { cn } from '@/lib/cn'
 import { subjectColor, type Subject, type Topic } from '@/lib/exam'
 import { formatPercent, nextStatus, statusMeta, type TopicState } from './status'
-import type { Accuracy } from './use-topics'
+import type { Accuracy, LessonStats } from './use-topics'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -18,12 +18,13 @@ type Props = {
   visible: Topic[]
   statusOf: (topicId: number) => TopicState
   accuracy: Record<number, Accuracy> | undefined
+  lessonStats?: Map<number, LessonStats>
   open: boolean
   onToggle: () => void
   onCycle?: (topic: Topic) => void
 }
 
-export function SubjectCard({ subject, topics, visible, statusOf, accuracy, open, onToggle, onCycle }: Props) {
+export function SubjectCard({ subject, topics, visible, statusOf, accuracy, lessonStats, open, onToggle, onCycle }: Props) {
   const lessons = useLessonIndex().data
   const id = useId()
   let done = 0
@@ -85,25 +86,17 @@ export function SubjectCard({ subject, topics, visible, statusOf, accuracy, open
             transition={{ duration: 0.26, ease }}
             className="overflow-hidden"
           >
-            <ul className="flex flex-wrap gap-2 border-t border-line px-4 py-3.5 sm:px-5 sm:py-4">
+            <ul className="divide-y divide-line border-t border-line">
               {visible.map((topic) => (
-                <li key={topic.id} className="flex max-w-full items-stretch gap-1">
-                  <TopicChip
-                    name={topic.name}
-                    status={statusOf(topic.id)}
-                    accuracy={accuracy?.[topic.id]}
-                    onCycle={onCycle ? () => onCycle(topic) : undefined}
-                  />
-                  {lessons?.get(topic.id) === true && (
-                    <Link
-                      to={`/app/konular/${topic.id}`}
-                      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-accent-soft px-3 text-sm font-semibold text-accent-soft-fg transition-colors hover:brightness-95"
-                    >
-                      <BookOpen className="size-4" aria-hidden />
-                      Konu anlatımı
-                    </Link>
-                  )}
-                </li>
+                <TopicRow
+                  key={topic.id}
+                  topic={topic}
+                  status={statusOf(topic.id)}
+                  accuracy={accuracy?.[topic.id]}
+                  lesson={lessons?.get(topic.id) === true}
+                  lessonStats={lessonStats?.get(topic.id)}
+                  onCycle={onCycle ? () => onCycle(topic) : undefined}
+                />
               ))}
             </ul>
           </motion.div>
@@ -113,60 +106,80 @@ export function SubjectCard({ subject, topics, visible, statusOf, accuracy, open
   )
 }
 
-function TopicChip({
-  name,
+function TopicRow({
+  topic,
   status,
   accuracy,
+  lesson,
+  lessonStats,
   onCycle,
 }: {
-  name: string
+  topic: Topic
   status: TopicState
   accuracy?: Accuracy
+  lesson: boolean
+  lessonStats?: LessonStats
   onCycle?: () => void
 }) {
   const meta = statusMeta[status]
   const Icon = meta.icon
-  const base = cn(
-    'inline-flex min-h-11 max-w-full items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm leading-snug font-medium',
-    meta.chip,
+  const icon = (
+    <AnimatePresence mode="popLayout" initial={false}>
+      <motion.span
+        key={status}
+        className={cn('grid place-items-center', meta.iconTone)}
+        initial={{ scale: 0.3, opacity: 0, rotate: -60 }}
+        animate={{ scale: 1, opacity: 1, rotate: 0 }}
+        exit={{ scale: 0.3, opacity: 0 }}
+        transition={{ type: 'spring', bounce: 0.45, duration: 0.35 }}
+      >
+        <Icon className="size-5" strokeWidth={2.25} aria-hidden />
+      </motion.span>
+    </AnimatePresence>
   )
-  const content = (
-    <>
-      <span className="relative grid size-4 shrink-0 place-items-center">
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span
-            key={status}
-            className={cn('grid place-items-center', meta.iconTone)}
-            initial={{ scale: 0.3, opacity: 0, rotate: -60 }}
-            animate={{ scale: 1, opacity: 1, rotate: 0 }}
-            exit={{ scale: 0.3, opacity: 0 }}
-            transition={{ type: 'spring', bounce: 0.45, duration: 0.35 }}
-          >
-            <Icon className="size-4" strokeWidth={2.25} aria-hidden />
-          </motion.span>
-        </AnimatePresence>
-      </span>
-      <span className="min-w-0">{name}</span>
-      <span className="sr-only">, {meta.label}</span>
-      {accuracy && accuracy.total > 0 && <AccuracyTag accuracy={accuracy} />}
-    </>
-  )
-
-  if (!onCycle) return <div className={base}>{content}</div>
+  const box = cn('grid size-11 shrink-0 place-items-center rounded-xl border', meta.chip)
 
   return (
-    <button
-      type="button"
-      onClick={onCycle}
-      title={`Sonraki durum: ${statusMeta[nextStatus(status)].label}`}
-      className={cn(
-        base,
-        meta.hover,
-        'cursor-pointer touch-manipulation transition-[background-color,border-color,color,scale] duration-200 select-none active:scale-[0.96]',
+    <li className="flex items-center gap-3 px-3 py-1 sm:px-4">
+      {onCycle ? (
+        <button
+          type="button"
+          onClick={onCycle}
+          title={`Sonraki durum: ${statusMeta[nextStatus(status)].label}`}
+          className={cn(box, meta.hover, 'cursor-pointer touch-manipulation transition-[background-color,border-color,scale] duration-200 select-none active:scale-[0.94]')}
+        >
+          {icon}
+          <span className="sr-only">
+            {topic.name}, {meta.label}
+          </span>
+        </button>
+      ) : (
+        <div className={box}>
+          {icon}
+          <span className="sr-only">{meta.label}</span>
+        </div>
       )}
-    >
-      {content}
-    </button>
+      <div className="min-w-0 flex-1 py-1">
+        {lesson ? (
+          <Link to={`/app/konular/${topic.id}`} className="inline-flex min-h-6 max-w-full items-center gap-2 text-[15px] leading-snug font-semibold hover:underline">
+            <span className="min-w-0">{topic.name}</span>
+            <BookOpen className="size-4 shrink-0 text-accent" aria-hidden />
+            <span className="sr-only">, konu anlatımı</span>
+          </Link>
+        ) : (
+          <p className="text-[15px] leading-snug font-medium">{topic.name}</p>
+        )}
+        <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-muted">
+          <span>{meta.label}</span>
+          {accuracy && accuracy.total > 0 && <AccuracyTag accuracy={accuracy} />}
+          {lessonStats && lessonStats.answered > 0 && (
+            <span className="tabular">
+              Anlatım: {lessonStats.answered} soru çözüldü, ilk denemede {lessonStats.correct} doğru
+            </span>
+          )}
+        </p>
+      </div>
+    </li>
   )
 }
 
@@ -176,7 +189,7 @@ function AccuracyTag({ accuracy }: { accuracy: Accuracy }) {
   const tone = ratio >= 0.75 ? 'text-success' : ratio >= 0.5 ? 'text-warning' : 'text-danger'
   return (
     <span
-      className={cn('tabular shrink-0 border-l border-current/20 pl-2 text-xs font-bold', tone)}
+      className={cn('tabular shrink-0 text-xs font-bold', tone)}
       title={`${accuracy.total} soruda ${label} doğru`}
     >
       <span aria-hidden>{label}</span>

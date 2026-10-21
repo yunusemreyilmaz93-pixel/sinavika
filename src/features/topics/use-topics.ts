@@ -6,6 +6,7 @@ import type { TopicState } from './status'
 
 type ProgressRow = Tables<'topic_progress'>
 export type Accuracy = { correct: number; total: number }
+export type LessonStats = { answered: number; correct: number }
 
 const PAGE = 1000
 
@@ -39,6 +40,23 @@ export function useTopicAccuracy(studentId: string) {
           entry.total += row.correct + row.wrong + row.blank
         }
         if (rows.length < PAGE) break
+      }
+      return byTopic
+    },
+  })
+}
+
+export function useLessonStats(studentId: string) {
+  return useQuery({
+    queryKey: ['lesson-stats', studentId],
+    queryFn: async () => {
+      const byTopic = new Map<number, LessonStats>()
+      const rows = unwrap(await supabase.from('lesson_answers').select('topic_id, first_correct').eq('student_id', studentId).limit(5000))
+      for (const row of rows) {
+        const entry = byTopic.get(row.topic_id) ?? { answered: 0, correct: 0 }
+        entry.answered++
+        if (row.first_correct) entry.correct++
+        byTopic.set(row.topic_id, entry)
       }
       return byTopic
     },

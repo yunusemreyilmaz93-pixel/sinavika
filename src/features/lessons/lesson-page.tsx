@@ -1,6 +1,6 @@
 import { motion, useScroll, useSpring } from 'motion/react'
 import { BookOpen, ChevronDown, Clock3, NotebookPen, Pencil } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { PageHeader } from '@/components/app/page-header'
 import { Badge } from '@/components/ui/badge'
@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { PageSkeleton } from '@/components/ui/skeleton'
 import { useProfile } from '@/features/auth/session'
+import { statusMeta } from '@/features/topics/status'
+import { useSetTopicStatus, useTopicProgress } from '@/features/topics/use-topics'
 import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
 import { examLabel } from '@/lib/exam'
@@ -72,6 +74,7 @@ export default function LessonPage() {
         actions={
           <>
             {!lesson.published && <Badge tone="warning">Taslak</Badge>}
+            {profile.role === 'student' && <TopicStatusBadge studentId={profile.id} topicId={topic.id} publishedLesson={lesson.published} />}
             <Badge tone="neutral" className="h-8 px-3 text-sm">
               <Clock3 />
               Yaklaşık {minutes} dakika
@@ -114,6 +117,26 @@ export default function LessonPage() {
         <DesktopOutline outline={outline} />
       </div>
     </div>
+  )
+}
+
+function TopicStatusBadge({ studentId, topicId, publishedLesson }: { studentId: string; topicId: number; publishedLesson: boolean }) {
+  const progress = useTopicProgress(studentId)
+  const setStatus = useSetTopicStatus(studentId)
+  const started = useRef(false)
+  const status = progress.data?.find((r) => r.topic_id === topicId)?.status
+
+  useEffect(() => {
+    if (!progress.isSuccess || started.current || !publishedLesson) return
+    started.current = true
+    if (!status) setStatus.mutate({ topicId, status: 'learning' })
+  }, [progress.isSuccess, status, publishedLesson, topicId, setStatus])
+
+  if (!status) return null
+  return (
+    <Badge tone="neutral" className="h-8 px-3 text-sm">
+      {statusMeta[status].label}
+    </Badge>
   )
 }
 

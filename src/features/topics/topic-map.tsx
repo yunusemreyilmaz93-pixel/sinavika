@@ -15,7 +15,7 @@ import { matchesFilter, nextStatus, statusMeta, type TopicFilter, type TopicStat
 import { MasteryPanel } from './mastery-panel'
 import { SubjectCard } from './subject-card'
 import { TopicSummary, type TopicCounts } from './topic-summary'
-import { useSetTopicStatus, useTopicAccuracy, useTopicProgress } from './use-topics'
+import { useLessonStats, useSetTopicStatus, useTopicAccuracy, useTopicProgress } from './use-topics'
 
 type Props = {
   studentId: string
@@ -26,6 +26,26 @@ type Props = {
 const filterEmpty: Record<Exclude<TopicFilter, 'all'>, { title: string; description: string }> = {
   missing: { title: 'Eksik konu kalmadı', description: 'Bu sınavdaki tüm konular tamam olarak işaretli.' },
   review: { title: 'Tekrar bekleyen konu yok', description: 'Tekrar lazım olarak işaretlenen konular burada görünür.' },
+}
+
+function useRememberedSet(key: string) {
+  const [value, setValue] = useState<ReadonlySet<string>>(() => {
+    try {
+      return new Set<string>(JSON.parse(sessionStorage.getItem(key) ?? '[]'))
+    } catch {
+      return new Set<string>()
+    }
+  })
+  const update = (next: ReadonlySet<string> | ((prev: ReadonlySet<string>) => ReadonlySet<string>)) => {
+    const resolved = typeof next === 'function' ? next(value) : next
+    setValue(resolved)
+    try {
+      sessionStorage.setItem(key, JSON.stringify([...resolved]))
+    } catch {
+      // oturum depolaması kapalıysa durum yalnızca bu sayfada kalır
+    }
+  }
+  return [value, update] as const
 }
 
 function toggled<T>(set: ReadonlySet<T>, value: T) {
@@ -39,13 +59,14 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
   const curriculum = useCurriculum()
   const progress = useTopicProgress(studentId)
   const accuracy = useTopicAccuracy(studentId)
+  const lessonStats = useLessonStats(studentId)
   const setStatus = useSetTopicStatus(studentId)
 
   const kinds = examKindsFor(student)
   const [kindChoice, setKindChoice] = useState<ExamKind>(kinds[0])
   const kind = kinds.includes(kindChoice) ? kindChoice : kinds[0]
   const [filter, setFilter] = useState<TopicFilter>('all')
-  const [opened, setOpened] = useState<ReadonlySet<string>>(() => new Set())
+  const [opened, setOpened] = useRememberedSet(`yolumnet-konular-acik:${studentId}`)
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(() => new Set())
   const [touched, setTouched] = useState<ReadonlySet<number>>(() => new Set())
   const [announcement, setAnnouncement] = useState('')
@@ -216,6 +237,7 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
                       visible={g.visible}
                       statusOf={statusOf}
                       accuracy={accuracy.data}
+                      lessonStats={lessonStats.data}
                       open={open}
                       onToggle={() =>
                         filter === 'all'

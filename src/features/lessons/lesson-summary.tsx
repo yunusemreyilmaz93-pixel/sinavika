@@ -48,7 +48,7 @@ export function LessonSummary({ source }: { source: string }) {
   const current = progress.data?.find((r) => r.topic_id === track.topicId)?.status
   const openTasks = tasks.data ?? []
 
-  if (!keys.length && !openTasks.length) return null
+  const suggested = complete && current !== (good ? 'done' : 'review')
 
   return (
     <Card className="mt-10 space-y-4 p-4 sm:p-5">
@@ -84,8 +84,31 @@ export function LessonSummary({ source }: { source: string }) {
         </section>
       )}
 
+      {!suggested && (
+        <section aria-label="Konu durumu" className={keys.length > 0 ? 'border-t border-line pt-4' : ''}>
+          <h2 className="font-display text-lg font-bold">Konuyu bitirdin mi?</h2>
+          <p className="mt-1 text-[15px] text-muted">
+            {current === 'done' ? 'Bu konu Tamam olarak işaretli.' : current === 'review' ? 'Bu konu Tekrar lazım olarak işaretli.' : 'Bu konu şu an Çalışıyorum durumunda.'}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {current !== 'done' && (
+              <Button className="min-h-11" onClick={() => setStatus.mutate({ topicId: track.topicId, status: 'done' })}>
+                <CircleCheck />
+                Konuyu bitirdim
+              </Button>
+            )}
+            {current !== 'review' && (
+              <Button variant="secondary" className="min-h-11" onClick={() => setStatus.mutate({ topicId: track.topicId, status: 'review' })}>
+                <RotateCcw />
+                Tekrar lazım
+              </Button>
+            )}
+          </div>
+        </section>
+      )}
+
       {openTasks.length > 0 && (
-        <section aria-label="Bu konudaki görevlerin" className={keys.length > 0 ? 'border-t border-line pt-4' : ''}>
+        <section aria-label="Bu konudaki görevlerin" className="border-t border-line pt-4">
           <h2 className="flex items-center gap-2 font-display text-lg font-bold">
             <ListChecks className="size-5 text-primary" aria-hidden />
             Bu konudaki görevlerin
