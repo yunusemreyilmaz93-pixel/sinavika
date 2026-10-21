@@ -160,15 +160,7 @@ function TopicRow({
         </div>
       )}
       <div className="min-w-0 flex-1 py-1">
-        {lesson ? (
-          <Link to={`/app/konular/${topic.id}`} className="inline-flex min-h-6 max-w-full items-center gap-2 text-[15px] leading-snug font-semibold hover:underline">
-            <span className="min-w-0">{topic.name}</span>
-            <BookOpen className="size-4 shrink-0 text-accent" aria-hidden />
-            <span className="sr-only">, konu anlatımı</span>
-          </Link>
-        ) : (
-          <p className="text-[15px] leading-snug font-medium">{topic.name}</p>
-        )}
+        <p className="text-[15px] leading-snug font-medium">{topic.name}</p>
         <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-muted">
           <span>{meta.label}</span>
           {accuracy && accuracy.total > 0 && <AccuracyTag accuracy={accuracy} />}
@@ -179,6 +171,16 @@ function TopicRow({
           )}
         </p>
       </div>
+      {lesson && (
+        <Link
+          to={`/app/konular/${topic.id}`}
+          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-xl bg-accent-soft px-3 text-sm font-semibold text-accent-soft-fg transition-colors hover:brightness-95"
+        >
+          <BookOpen className="size-4" aria-hidden />
+          Anlatım
+          <span className="sr-only">, {topic.name}</span>
+        </Link>
+      )}
     </li>
   )
 }

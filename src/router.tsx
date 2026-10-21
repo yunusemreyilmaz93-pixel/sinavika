@@ -68,6 +68,7 @@ export const router = createBrowserRouter([
                   { path: 'ogrenciler/:studentId/deneme-ekle', ...page(() => import('@/features/exams/new-exam-page')) },
                   { path: 'asistan', ...page(() => import('@/features/assistant/assistant-page')) },
                   { path: 'planlayici', ...page(() => import('@/features/plan/planner-page')) },
+                  { path: 'mufredat', ...page(() => import('@/features/lessons/curriculum-page')) },
                   { path: 'davetler', ...page(() => import('@/features/teacher/invites-page')) },
                 ],
               },
