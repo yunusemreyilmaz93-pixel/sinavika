@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/card'
 import { Confirm } from '@/components/ui/confirm'
 import { Input } from '@/components/ui/field'
 import { Menu, MenuContent, MenuItem, MenuTrigger } from '@/components/ui/menu'
-import { useLessonIndex } from '@/features/lessons/queries'
+import { lessonKeys, useLessonIndex } from '@/features/lessons/queries'
 import { keys, type Curriculum } from '@/lib/data'
 import { examLabel, type Subject, type Topic } from '@/lib/exam'
 import { errorMessage, supabase, unwrap } from '@/lib/supabase'
@@ -35,6 +35,7 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
   const [editing, setEditing] = useState<number | null>(null)
   const [deleting, setDeleting] = useState<Topic | null>(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [publishOpen, setPublishOpen] = useState(false)
   const [name, setName] = useState('')
   const [adding, setAdding] = useState(false)
   const [addError, setAddError] = useState<string | null>(null)
@@ -43,6 +44,17 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
   const inflight = useRef(0)
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: keys.curriculum })
+  const drafts = topics.filter((t) => lessons?.get(t.id) === false)
+
+  async function publishDrafts() {
+    try {
+      unwrap(await supabase.from('lessons').update({ published: true }).in('topic_id', drafts.map((t) => t.id)))
+      await queryClient.invalidateQueries({ queryKey: lessonKeys.all })
+      toast.success('Anlatımlar yayınlandı')
+    } catch (err) {
+      toast.error(errorMessage(err))
+    }
+  }
 
   function move(index: number, delta: -1 | 1) {
     const target = index + delta
@@ -124,6 +136,11 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
             {examLabel[subject.exam]} · {topics.length} konu
           </p>
         </div>
+        {drafts.length > 0 && (
+          <Button variant="soft" size="sm" className="h-11" onClick={() => setPublishOpen(true)}>
+            Taslakları yayınla ({drafts.length})
+          </Button>
+        )}
       </div>
 
       {topics.length === 0 ? (
@@ -236,6 +253,15 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
           </p>
         )}
       </form>
+
+      <Confirm
+        open={publishOpen}
+        onOpenChange={setPublishOpen}
+        title="Taslaklar yayınlansın mı?"
+        description={`${subject.name} dersindeki ${drafts.length} taslak anlatım öğrencilere açılır.`}
+        confirmLabel="Yayınlayın"
+        onConfirm={publishDrafts}
+      />
 
       <Confirm
         open={confirmOpen}
