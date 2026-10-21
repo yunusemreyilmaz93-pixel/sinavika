@@ -7,6 +7,7 @@ import { cn } from '@/lib/cn'
 import { useVideoInfo } from '@/features/video/video-field'
 import { parseYouTubeId, thumbnailUrl } from '@/features/video/youtube'
 import { parseAttrs, parseLabSentence, type Attrs } from '../markdown/parse'
+import { SIMS } from '../sims'
 import { IMAGE_LINE } from './catalog'
 import { composeQuestion, listRows, pairRows, questionFields, type EditorBlock, type QuestionFields } from './model'
 import { AutoText, oneLine, RowsForm, useRows } from './rows'
@@ -447,7 +448,11 @@ export function SimForm({ block, onPatch }: { block: LeafBlock; onPatch: (p: Pat
     <Field label="Simülasyon">
       {(props) => (
         <select {...props} value={block.attrs.tur ?? 'gaz'} onChange={(e) => onPatch({ attrs: { ...block.attrs, tur: e.target.value } })} className="h-11 w-full rounded-xl border border-line bg-surface px-3 text-[15px]">
-          <option value="gaz">Gaz parçacıkları (basınç, sıcaklık, hacim)</option>
+          {Object.entries(SIMS).map(([tur, sim]) => (
+            <option key={tur} value={tur}>
+              {sim.label}
+            </option>
+          ))}
         </select>
       )}
     </Field>

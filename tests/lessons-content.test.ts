@@ -68,3 +68,23 @@ describe('konu anlatımı içeriği', () => {
     })
   }
 })
+
+describe('anlatımlara eklenen medya', () => {
+  const sql = readdirSync(dir)
+    .filter((f) => f.endsWith('.sql'))
+    .map((f) => readFileSync(join(dir, f), 'utf8'))
+    .join('\n')
+  const kinds = [...readFileSync(join(process.cwd(), 'src/features/lessons/sims/index.ts'), 'utf8').matchAll(/^ {2}(\w+): \{/gm)].map((m) => m[1])
+
+  it('simülasyon türleri kayıtlı', () => {
+    const used = [...sql.matchAll(/::sim\{tur="(\w+)"\}/g)].map((m) => m[1])
+    expect(used.length).toBeGreaterThan(0)
+    for (const tur of used) expect(kinds, `kayıtsız simülasyon: ${tur}`).toContain(tur)
+  })
+
+  it('video kimlikleri 11 karakter', () => {
+    const ids = [...sql.matchAll(/::video\{id="([^"]*)"/g)].map((m) => m[1])
+    expect(ids.length).toBeGreaterThan(0)
+    for (const id of ids) expect(id).toMatch(/^[\w-]{11}$/)
+  })
+})

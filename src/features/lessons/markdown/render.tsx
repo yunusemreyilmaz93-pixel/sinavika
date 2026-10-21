@@ -1,4 +1,4 @@
-import { isValidElement, lazy, memo, Suspense, type ReactNode } from 'react'
+import { isValidElement, memo, Suspense, type ReactNode } from 'react'
 import ReactMarkdown, { type Components } from 'react-markdown'
 import { Link } from 'react-router'
 import rehypeKatex from 'rehype-katex'
@@ -9,9 +9,8 @@ import { parseYouTubeId } from '@/features/video/youtube'
 import { questionKey, useLessonTrack } from '../answers'
 import { NotebookButton } from '../notebook-button'
 import { CauseEffect, Connect, Ek, Figure, Formula, Hit, LifeTimeline, Question, SelfCheck, SentenceLab, Tip, Video, YearScale } from '../blocks'
+import { SIMS } from '../sims'
 import { listItems, parseBlocks, parseEras, parseLabSentence, parseQuestion, plainText, slug, splitPipes, type Block } from './parse'
-
-const GasSim = lazy(() => import('../sims/gas-sim').then((m) => ({ default: m.GasSim })))
 
 type HastNode = { type: string; tagName?: string; value?: string; properties?: Record<string, unknown>; children?: HastNode[] }
 
@@ -145,10 +144,11 @@ function BlockView({ block, questionNumber }: { block: Block; questionNumber: nu
       if (!id) return null
       return <Video id={id} title={block.attrs.baslik || 'Video'} channel={block.attrs.kanal || ''} label={block.attrs.etiket || 'Video'} />
     }
-    if (block.name === 'sim' && block.attrs.tur === 'gaz') {
+    const sim = block.name === 'sim' ? SIMS[block.attrs.tur ?? ''] : undefined
+    if (sim) {
       return (
         <Suspense fallback={<div className="my-6 h-80 rounded-2xl border border-line bg-surface-2" aria-hidden />}>
-          <GasSim />
+          <sim.Component />
         </Suspense>
       )
     }
