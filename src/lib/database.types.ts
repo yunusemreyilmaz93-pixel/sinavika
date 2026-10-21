@@ -302,6 +302,31 @@ export type Database = {
           },
         ];
       };
+      bug_reports: {
+        Row: {
+          created_at: string;
+          id: number;
+          images: string[];
+          message: string;
+          path: string | null;
+          reporter_name: string | null;
+          role: Database["public"]["Enums"]["user_role"] | null;
+          status: string;
+          user_agent: string | null;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          images?: string[];
+          message: string;
+          path?: string | null;
+          user_agent?: string | null;
+        };
+        Update: {
+          status?: string;
+        };
+        Relationships: [];
+      };
       catalog_books: {
         Row: {
           author: string;

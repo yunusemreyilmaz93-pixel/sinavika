@@ -58,7 +58,7 @@ export function useDeleteLesson(topicId: number) {
 
 const MAX_SIDE = 1600
 
-async function toWebp(file: File): Promise<Blob> {
+export async function toWebp(file: File): Promise<Blob> {
   const bitmap = await createImageBitmap(file).catch(() => null)
   if (!bitmap) throw new AppError('Bu dosya bir görsel gibi görünmüyor. JPG, PNG ya da WebP yükleyin')
   const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height))

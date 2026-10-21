@@ -15,6 +15,7 @@ import { PendingApproval } from '@/features/auth/pending-approval'
 import { cn } from '@/lib/cn'
 import { useTheme, type ThemeChoice } from '@/lib/theme'
 import { navFor, type NavItem } from './nav'
+import { ReportIssueButton } from '@/features/feedback/report-issue'
 import { SupportLink } from './support-link'
 
 const roleLabel: Record<Profile['role'], string> = { teacher: 'Öğretmen', student: 'Öğrenci', parent: 'Veli' }
@@ -54,6 +55,7 @@ export function AppShell() {
           ))}
         </nav>
         <div className="space-y-1 border-t border-line p-3">
+          <ReportIssueButton />
           {!isStudent && <SupportLink />}
           <UserMenu profile={profile} wide />
         </div>
@@ -184,7 +186,8 @@ function BottomNav({ items, onQuickAdd, support }: { items: NavItem[]; onQuickAd
             )
           })}
         </div>
-        {support && <SupportLink className="mt-3 border border-line" />}
+        <ReportIssueButton className="mt-3 border border-line" />
+        {support && <SupportLink className="mt-2 border border-line" />}
       </Modal>
     </>
   )

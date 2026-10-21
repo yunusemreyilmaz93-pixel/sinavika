@@ -577,6 +577,22 @@ await test('YÖK Atlas verisi: giriş yapan okur, kimse yazamaz, öğrenci hedef
   await service('delete from public.universities where id = 999001')
 })
 
+await test('hata bildirimi: herkes kendi adına yazar, yönetici okur ve bildirim alır, günde en fazla 10', async () => {
+  await as(s1, `insert into public.bug_reports (message, path, images) values ('Konular sayfası açılmıyor', '/app/konular', array['a/b.webp'])`)
+  const [row] = await as(s1, 'select role, reporter_name, status from public.bug_reports')
+  assert.deepEqual(row, { role: 'student', reporter_name: 'Deniz Y.', status: 'open' })
+  assert.equal((await as(s2, 'select 1 from public.bug_reports')).length, 0)
+  assert.equal((await as(adminId, 'select 1 from public.bug_reports')).length, 1)
+  assert.equal((await as(adminId, `select 1 from public.notifications where kind = 'bug'`)).length, 1)
+  await rejects(as(s1, `insert into public.bug_reports (message, user_id) values ('Başkası adına bildirim', $1)`, [s2]), /row-level security|permission denied/)
+  assert.equal((await as(s1, `update public.bug_reports set status = 'done' returning id`)).length, 0)
+  await rejects(as(s1, `insert into public.bug_reports (message, images) values ('Çok görsel var', array['1','2','3','4'])`), /check/)
+  assert.equal((await as(adminId, `update public.bug_reports set status = 'done' returning id`)).length, 1)
+  for (let i = 0; i < 9; i++) await as(s1, `insert into public.bug_reports (message) values ('Tekrar bildirim ${i}')`)
+  await rejects(as(s1, `insert into public.bug_reports (message) values ('Onbirinci bildirim')`), /çok fazla bildirim/)
+  await service('delete from public.bug_reports')
+})
+
 await test('kitap kataloğu: giriş yapan arar, yazım hatası ve Türkçe karakter toleransı var, kimse yazamaz', async () => {
   const find = async (q) => (await as(s1, 'select title from public.search_catalog_books($1)', [q])).map((r) => r.title)
   assert.ok((await find('harry poter')).some((t) => t.startsWith('Harry Potter')))

@@ -8,6 +8,7 @@ import { ApplicationsSection } from './applications-section'
 import { CurriculumSection } from './curriculum-section'
 import { ErrorsSection } from './errors-section'
 import { OverviewSection } from './overview-section'
+import { ReportsSection, useOpenReportCount } from './reports-section'
 import { useAdminOverview } from './queries'
 import { TeachersSection } from './teachers-section'
 
@@ -17,6 +18,7 @@ const sections = [
   { value: 'ogretmenler', label: 'Öğretmenler' },
   { value: 'ayarlar', label: 'Ayarlar' },
   { value: 'mufredat', label: 'Müfredat' },
+  { value: 'bildirimler', label: 'Hata bildirimleri' },
   { value: 'hatalar', label: 'Hatalar' },
 ] as const
 
@@ -32,6 +34,7 @@ export default function AdminPage() {
   const section: Section = isSection(raw) ? raw : 'genel'
   const overview = useAdminOverview()
   const pending = overview.data?.teachers_pending ?? 0
+  const reports = useOpenReportCount().data ?? 0
   const tabsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -47,7 +50,7 @@ export default function AdminPage() {
       <PageHeader title="Yönetim" />
       <div ref={tabsRef} className="mb-5">
         <Segmented
-          options={sections.map((s) => (s.value === 'basvurular' ? { ...s, badge: pending } : { ...s }))}
+          options={sections.map((s) => (s.value === 'basvurular' ? { ...s, badge: pending } : s.value === 'bildirimler' ? { ...s, badge: reports } : { ...s }))}
           value={section}
           onChange={go}
         />
@@ -63,6 +66,7 @@ export default function AdminPage() {
           {section === 'ogretmenler' && <TeachersSection />}
           {section === 'ayarlar' && <AppSettingsSection />}
           {section === 'mufredat' && <CurriculumSection />}
+          {section === 'bildirimler' && <ReportsSection />}
           {section === 'hatalar' && <ErrorsSection />}
         </motion.div>
     </div>
