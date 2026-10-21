@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { callApi } from '@/lib/api'
 
-export type AiProvider = 'anthropic' | 'openai' | 'gemini'
+import type { AiProvider } from './providers'
+
+export type { AiProvider }
 export type AiStatus = {
   configured: boolean
   dailyLimit: number
@@ -24,13 +26,6 @@ export type Proposal = { studentId: string; studentName: string; tasks: Proposal
 export type Sent = { system: string; turns: { rol: string; metin: string }[] }
 export type ChatMessage = { role: 'user' | 'assistant'; content: string; proposals?: Proposal[]; sent?: Sent }
 
-export const providerLabels: Record<AiProvider, string> = { anthropic: 'Anthropic (Claude)', openai: 'OpenAI', gemini: 'Google (Gemini)' }
-export const modelHints: Record<AiProvider, string[]> = {
-  anthropic: ['claude-sonnet-5-5', 'claude-haiku-5-5'],
-  openai: ['gpt-4.1-mini', 'gpt-4.1', 'gpt-4o-mini'],
-  gemini: ['gemini-2.5-flash', 'gemini-2.5-pro'],
-}
-
 const statusKey = ['ai', 'status'] as const
 
 export function useAiStatus() {
@@ -51,6 +46,10 @@ export function useRemoveAiKey() {
     mutationFn: () => callApi('ai', { action: 'remove_key' }),
     onSuccess: () => qc.invalidateQueries({ queryKey: statusKey }),
   })
+}
+
+export function fetchModels(provider: AiProvider, apiKey: string) {
+  return callApi<{ models: string[] }>('ai', { action: 'models', provider, apiKey }).then((r) => r.models)
 }
 
 export function askAssistant(messages: Pick<ChatMessage, 'role' | 'content'>[]) {

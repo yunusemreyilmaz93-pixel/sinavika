@@ -3,19 +3,22 @@ import { z } from 'zod'
 import { runChat } from './_lib/ai/agent.js'
 import { decryptKey, encryptKey, isConfigured } from './_lib/ai/crypto.js'
 import { makePrivacy, type Person } from './_lib/ai/privacy.js'
-import { callModel, type Provider } from './_lib/ai/providers.js'
+import { callModel, listModels, PROVIDER_IDS, type Provider } from './_lib/ai/providers.js'
 import type { StudentRow, SubjectRow, TopicRow } from './_lib/ai/tools.js'
 import { admin, callerId, dbMessage, handle, HttpError, json, readJson } from './_lib/server.js'
 
 const DAILY_LIMIT = 60
 
+const apiKeyField = z.string().trim().min(16, 'Anahtar çok kısa').max(400, 'Anahtar çok uzun').regex(/^\S+$/, 'Anahtarda boşluk olmamalı')
+
 const schema = z.discriminatedUnion('action', [
   z.object({ action: z.literal('status') }),
+  z.object({ action: z.literal('models'), provider: z.enum(PROVIDER_IDS), apiKey: apiKeyField }),
   z.object({
     action: z.literal('save_key'),
-    provider: z.enum(['anthropic', 'openai', 'gemini']),
+    provider: z.enum(PROVIDER_IDS),
     model: z.string().trim().regex(/^[\w.:/-]{1,80}$/, 'Model adı geçersiz'),
-    apiKey: z.string().trim().min(16, 'Anahtar çok kısa').max(400, 'Anahtar çok uzun').regex(/^\S+$/, 'Anahtarda boşluk olmamalı'),
+    apiKey: apiKeyField,
     consent: z.literal(true, { message: 'Devam etmek için aydınlatmayı onaylamalısınız' }),
   }),
   z.object({ action: z.literal('remove_key') }),
@@ -76,6 +79,10 @@ export const POST = handle(async (request) => {
   if (input.action === 'status') {
     const { data } = await admin().from('teacher_ai_keys').select('provider, model, key_last4, consented_at').eq('teacher_id', id).maybeSingle()
     return json({ ok: true, configured: isConfigured(), key: data ?? null, dailyLimit: DAILY_LIMIT })
+  }
+
+  if (input.action === 'models') {
+    return json({ ok: true, models: await listModels({ provider: input.provider, apiKey: input.apiKey }) })
   }
 
   if (input.action === 'remove_key') {

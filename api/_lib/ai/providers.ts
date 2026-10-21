@@ -1,6 +1,8 @@
 import { HttpError } from '../server.js'
 
-export type Provider = 'anthropic' | 'openai' | 'gemini'
+export const PROVIDER_IDS = ['anthropic', 'openai', 'gemini', 'xai', 'mistral', 'deepseek', 'groq', 'openrouter', 'together'] as const
+export type Provider = (typeof PROVIDER_IDS)[number]
+type CompatibleProvider = Exclude<Provider, 'anthropic'>
 export type ToolSpec = { name: string; description: string; schema: Record<string, unknown> }
 export type ToolCall = { id: string; name: string; input: Record<string, unknown> }
 export type Turn =
@@ -11,10 +13,18 @@ export type ModelReply = { text: string; calls: ToolCall[] }
 export type ModelConfig = { provider: Provider; apiKey: string; model: string }
 export type ModelRequest = { system: string; turns: Turn[]; tools: ToolSpec[]; maxTokens: number }
 
-const OPENAI_BASE: Record<'openai' | 'gemini', string> = {
-  openai: 'https://api.openai.com/v1',
-  gemini: 'https://generativelanguage.googleapis.com/v1beta/openai',
+const COMPATIBLE: Record<CompatibleProvider, { base: string; maxTokens: 'max_completion_tokens' | 'max_tokens' }> = {
+  openai: { base: 'https://api.openai.com/v1', maxTokens: 'max_completion_tokens' },
+  gemini: { base: 'https://generativelanguage.googleapis.com/v1beta/openai', maxTokens: 'max_tokens' },
+  xai: { base: 'https://api.x.ai/v1', maxTokens: 'max_tokens' },
+  mistral: { base: 'https://api.mistral.ai/v1', maxTokens: 'max_tokens' },
+  deepseek: { base: 'https://api.deepseek.com', maxTokens: 'max_tokens' },
+  groq: { base: 'https://api.groq.com/openai/v1', maxTokens: 'max_tokens' },
+  openrouter: { base: 'https://openrouter.ai/api/v1', maxTokens: 'max_tokens' },
+  together: { base: 'https://api.together.ai/v1', maxTokens: 'max_tokens' },
 }
+
+const baseOf = (provider: CompatibleProvider) => process.env[`AI_${provider.toUpperCase()}_BASE_URL`] || COMPATIBLE[provider].base
 
 // Sağlayıcı yanıtının gövdesi anahtarı geri döndürebilir. Hiçbir zaman öğretmene ya da günlüğe aktarılmaz
 function failure(status: number, body: string): never {
@@ -110,9 +120,9 @@ function openaiMessages(system: string, turns: Turn[]) {
   ]
 }
 
-async function openaiCompatible(cfg: ModelConfig & { provider: 'openai' | 'gemini' }, req: ModelRequest, fetchImpl: typeof fetch): Promise<ModelReply> {
-  const base = process.env[`AI_${cfg.provider.toUpperCase()}_BASE_URL`] || OPENAI_BASE[cfg.provider]
-  const limit = cfg.provider === 'openai' ? { max_completion_tokens: req.maxTokens } : { max_tokens: req.maxTokens }
+async function openaiCompatible(cfg: ModelConfig & { provider: CompatibleProvider }, req: ModelRequest, fetchImpl: typeof fetch): Promise<ModelReply> {
+  const base = baseOf(cfg.provider)
+  const limit = { [COMPATIBLE[cfg.provider].maxTokens]: req.maxTokens }
   const data = await send(
     `${base}/chat/completions`,
     {
@@ -152,5 +162,42 @@ export function callModel(cfg: ModelConfig, req: ModelRequest, fetchImpl: typeof
     const override = process.env.AI_ANTHROPIC_BASE_URL
     return anthropic(cfg, req, override ? ((url, init) => fetchImpl(String(url).replace('https://api.anthropic.com', override), init)) as typeof fetch : fetchImpl)
   }
-  return openaiCompatible(cfg as ModelConfig & { provider: 'openai' | 'gemini' }, req, fetchImpl)
+  return openaiCompatible(cfg as ModelConfig & { provider: CompatibleProvider }, req, fetchImpl)
+}
+
+type ListedModel = { id?: unknown; created?: unknown; type?: unknown; supported_parameters?: unknown; architecture?: { output_modalities?: unknown } }
+
+const NOT_CHAT = /embed|moderation|whisper|tts|transcribe|audio|realtime|image|imagen|veo|dall|speech|rerank|guard|ocr|aqa|diarize|search|vision-preview|safeguard|live|computer-use/i
+
+function isChatModel(provider: Provider, id: string, item: ListedModel) {
+  if (NOT_CHAT.test(id)) return false
+  if (provider === 'openai') return /^(gpt-|o\d|chatgpt-)/.test(id)
+  if (provider === 'gemini') return id.startsWith('gemini')
+  if (provider === 'together') return item.type === undefined || item.type === 'chat'
+  if (provider === 'openrouter') return !Array.isArray(item.supported_parameters) || item.supported_parameters.includes('tools')
+  return true
+}
+
+// Anahtarla sağlayıcıdan sohbet modellerinin güncel listesini ister. Liste adresi yoksa boş döner, model elle yazılır
+export async function listModels(cfg: { provider: Provider; apiKey: string }, fetchImpl: typeof fetch = fetch): Promise<string[]> {
+  const anthropicBase = process.env.AI_ANTHROPIC_BASE_URL || 'https://api.anthropic.com'
+  const request: { url: string; headers: Record<string, string> } =
+    cfg.provider === 'anthropic'
+      ? { url: `${anthropicBase}/v1/models?limit=100`, headers: { 'x-api-key': cfg.apiKey, 'anthropic-version': '2023-06-01' } }
+      : { url: `${baseOf(cfg.provider)}/models`, headers: { authorization: `Bearer ${cfg.apiKey}` } }
+  let data: unknown
+  try {
+    data = await send(request.url, { method: 'GET', headers: request.headers }, fetchImpl)
+  } catch (err) {
+    if (err instanceof HttpError && err.message.startsWith('Bu model bulunamadı')) return []
+    throw err
+  }
+  const raw = Array.isArray(data) ? data : Array.isArray((data as { data?: unknown }).data) ? (data as { data: unknown[] }).data : []
+  const items = (raw as ListedModel[]).filter((m) => typeof m.id === 'string')
+  const listed = items
+    .map((m) => ({ id: (m.id as string).replace(/^models\//, ''), created: typeof m.created === 'number' ? m.created : 0, item: m }))
+    .filter((m) => isChatModel(cfg.provider, m.id, m.item))
+  const dated = listed.filter((m) => m.created > 0).length > listed.length / 2
+  listed.sort((a, b) => (dated ? b.created - a.created : 0) || b.id.localeCompare(a.id))
+  return [...new Set(listed.map((m) => m.id))].slice(0, 80)
 }

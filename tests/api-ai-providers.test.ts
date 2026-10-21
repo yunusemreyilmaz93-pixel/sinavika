@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest'
-import { callModel, type Turn } from '../api/_lib/ai/providers.js'
+import { callModel, listModels, type Turn } from '../api/_lib/ai/providers.js'
 
 const reply = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status })
 const tools = [{ name: 'ogrencileri_listele', description: 'liste', schema: { type: 'object', properties: {} } }]
@@ -66,5 +66,48 @@ describe('hata çevirisi', () => {
     await expect(run(429, { error: { code: 'insufficient_quota' } })).rejects.toThrow(/kota/)
     await expect(run(404, { error: { message: 'The model does not exist' } })).rejects.toThrow(/model/i)
     await run(401, { error: { message: 'Incorrect API key provided: SIR-ANAHTAR' } }).catch((e: Error) => expect(e.message).not.toContain('SIR-ANAHTAR'))
+  })
+})
+
+describe('model listesi', () => {
+  const list = (provider: 'anthropic' | 'openai' | 'gemini' | 'together' | 'openrouter' | 'groq', body: unknown, status = 200) => {
+    let url = ''
+    const stub = (async (u: string) => {
+      url = u
+      return reply(body, status)
+    }) as unknown as typeof fetch
+    return listModels({ provider, apiKey: 'k' }, stub).then((models) => ({ models, url }))
+  }
+
+  it('OpenAI: yalnızca sohbet modellerini, yenisi önce getirir', async () => {
+    const r = await list('openai', {
+      data: [
+        { id: 'text-embedding-3-large', created: 5 },
+        { id: 'gpt-5.5', created: 100 },
+        { id: 'gpt-5.6-sol', created: 300 },
+        { id: 'whisper-1', created: 1 },
+        { id: 'gpt-image-2', created: 200 },
+        { id: 'o4-mini', created: 50 },
+      ],
+    })
+    expect(r.models).toEqual(['gpt-5.6-sol', 'gpt-5.5', 'o4-mini'])
+    expect(r.url).toBe('https://api.openai.com/v1/models')
+  })
+  it('Gemini: models/ önekini atar, gömme modellerini eler', async () => {
+    const r = await list('gemini', { data: [{ id: 'models/gemini-4-argon' }, { id: 'models/gemini-3.8-flash' }, { id: 'models/text-embedding-004' }, { id: 'models/gemini-embedding-001' }] })
+    expect(r.models).toEqual(['gemini-4-argon', 'gemini-3.8-flash'])
+  })
+  it('Anthropic: kendi adresine gider', async () => {
+    const r = await list('anthropic', { data: [{ id: 'claude-sonnet-5-5' }, { id: 'claude-opus-5-5' }] })
+    expect(r.url).toBe('https://api.anthropic.com/v1/models?limit=100')
+    expect(r.models).toContain('claude-opus-5-5')
+  })
+  it('Together dizi döner ve yalnızca chat türü alınır, OpenRouter araç desteklemeyeni eler', async () => {
+    expect((await list('together', [{ id: 'a/chat-1', type: 'chat' }, { id: 'a/img', type: 'image' }])).models).toEqual(['a/chat-1'])
+    expect((await list('openrouter', { data: [{ id: 'x/tools', supported_parameters: ['tools'] }, { id: 'x/plain', supported_parameters: ['temperature'] }] })).models).toEqual(['x/tools'])
+  })
+  it('liste adresi yoksa boş döner, anahtar hatası iletilir', async () => {
+    expect((await list('groq', { error: 'yok' }, 404)).models).toEqual([])
+    await expect(list('groq', { error: { message: 'Invalid API Key' } }, 401)).rejects.toThrow(/Anahtar geçersiz/)
   })
 })
