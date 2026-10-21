@@ -25,8 +25,10 @@ export const GET = handle(async (request) => {
   const weekday = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Istanbul', weekday: 'short' }).format(new Date())
   const reminders = await db.rpc('send_daily_reminders')
   const reports = weekday === 'Mon' ? await db.rpc('send_weekly_reports') : { data: 0, error: null }
+  const digests = weekday === 'Mon' ? await db.rpc('send_teacher_digests') : { data: 0, error: null }
   if (reminders.error) console.error('Hatırlatmalar gönderilemedi', reminders.error.message)
   if (reports.error) console.error('Veli raporları gönderilemedi', reports.error.message)
+  if (digests.error) console.error('Öğretmen özetleri gönderilemedi', digests.error.message)
 
   const origin = new URL(request.url).origin
   await fetch(`${origin}/api/push`, {
@@ -35,5 +37,5 @@ export const GET = handle(async (request) => {
     body: JSON.stringify({ action: 'dispatch' }),
   }).catch(() => undefined)
 
-  return json({ ok: true, reminders: reminders.data ?? 0, reports: reports.data ?? 0 })
+  return json({ ok: true, reminders: reminders.data ?? 0, reports: reports.data ?? 0, digests: digests.data ?? 0 })
 })

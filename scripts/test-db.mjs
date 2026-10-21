@@ -302,6 +302,21 @@ await test('haftalık veli raporu bir kez gider ve geçen haftayı özetler', as
   assert.match(rows[0].body, /1 sa 35 dk çalıştı/)
 })
 
+await test('öğretmen dikkat özeti bir kez gider, gecikmiş görevi söyler, öğrenci tetikleyemez', async () => {
+  await service(
+    `insert into public.tasks (student_id, title, due_on)
+     select $1, 'Gecikmiş ' || g, private.today() - g from generate_series(1, 3) g`,
+    [s1],
+  )
+  await service('select public.send_teacher_digests()')
+  await service('select public.send_teacher_digests()')
+  const rows = await as(teacherA, `select title, body from public.notifications where kind = 'report' and dedupe_key like 'teacher-digest:%'`)
+  assert.equal(rows.length, 1)
+  assert.match(rows[0].body, /3 gecikmiş görev/)
+  assert.equal((await as(s1, `select 1 from public.notifications where dedupe_key like 'teacher-digest:%'`)).length, 0)
+  await rejects(as(teacherA, 'select public.send_teacher_digests()'), /permission denied/)
+})
+
 await test('günlük hatırlatma bugünkü görevleri söyler, arşivdekine gitmez, öğrenci tetikleyemez', async () => {
   await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'Paragraf', private.today())`, [s1])
   await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'Problemler', private.today())`, [s2])
