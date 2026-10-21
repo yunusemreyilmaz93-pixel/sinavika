@@ -1334,16 +1334,6 @@ export type Database = {
           track: Database["public"]["Enums"]["exam_track"];
         }[];
       };
-      recent_lessons: {
-        Args: { p_limit?: number };
-        Returns: {
-          exam: Database["public"]["Enums"]["exam_kind"];
-          published_at: string;
-          subject_name: string;
-          topic_id: number;
-          topic_name: string;
-        }[];
-      };
       redeem_invite: {
         Args: { p_code: string; p_full_name: string; p_user: string; p_username: string };
         Returns: Database["public"]["Enums"]["user_role"];
