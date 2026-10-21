@@ -96,7 +96,6 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
                     layout
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.2 }}
                     className="flex min-h-14 items-center gap-3 py-2 first:pt-0"
                   >
@@ -126,12 +125,10 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
             <p className="mt-2 text-sm text-danger">{errorMessage(invite.error)}</p>
           ) : current ? (
             <div className="mt-3">
-              <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={current.code}
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
                   className="grid-paper rounded-2xl border border-dashed border-line-strong px-4 py-5 text-center"
                 >
@@ -145,7 +142,6 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
                     {format(new Date(current.expires_at), 'd MMMM', { locale: tr })} tarihine kadar geçerli. Tek kullanımlık.
                   </p>
                 </motion.div>
-              </AnimatePresence>
               <div className="mt-3 grid gap-2 sm:grid-cols-3">
                 <Button onClick={() => void copyText(current.code, 'Kod kopyalandı')}>
                   <Copy />

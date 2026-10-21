@@ -6,7 +6,6 @@ const lessons: Lesson[] = [
     topic: 'Bir Kahraman Doğuyor',
     grade: '8. sınıf T.C. İnkılap Tarihi ve Atatürkçülük, 1. ünite',
     date: '2026-10-20',
-    author: 'Yunus Emre Yılmaz',
     readingMinutes: 10,
     teacherNote: [
       {
@@ -29,7 +28,6 @@ const lessons: Lesson[] = [
     topic: 'Fiilimsiler',
     grade: '8. sınıf Türkçe, Fiilimsiler',
     date: '2026-10-21',
-    author: 'Yunus Emre Yılmaz',
     readingMinutes: 10,
     teacherNote: [
       {

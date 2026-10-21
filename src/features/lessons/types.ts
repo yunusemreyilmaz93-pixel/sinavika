@@ -10,7 +10,6 @@ export type Lesson = {
   topic: string
   grade: string
   date: string
-  author: string
   readingMinutes: number
   teacherNote: { label: string; text: string }[]
   load: () => Promise<{ default: ComponentType<LessonBodyProps>; outline: LessonOutline }>

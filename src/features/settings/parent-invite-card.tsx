@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { tr } from 'date-fns/locale'
 import { Copy, HeartHandshake, Link2, RefreshCw, Share2 } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Avatar } from '@/components/ui/avatar'
@@ -109,12 +109,10 @@ export function ParentInviteCard() {
         </div>
       ) : current ? (
         <div>
-          <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={current.code}
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="grid-paper rounded-2xl border border-dashed border-line-strong px-4 py-5 text-center"
             >
@@ -131,7 +129,6 @@ export function ParentInviteCard() {
                 {format(new Date(current.expires_at), 'd MMMM', { locale: tr })} tarihine kadar geçerli. Tek kullanımlık.
               </p>
             </motion.div>
-          </AnimatePresence>
           <div className="mt-3 flex flex-col gap-2 sm:flex-row">
             <Button className="sm:flex-1" onClick={() => void share(current.code)}>
               <Share2 />

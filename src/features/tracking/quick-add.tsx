@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, type Variants } from 'motion/react'
+import { motion, type Variants } from 'motion/react'
 import { ArrowLeft, Clock, ListChecks, NotebookTabs, Timer, Trophy, type LucideIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
@@ -84,14 +84,12 @@ export function QuickAddModal({ open, onOpenChange }: SheetProps) {
       description={step === 'menu' ? 'Ne yaptığını seç, birkaç dokunuşla kaydet.' : titles[step].description}
     >
       <div className="-mx-5 overflow-x-clip px-5">
-        <AnimatePresence mode="wait" initial={false} custom={dir}>
           <motion.div
             key={step}
             custom={dir}
             variants={slide}
             initial="enter"
             animate="center"
-            exit="exit"
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             {step === 'menu' && (
@@ -119,7 +117,6 @@ export function QuickAddModal({ open, onOpenChange }: SheetProps) {
             {step === 'questions' && <QuestionLogForm studentId={student.id} onDone={close} />}
             {step === 'study' && <StudySessionForm studentId={student.id} onDone={close} />}
           </motion.div>
-        </AnimatePresence>
       </div>
     </Modal>
   )

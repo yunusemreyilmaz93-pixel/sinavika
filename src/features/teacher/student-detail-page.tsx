@@ -1,5 +1,5 @@
 import { ArrowLeft, RotateCw, UserRoundX } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import { useEffect, useMemo, useRef } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
@@ -117,12 +117,10 @@ export default function StudentDetailPage() {
         <Segmented options={[...tabs]} value={tab} onChange={setTab} className="[&>button]:min-w-fit [&>button]:px-3.5" />
       </div>
 
-      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={tab}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
           transition={{ duration: 0.16, ease: 'easeOut' }}
           role="tabpanel"
           aria-label={tabs.find((t) => t.value === tab)?.label}
@@ -145,7 +143,6 @@ export default function StudentDetailPage() {
           {tab === 'notlar' && <TeacherNotes studentId={student.id} />}
           {tab === 'ayarlar' && <SettingsTab student={student} />}
         </motion.div>
-      </AnimatePresence>
     </div>
   )
 }

@@ -69,7 +69,7 @@ export default function LessonPage() {
         }
       />
       <p className="-mt-3 mb-6 text-sm text-muted">
-        {subject ? `${examLabel[subject.exam]} · ${subject.name}` : null} · {formatDate(lesson.date, 'd MMMM yyyy')} · {lesson.author}
+        {subject ? `${examLabel[subject.exam]} · ${subject.name}` : null} · {formatDate(lesson.date, 'd MMMM yyyy')}
       </p>
 
       {profile.role === 'teacher' && (

@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import { Check, ChevronsUpDown, LogOut, Menu as MenuIcon, Monitor, Moon, Plus, Settings, Sun } from 'lucide-react'
 import { Suspense, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
@@ -67,23 +67,15 @@ export function AppShell() {
         </header>
 
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 pt-5 pb-32 sm:px-6 sm:pt-8 lg:pb-12">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.18, ease: 'easeOut' }}
-            >
-              {pending ? (
-                <PendingApproval />
-              ) : (
-                <Suspense fallback={<PageSkeleton />}>
-                  <Outlet />
-                </Suspense>
-              )}
-            </motion.div>
-          </AnimatePresence>
+          <div key={location.pathname} className="animate-fade-in">
+            {pending ? (
+              <PendingApproval />
+            ) : (
+              <Suspense fallback={<PageSkeleton />}>
+                <Outlet />
+              </Suspense>
+            )}
+          </div>
         </main>
       </div>
 

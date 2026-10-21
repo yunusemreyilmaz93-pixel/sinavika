@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, AtSign, CalendarCheck2, ChevronRight, HeartHandshake, KeyRound, LogIn, Presentation } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
@@ -96,14 +96,12 @@ export default function JoinPage() {
   } else {
     const parentLinking = Boolean(signedInProfile)
     content = (
-      <AnimatePresence mode="wait" initial={false} custom={step === 'details' ? 1 : -1}>
         <motion.div
           key={step}
           custom={step === 'details' ? 1 : -1}
           variants={stepVariants}
           initial="enter"
           animate="center"
-          exit="exit"
           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
         >
           {invite && submitted ? (
@@ -158,7 +156,6 @@ export default function JoinPage() {
             />
           )}
         </motion.div>
-      </AnimatePresence>
     )
   }
 

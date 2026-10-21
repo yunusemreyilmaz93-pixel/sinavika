@@ -15,7 +15,7 @@ import {
   UsersRound,
   type LucideIcon,
 } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 import { Segmented } from '@/components/ui/segmented'
 import { StudentCapacity } from './live-settings'
@@ -151,14 +151,12 @@ export function RolesSection({ role, onRoleChange }: { role: Role; onRoleChange:
           <Segmented options={options} value={role} onChange={onRoleChange} className="[&_button]:h-11 [&_button]:text-[15px]" />
         </Reveal>
 
-        <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={role}
             role="tabpanel"
             aria-label={current.label}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.24, ease }}
             className="mt-10 grid items-start gap-10 lg:mt-14 lg:grid-cols-[1fr_1.05fr] lg:gap-14"
           >
@@ -189,7 +187,6 @@ export function RolesSection({ role, onRoleChange }: { role: Role; onRoleChange:
               {current.preview()}
             </div>
           </motion.div>
-        </AnimatePresence>
       </div>
     </section>
   )

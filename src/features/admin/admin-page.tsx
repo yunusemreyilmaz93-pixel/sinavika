@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import { useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router'
 import { PageHeader } from '@/components/app/page-header'
@@ -52,12 +52,10 @@ export default function AdminPage() {
           onChange={go}
         />
       </div>
-      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={section}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
           transition={{ duration: 0.16, ease: 'easeOut' }}
         >
           {section === 'genel' && <OverviewSection onNavigate={go} />}
@@ -67,7 +65,6 @@ export default function AdminPage() {
           {section === 'mufredat' && <CurriculumSection />}
           {section === 'hatalar' && <ErrorsSection />}
         </motion.div>
-      </AnimatePresence>
     </div>
   )
 }
