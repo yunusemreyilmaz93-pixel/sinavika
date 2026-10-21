@@ -100,7 +100,7 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
           ) : (
             <>
               <Button asChild variant="ghost" className="px-3 sm:px-4">
-                <Link to="/giris">Giriş yap</Link>
+                <Link to="/giris">Giriş yapın</Link>
               </Button>
               <Button asChild className="hidden sm:inline-flex">
                 <Link to="/ogretmen-basvurusu">Öğretmen olarak başlayın</Link>
@@ -173,7 +173,7 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
                       </Button>
                       <div className="grid grid-cols-2 gap-2">
                         <Button asChild size="lg" variant="secondary" className="px-3">
-                          <Link to="/giris">Giriş yap</Link>
+                          <Link to="/giris">Giriş yapın</Link>
                         </Button>
                         <Button asChild size="lg" variant="secondary" className="px-3">
                           <Link to="/katil">Davet kodum var</Link>

@@ -74,7 +74,7 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
           <ul className="mt-2">
             <li>
               <Link to="/giris" className={linkClass}>
-                Giriş yap
+                Giriş yapın
               </Link>
             </li>
             <li>
@@ -84,7 +84,7 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
             </li>
             <li>
               <Link to="/katil" className={linkClass}>
-                Davet koduyla katıl
+                Davet koduyla katılın
               </Link>
             </li>
           </ul>

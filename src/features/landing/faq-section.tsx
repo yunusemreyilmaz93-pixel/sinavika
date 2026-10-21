@@ -87,7 +87,7 @@ const faqs: { id: string; q: ReactNode; a: ReactNode }[] = [
   {
     id: 'uygulama',
     q: 'Telefona uygulama gibi eklenebilir mi?',
-    a: "Evet. Yolumnet'i telefonunuzun tarayıcısında açın, paylaş ya da menü düğmesinden Ana Ekrana Ekle'yi seçin. Uygulama mağazasından bir şey indirmeniz gerekmez.",
+    a: "Evet. Yolumnet'i telefonunuzun tarayıcısında açın, Paylaş ya da menü düğmesinden Ana Ekrana Ekle'yi seçin. Uygulama mağazasından bir şey indirmeniz gerekmez.",
   },
 ]
 
