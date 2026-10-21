@@ -35,8 +35,8 @@ export function Hero() {
           <span className="block">veli takip eder.</span>
         </h1>
         <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-muted sm:text-lg">
-          LGS ve YKS'ye hazırlanan öğrenciler için ücretsiz bir koçluk uygulaması. Haftalık program, soru takibi ve deneme
-          analizi bir arada.
+          LGS ve YKS'ye hazırlanan öğrenciler için ücretsiz bir koçluk uygulaması. Haftalık program, konu anlatımı, soru
+          takibi ve deneme analizi bir arada.
         </p>
         <div className="mt-8 flex flex-col gap-2.5 sm:flex-row">
           {signedIn ? (

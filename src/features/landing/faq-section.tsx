@@ -46,6 +46,35 @@ const faqs: { id: string; q: ReactNode; a: ReactNode }[] = [
     ),
   },
   {
+    id: 'anlatim',
+    q: 'Konu anlatımlarını kim yazıyor?',
+    a: (
+      <>
+        Anlatımları ve soruları ben yazıyorum ve yayına almadan önce kontrol ediyorum. Geliştirmede yapay zekâ araçlarından
+        yararlanıyorum, kontrol bende. Anlatımlar konu konu eklenmeye devam ediyor.{' '}
+        <Link to="/hakkinda" className="font-semibold text-accent underline-offset-4 hover:underline">
+          Hakkında sayfasına
+        </Link>{' '}
+        bakabilirsiniz.
+      </>
+    ),
+  },
+  {
+    id: 'yapay-zeka',
+    q: 'Yapay zekâ asistanı nasıl çalışıyor, veriler nereye gidiyor?',
+    a: (
+      <>
+        Asistan isteğe bağlıdır ve yalnızca öğretmenler içindir. Öğretmen kendi yapay zekâ anahtarını eklerse çalışır, kullanım
+        bedeli o hesaba yazılır. Servise giden metinde öğrenci ve veli adları takma kimlikle değiştirilir, öğrencilerin yazdığı not
+        ve mesajlar gönderilmez. Asistan hiçbir şey kaydetmez, görev taslağını öğretmen onaylar. Ayrıntılar{' '}
+        <Link to="/kvkk#yapay-zeka" className="font-semibold text-accent underline-offset-4 hover:underline">
+          KVKK aydınlatma metninde
+        </Link>
+        .
+      </>
+    ),
+  },
+  {
     id: 'puan',
     q: 'Neden puan tahmini yok?',
     a: "LGS ve YKS puanı, o yıl sınava girenlerin sonuçlarına göre hesaplanır. Resmi hesaplama sınavdan sonra belli olur. Tahmini bir puan yanıltabilir, bu yüzden doğru ve yanlış sayısından hesaplanan neti gösteriyoruz.",

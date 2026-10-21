@@ -1,4 +1,5 @@
 import {
+  BookOpenText,
   CalendarCheck,
   CalendarRange,
   ChartLine,
@@ -8,6 +9,7 @@ import {
   MessagesSquare,
   NotebookPen,
   PencilLine,
+  Sparkles,
   Timer,
   TrendingUp,
   TriangleAlert,
@@ -43,7 +45,7 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
       {
         icon: TriangleAlert,
         title: 'Geride kalan öne çıkar',
-        text: 'Birkaç gündür kayıt girmeyen, görevini aksatan ya da neti düşen öğrenciyi hemen fark edersiniz.',
+        text: 'Birkaç gündür kayıt girmeyen, görevini aksatan ya da neti düşen öğrenciyi hemen fark edersiniz. Pazartesi günleri bakmanız gereken öğrencilerin özeti bildirim olarak gelir.',
       },
       {
         icon: CalendarRange,
@@ -53,12 +55,17 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
       {
         icon: ChartLine,
         title: 'Deneme analizi',
-        text: 'Netlerin ders ders nasıl değiştiğini görür, hangi derste geride kalındığını erkenden anlarsınız.',
+        text: 'Netlerin ders ders nasıl değiştiğini, denemede kaybedilen netin yanlıştan mı boştan mı geldiğini görürsünüz. En çok takılınan konular için tek dokunuşla görev verirsiniz.',
       },
       {
         icon: NotebookPen,
         title: 'Notlar ve görüşme kayıtları',
         text: 'Özel notlarınızı yalnızca siz görürsünüz. İstediğiniz notu öğrenciyle ya da veliyle paylaşırsınız.',
+      },
+      {
+        icon: Sparkles,
+        title: 'İsteğe bağlı yapay zekâ asistanı',
+        text: 'Kendi yapay zekâ anahtarınızı eklerseniz öğrencileriniz hakkında soru sorar, görev taslağı istersiniz. Servise adlar yerine takma kimlik gider, siz onaylamadan hiçbir görev eklenmez.',
       },
     ],
   },
@@ -75,13 +82,18 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
       },
       {
         icon: Timer,
-        title: 'Odak sayacı',
-        text: 'Sayacı başlatır, çalıştığı süre dersi ve konusuyla birlikte kaydedilir.',
+        title: 'Odak sayacı ve soru kaydı',
+        text: 'Sayacı başlatır, çalıştığı süre dersi ve konusuyla kaydedilir. Soruları üç dokunuşta girer, neti hemen hesaplanır.',
+      },
+      {
+        icon: BookOpenText,
+        title: 'Konu anlatımı ve mini test',
+        text: 'Konuyu okur, anlatımın sonundaki soruları çözer. Yanlış yaptığı soruyu tek dokunuşla yanlış defterine ekler.',
       },
       {
         icon: PencilLine,
-        title: 'Üç dokunuşta soru kaydı',
-        text: 'Dersi seçip doğru ve yanlış sayısını girer. Neti hemen hesaplanır.',
+        title: 'Yanlış defteri ve tekrar',
+        text: 'Yanlış sorular 1, 3, 7, 14 ve 30 gün aralıklarla yeniden karşısına çıkar.',
       },
       {
         icon: TrendingUp,
@@ -91,7 +103,7 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
       {
         icon: MapIcon,
         title: 'Konu haritası',
-        text: 'Hangi konuyu bitirdiğini, hangisini tekrar etmesi gerektiğini bir bakışta görür.',
+        text: 'Hangi konuyu bitirdiğini, hangisini tekrar etmesi gerektiğini ve önce nelere bakacağını bir bakışta görür.',
       },
     ],
   },

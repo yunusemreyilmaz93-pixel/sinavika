@@ -3,6 +3,7 @@ import { ExamsSection } from './exams-section'
 import { FaqSection } from './faq-section'
 import { Hero } from './hero'
 import { HowItWorks } from './how-it-works'
+import { LearningSection } from './learning-section'
 import { scrollToHash, sectionLinks, type Role, type SectionLink } from './primitives'
 import { RolesSection } from './roles-section'
 import { ClosingCta, SiteFooter } from './site-footer'
@@ -54,6 +55,7 @@ export default function LandingPage() {
         <Hero />
         <ExamsSection />
         <RolesSection role={role} onRoleChange={setRole} />
+        <LearningSection />
         <HowItWorks />
         <WhyFree />
         <FaqSection />
