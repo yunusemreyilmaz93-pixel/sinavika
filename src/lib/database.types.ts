@@ -302,6 +302,26 @@ export type Database = {
           },
         ];
       };
+      catalog_books: {
+        Row: {
+          author: string;
+          id: number;
+          search: string | null;
+          title: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          author: string;
+          id?: number;
+          title: string;
+        };
+        Update: {
+          author?: string;
+          id?: number;
+          title?: string;
+        };
+        Relationships: [];
+      };
       reading_logs: {
         Row: {
           book_id: number;
@@ -1689,6 +1709,10 @@ export type Database = {
       };
     };
     Functions: {
+      search_catalog_books: {
+        Args: { p_query: string };
+        Returns: { author: string; id: number; title: string }[];
+      };
       save_exam_answers: {
         Args: { p_exam_id: number; p_rows: Json; p_subject_id: string };
         Returns: undefined;

@@ -1,5 +1,5 @@
 import { BookMarked, Check, Plus, Trash2 } from 'lucide-react'
-import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent, type KeyboardEvent } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -10,9 +10,10 @@ import { Field, Input } from '@/components/ui/field'
 import { Modal } from '@/components/ui/modal'
 import { ProgressBar } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/cn'
 import { errorMessage } from '@/lib/supabase'
 import { formatDate, todayISO } from '@/lib/dates'
-import { pagesRead, pagesThisWeek, useReading, useReadingActions, type Book, type ReadingLog } from './queries'
+import { pagesRead, pagesThisWeek, useCatalogSearch, useReading, useReadingActions, type Book, type CatalogBook, type ReadingLog } from './queries'
 import { ReadingChart } from './reading-chart'
 
 export function ReadingTracker({ studentId, canEdit }: { studentId: string; canEdit: boolean }) {
@@ -195,6 +196,33 @@ function AddBook({ open, onOpenChange, onSubmit }: { open: boolean; onOpenChange
   const [author, setAuthor] = useState('')
   const [total, setTotal] = useState('')
   const [pending, setPending] = useState(false)
+  const [picked, setPicked] = useState(false)
+  const [active, setActive] = useState(-1)
+  const suggestions = useCatalogSearch(picked ? '' : title).data ?? []
+  const shown = picked ? [] : suggestions
+
+  const pick = (book: CatalogBook) => {
+    setTitle(book.title)
+    setAuthor(book.author)
+    setPicked(true)
+    setActive(-1)
+  }
+
+  const onTitleKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (!shown.length) return
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setActive((i) => Math.min(i + 1, shown.length - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setActive((i) => Math.max(i - 1, 0))
+    } else if (e.key === 'Enter' && active >= 0) {
+      e.preventDefault()
+      pick(shown[active])
+    } else if (e.key === 'Escape') {
+      setPicked(true)
+    }
+  }
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
@@ -205,6 +233,7 @@ function AddBook({ open, onOpenChange, onSubmit }: { open: boolean; onOpenChange
       setTitle('')
       setAuthor('')
       setTotal('')
+      setPicked(false)
       onOpenChange(false)
     } catch (err) {
       toast.error(errorMessage(err))
@@ -216,7 +245,44 @@ function AddBook({ open, onOpenChange, onSubmit }: { open: boolean; onOpenChange
   return (
     <Modal open={open} onOpenChange={onOpenChange} title="Kitap ekle" size="sm">
       <form onSubmit={submit} className="space-y-4">
-        <Field label="Kitap adı">{(props) => <Input {...props} value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} autoFocus />}</Field>
+        <div>
+          <Field label="Kitap adı">
+            {(props) => (
+              <Input
+                {...props}
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value)
+                  setPicked(false)
+                  setActive(-1)
+                }}
+                onKeyDown={onTitleKey}
+                role="combobox"
+                aria-expanded={shown.length > 0}
+                aria-autocomplete="list"
+                autoComplete="off"
+                maxLength={120}
+                autoFocus
+              />
+            )}
+          </Field>
+          {shown.length > 0 && (
+            <ul role="listbox" aria-label="Kitap önerileri" className="mt-1 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
+              {shown.map((book, i) => (
+                <li key={book.id} role="option" aria-selected={i === active}>
+                  <button
+                    type="button"
+                    onClick={() => pick(book)}
+                    className={cn('block min-h-11 w-full px-3 py-2 text-left hover:bg-surface-2', i === active && 'bg-surface-2')}
+                  >
+                    <span className="block text-[15px] leading-snug font-semibold">{book.title}</span>
+                    <span className="block text-sm text-muted">{book.author}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <Field label="Yazar">{(props) => <Input {...props} value={author} onChange={(e) => setAuthor(e.target.value)} maxLength={80} />}</Field>
         <Field label="Sayfa sayısı">
           {(props) => <Input {...props} inputMode="numeric" value={total} onChange={(e) => setTotal(e.target.value.replace(/\D/g, '').slice(0, 4))} />}

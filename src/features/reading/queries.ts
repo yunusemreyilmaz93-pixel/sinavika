@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import { shiftDays, todayISO } from '@/lib/dates'
 import { supabase, unwrap } from '@/lib/supabase'
 
@@ -64,4 +65,20 @@ export function useReadingActions(studentId: string) {
       onSuccess: done,
     }),
   }
+}
+
+export type CatalogBook = { id: number; title: string; author: string }
+
+export function useCatalogSearch(query: string) {
+  const [debounced, setDebounced] = useState('')
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(query.trim()), 250)
+    return () => clearTimeout(timer)
+  }, [query])
+  return useQuery({
+    queryKey: ['book-catalog', debounced],
+    enabled: debounced.length >= 2,
+    staleTime: 10 * 60_000,
+    queryFn: async (): Promise<CatalogBook[]> => unwrap(await supabase.rpc('search_catalog_books', { p_query: debounced })),
+  })
 }

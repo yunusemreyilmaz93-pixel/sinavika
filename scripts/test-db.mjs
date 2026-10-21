@@ -577,6 +577,16 @@ await test('YÖK Atlas verisi: giriş yapan okur, kimse yazamaz, öğrenci hedef
   await service('delete from public.universities where id = 999001')
 })
 
+await test('kitap kataloğu: giriş yapan arar, yazım hatası ve Türkçe karakter toleransı var, kimse yazamaz', async () => {
+  const find = async (q) => (await as(s1, 'select title from public.search_catalog_books($1)', [q])).map((r) => r.title)
+  assert.ok((await find('harry poter')).some((t) => t.startsWith('Harry Potter')))
+  assert.equal((await find('KÜÇÜK prens'))[0], 'Küçük Prens')
+  assert.ok((await find('calikusu')).includes('Çalıkuşu'))
+  assert.deepEqual(await find('x'), [])
+  await rejects(as(null, `select * from public.search_catalog_books('harry')`), /permission denied/)
+  await rejects(as(s1, `insert into public.catalog_books (title, author) values ('x', 'y')`), /permission denied/)
+})
+
 await test('soru bazlı karne: ders sonucu ve konu yanlışları cevaplardan üretilir, başkası yazamaz, veli okur', async () => {
   const [e] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Soru bazlı', current_date, '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]') as id`, [s1])
   const [t1, t2] = await service(`select id from public.topics where subject_id = 'tyt-fiz' order by sort limit 2`)
