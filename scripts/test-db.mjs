@@ -416,6 +416,27 @@ await test('konu anlatımı: sadece admin yazar, taslağı sadece admin görür,
   assert.equal(row.updated_by, adminId)
 })
 
+await test('anlatım sorusu: ilk cevap istatistiğe yazılır, tekrar yazılmaz, sadece yayındaki anlatım ve öğrenci', async () => {
+  const [{ id: topic, subject_id: subject }] = await service(`select id, subject_id from public.topics where id in (select topic_id from public.lessons where published) order by id limit 1`)
+  const before = (await service('select count(*)::int as n from public.question_logs where student_id = $1 and topic_id = $2', [s1, topic]))[0].n
+  const first = (await as(s1, 'select * from public.answer_lesson_question($1, $2, $3)', [topic, 'abc', false]))[0]
+  assert.equal(first.first_correct, false)
+  const again = (await as(s1, 'select * from public.answer_lesson_question($1, $2, $3)', [topic, 'abc', true]))[0]
+  assert.equal(again.first_correct, false)
+  assert.equal(again.last_correct, true)
+  assert.equal(again.attempts, 2)
+  const logs = await service('select correct, wrong, subject_id from public.question_logs where student_id = $1 and topic_id = $2', [s1, topic])
+  assert.equal(logs.length, before + 1)
+  assert.deepEqual([logs.at(-1).correct, logs.at(-1).wrong, logs.at(-1).subject_id], [0, 1, subject])
+  assert.equal((await as(s1, 'select * from public.lesson_answers where topic_id = $1', [topic])).length, 1)
+  assert.equal((await as(s2, 'select * from public.lesson_answers')).length, 0)
+  await rejects(as(teacherA, 'select * from public.answer_lesson_question($1, $2, $3)', [topic, 'x', true]), /Sadece öğrenciler/)
+  await rejects(as(s1, 'select * from public.answer_lesson_question($1, $2, $3)', [topic, 'x'.repeat(65), true]), /check constraint/)
+  const [{ id: bare }] = await service('select id from public.topics where id not in (select topic_id from public.lessons) order by id limit 1')
+  await rejects(as(s1, 'select * from public.answer_lesson_question($1, $2, $3)', [bare, 'x', true]), /yayınlanmış/)
+  await rejects(as(s1, 'insert into public.lesson_answers (student_id, topic_id, question_key, first_correct, last_correct) values ($1, $2, $3, true, true)', [s1, topic, 'z']), /permission denied/)
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

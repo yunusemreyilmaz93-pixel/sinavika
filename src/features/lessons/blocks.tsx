@@ -217,6 +217,8 @@ export function Question({
   options,
   answer,
   solution,
+  onAnswer,
+  onWrong,
 }: {
   number: number
   passage?: ReactNode
@@ -224,6 +226,8 @@ export function Question({
   options: ReactNode[]
   answer: number
   solution: ReactNode
+  onAnswer?: (correct: boolean) => void
+  onWrong?: ReactNode
 }) {
   const [picked, setPicked] = useState<number | null>(null)
   const done = picked != null
@@ -245,7 +249,10 @@ export function Question({
               <button
                 type="button"
                 disabled={done}
-                onClick={() => setPicked(i)}
+                onClick={() => {
+                  setPicked(i)
+                  onAnswer?.(i === answer)
+                }}
                 className={cn(
                   'flex min-h-12 w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left text-[15px] transition-colors',
                   !done && 'border-line hover:border-line-strong hover:bg-surface-2',
@@ -269,6 +276,7 @@ export function Question({
             {picked === answer ? 'Doğru.' : `Cevap ${letters[answer]} olacaktı.`}
           </p>
           <div className="rounded-xl bg-surface-2 p-4 text-[15px] leading-relaxed">{solution}</div>
+          {picked !== answer && onWrong}
           <button type="button" onClick={() => setPicked(null)} className="text-sm font-semibold text-accent hover:underline">
             Tekrar dene
           </button>

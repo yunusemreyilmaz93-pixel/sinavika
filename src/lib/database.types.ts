@@ -175,6 +175,55 @@ export type Database = {
           },
         ];
       };
+      lesson_answers: {
+        Row: {
+          answered_at: string;
+          attempts: number;
+          first_correct: boolean;
+          last_correct: boolean;
+          question_key: string;
+          student_id: string;
+          topic_id: number;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          answered_at?: string;
+          attempts?: number;
+          first_correct: boolean;
+          last_correct: boolean;
+          question_key: string;
+          student_id: string;
+          topic_id: number;
+          updated_at?: string;
+        };
+        Update: {
+          answered_at?: string;
+          attempts?: number;
+          first_correct?: boolean;
+          last_correct?: boolean;
+          question_key?: string;
+          student_id?: string;
+          topic_id?: number;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lesson_answers_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "lesson_answers_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       lesson_notes: {
         Row: {
           body: string;
@@ -1223,6 +1272,19 @@ export type Database = {
       };
     };
     Functions: {
+      answer_lesson_question: {
+        Args: { p_correct: boolean; p_key: string; p_topic: number };
+        Returns: {
+          answered_at: string;
+          attempts: number;
+          first_correct: boolean;
+          last_correct: boolean;
+          question_key: string;
+          student_id: string;
+          topic_id: number;
+          updated_at: string;
+        };
+      };
       admin_overview: {
         Args: Record<PropertyKey, never>;
         Returns: {

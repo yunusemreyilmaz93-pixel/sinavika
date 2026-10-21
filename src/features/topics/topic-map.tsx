@@ -12,6 +12,7 @@ import { examKindsFor, examLabel, subjectsFor, type ExamKind, type Field, type T
 import { errorMessage } from '@/lib/supabase'
 import { fold } from '@/lib/text'
 import { matchesFilter, nextStatus, statusMeta, type TopicFilter, type TopicState } from './status'
+import { MasteryPanel } from './mastery-panel'
 import { SubjectCard } from './subject-card'
 import { TopicSummary, type TopicCounts } from './topic-summary'
 import { useSetTopicStatus, useTopicAccuracy, useTopicProgress } from './use-topics'
@@ -147,6 +148,7 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
       ) : (
         <>
           <TopicSummary counts={counts} canEdit={canEdit} showAccuracyHint={hasAccuracy} />
+          <MasteryPanel studentId={studentId} groups={groups} progress={progress.data} accuracy={accuracy.data} />
 
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 pt-1">
             <h2 className="text-lg font-bold">Dersler</h2>

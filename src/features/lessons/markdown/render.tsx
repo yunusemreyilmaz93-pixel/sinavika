@@ -6,6 +6,8 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import 'katex/dist/katex.min.css'
 import { parseYouTubeId } from '@/features/video/youtube'
+import { questionKey, useLessonTrack } from '../answers'
+import { NotebookButton } from '../notebook-button'
 import { CauseEffect, Connect, Ek, Figure, Formula, Hit, LifeTimeline, Question, SelfCheck, SentenceLab, Tip, Video, YearScale } from '../blocks'
 import { listItems, parseBlocks, parseEras, parseLabSentence, parseQuestion, plainText, slug, splitPipes, type Block } from './parse'
 
@@ -222,20 +224,7 @@ function BlockView({ block, questionNumber }: { block: Block; questionNumber: nu
     case 'cumle-lab':
       return <SentenceLab sentences={text.split('\n').filter((l) => l.trim()).map(parseLabSentence)} />
     case 'soru': {
-      const q = parseQuestion(text)
-      const answer = Math.max('ABCDE'.indexOf((attrs.cevap || 'A').trim().toUpperCase()), 0)
-      return (
-        <Question
-          number={questionNumber}
-          passage={q.passage ? <Md text={q.passage} inline /> : undefined}
-          stem={<Md text={q.stem} inline />}
-          options={q.options.map((o, i) => (
-            <Md key={i} text={o} inline />
-          ))}
-          answer={answer}
-          solution={<Md text={q.solution} />}
-        />
-      )
+      return <QuestionView text={text} cevap={attrs.cevap} number={questionNumber} />
     }
     case 'dene':
       return (
@@ -249,6 +238,38 @@ function BlockView({ block, questionNumber }: { block: Block; questionNumber: nu
     default:
       return <Md text={text} />
   }
+}
+
+function QuestionView({ text, cevap, number }: { text: string; cevap?: string; number: number }) {
+  const track = useLessonTrack()
+  const q = parseQuestion(text)
+  const answer = Math.max('ABCDE'.indexOf((cevap || 'A').trim().toUpperCase()), 0)
+  const key = questionKey(plainText(q.stem), q.options.map(plainText))
+  const letters = ['A', 'B', 'C', 'D', 'E']
+  return (
+    <Question
+      number={number}
+      passage={q.passage ? <Md text={q.passage} inline /> : undefined}
+      stem={<Md text={q.stem} inline />}
+      options={q.options.map((o, i) => (
+        <Md key={i} text={o} inline />
+      ))}
+      answer={answer}
+      solution={<Md text={q.solution} />}
+      onAnswer={track ? (correct) => track.answer(key, correct) : undefined}
+      onWrong={
+        track ? (
+          <NotebookButton
+            studentId={track.studentId}
+            subjectId={track.subjectId}
+            topicId={track.topicId}
+            source={`Konu anlatımı: ${track.topicName}`}
+            note={`${plainText(q.stem)}\n${q.options.map((o, i) => `${letters[i]}) ${plainText(o)}`).join('\n')}\n\nDoğru cevap: ${letters[answer]}`}
+          />
+        ) : undefined
+      }
+    />
+  )
 }
 
 export function LessonBody({ source }: { source: string }) {

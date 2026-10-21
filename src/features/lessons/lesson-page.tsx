@@ -12,6 +12,8 @@ import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
 import { examLabel } from '@/lib/exam'
 import { estimateMinutes, formatLessonMinutes, outlineOf, type OutlineItem } from './markdown/parse'
+import { LessonTrackProvider } from './answers'
+import { LessonSummary } from './lesson-summary'
 import { LessonBody } from './markdown/render'
 import { useLesson } from './queries'
 
@@ -100,7 +102,14 @@ export default function LessonPage() {
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-10">
         <div className="min-w-0">
           <MobileOutline outline={outline} />
-          <LessonBody source={lesson.body} />
+          {profile.role === 'student' && topic && subject ? (
+            <LessonTrackProvider topicId={topic.id} topicName={topic.name} subjectId={subject.id}>
+              <LessonBody source={lesson.body} />
+              <LessonSummary source={lesson.body} />
+            </LessonTrackProvider>
+          ) : (
+            <LessonBody source={lesson.body} />
+          )}
         </div>
         <DesktopOutline outline={outline} />
       </div>
