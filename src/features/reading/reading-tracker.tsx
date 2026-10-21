@@ -11,7 +11,9 @@ import { Modal } from '@/components/ui/modal'
 import { ProgressBar } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { errorMessage } from '@/lib/supabase'
-import { pagesRead, pagesThisWeek, useReading, useReadingActions, type Book } from './queries'
+import { formatDate, todayISO } from '@/lib/dates'
+import { pagesRead, pagesThisWeek, useReading, useReadingActions, type Book, type ReadingLog } from './queries'
+import { ReadingChart } from './reading-chart'
 
 export function ReadingTracker({ studentId, canEdit }: { studentId: string; canEdit: boolean }) {
   const reading = useReading(studentId)
@@ -38,6 +40,8 @@ export function ReadingTracker({ studentId, canEdit }: { studentId: string; canE
           </Button>
         )}
       </div>
+
+      {logs.length > 0 && <ReadingChart logs={logs} books={books} />}
 
       {books.length === 0 ? (
         <EmptyState
@@ -73,6 +77,8 @@ export function ReadingTracker({ studentId, canEdit }: { studentId: string; canE
         </>
       )}
 
+      {logs.length > 0 && <RecentLogs logs={logs} books={books} canEdit={canEdit} studentId={studentId} />}
+
       <AddBook open={adding} onOpenChange={setAdding} onSubmit={(v) => actions.addBook.mutateAsync(v)} />
     </div>
   )
@@ -81,6 +87,7 @@ export function ReadingTracker({ studentId, canEdit }: { studentId: string; canE
 function BookCard({ book, read, canEdit, studentId }: { book: Book; read: number; canEdit: boolean; studentId: string }) {
   const actions = useReadingActions(studentId)
   const [pages, setPages] = useState('')
+  const [day, setDay] = useState<string | null>(null)
   const [confirm, setConfirm] = useState(false)
   const done = Boolean(book.finished_on)
   const total = book.total_pages
@@ -90,8 +97,9 @@ function BookCard({ book, read, canEdit, studentId }: { book: Book; read: number
     const n = Number(pages)
     if (!Number.isInteger(n) || n < 1 || n > 1000) return
     try {
-      await actions.addPages.mutateAsync({ book_id: book.id, pages: n })
+      await actions.addPages.mutateAsync({ book_id: book.id, pages: n, read_on: day || undefined })
       setPages('')
+      setDay(null)
       if (total && read + n >= total && !done) toast.success('Kitap bitti gibi görünüyor. Bitirdim düğmesiyle işaretleyebilirsiniz')
     } catch (err) {
       toast.error(errorMessage(err))
@@ -124,17 +132,26 @@ function BookCard({ book, read, canEdit, studentId }: { book: Book; read: number
           {canEdit && (
             <div className="mt-auto space-y-2">
               {!done && (
-                <form onSubmit={add} className="flex gap-2">
-                  <Input
-                    inputMode="numeric"
-                    value={pages}
-                    onChange={(e) => setPages(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                    placeholder="Okunan sayfa"
-                    aria-label={`${book.title} için okunan sayfa`}
-                  />
-                  <Button type="submit" className="min-h-11" loading={actions.addPages.isPending} disabled={!pages}>
-                    Ekle
-                  </Button>
+                <form onSubmit={add} className="space-y-1">
+                  <div className="flex gap-2">
+                    <Input
+                      inputMode="numeric"
+                      value={pages}
+                      onChange={(e) => setPages(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                      placeholder="Okunan sayfa"
+                      aria-label={`${book.title} için okunan sayfa`}
+                    />
+                    <Button type="submit" className="min-h-11" loading={actions.addPages.isPending} disabled={!pages}>
+                      Ekle
+                    </Button>
+                  </div>
+                  {day === null ? (
+                    <button type="button" onClick={() => setDay(todayISO())} className="min-h-9 text-sm font-semibold text-accent hover:underline">
+                      Başka bir güne ekle
+                    </button>
+                  ) : (
+                    <Input type="date" value={day} max={todayISO()} onChange={(e) => setDay(e.target.value)} aria-label="Okunan gün" />
+                  )}
                 </form>
               )}
               <div className="flex gap-2">
@@ -209,5 +226,39 @@ function AddBook({ open, onOpenChange, onSubmit }: { open: boolean; onOpenChange
         </Button>
       </form>
     </Modal>
+  )
+}
+
+function RecentLogs({ logs, books, canEdit, studentId }: { logs: ReadingLog[]; books: Book[]; canEdit: boolean; studentId: string }) {
+  const actions = useReadingActions(studentId)
+  const titles = new Map(books.map((b) => [b.id, b.title]))
+  const recent = [...logs].sort((a, b) => (a.read_on === b.read_on ? b.id - a.id : a.read_on < b.read_on ? 1 : -1)).slice(0, 8)
+
+  return (
+    <section aria-label="Son kayıtlar">
+      <h3 className="pb-1 text-sm font-semibold text-muted">Son kayıtlar</h3>
+      <ul className="divide-y divide-line rounded-2xl border border-line bg-surface">
+        {recent.map((log) => (
+          <li key={log.id} className="flex items-center gap-3 py-1 pr-1 pl-4">
+            <div className="min-w-0 flex-1 py-1.5">
+              <p className="text-[15px] font-semibold break-words">{titles.get(log.book_id) ?? 'Kitap'}</p>
+              <p className="text-sm text-muted">{formatDate(log.read_on, 'd MMMM EEEE')}</p>
+            </div>
+            <p className="tabular shrink-0 text-[15px] font-semibold">{log.pages} sayfa</p>
+            {canEdit && (
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={`${log.pages} sayfalık kaydı sil`}
+                className="text-muted hover:text-danger"
+                onClick={() => actions.removeLog.mutate(log.id, { onError: (err) => toast.error(errorMessage(err)) })}
+              >
+                <Trash2 />
+              </Button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }

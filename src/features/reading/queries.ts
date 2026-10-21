@@ -40,8 +40,14 @@ export function useReadingActions(studentId: string) {
       onSuccess: done,
     }),
     addPages: useMutation({
-      mutationFn: async (v: { book_id: number; pages: number }) => {
+      mutationFn: async (v: { book_id: number; pages: number; read_on?: string }) => {
         unwrap(await supabase.from('reading_logs').insert({ student_id: studentId, ...v }))
+      },
+      onSuccess: done,
+    }),
+    removeLog: useMutation({
+      mutationFn: async (id: number) => {
+        unwrap(await supabase.from('reading_logs').delete().eq('id', id))
       },
       onSuccess: done,
     }),
