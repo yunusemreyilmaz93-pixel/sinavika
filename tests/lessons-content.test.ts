@@ -50,7 +50,10 @@ describe('konu anlatımı içeriği', () => {
         expect(checks.some((b) => b.type === 'box' && b.name === 'dene')).toBe(true)
         for (const b of checks) {
           if (b.type !== 'box') continue
-          for (const line of listItems(b.text)) expect(line, `=> yok: ${line}`).toContain('=>')
+          for (const line of listItems(b.text)) {
+            expect(line, `=> yok: ${line}`).toContain('=>')
+            if (b.name === 'neden-sonuc') expect(line.split('=>')[0], `neden kısmında formül olamaz: ${line}`).not.toContain('$')
+          }
         }
       })
 
