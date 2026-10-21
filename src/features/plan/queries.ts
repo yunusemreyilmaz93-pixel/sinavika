@@ -57,6 +57,12 @@ function writeTask(qc: QueryClient, studentId: string, next: Task) {
   }
 }
 
+function dropTask(qc: QueryClient, studentId: string, id: number) {
+  for (const [key, data] of qc.getQueriesData({ queryKey: ['tasks', studentId] })) {
+    if (isTaskList(data) && data.some((t) => t.id === id)) qc.setQueryData(key, data.filter((t) => t.id !== id))
+  }
+}
+
 export function invalidateTasks(qc: QueryClient, studentIds: string[]) {
   return Promise.all([
     ...studentIds.map((id) => qc.invalidateQueries({ queryKey: ['tasks', id] })),
@@ -97,7 +103,10 @@ export function useTaskActions(studentId: string) {
       if (id) return updateTask(id, values)
       return unwrap(await supabase.from('tasks').insert({ ...values, student_id: studentId }).select().single())
     },
-    onSuccess: () => invalidateTasks(qc, [studentId]),
+    onSuccess: (row) => {
+      writeTask(qc, studentId, row)
+      void invalidateTasks(qc, [studentId])
+    },
   })
 
   const remove = useMutation({
@@ -105,9 +114,10 @@ export function useTaskActions(studentId: string) {
       const rows = unwrap(await supabase.from('tasks').delete().eq('id', task.id).select('id'))
       if (!rows.length) throw new AppError('Bu görevi silme yetkin yok')
     },
-    onSuccess: () => {
+    onSuccess: (_data, task) => {
+      dropTask(qc, studentId, task.id)
       toast.success('Görev silindi')
-      return invalidateTasks(qc, [studentId])
+      void invalidateTasks(qc, [studentId])
     },
     onError: (error) => toast.error(errorMessage(error)),
   })

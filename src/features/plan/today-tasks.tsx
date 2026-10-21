@@ -49,7 +49,6 @@ export function TodayTasks({ studentId, canEdit }: { studentId: string; canEdit:
   const row = (task: Task, dueLabel?: string) => (
     <motion.li
       key={task.id}
-      layout="position"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, transition: { duration: 0.15 } }}

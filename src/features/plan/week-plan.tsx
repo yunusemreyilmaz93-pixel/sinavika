@@ -271,7 +271,7 @@ function DayPanel({
         )}
       </div>
 
-      <motion.div key={day} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
+      <motion.div key={day} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
         {loading ? (
           <Card className="divide-y divide-line">
             {[0, 1, 2].map((i) => (
@@ -308,13 +308,12 @@ function DayPanel({
           <Card className="overflow-hidden">
             <ul className="divide-y divide-line">
               <AnimatePresence initial={false}>
-                {tasks.map((task, i) => (
+                {tasks.map((task) => (
                   <motion.li
                     key={task.id}
-                    layout="position"
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0, transition: { delay: Math.min(i, 8) * 0.03, duration: 0.2 } }}
-                    exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, transition: { duration: 0.15 } }}
+                    exit={{ opacity: 0, transition: { duration: 0.1 } }}
                   >
                     <TaskRow {...rowProps(task)} />
                   </motion.li>
