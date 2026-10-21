@@ -1,7 +1,8 @@
+// @vitest-environment node
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { listItems, parseBlocks, parseQuestion } from './markdown/parse'
+import { listItems, parseBlocks, parseQuestion } from '../src/features/lessons/markdown/parse'
 
 // Migration içindeki anlatımları (insert into public.lessons) bulur ve blok söz dizimini denetler
 const dir = join(process.cwd(), 'supabase/migrations')
