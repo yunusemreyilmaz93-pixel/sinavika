@@ -4,6 +4,7 @@ import { supabase, unwrap, type Tables } from '@/lib/supabase'
 
 export type WrongQuestion = Tables<'wrong_questions'>
 export type WrongFilter = 'tekrar' | 'tumu' | 'ogrenildi'
+export type ReviewResult = 'again' | 'good' | 'learned'
 
 const BUCKET = 'wrong-questions'
 
@@ -104,13 +105,8 @@ export function useAddWrong(studentId: string) {
 export function useReviewWrong(studentId: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: async ({ id, learned }: { id: number; learned: boolean }) =>
-      unwrap(
-        await supabase.rpc('review_wrong_question', {
-          p_id: id,
-          p_learned: learned,
-        }),
-      ),
+    mutationFn: async ({ id, result }: { id: number; result: ReviewResult }) =>
+      unwrap(await supabase.rpc('review_wrong_result', { p_id: id, p_result: result })),
     onSuccess: () => qc.invalidateQueries({ queryKey: wrongKeys.list(studentId) }),
   })
 }

@@ -1168,10 +1168,12 @@ export type Database = {
       };
       wrong_questions: {
         Row: {
+          box: number;
           created_at: string;
           created_by: string | null;
           id: number;
           last_reviewed_at: string | null;
+          lapses: number;
           learned_at: string | null;
           next_review_on: string;
           note: string | null;
@@ -1184,10 +1186,12 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          box?: number;
           created_at?: string;
           created_by?: string | null;
           id?: never;
           last_reviewed_at?: string | null;
+          lapses?: number;
           learned_at?: string | null;
           next_review_on?: string;
           note?: string | null;
@@ -1199,10 +1203,12 @@ export type Database = {
           topic_id?: number | null;
         };
         Update: {
+          box?: number;
           created_at?: string;
           created_by?: string | null;
           id?: never;
           last_reviewed_at?: string | null;
+          lapses?: number;
           learned_at?: string | null;
           next_review_on?: string;
           note?: string | null;
@@ -1411,6 +1417,26 @@ export type Database = {
           p_user: string;
         };
         Returns: Database["public"]["Enums"]["account_status"];
+      };
+      review_wrong_result: {
+        Args: { p_id: number; p_result: string };
+        Returns: {
+          box: number;
+          created_at: string;
+          created_by: string | null;
+          id: number;
+          lapses: number;
+          last_reviewed_at: string | null;
+          learned_at: string | null;
+          next_review_on: string;
+          note: string | null;
+          photo_path: string | null;
+          review_count: number;
+          source: string | null;
+          student_id: string;
+          subject_id: string;
+          topic_id: number | null;
+        };
       };
       review_wrong_question: {
         Args: { p_id: number; p_learned: boolean };

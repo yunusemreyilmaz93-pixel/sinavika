@@ -19,7 +19,7 @@ const missKeys = {
   student: (studentId: string, kind: ExamKind) => ['topic-misses', 'student', studentId, kind] as const,
 }
 
-function useExamMisses(examId: number) {
+export function useExamMisses(examId: number) {
   return useQuery({
     queryKey: missKeys.exam(examId),
     queryFn: async (): Promise<Miss[]> =>

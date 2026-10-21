@@ -7,11 +7,13 @@ import { Confirm } from '@/components/ui/confirm'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/cn'
+import { useProfile } from '@/features/auth/session'
 import { useCurriculum } from '@/lib/data'
 import { formatDate } from '@/lib/dates'
 import { formatNet, net, subjectColor, type Subject } from '@/lib/exam'
 import { errorMessage } from '@/lib/supabase'
 import { Delta } from './delta'
+import { LossAnalysis } from './loss-analysis'
 import { CountTiles } from './overview-cards'
 import { useDeleteExam, useExamDetail, type ExamDetailData, type Score } from './queries'
 import { accuracy, bySubjectOrder, round2 } from './stats'
@@ -45,6 +47,7 @@ function buildRows(data: ExamDetailData, subjectById: Map<string, Subject>): Row
 
 export function ExamDetail({ examId, canEdit, onDeleted }: { examId: number; canEdit: boolean; onDeleted?: () => void }) {
   const detail = useExamDetail(examId)
+  const profile = useProfile()
   const curriculum = useCurriculum()
   const remove = useDeleteExam()
   const [confirming, setConfirming] = useState(false)
@@ -187,6 +190,15 @@ export function ExamDetail({ examId, canEdit, onDeleted }: { examId: number; can
           </table>
         </Card>
       )}
+
+      <LossAnalysis
+        examId={exam.id}
+        studentId={exam.student_id}
+        kind={kind}
+        scores={data.scores}
+        canAssign={canEdit}
+        assignLabel={profile.role === 'teacher' ? 'Görevleri öğrenciye ver' : 'Görevleri planıma ekle'}
+      />
 
       <ExamTopicMisses examId={exam.id} scores={data.scores} canEdit={canEdit} />
 

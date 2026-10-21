@@ -21,6 +21,7 @@ import {
   useReviewWrong,
   useWrongQuestions,
   type WrongFilter,
+  type ReviewResult,
   type WrongQuestion,
 } from './lib'
 import { WrongForm } from './wrong-form'
@@ -185,15 +186,17 @@ function WrongCard({
   const topic = item.topic_id ? curriculum?.topicById.get(item.topic_id) : undefined
   const due = !item.learned_at && item.next_review_on <= today
 
-  const act = (learned: boolean) =>
+  const act = (result: ReviewResult) =>
     review.mutate(
-      { id: item.id, learned },
+      { id: item.id, result },
       {
         onSuccess: (row) =>
           toast.success(
-            learned
+            row.learned_at
               ? 'Harika, öğrenildi olarak işaretlendi'
-              : `Tamam, ${formatDate(row.next_review_on, 'd MMMM')} günü tekrar karşına çıkacak`,
+              : result === 'again'
+                ? 'Sorun değil. Yarın tekrar karşına çıkacak'
+                : `Güzel. ${formatDate(row.next_review_on, 'd MMMM')} günü tekrar göstereceğiz`,
           ),
         onError: (err) => toast.error(errorMessage(err)),
       },
@@ -233,24 +236,21 @@ function WrongCard({
           {canEdit && (
             <div className="flex flex-wrap gap-2 border-t border-line pt-3">
               {item.learned_at ? (
-                <Button variant="secondary" size="sm" className="h-11" loading={review.isPending} onClick={() => act(false)}>
+                <Button variant="secondary" size="sm" className="h-11" loading={review.isPending} onClick={() => act('again')}>
                   <RotateCcw />
                   Tekrar listesine al
                 </Button>
               ) : (
                 <>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="h-11 flex-1"
-                    loading={review.isPending}
-                    onClick={() => act(false)}
-                  >
+                  <Button variant="secondary" size="sm" className="h-11 flex-1" disabled={review.isPending} onClick={() => act('again')}>
                     <RotateCcw />
-                    Tekrar ettim
+                    Yapamadım
                   </Button>
-                  <Button size="sm" className="h-11 flex-1" disabled={review.isPending} onClick={() => act(true)}>
+                  <Button size="sm" className="h-11 flex-1" loading={review.isPending} onClick={() => act('good')}>
                     <Check />
+                    Yaptım
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-11" disabled={review.isPending} onClick={() => act('learned')}>
                     Artık biliyorum
                   </Button>
                 </>

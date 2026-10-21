@@ -437,6 +437,28 @@ await test('anlatım sorusu: ilk cevap istatistiğe yazılır, tekrar yazılmaz,
   await rejects(as(s1, 'insert into public.lesson_answers (student_id, topic_id, question_key, first_correct, last_correct) values ($1, $2, $3, true, true)', [s1, topic, 'z']), /permission denied/)
 })
 
+await test('yanlış defteri tekrarı: başarısızlık aralığı sıfırlar, art arda beş başarı öğrenildi yapar, başkası değiştiremez', async () => {
+  const [{ id }] = await as(s1, `insert into public.wrong_questions (student_id, subject_id, note) values ($1, 'lgs-mat', 'tekrar sorusu') returning id`, [s1])
+  const days = async () => (await service(`select (next_review_on - private.today())::int as d, box, lapses, learned_at is not null as learned from public.wrong_questions where id = $1`, [id]))[0]
+  const seen = []
+  for (let i = 0; i < 4; i++) {
+    await as(s1, `select * from public.review_wrong_result($1, 'good')`, [id])
+    seen.push((await days()).d)
+  }
+  assert.deepEqual(seen, [3, 7, 14, 30])
+  await as(s1, `select * from public.review_wrong_result($1, 'again')`, [id])
+  assert.deepEqual(await days(), { d: 1, box: 0, lapses: 1, learned: false })
+  for (let i = 0; i < 5; i++) await as(s1, `select * from public.review_wrong_result($1, 'good')`, [id])
+  assert.equal((await days()).learned, true)
+  await as(s1, `select * from public.review_wrong_result($1, 'again')`, [id])
+  assert.equal((await days()).learned, false)
+  await as(s1, `select * from public.review_wrong_result($1, 'learned')`, [id])
+  assert.equal((await days()).learned, true)
+  await rejects(as(s1, `select * from public.review_wrong_result($1, 'belki')`, [id]), /Geçersiz/)
+  await rejects(as(s2, `select * from public.review_wrong_result($1, 'good')`, [id]), /yetkin yok/)
+  await rejects(as(parent, `select * from public.review_wrong_result($1, 'good')`, [id]), /yetkin yok/)
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])
