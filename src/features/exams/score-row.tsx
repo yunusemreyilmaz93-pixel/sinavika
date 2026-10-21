@@ -27,7 +27,7 @@ export function resolveEntry(entry: Entry | undefined, subject: Subject, kind: E
 export const scoreGrid = 'grid grid-cols-[minmax(0,1fr)_3rem_3rem_3rem_3.25rem] items-center gap-1.5 sm:grid-cols-[minmax(0,1fr)_4.5rem_4.5rem_4.5rem_4.5rem] sm:gap-3'
 
 function focusNext(e: KeyboardEvent<HTMLInputElement>) {
-  if (e.key !== 'Enter') return
+  if (e.key !== 'Enter' && e.key !== ' ' && e.key !== ',') return
   e.preventDefault()
   const current = e.currentTarget
   const inputs = Array.from(current.form?.querySelectorAll<HTMLInputElement>('input[data-score]') ?? []).filter(
