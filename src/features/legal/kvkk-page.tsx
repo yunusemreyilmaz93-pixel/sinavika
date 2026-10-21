@@ -132,6 +132,11 @@ const sections: Section[] = [
           saklanır ve YouTube ile paylaşılmaz.
         </p>
         <p>
+          Ana sayfanın altında ve öğretmen ile veli panelinde bulunan "Destek ol" bağlantısı, üçüncü taraf bir hizmete (Buy Me a
+          Coffee) gider. Bu bağlantıya tıklamadığınız sürece o hizmete hiçbir veriniz gönderilmez. Orada paylaştığınız bilgiler o
+          hizmetin gizlilik politikasına tabidir. Öğrenci hesaplarında bu bağlantı gösterilmez.
+        </p>
+        <p>
           Verileriniz bunların dışında hiç kimseye satılmaz, kiralanmaz ve reklam amacıyla paylaşılmaz. Yetkili kamu kurum ve
           kuruluşlarının kanuna dayanan talepleri olması hâlinde, yalnızca bu yükümlülük kapsamında paylaşılabilir.
         </p>

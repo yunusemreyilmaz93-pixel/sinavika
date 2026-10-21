@@ -72,6 +72,7 @@ describe('estimateMinutes', () => {
     const q = ':::soru{cevap="A"}\nSoru?\n- A) a\n- B) b\n---\nÇözüm\n:::'
     const d = ':::dene\n1. a => b\n2. c => d\n:::'
     expect(estimateMinutes(`${q}\n\n${d}\n\n::video{id="abcdefghijk"}`)).toBe(3)
+    expect(estimateMinutes('::sim{tur="gaz"}')).toBe(2)
   })
   it('uzun süreleri 5 dakikaya yuvarlar ve 120 ile sınırlar', () => {
     expect(formatLessonMinutes(18)).toBe(18)

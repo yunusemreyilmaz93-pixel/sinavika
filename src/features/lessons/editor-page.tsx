@@ -91,6 +91,7 @@ const guide = [
   ['Cümle laboratuvarı', ':::cumle-lab\n1. Kitap / okumak,[isim|Not.] / geliştirir.[yuklem|Not.]\n:::', 'Türler: isim, sifat, zarf, yuklem.'],
   ['Soru', ':::soru{cevap="C"}\n> Alıntı\n\nSoru kökü?\n\n- A) ...\n- B) ...\n\n---\n\nÇözüm\n:::', 'Alıntı ve çözüm isteğe bağlı. Sorular otomatik numaralanır.'],
   ['Kendini dene', ':::dene\n1. Soru? => Cevap\n:::', 'Cevabı gizli kartlar.'],
+  ['Simülasyon', '::sim{tur="gaz"}', 'Gaz parçacıkları. Etkileşimli, öğrenci önce tahmin eder, sonra kaydırıcıyla dener.'],
   ['Video', '::video{url="https://youtu.be/..." baslik="" kanal="" etiket=""}', 'Tıklayınca yüklenir.'],
 ] as const
 

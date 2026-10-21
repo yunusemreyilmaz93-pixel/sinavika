@@ -15,6 +15,7 @@ import { PendingApproval } from '@/features/auth/pending-approval'
 import { cn } from '@/lib/cn'
 import { useTheme, type ThemeChoice } from '@/lib/theme'
 import { navFor, type NavItem } from './nav'
+import { SupportLink } from './support-link'
 
 const roleLabel: Record<Profile['role'], string> = { teacher: 'Öğretmen', student: 'Öğrenci', parent: 'Veli' }
 
@@ -52,7 +53,8 @@ export function AppShell() {
             <SideLink key={item.to} item={item} />
           ))}
         </nav>
-        <div className="border-t border-line p-3">
+        <div className="space-y-1 border-t border-line p-3">
+          {!isStudent && <SupportLink />}
           <UserMenu profile={profile} wide />
         </div>
       </aside>
@@ -86,7 +88,7 @@ export function AppShell() {
         </main>
       </div>
 
-      <BottomNav items={items} onQuickAdd={isStudent ? () => setQuickAdd(true) : undefined} />
+      <BottomNav items={items} onQuickAdd={isStudent ? () => setQuickAdd(true) : undefined} support={!isStudent} />
       {isStudent && <QuickAddSheet open={quickAdd} onOpenChange={setQuickAdd} />}
     </div>
   )
@@ -122,7 +124,7 @@ function SideLink({ item }: { item: NavItem }) {
   )
 }
 
-function BottomNav({ items, onQuickAdd }: { items: NavItem[]; onQuickAdd?: () => void }) {
+function BottomNav({ items, onQuickAdd, support }: { items: NavItem[]; onQuickAdd?: () => void; support?: boolean }) {
   const [more, setMore] = useState(false)
   const navigate = useNavigate()
   const primary = items.filter((i) => i.mobile)
@@ -182,6 +184,7 @@ function BottomNav({ items, onQuickAdd }: { items: NavItem[]; onQuickAdd?: () =>
             )
           })}
         </div>
+        {support && <SupportLink className="mt-3 border border-line" />}
       </Modal>
     </>
   )

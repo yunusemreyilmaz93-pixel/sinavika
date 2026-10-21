@@ -100,12 +100,16 @@ export function outlineOf(source: string): OutlineItem[] {
 const WORDS_PER_MINUTE = 140
 const MINUTES_PER_QUESTION = 1.5
 const MINUTES_PER_SELF_CHECK = 0.5
+const MINUTES_PER_SIMULATION = 2
 
 export function estimateMinutes(source: string) {
   let words = 0
   let extra = 0
   for (const block of parseBlocks(source)) {
-    if (block.type === 'leaf') continue
+    if (block.type === 'leaf') {
+      if (block.name === 'sim') extra += MINUTES_PER_SIMULATION
+      continue
+    }
     if (block.type === 'box' && block.name === 'soru') {
       extra += MINUTES_PER_QUESTION
       continue

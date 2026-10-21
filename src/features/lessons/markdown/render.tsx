@@ -1,4 +1,4 @@
-import { isValidElement, memo, type ReactNode } from 'react'
+import { isValidElement, lazy, memo, Suspense, type ReactNode } from 'react'
 import ReactMarkdown, { type Components } from 'react-markdown'
 import { Link } from 'react-router'
 import rehypeKatex from 'rehype-katex'
@@ -8,6 +8,8 @@ import 'katex/dist/katex.min.css'
 import { parseYouTubeId } from '@/features/video/youtube'
 import { CauseEffect, Connect, Ek, Figure, Formula, Hit, LifeTimeline, Question, SelfCheck, SentenceLab, Tip, Video, YearScale } from '../blocks'
 import { listItems, parseBlocks, parseEras, parseLabSentence, parseQuestion, plainText, slug, splitPipes, type Block } from './parse'
+
+const GasSim = lazy(() => import('../sims/gas-sim').then((m) => ({ default: m.GasSim })))
 
 type HastNode = { type: string; tagName?: string; value?: string; properties?: Record<string, unknown>; children?: HastNode[] }
 
@@ -140,6 +142,13 @@ function BlockView({ block, questionNumber }: { block: Block; questionNumber: nu
       const id = block.attrs.id || parseYouTubeId(block.attrs.url ?? '') || ''
       if (!id) return null
       return <Video id={id} title={block.attrs.baslik || 'Video'} channel={block.attrs.kanal || ''} label={block.attrs.etiket || 'Video'} />
+    }
+    if (block.name === 'sim' && block.attrs.tur === 'gaz') {
+      return (
+        <Suspense fallback={<div className="my-6 h-80 rounded-2xl border border-line bg-surface-2" aria-hidden />}>
+          <GasSim />
+        </Suspense>
+      )
     }
     return null
   }

@@ -1,5 +1,6 @@
 import { ArrowRight, KeyRound } from 'lucide-react'
 import { Link } from 'react-router'
+import { SUPPORT_URL } from '@/lib/contact'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/ui/logo'
 import { cn } from '@/lib/cn'
@@ -119,7 +120,12 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
       <div className="border-t border-line">
         <div className={cn(container, 'flex flex-col gap-1 py-6 text-sm text-subtle sm:flex-row sm:justify-between')}>
           <p>&copy; {year} Yolumnet</p>
-          <p>Gönüllü bir proje olarak geliştiriliyor.</p>
+          <p>
+            Gönüllü bir proje olarak geliştiriliyor.{' '}
+            <a href={SUPPORT_URL} target="_blank" rel="noreferrer noopener" className="font-semibold underline-offset-4 hover:text-fg hover:underline">
+              Beğendiyseniz destek olabilirsiniz.
+            </a>
+          </p>
         </div>
       </div>
     </footer>
