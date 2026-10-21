@@ -1,7 +1,10 @@
 import { isValidElement, memo, type ReactNode } from 'react'
 import ReactMarkdown, { type Components } from 'react-markdown'
 import { Link } from 'react-router'
+import rehypeKatex from 'rehype-katex'
 import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import 'katex/dist/katex.min.css'
 import { parseYouTubeId } from '@/features/video/youtube'
 import { CauseEffect, Connect, Ek, Figure, Formula, Hit, LifeTimeline, Question, SelfCheck, SentenceLab, Tip, Video, YearScale } from '../blocks'
 import { listItems, parseBlocks, parseEras, parseLabSentence, parseQuestion, plainText, slug, splitPipes, type Block } from './parse'
@@ -117,8 +120,8 @@ const inlineComponents: Components = { ...baseComponents, p: ({ children }) => <
 export const Md = memo(function Md({ text, inline }: { text: string; inline?: boolean }) {
   return (
     <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      rehypePlugins={[labelTables]}
+      remarkPlugins={[remarkGfm, remarkMath]}
+      rehypePlugins={[labelTables, rehypeKatex]}
       components={inline ? inlineComponents : baseComponents}
       urlTransform={(url) => url}
     >

@@ -9,6 +9,7 @@ import {
   Link2,
   ListChecks,
   Save,
+  Sigma,
   Table2,
   Trash2,
   Video,
@@ -48,6 +49,7 @@ const snippets: Snippet[] = [
     after: ' | |\n',
     placeholder: 'Hücre',
   },
+  { label: 'Formül', icon: Sigma, before: '\n$$\n', after: '\n$$\n', placeholder: 'a^2 + b^2 = c^2' },
   {
     label: 'Soru',
     icon: CircleHelp,
@@ -76,6 +78,7 @@ const guide = [
   ['Başlık', '## 1. Başlık', 'İçindekiler listesi ## başlıklarından oluşur. Başında sayı olan başlık numaralı görünür.'],
   ['Vurgu', '**kalın**, *eğik*', 'Altı çizili sözcük için [kelime](#altcizgi), ek için [-mak](#ek).'],
   ['Görsel', '![Alt metin](adres "Açıklama | Kaynak")', 'Görsel düğmesi yükler ve satırı kendisi ekler.'],
+  ['Formül', '$x^2$ satır içi\n$$\\frac{a}{b}$$ ayrı satır', 'KaTeX söz dizimi. Tablo hücresinde | kullanma.'],
   ['Tablo', '| A | B |\n| --- | --- |\n| 1 | 2 |', 'Telefonda satırlar kart olarak görünür.'],
   ['İpucu', ':::ipucu{baslik="İpucu"}\nMetin\n:::', 'Başlık isteğe bağlı.'],
   ['Bağlantı', ':::baglanti\nMetin\n:::', '"Bağlantıyı kur" kutusu.'],

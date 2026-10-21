@@ -272,3 +272,9 @@
     font-size: 0.875rem;
   }
 }
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.25rem;
+}
