@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { MessageCircle, NotebookPen, UserRound } from 'lucide-react'
+import { useState } from 'react'
 import { Link } from 'react-router'
 import { PageHeader } from '@/components/app/page-header'
 import { Button } from '@/components/ui/button'
@@ -7,14 +8,17 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth, useViewedStudent } from '@/features/auth/session'
 import { errorMessage } from '@/lib/supabase'
+import { Segmented } from '@/components/ui/segmented'
 import { useNotes } from './lib'
 import { NoteCard } from './note-card'
+import { MyNotes } from './student-notes'
 
 export default function NotesPage() {
   const { profile } = useAuth()
   const viewed = useViewedStudent()
   const notes = useNotes(viewed?.studentId)
   const isParent = profile?.role === 'parent'
+  const [tab, setTab] = useState<'ogretmen' | 'benim'>('ogretmen')
 
   if (!viewed) {
     return (
@@ -42,7 +46,20 @@ export default function NotesPage() {
         title="Notlar"
         description={isParent ? `Öğretmenin ${viewed.name} için paylaştığı notlar` : 'Öğretmeninin seninle paylaştığı notlar'}
       />
-      {notes.isPending ? (
+      {profile?.role === 'student' && (
+        <Segmented
+          className="mb-4 max-w-xs"
+          value={tab}
+          onChange={setTab}
+          options={[
+            { value: 'ogretmen', label: 'Öğretmen notları' },
+            { value: 'benim', label: 'Notlarım' },
+          ]}
+        />
+      )}
+      {tab === 'benim' && profile?.role === 'student' ? (
+        <MyNotes studentId={viewed.studentId} />
+      ) : notes.isPending ? (
         <div className="space-y-3" aria-busy="true" aria-label="Yükleniyor">
           <Skeleton className="h-36" />
           <Skeleton className="h-28" />

@@ -224,6 +224,341 @@ export type Database = {
           },
         ];
       };
+      announcements: {
+        Row: {
+          audience: string;
+          body: string;
+          created_at: string;
+          id: number;
+          teacher_id: string;
+          title: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          audience: string;
+          body: string;
+          created_at?: string;
+          id?: number;
+          teacher_id?: string;
+          title: string;
+        };
+        Update: {
+          audience?: string;
+          body?: string;
+          created_at?: string;
+          id?: number;
+          teacher_id?: string;
+          title?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "announcements_teacher_id_fkey";
+            columns: ["teacher_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      books: {
+        Row: {
+          author: string | null;
+          created_at: string;
+          finished_on: string | null;
+          id: number;
+          started_on: string;
+          student_id: string;
+          title: string;
+          total_pages: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          author?: string | null;
+          created_at?: string;
+          finished_on?: string | null;
+          id?: number;
+          started_on?: string;
+          student_id: string;
+          title: string;
+          total_pages?: number | null;
+        };
+        Update: {
+          author?: string | null;
+          created_at?: string;
+          finished_on?: string | null;
+          id?: number;
+          started_on?: string;
+          student_id?: string;
+          title?: string;
+          total_pages?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "books_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      reading_logs: {
+        Row: {
+          book_id: number;
+          created_at: string;
+          id: number;
+          pages: number;
+          read_on: string;
+          student_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          book_id: number;
+          created_at?: string;
+          id?: number;
+          pages: number;
+          read_on?: string;
+          student_id: string;
+        };
+        Update: {
+          book_id?: number;
+          created_at?: string;
+          id?: number;
+          pages?: number;
+          read_on?: string;
+          student_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "reading_logs_book_id_fkey";
+            columns: ["book_id"];
+            isOneToOne: false;
+            referencedRelation: "books";
+            referencedColumns: ["id"];
+          },
+        
+          {
+            foreignKeyName: "reading_logs_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      student_notes: {
+        Row: {
+          body: string;
+          created_at: string;
+          id: number;
+          shared: boolean;
+          student_id: string;
+          title: string;
+          topic_id: number | null;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          body: string;
+          created_at?: string;
+          id?: number;
+          shared?: boolean;
+          student_id?: string;
+          title: string;
+          topic_id?: number | null;
+          updated_at?: string;
+        };
+        Update: {
+          body?: string;
+          created_at?: string;
+          id?: number;
+          shared?: boolean;
+          student_id?: string;
+          title?: string;
+          topic_id?: number | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "student_notes_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+        
+          {
+            foreignKeyName: "student_notes_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      report_links: {
+        Row: {
+          created_at: string;
+          created_by: string;
+          expires_at: string;
+          id: number;
+          label: string | null;
+          last_viewed_at: string | null;
+          revoked_at: string | null;
+          student_id: string;
+          token_hash: string;
+          view_count: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          created_by?: string;
+          expires_at: string;
+          id?: number;
+          label?: string | null;
+          last_viewed_at?: string | null;
+          revoked_at?: string | null;
+          student_id: string;
+          token_hash: string;
+          view_count?: number;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string;
+          expires_at?: string;
+          id?: number;
+          label?: string | null;
+          last_viewed_at?: string | null;
+          revoked_at?: string | null;
+          student_id?: string;
+          token_hash?: string;
+          view_count?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "report_links_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      universities: {
+        Row: {
+          city: string | null;
+          id: number;
+          kind: string;
+          name: string;
+          short_name: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          city?: string | null;
+          id: number;
+          kind: string;
+          name: string;
+          short_name: string;
+        };
+        Update: {
+          city?: string | null;
+          id?: number;
+          kind?: string;
+          name?: string;
+          short_name?: string;
+        };
+        Relationships: [];
+      };
+      programs: {
+        Row: {
+          city: string | null;
+          code: number;
+          duration: number | null;
+          faculty: string | null;
+          group_id: number;
+          group_name: string;
+          language: string | null;
+          name: string;
+          scholarship: string | null;
+          score_type: string;
+          university_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          city?: string | null;
+          code: number;
+          duration?: number | null;
+          faculty?: string | null;
+          group_id: number;
+          group_name: string;
+          language?: string | null;
+          name: string;
+          scholarship?: string | null;
+          score_type: string;
+          university_id: number;
+        };
+        Update: {
+          city?: string | null;
+          code?: number;
+          duration?: number | null;
+          faculty?: string | null;
+          group_id?: number;
+          group_name?: string;
+          language?: string | null;
+          name?: string;
+          scholarship?: string | null;
+          score_type?: string;
+          university_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "programs_university_id_fkey";
+            columns: ["university_id"];
+            isOneToOne: false;
+            referencedRelation: "universities";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      program_results: {
+        Row: {
+          min_score: number | null;
+          nets: Json | null;
+          placed: number | null;
+          program_code: number;
+          quota: number | null;
+          rank: number | null;
+          year: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          min_score?: number | null;
+          nets?: Json | null;
+          placed?: number | null;
+          program_code: number;
+          quota?: number | null;
+          rank?: number | null;
+          year: number;
+        };
+        Update: {
+          min_score?: number | null;
+          nets?: Json | null;
+          placed?: number | null;
+          program_code?: number;
+          quota?: number | null;
+          rank?: number | null;
+          year?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "program_results_program_code_fkey";
+            columns: ["program_code"];
+            isOneToOne: false;
+            referencedRelation: "programs";
+            referencedColumns: ["code"];
+          },
+        ];
+      };
       lesson_notes: {
         Row: {
           body: string;
@@ -815,6 +1150,7 @@ export type Database = {
           grade: number;
           id: string;
           target: string | null;
+          target_program: number | null;
           teacher_id: string;
           track: Database["public"]["Enums"]["exam_track"];
           weekly_questions_goal: number;
@@ -828,6 +1164,7 @@ export type Database = {
           grade: number;
           id: string;
           target?: string | null;
+          target_program?: number | null;
           teacher_id: string;
           track: Database["public"]["Enums"]["exam_track"];
           weekly_questions_goal?: number;
@@ -840,6 +1177,7 @@ export type Database = {
           grade?: number;
           id?: string;
           target?: string | null;
+          target_program?: number | null;
           teacher_id?: string;
           track?: Database["public"]["Enums"]["exam_track"];
           weekly_questions_goal?: number;
@@ -1278,6 +1616,18 @@ export type Database = {
       };
     };
     Functions: {
+      create_report_link: {
+        Args: { p_days: number; p_label?: string; p_student: string };
+        Returns: string;
+      };
+      revoke_report_link: {
+        Args: { p_id: number };
+        Returns: undefined;
+      };
+      report_by_token: {
+        Args: { p_token: string };
+        Returns: Json;
+      };
       answer_lesson_question: {
         Args: { p_correct: boolean; p_key: string; p_topic: number };
         Returns: {

@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AlarmClock, BadgeCheck, Bell, ChartColumn, ClipboardList, MessageCircle, NotebookPen, UserPlus, type LucideIcon } from 'lucide-react'
+import { AlarmClock, BadgeCheck, Bell, ChartColumn, ClipboardList, Megaphone, MessageCircle, NotebookPen, UserPlus, type LucideIcon } from 'lucide-react'
 import { useCallback } from 'react'
 import { toast } from 'sonner'
 import { keys } from '@/lib/data'
@@ -25,6 +25,7 @@ const kinds: Record<string, { icon: LucideIcon; label: string; className: string
   join: { icon: UserPlus, label: 'Katılım', className: 'bg-primary-soft text-primary-soft-fg' },
   approved: { icon: BadgeCheck, label: 'Onay', className: 'bg-primary-soft text-success' },
   report: { icon: ChartColumn, label: 'Haftalık rapor', className: 'bg-accent-soft text-accent-soft-fg' },
+  announcement: { icon: Megaphone, label: 'Duyuru', className: 'bg-accent-soft text-accent-soft-fg' },
   reminder: { icon: AlarmClock, label: 'Hatırlatma', className: 'bg-warning-soft text-warning' },
 }
 

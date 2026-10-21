@@ -17,6 +17,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, ...page(() => import('@/features/landing/landing-page')) },
       { path: 'hakkinda', ...page(() => import('@/features/about/about-page')) },
+      { path: 'rapor/:token', ...page(() => import('@/features/report/report-page')) },
       { path: 'kvkk', ...page(() => import('@/features/legal/kvkk-page')) },
       {
         element: <RedirectIfAuthed />,
@@ -34,6 +35,7 @@ export const router = createBrowserRouter([
             lazy: async () => ({ Component: (await import('@/components/app/app-shell')).AppShell }),
             children: [
               { index: true, ...page(() => import('@/features/home/home-page')) },
+              { path: 'duyurular', ...page(() => import('@/features/announcements/announcements-page')) },
               { path: 'bildirimler', ...page(() => import('@/features/notifications/notifications-page')) },
               { path: 'konular/:topicId', ...page(() => import('@/features/lessons/lesson-page')) },
               { path: 'ayarlar', ...page(() => import('@/features/settings/settings-page')) },
@@ -47,6 +49,7 @@ export const router = createBrowserRouter([
                   { path: 'denemeler', ...page(() => import('@/features/exams/exams-page')) },
                   { path: 'denemeler/:examId', ...page(() => import('@/features/exams/exam-detail-page')) },
                   { path: 'konular', ...page(() => import('@/features/topics/topics-page')) },
+                  { path: 'okuma', ...page(() => import('@/features/reading/reading-page')) },
                   { path: 'notlar', ...page(() => import('@/features/notes/notes-page')) },
                   { path: 'yanlislar', ...page(() => import('@/features/wrong/wrong-page')) },
                 ],

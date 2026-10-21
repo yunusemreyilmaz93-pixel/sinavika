@@ -2,6 +2,7 @@ import { ArchiveSection, DeleteSection } from './danger-section'
 import { ExamInfoForm } from './exam-info-form'
 import { ParentsSection } from './parents-section'
 import { PasswordSection } from './password-section'
+import { ReportLinksSection } from './report-links-section'
 import type { StudentDetail } from './queries'
 
 export function SettingsTab({ student }: { student: StudentDetail }) {
@@ -18,6 +19,9 @@ export function SettingsTab({ student }: { student: StudentDetail }) {
       <div className="contents lg:flex lg:flex-col lg:gap-5">
         <div className="order-2 lg:order-none">
           <ParentsSection student={student} />
+        </div>
+        <div className="order-3 lg:order-none">
+          <ReportLinksSection student={student} />
         </div>
         <div className="order-4 lg:order-none">
           <ArchiveSection student={student} />

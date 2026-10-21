@@ -9,7 +9,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useProfile } from '@/features/auth/session'
 import { ExamGoals } from '@/features/exams/exam-goals'
 import { ExamsOverview } from '@/features/exams/exams-overview'
+import { SharedStudentNotes } from '@/features/notes/student-notes'
 import { TeacherNotes } from '@/features/notes/teacher-notes'
+import { ReadingTracker } from '@/features/reading/reading-tracker'
 import { WeekPlan } from '@/features/plan/week-plan'
 import { TopicMap } from '@/features/topics/topic-map'
 import { WrongList } from '@/features/wrong/wrong-list'
@@ -26,6 +28,7 @@ const tabs = [
   { value: 'denemeler', label: 'Denemeler' },
   { value: 'konular', label: 'Konular' },
   { value: 'yanlislar', label: 'Yanlışlar' },
+  { value: 'okuma', label: 'Okuma' },
   { value: 'notlar', label: 'Notlar' },
   { value: 'ayarlar', label: 'Ayarlar' },
 ] as const
@@ -128,6 +131,7 @@ export default function StudentDetailPage() {
           {tab === 'ozet' && <OverviewTab studentId={student.id} onOpenExams={() => setTab('denemeler')} />}
           {tab === 'plan' && <WeekPlan studentId={student.id} viewer="teacher" />}
           {tab === 'yanlislar' && <WrongList studentId={student.id} viewer="teacher" />}
+          {tab === 'okuma' && <ReadingTracker studentId={student.id} canEdit />}
           {tab === 'denemeler' && (
             <div className="space-y-4 sm:space-y-5">
               <ExamsOverview
@@ -140,7 +144,12 @@ export default function StudentDetailPage() {
             </div>
           )}
           {tab === 'konular' && <TopicMap studentId={student.id} student={student} canEdit />}
-          {tab === 'notlar' && <TeacherNotes studentId={student.id} />}
+          {tab === 'notlar' && (
+            <>
+              <TeacherNotes studentId={student.id} />
+              <SharedStudentNotes studentId={student.id} />
+            </>
+          )}
           {tab === 'ayarlar' && <SettingsTab student={student} />}
         </motion.div>
     </div>

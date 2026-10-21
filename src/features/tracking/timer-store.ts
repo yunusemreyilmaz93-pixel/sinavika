@@ -11,6 +11,7 @@ export type FocusRun = {
   pausedAt: number | null
   pausedMs: number
   savingAt: number | null
+  methodId?: string | null
 }
 
 export type BreakRun = { studentId: string; startedAt: number; durationSec: number }
@@ -129,7 +130,7 @@ export async function saveFocusRun(
   runId: string,
   workedSec: number,
   clear = true,
-): Promise<{ minutes: number; subjectId: string; topicId: number | null } | null> {
+): Promise<{ minutes: number; subjectId: string; topicId: number | null; methodId: string | null } | null> {
   const now = Date.now()
   const state = readTimer()
   const run = state.focus
@@ -154,10 +155,10 @@ export async function saveFocusRun(
     throw err
   }
   if (clear) clearFocus(runId)
-  return { minutes, subjectId: run.subjectId, topicId: run.topicId }
+  return { minutes, subjectId: run.subjectId, topicId: run.topicId, methodId: run.methodId ?? null }
 }
 
-export type TimerPrefs = { minutes: number; custom: number }
+export type TimerPrefs = { minutes: number; custom: number; method: string }
 
 export function readPrefs(): TimerPrefs {
   try {
@@ -165,9 +166,10 @@ export function readPrefs(): TimerPrefs {
     return {
       minutes: num(value.minutes) && value.minutes >= 1 && value.minutes <= 240 ? value.minutes : 25,
       custom: num(value.custom) && value.custom >= 5 && value.custom <= 240 ? value.custom : 30,
+      method: typeof value.method === 'string' ? value.method : 'serbest',
     }
   } catch {
-    return { minutes: 25, custom: 30 }
+    return { minutes: 25, custom: 30, method: 'serbest' }
   }
 }
 

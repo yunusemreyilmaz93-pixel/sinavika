@@ -19,24 +19,21 @@ export function Hero() {
     >
       <div className="max-w-xl lg:pt-14">
         <h1 className="text-[2rem] leading-[1.06] font-extrabold min-[400px]:text-[2.35rem] sm:text-[3.25rem] lg:text-[3.5rem] xl:text-[3.85rem]">
-          <span className="block">Öğretmen planlar,</span>
+          <span className="block">Koçluğun</span>
           <span className="block">
-            öğrenci{' '}
             <motion.span
               className="marker"
               initial={reduce ? false : { backgroundSize: '0% 100%' }}
               animate={{ backgroundSize: '100% 100%' }}
               transition={{ delay: 0.35, duration: 0.6, ease: [0.65, 0, 0.35, 1] }}
             >
-              çalışır
+              bütün adımları
             </motion.span>
-            ,
           </span>
-          <span className="block">veli takip eder.</span>
+          <span className="block">tek platformda.</span>
         </h1>
         <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-muted sm:text-lg">
-          LGS ve YKS'ye hazırlanan öğrenciler için ücretsiz bir koçluk uygulaması. Haftalık program, konu anlatımı, soru
-          takibi ve deneme analizi bir arada.
+          Haftalık program, konu anlatımı, soru ve deneme takibi, tekrar planı. LGS ve YKS'ye hazırlanan öğrenciler için ücretsiz ve reklamsız.
         </p>
         <div className="mt-8 flex flex-col gap-2.5 sm:flex-row">
           {signedIn ? (

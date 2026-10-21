@@ -14,6 +14,7 @@ import { useCurriculum } from '@/lib/data'
 import { formatMinutes, formatTime } from '@/lib/dates'
 import { subjectColor } from '@/lib/exam'
 import { errorMessage } from '@/lib/supabase'
+import { methodOf, phaseAt } from './methods'
 import { invalidateActivity } from './stats'
 import { rememberSubject, subjectName } from './subjects'
 import { useDocumentTitle, useNow, useWakeLock, vibrate } from './timer-hooks'
@@ -33,10 +34,9 @@ import {
   type FocusRun,
 } from './timer-store'
 
-const BREAK_SEC = 5 * 60
 const STALE_BREAK_MS = 10 * 60_000
 
-type Result = { minutes: number; subjectId: string; topicId: number | null }
+type Result = { minutes: number; subjectId: string; topicId: number | null; methodId: string | null }
 
 export default function TimerPage() {
   const { student } = useAuth()
@@ -125,6 +125,7 @@ function FocusTimer({ studentId, dailyGoal }: { studentId: string; dailyGoal: nu
         subjectId: choice.subjectId,
         topicId: choice.topicId,
         durationSec: choice.minutes * 60,
+        methodId: choice.methodId,
         startedAt: Date.now(),
         pausedAt: null,
         pausedMs: 0,
@@ -143,9 +144,10 @@ function FocusTimer({ studentId, dailyGoal }: { studentId: string; dailyGoal: nu
         : { ...s, focus: { ...s.focus, pausedAt: null, pausedMs: s.focus.pausedMs + (t - s.focus.pausedAt) } }
     })
 
+  const breakMinutes = methodOf(result?.methodId).breakMinutes
   const startBreak = () => {
     setResult(null)
-    writeTimer({ focus: null, rest: { studentId, startedAt: Date.now(), durationSec: BREAK_SEC } })
+    writeTimer({ focus: null, rest: { studentId, startedAt: Date.now(), durationSec: breakMinutes * 60 } })
   }
   const endBreak = () => updateTimer((s) => ({ ...s, rest: null }))
 
@@ -179,6 +181,8 @@ function FocusTimer({ studentId, dailyGoal }: { studentId: string; dailyGoal: nu
   if (focus) {
     const worked = workedMs(focus, now)
     const enough = worked >= 60_000
+    const focusMethod = methodOf(focus.methodId)
+    const phase = paused ? null : phaseAt(focusMethod, worked, focus.durationSec * 1000)
     return (
       <>
         <PageHeader title="Sayaç" />
@@ -200,6 +204,16 @@ function FocusTimer({ studentId, dailyGoal }: { studentId: string; dailyGoal: nu
               {paused ? 'Duraklatıldı' : `Bitiş ${formatTime(new Date(now + remaining).toISOString())}`}
             </span>
           </TimerRing>
+          {phase && (
+            <div className="mt-6 w-full rounded-2xl border border-line bg-surface p-4 text-left shadow-card">
+              <p className="text-xs font-semibold text-muted">
+                {focusMethod.name}
+                {phase.count > 1 && ` · Aşama ${phase.index + 1}/${phase.count}`}
+              </p>
+              <p className="mt-1 font-display text-lg font-bold">{phase.phase.label}</p>
+              <p className="mt-0.5 text-[15px] text-muted">{phase.phase.hint}</p>
+            </div>
+          )}
           <div className="mt-8 grid w-full grid-cols-[1fr_auto] gap-3">
             <Button size="lg" onClick={togglePause}>
               {paused ? <Play className="fill-current" /> : <Pause className="fill-current" />}
@@ -322,7 +336,7 @@ function FocusTimer({ studentId, dailyGoal }: { studentId: string; dailyGoal: nu
                 <Coffee className="size-5" />
               </span>
               <div className="min-w-0">
-                <h3 className="font-bold">5 dakika mola ver</h3>
+                <h3 className="font-bold">{breakMinutes} dakika mola ver</h3>
                 <p className="mt-0.5 text-sm text-muted">Kısa bir ara sonraki oturumda odaklanmanı kolaylaştırır.</p>
               </div>
             </CardBody>

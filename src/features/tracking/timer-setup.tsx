@@ -9,11 +9,12 @@ import { ChoiceChip, FormSkeleton, Group, SubjectPicker, TopicSelect } from './f
 import { useStudyActivity } from './stats'
 import { useStudentSubjects } from './subjects'
 import { TimerRing } from './timer-ring'
+import { methodOf, methods } from './methods'
 import { readPrefs, writePrefs } from './timer-store'
 
 const PRESETS = [25, 40, 50]
 
-export type TimerChoice = { subjectId: string; topicId: number | null; minutes: number }
+export type TimerChoice = { subjectId: string; topicId: number | null; minutes: number; methodId: string }
 
 export function TimerSetup({
   studentId,
@@ -29,19 +30,22 @@ export function TimerSetup({
   const [picked, setPicked] = useState<string | null>(null)
   const [topicId, setTopicId] = useState<number | null>(null)
   const [custom, setCustom] = useState(!PRESETS.includes(prefs.minutes))
+  const [methodId, setMethodId] = useState(prefs.method)
   const [minutes, setMinutes] = useState(prefs.minutes)
+  const method = methodOf(methodId)
   const subjectId = picked ?? recent
 
   const start = () => {
     if (!subjectId) return
-    writePrefs({ minutes, custom: custom ? minutes : prefs.custom })
-    onStart({ subjectId, topicId, minutes })
+    const length = method.minutes ?? minutes
+    writePrefs({ minutes: method.minutes ? prefs.minutes : minutes, custom: custom && !method.minutes ? minutes : prefs.custom, method: method.id })
+    onStart({ subjectId, topicId, minutes: length, methodId: method.id })
   }
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-2 lg:items-center lg:gap-10">
       <div className="flex flex-col items-center gap-5">
-        <TimerRing progress={0} remaining={minutes * 60_000} className="max-w-[210px] sm:max-w-[300px]">
+        <TimerRing progress={0} remaining={(method.minutes ?? minutes) * 60_000} className="max-w-[210px] sm:max-w-[300px]">
           <span className="mt-2 text-sm font-semibold text-muted">Hazır</span>
         </TimerRing>
         <TodayLine studentId={studentId} dailyGoal={dailyGoal} />
@@ -66,6 +70,16 @@ export function TimerSetup({
                 }}
               />
               <TopicSelect curriculum={curriculum} subjectId={subjectId} value={topicId} onChange={setTopicId} />
+              <Group label="Yöntem" hint={method.id === 'serbest' ? undefined : method.summary}>
+                <div role="radiogroup" aria-label="Yöntem" className="scrollbar-none -mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-0.5 sm:mx-0 sm:flex-wrap sm:px-0">
+                  {methods.map((m) => (
+                    <ChoiceChip key={m.id} selected={m.id === method.id} onClick={() => setMethodId(m.id)} className="snap-start">
+                      {m.name}
+                    </ChoiceChip>
+                  ))}
+                </div>
+              </Group>
+              {method.minutes === null && (
               <Group label="Süre">
                 <div role="radiogroup" aria-label="Süre" className="grid grid-cols-4 gap-2">
                   {PRESETS.map((m) => (
@@ -104,6 +118,7 @@ export function TimerSetup({
                   />
                 )}
               </Group>
+              )}
               <Button size="lg" onClick={start} disabled={!subjectId || minutes < 1}>
                 <Play className="fill-current" />
                 Başlat
