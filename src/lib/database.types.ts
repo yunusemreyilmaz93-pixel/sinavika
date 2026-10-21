@@ -714,6 +714,43 @@ export type Database = {
           },
         ];
       };
+      student_preferences: {
+        Row: {
+          created_at: string;
+          position: number;
+          program_code: number;
+          student_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          position?: number;
+          program_code: number;
+          student_id: string;
+        };
+        Update: {
+          created_at?: string;
+          position?: number;
+          program_code?: number;
+          student_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "student_preferences_program_code_fkey";
+            columns: ["program_code"];
+            isOneToOne: false;
+            referencedRelation: "programs";
+            referencedColumns: ["code"];
+          },
+          {
+            foreignKeyName: "student_preferences_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       mock_exam_topic_misses: {
         Row: {
           misses: number;

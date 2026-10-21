@@ -103,3 +103,69 @@ export function useSetTargetProgram(studentId: string) {
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.student(studentId) }),
   })
 }
+
+export type Preference = {
+  program_code: number
+  position: number
+  program: { code: number; name: string; score_type: string; university: { short_name: string; city: string | null } }
+  result: { year: number; min_score: number | null; rank: number | null } | null
+}
+
+const preferenceKey = (studentId: string) => [...keys.student(studentId), 'preferences'] as const
+
+export function usePreferences(studentId: string) {
+  return useQuery({
+    queryKey: preferenceKey(studentId),
+    queryFn: async (): Promise<Preference[]> => {
+      const rows = unwrap(
+        await supabase
+          .from('student_preferences')
+          .select('program_code, position, program:programs!inner(code, name, score_type, university:universities!inner(short_name, city))')
+          .eq('student_id', studentId)
+          .order('position')
+          .order('created_at'),
+      ) as unknown as Omit<Preference, 'result'>[]
+      if (!rows.length) return []
+      const results = unwrap(
+        await supabase
+          .from('program_results')
+          .select('program_code, year, min_score, rank')
+          .in(
+            'program_code',
+            rows.map((r) => r.program_code),
+          )
+          .not('min_score', 'is', null)
+          .order('year', { ascending: false }),
+      )
+      return rows.map((r) => ({ ...r, result: results.find((x) => x.program_code === r.program_code) ?? null }))
+    },
+  })
+}
+
+export function usePreferenceActions(studentId: string) {
+  const qc = useQueryClient()
+  const done = () => qc.invalidateQueries({ queryKey: preferenceKey(studentId) })
+  return {
+    add: useMutation({
+      mutationFn: async ({ code, position }: { code: number; position: number }) =>
+        unwrap(await supabase.from('student_preferences').insert({ student_id: studentId, program_code: code, position })),
+      onSuccess: done,
+    }),
+    remove: useMutation({
+      mutationFn: async (code: number) =>
+        unwrap(await supabase.from('student_preferences').delete().eq('student_id', studentId).eq('program_code', code)),
+      onSuccess: done,
+    }),
+    // Sıra, listenin yeni dizilişine göre baştan yazılır
+    reorder: useMutation({
+      mutationFn: async (codes: number[]) =>
+        unwrap(
+          await supabase.from('student_preferences').upsert(
+            codes.map((program_code, position) => ({ student_id: studentId, program_code, position })),
+            { onConflict: 'student_id,program_code' },
+          ),
+        ),
+      onSuccess: done,
+    }),
+  }
+}

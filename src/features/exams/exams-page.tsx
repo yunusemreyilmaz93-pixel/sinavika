@@ -4,6 +4,7 @@ import { PageHeader } from '@/components/app/page-header'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { useAuth, useViewedStudent } from '@/features/auth/session'
+import { PreferenceList } from '@/features/goals/preference-list'
 import { TargetCard } from '@/features/goals/target-card'
 import { ExamGoals } from './exam-goals'
 import { ExamsOverview } from './exams-overview'
@@ -52,6 +53,7 @@ export default function ExamsPage() {
           examHref={examHref}
         />
         {student.track === 'yks' && <TargetCard key={`target-${studentId}`} studentId={studentId} field={student.field} canEdit={canEdit} />}
+        {student.track === 'yks' && <PreferenceList key={`prefs-${studentId}`} studentId={studentId} field={student.field} canEdit={canEdit} />}
         <ExamGoals key={`goals-${studentId}`} studentId={studentId} student={student} canEdit={canEdit} />
       </div>
     </>

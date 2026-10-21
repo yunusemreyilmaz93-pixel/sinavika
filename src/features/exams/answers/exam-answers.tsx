@@ -7,11 +7,23 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useCurriculum } from '@/lib/data'
 import { subjectsFor, type ExamKind } from '@/lib/exam'
 import { errorMessage, supabase, unwrap } from '@/lib/supabase'
-import { sheetRows, useExamAnswers, useSaveExamAnswers } from './queries'
-import { evaluate } from './sheet'
-import { emptySheet, SubjectSheet, type SheetState } from './subject-sheet'
+import { sheetRows, useExamAnswers, useKeyDonor, useSaveExamAnswers } from './queries'
+import { evaluate, normalizeKey } from './sheet'
+import { emptySheet, KeyDonorBanner, SubjectSheet, type SheetState } from './subject-sheet'
 
-export function ExamAnswers({ examId, studentId, kind, canEdit }: { examId: number; studentId: string; kind: ExamKind; canEdit: boolean }) {
+export function ExamAnswers({
+  examId,
+  studentId,
+  title,
+  kind,
+  canEdit,
+}: {
+  examId: number
+  studentId: string
+  title: string
+  kind: ExamKind
+  canEdit: boolean
+}) {
   const curriculum = useCurriculum()
   const saved = useExamAnswers(examId)
   const save = useSaveExamAnswers(examId)
@@ -20,6 +32,7 @@ export function ExamAnswers({ examId, studentId, kind, canEdit }: { examId: numb
     queryFn: async () => unwrap(await supabase.from('students').select('field').eq('id', studentId).maybeSingle())?.field ?? null,
   })
   const [draft, setDraft] = useState<Record<string, SheetState>>({})
+  const donor = useKeyDonor(kind, canEdit ? title : '', examId)
 
   if (saved.isPending || curriculum.isPending || field.isPending) return <Skeleton className="h-24" />
   if (!curriculum.data || saved.error) return null
@@ -56,6 +69,22 @@ export function ExamAnswers({ examId, studentId, kind, canEdit }: { examId: numb
         description={canEdit ? 'Ders sonucu ve konu analizi cevaplardan hesaplanır' : 'Cevap anahtarı ve öğrenci cevapları'}
       />
       <CardBody className="space-y-2 pt-3">
+        {canEdit && donor.data && subjects.some((s) => donor.data?.keys.has(s.id) && !saved.data.get(s.id)?.key && !draft[s.id]?.key) && (
+          <KeyDonorBanner
+            takenOn={donor.data.takenOn}
+            onApply={() =>
+              setDraft((all) => {
+                const next = { ...all }
+                for (const subject of subjects) {
+                  const key = donor.data?.keys.get(subject.id)
+                  const current = all[subject.id] ?? saved.data.get(subject.id) ?? emptySheet
+                  if (key && !current.key) next[subject.id] = { ...current, key: normalizeKey(key, kind, subject.question_count) }
+                }
+                return next
+              })
+            }
+          />
+        )}
         {subjects.map((subject) => (
           <SubjectSheet
             key={subject.id}

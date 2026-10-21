@@ -12,9 +12,9 @@ import { useCurriculum } from '@/lib/data'
 import { todayISO } from '@/lib/dates'
 import { examKindsFor, examLabel, formatNet, net, subjectsFor, type ExamKind, type Field as YksField, type Subject, type Track } from '@/lib/exam'
 import { errorMessage } from '@/lib/supabase'
-import { saveExamAnswers, sheetRows } from './answers/queries'
-import { evaluate } from './answers/sheet'
-import { emptySheet, SubjectSheet, type SheetState } from './answers/subject-sheet'
+import { saveExamAnswers, sheetRows, useKeyDonor } from './answers/queries'
+import { evaluate, normalizeKey } from './answers/sheet'
+import { emptySheet, KeyDonorBanner, SubjectSheet, type SheetState } from './answers/subject-sheet'
 import { KarneImport } from './import/karne-import'
 import { useCreateExam, type ExamResult } from './queries'
 import { resolveEntry, scoreGrid, ScoreRow, type Entry } from './score-row'
@@ -43,6 +43,7 @@ export function ExamForm({ studentId, student, subjects: allSubjects, recent, in
   const [mode, setMode] = useState<'ders' | 'soru'>('ders')
   const [sheets, setSheets] = useState<Record<string, SheetState>>({})
   const curriculum = useCurriculum()
+  const donor = useKeyDonor(kind, mode === 'soru' ? title : '')
   const titleRef = useRef<HTMLInputElement>(null)
   const savedRef = useRef(false)
 
@@ -226,6 +227,21 @@ export function ExamForm({ studentId, student, subjects: allSubjects, recent, in
         </div>
         {bySheet ? (
           <div className="space-y-2 p-3 sm:p-5">
+            {donor.data && (
+              <KeyDonorBanner
+                takenOn={donor.data.takenOn}
+                onApply={() =>
+                  setSheets((all) => {
+                    const next = { ...all }
+                    for (const subject of subjects) {
+                      const key = donor.data?.keys.get(subject.id)
+                      if (key) next[subject.id] = { ...(all[subject.id] ?? emptySheet), key: normalizeKey(key, kind, subject.question_count) }
+                    }
+                    return next
+                  })
+                }
+              />
+            )}
             {subjects.map((subject) => (
               <SubjectSheet
                 key={subject.id}

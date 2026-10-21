@@ -1,7 +1,9 @@
 import { ChevronDown } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { Button } from '@/components/ui/button'
 import { Select } from '@/components/ui/field'
 import { cn } from '@/lib/cn'
+import { formatDate } from '@/lib/dates'
 import { formatNet, subjectColor, type ExamKind, type Subject, type Topic } from '@/lib/exam'
 import { choices, evaluate, normalizeAnswers, normalizeKey, type Status } from './sheet'
 
@@ -39,7 +41,12 @@ export function SubjectSheet({
 
   return (
     <div className="rounded-xl border border-line">
-      <button type="button" onClick={() => setOpen(!open)} className="flex min-h-12 w-full items-center gap-3 px-3 text-left" aria-expanded={open}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex min-h-12 w-full items-center gap-3 px-3 text-left"
+        aria-expanded={open}
+      >
         <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: subjectColor(subject) }} aria-hidden />
         <span className="min-w-0 flex-1 truncate font-semibold">{subject.name}</span>
         <span className="tabular text-sm text-muted">
@@ -175,5 +182,16 @@ function TextRow({
       />
       {hint && <span className="text-xs text-muted">{hint}</span>}
     </label>
+  )
+}
+
+export function KeyDonorBanner({ takenOn, onApply }: { takenOn: string; onApply: () => void }) {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-primary-soft px-3 py-2 text-sm text-primary-soft-fg">
+      <span>Aynı adlı başka denemede ({formatDate(takenOn, 'd MMMM')}) cevap anahtarı var</span>
+      <Button type="button" size="sm" className="h-11" onClick={onApply}>
+        Anahtarı doldur
+      </Button>
+    </div>
   )
 }

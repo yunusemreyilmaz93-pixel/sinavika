@@ -603,6 +603,22 @@ await test('soru bazlı karne: ders sonucu ve konu yanlışları cevaplardan ür
   await rejects(as(parent, `select public.save_exam_answers($1, 'tyt-fiz', '[]')`, [e.id]), /row-level security/)
 })
 
+await test('tercih listesi: öğrenci ve öğretmen yazar, veli okur, en fazla 24 bölüm', async () => {
+  await service(`insert into public.universities (id, name, short_name, kind) values (999002, 'TERCİH ÜNİVERSİTESİ', 'Tercih', 'devlet')`)
+  for (let i = 1; i <= 25; i++) {
+    await service(`insert into public.programs (code, university_id, name, group_id, group_name, score_type) values ($1, 999002, $2, $3, $2, 'SAY')`, [998000000 + i, `Bölüm ${i}`, i])
+  }
+  for (let i = 1; i <= 24; i++) {
+    await as(s1, `insert into public.student_preferences (student_id, program_code, position) values ($1, $2, $3)`, [s1, 998000000 + i, i])
+  }
+  await rejects(as(s1, `insert into public.student_preferences (student_id, program_code, position) values ($1, 998000025, 25)`, [s1]), /en fazla 24/)
+  await as(teacherA, `delete from public.student_preferences where student_id = $1 and program_code = 998000024`, [s1])
+  assert.equal((await as(parent, 'select 1 from public.student_preferences where student_id = $1', [s1])).length, 23)
+  assert.equal((await as(s2, 'select 1 from public.student_preferences where student_id = $1', [s1])).length, 0)
+  await rejects(as(parent, `insert into public.student_preferences (student_id, program_code) values ($1, 998000025)`, [s1]), /row-level security/)
+  await service('delete from public.universities where id = 999002')
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

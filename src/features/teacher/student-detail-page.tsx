@@ -8,6 +8,7 @@ import { Segmented } from '@/components/ui/segmented'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useProfile } from '@/features/auth/session'
 import { ExamGoals } from '@/features/exams/exam-goals'
+import { PreferenceList } from '@/features/goals/preference-list'
 import { TargetCard } from '@/features/goals/target-card'
 import { ExamsOverview } from '@/features/exams/exams-overview'
 import { SharedStudentNotes } from '@/features/notes/student-notes'
@@ -142,6 +143,7 @@ export default function StudentDetailPage() {
                 newExamHref={`/app/ogrenciler/${student.id}/deneme-ekle`}
               />
               {student.track === 'yks' && <TargetCard studentId={student.id} field={student.field} canEdit />}
+              {student.track === 'yks' && <PreferenceList studentId={student.id} field={student.field} canEdit />}
               <ExamGoals studentId={student.id} student={student} canEdit />
             </div>
           )}

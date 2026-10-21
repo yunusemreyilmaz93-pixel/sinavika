@@ -15,12 +15,14 @@ export function ProgramPicker({
   onOpenChange,
   scoreType,
   saving,
+  exclude,
   onPick,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   scoreType: string | null
   saving: boolean
+  exclude?: ReadonlySet<number>
   onPick: (code: number) => void
 }) {
   const universities = useUniversities()
@@ -37,11 +39,13 @@ export function ProgramPicker({
 
   const rows = useMemo(() => {
     const q = norm(query.trim())
-    return (programs.data ?? []).filter((p) => (all || p.score_type === scoreType) && (!q || norm(p.name).includes(q)))
-  }, [programs.data, query, all, scoreType])
+    return (programs.data ?? []).filter(
+      (p) => (all || p.score_type === scoreType) && !exclude?.has(p.code) && (!q || norm(p.name).includes(q)),
+    )
+  }, [programs.data, query, all, scoreType, exclude])
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange} title="Hedef bölüm" size="md">
+    <Modal open={open} onOpenChange={onOpenChange} title="Bölüm seç" size="md">
       <div className="space-y-3">
         {(universities.data?.length ?? 0) > 40 && (
           <Input

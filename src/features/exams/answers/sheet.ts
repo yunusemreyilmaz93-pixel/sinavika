@@ -10,7 +10,10 @@ export const choices = (kind: ExamKind) => (kind === 'LGS' ? 'ABCD' : 'ABCDE')
 
 export function normalizeKey(text: string, kind: ExamKind, max: number) {
   const allowed = choices(kind)
-  return [...text.toUpperCase()].filter((c) => allowed.includes(c)).slice(0, max).join('')
+  return [...text.toUpperCase()]
+    .filter((c) => allowed.includes(c))
+    .slice(0, max)
+    .join('')
 }
 
 export function normalizeAnswers(text: string, kind: ExamKind, max: number) {

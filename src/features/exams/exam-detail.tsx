@@ -201,7 +201,7 @@ export function ExamDetail({ examId, canEdit, onDeleted }: { examId: number; can
         assignLabel={profile.role === 'teacher' ? 'Görevleri öğrenciye ver' : 'Görevleri planıma ekle'}
       />
 
-      <ExamAnswers examId={exam.id} studentId={exam.student_id} kind={kind} canEdit={canEdit} />
+      <ExamAnswers examId={exam.id} studentId={exam.student_id} title={exam.title} kind={kind} canEdit={canEdit} />
 
       <ExamTopicMisses examId={exam.id} scores={data.scores} canEdit={canEdit} />
 
