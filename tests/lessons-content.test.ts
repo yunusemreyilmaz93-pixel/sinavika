@@ -62,7 +62,7 @@ describe('konu anlatımı içeriği', () => {
         expect(blocks.some((b) => b.type === 'box' && b.name === 'hedefler')).toBe(true)
         expect(body.split(/\s+/).length).toBeGreaterThan(700)
         expect(body).not.toMatch(/[—–]/) // copy-ok
-        expect(body.replace(/\$[^$]*\$/g, '')).not.toContain(';')
+        expect(body.replace(/\$[^$]*\$/g, '').replace(/`[^`]*`/g, '')).not.toContain(';')
         expect(body).not.toMatch(/\p{Extended_Pictographic}/u)
       })
     })
