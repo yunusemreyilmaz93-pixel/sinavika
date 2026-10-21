@@ -175,6 +175,79 @@ export type Database = {
           },
         ];
       };
+      lesson_notes: {
+        Row: {
+          body: string;
+          topic_id: number;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          body?: string;
+          topic_id: number;
+          updated_at?: string;
+        };
+        Update: {
+          body?: string;
+          topic_id?: number;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lesson_notes_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: true;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      lessons: {
+        Row: {
+          body: string;
+          created_at: string;
+          published: boolean;
+          reading_minutes: number;
+          topic_id: number;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          body?: string;
+          created_at?: string;
+          published?: boolean;
+          reading_minutes?: number;
+          topic_id: number;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          body?: string;
+          created_at?: string;
+          published?: boolean;
+          reading_minutes?: number;
+          topic_id?: number;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lessons_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: true;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "lessons_updated_by_fkey";
+            columns: ["updated_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       messages: {
         Row: {
           body: string;

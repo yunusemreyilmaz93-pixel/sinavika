@@ -68,7 +68,10 @@ export const router = createBrowserRouter([
               },
               {
                 element: <RequireRole roles={['teacher']} admin />,
-                children: [{ path: 'yonetim', ...page(() => import('@/features/admin/admin-page')) }],
+                children: [
+                  { path: 'yonetim', ...page(() => import('@/features/admin/admin-page')) },
+                  { path: 'yonetim/anlatim/:topicId', ...page(() => import('@/features/lessons/editor-page')) },
+                ],
               },
             ],
           },

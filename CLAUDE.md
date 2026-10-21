@@ -45,6 +45,7 @@ LGS ve YKS koçluğu için ücretsiz web uygulaması. Öğretmen, öğrenci ve v
 
 - Uygulamanın adı Yolumnet. Eski adı Sınavika'ydı. `hesap.sinavika.app` giriş alan adı, `sinavika-auth` ve diğer `sinavika-*` tarayıcı anahtarları bilerek değiştirilmedi. Değişirse mevcut hesaplar giriş yapamaz ya da herkesin oturumu kapanır
 
+- Konu anlatımları kod dosyası değil, `lessons` tablosunda Markdown olarak durur. Yönetim > Müfredat'ta konunun yanındaki "Anlatım yaz" ile yazılır. Blok söz dizimi `src/features/lessons/markdown/parse.ts` ve editördeki "Yazım rehberi" içindedir
 - Yorum yazma, kod kendini anlatmıyorsa kısa bir yorum yeter
 - Gerçek bir problemi çözmeyen soyutlama, kütüphane veya katman ekleme
 - Mock veri yok. Veri Supabase'den gelir

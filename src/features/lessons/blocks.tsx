@@ -4,87 +4,27 @@ import { useState, type ReactNode } from 'react'
 import { watchUrl } from '@/features/video/youtube'
 import { cn } from '@/lib/cn'
 
-export function Section({ id, number, title, children }: { id: string; number?: number; title: string; children: ReactNode }) {
-  return (
-    <section id={id} className="scroll-mt-24">
-      <h2 className="flex items-baseline gap-3 text-xl font-extrabold sm:text-2xl">
-        {number != null && <span className="font-display text-primary tabular">{number}.</span>}
-        {title}
-      </h2>
-      <div className="mt-4 flow-root space-y-4 text-[16px] leading-relaxed text-fg/90 [&_strong]:font-semibold [&_strong]:text-fg">
-        {children}
-      </div>
-    </section>
-  )
-}
-
-export function Lead({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <p>
-      <strong>{title}</strong> {children}
-    </p>
-  )
-}
-
 export function Connect({ children }: { children: ReactNode }) {
   return (
     <aside className="flex gap-3 rounded-2xl border border-accent/25 bg-accent-soft p-4 text-accent-soft-fg">
       <Link2 className="mt-0.5 size-5 shrink-0" aria-hidden />
-      <p>
-        <strong className="!text-accent-soft-fg">Bağlantıyı kur:</strong> {children}
-      </p>
+      <div className="min-w-0 space-y-2 [&_strong]:!text-accent-soft-fg">
+        <p className="font-semibold">Bağlantıyı kur</p>
+        {children}
+      </div>
     </aside>
   )
 }
 
-export function Tip({ children }: { children: ReactNode }) {
+export function Tip({ children, title }: { children: ReactNode; title?: string }) {
   return (
     <aside className="flex gap-3 rounded-2xl border border-marker/60 bg-marker/25 p-4 text-fg">
       <Lightbulb className="mt-0.5 size-5 shrink-0 text-warning" aria-hidden />
-      <p>{children}</p>
+      <div className="min-w-0 space-y-2">
+        {title && <p className="font-semibold">{title}</p>}
+        {children}
+      </div>
     </aside>
-  )
-}
-
-export function DataTable({ head, rows, emphasizeFirst = true }: { head: string[]; rows: ReactNode[][]; emphasizeFirst?: boolean }) {
-  return (
-    <div className="overflow-hidden rounded-2xl border border-line">
-      <table className="hidden w-full text-left text-[15px] sm:table">
-        <thead className="bg-surface-2 text-sm text-muted">
-          <tr>
-            {head.map((h) => (
-              <th key={h} scope="col" className="px-4 py-3 font-semibold">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-line bg-surface">
-          {rows.map((row, i) => (
-            <tr key={i} className="align-top">
-              {row.map((cell, j) => (
-                <td key={j} className={cn('px-4 py-3 leading-relaxed', j === 0 && emphasizeFirst && 'font-semibold text-fg')}>
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <dl className="divide-y divide-line bg-surface sm:hidden">
-        {rows.map((row, i) => (
-          <div key={i} className="px-4 py-3">
-            <dt className="font-semibold text-fg">{row[0]}</dt>
-            {row.slice(1).map((cell, j) => (
-              <dd key={j} className="mt-1 text-[15px] leading-relaxed">
-                {row.length > 2 && <span className="text-sm text-muted">{head[j + 1]}: </span>}
-                {cell}
-              </dd>
-            ))}
-          </div>
-        ))}
-      </dl>
-    </div>
   )
 }
 
@@ -111,10 +51,12 @@ export function CauseEffect({ items }: { items: { cause: string; effect: ReactNo
   )
 }
 
-export type ScaleEvent = { year: number; label: string; detail?: string; group?: string }
+export type ScaleEvent = { year: number; label: string; detail?: string }
 
-export function YearScale({ title, from, to, events }: { title: string; from: number; to: number; events: ScaleEvent[] }) {
-  const span = to - from
+export function YearScale({ title, events }: { title: string; events: ScaleEvent[] }) {
+  const from = Math.min(...events.map((e) => e.year))
+  const to = Math.max(...events.map((e) => e.year))
+  const span = Math.max(to - from, 1)
   return (
     <figure className="rounded-2xl border border-line bg-surface p-4 sm:p-5">
       <figcaption className="text-sm font-semibold text-muted">{title}</figcaption>
@@ -149,51 +91,63 @@ export function YearScale({ title, from, to, events }: { title: string; from: nu
   )
 }
 
-const groupStyle: Record<string, { dot: string; band: string; text: string }> = {
-  Çocukluk: { dot: 'bg-warning', band: 'bg-warning-soft', text: 'text-warning' },
-  'Okul yılları': { dot: 'bg-accent', band: 'bg-accent-soft', text: 'text-accent-soft-fg' },
-  'Görev ve cephe': { dot: 'bg-primary', band: 'bg-primary-soft', text: 'text-primary-soft-fg' },
-}
+const eraTones = [
+  { dot: 'bg-warning', band: 'bg-warning-soft', text: 'text-warning' },
+  { dot: 'bg-accent', band: 'bg-accent-soft', text: 'text-accent-soft-fg' },
+  { dot: 'bg-primary', band: 'bg-primary-soft', text: 'text-primary-soft-fg' },
+  { dot: 'bg-danger', band: 'bg-danger-soft', text: 'text-danger' },
+]
 
 export function LifeTimeline({
-  from,
-  to,
+  title,
   eras,
   events,
 }: {
-  from: number
-  to: number
+  title: string
   eras: { label: string; from: number; to: number }[]
   events: ScaleEvent[]
 }) {
-  const [active, setActive] = useState(events.length - 1)
-  const span = to - from
+  const [active, setActive] = useState(Math.max(events.length - 1, 0))
+  const from = Math.min(...events.map((e) => e.year), ...eras.map((e) => e.from))
+  const to = Math.max(...events.map((e) => e.year), ...eras.map((e) => e.to))
+  const span = Math.max(to - from, 1)
   const pos = (year: number) => ((year - from) / span) * 100
+  const eraIndex = (year: number) => {
+    let found = 0
+    eras.forEach((era, i) => {
+      if (year >= era.from) found = i
+    })
+    return found
+  }
+  const toneOf = (year: number) => eraTones[eraIndex(year) % eraTones.length]
   const current = events[active]
+  const ticks = [...new Set([from, ...eras.map((e) => e.from), to])]
 
   return (
     <figure className="rounded-2xl border border-line bg-surface p-4 sm:p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <figcaption className="font-display text-lg font-bold">Mustafa Kemal'in hayatı</figcaption>
+        <figcaption className="font-display text-lg font-bold">{title}</figcaption>
         <span className="text-sm text-muted tabular">
           {from} ile {to} arası · {events.length} olay
         </span>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-sm">
-        {eras.map((era) => (
-          <span key={era.label} className="inline-flex items-center gap-1.5">
-            <span className={cn('size-2.5 rounded-full', groupStyle[era.label]?.dot)} />
-            {era.label}
-            <span className="text-subtle tabular">({era.to - era.from} yıl)</span>
-          </span>
-        ))}
-      </div>
+      {eras.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-sm">
+          {eras.map((era, i) => (
+            <span key={era.label} className="inline-flex items-center gap-1.5">
+              <span className={cn('size-2.5 rounded-full', eraTones[i % eraTones.length].dot)} />
+              {era.label}
+              <span className="text-subtle tabular">({era.to - era.from} yıl)</span>
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className="relative mt-5 hidden h-28 sm:block" role="group" aria-label="Zaman çizelgesi">
-        <div className="absolute inset-x-0 top-10 flex h-3 overflow-hidden rounded-full">
-          {eras.map((era) => (
-            <div key={era.label} className={cn('h-full', groupStyle[era.label]?.band)} style={{ width: `${((era.to - era.from) / span) * 100}%` }} />
+        <div className="absolute inset-x-0 top-10 flex h-3 overflow-hidden rounded-full bg-surface-2">
+          {eras.map((era, i) => (
+            <div key={era.label} className={cn('h-full', eraTones[i % eraTones.length].band)} style={{ width: `${((era.to - era.from) / span) * 100}%` }} />
           ))}
         </div>
         {events.map((e, i) => (
@@ -209,72 +163,50 @@ export function LifeTimeline({
             <span
               className={cn(
                 'size-4 rounded-full border-2 border-surface transition-transform duration-200 group-hover:scale-125',
-                groupStyle[e.group ?? '']?.dot,
+                toneOf(e.year).dot,
                 active === i && 'scale-150 ring-4 ring-fg/10',
               )}
             />
           </button>
         ))}
-        {[from, 1893, 1905, to].map((y) => (
+        {ticks.map((y) => (
           <span key={y} className="absolute top-16 -translate-x-1/2 text-xs text-subtle tabular" style={{ left: `${pos(y)}%` }}>
             {y}
           </span>
         ))}
       </div>
 
-      <motion.div
-        key={active}
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
-        className="mt-2 hidden rounded-xl bg-surface-2 px-4 py-3 sm:block"
-        aria-live="polite"
-      >
-        <p className="font-display text-xl font-bold tabular">{current.year}</p>
-        <p className="font-semibold">{current.label}</p>
-        {current.detail && <p className="mt-0.5 text-[15px] text-muted">{current.detail}</p>}
-      </motion.div>
+      {current && (
+        <motion.div
+          key={active}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="mt-2 hidden rounded-xl bg-surface-2 px-4 py-3 sm:block"
+          aria-live="polite"
+        >
+          <p className="font-display text-xl font-bold tabular">{current.year}</p>
+          <p className="font-semibold">{current.label}</p>
+          {current.detail && <p className="mt-0.5 text-[15px] text-muted">{current.detail}</p>}
+        </motion.div>
+      )}
 
-      <ol className="mt-5 space-y-0 sm:hidden">
-        {events.map((e, i) => {
-          const gap = i === 0 ? 0 : e.year - events[i - 1].year
-          return (
-            <li key={`${e.year}-${e.label}`} className="relative flex gap-3 pl-1" style={{ paddingTop: i === 0 ? 0 : Math.min(8 + gap * 4, 40) }}>
-              <div className="flex flex-col items-center">
-                <span className={cn('mt-1.5 size-3 shrink-0 rounded-full', groupStyle[e.group ?? '']?.dot)} />
-              </div>
-              <div className="min-w-0 pb-1">
-                <p className="text-sm">
-                  <span className="font-display font-bold tabular">{e.year}</span>{' '}
-                  <span className={cn('text-xs font-semibold', groupStyle[e.group ?? '']?.text)}>{e.group}</span>
-                </p>
-                <p className="font-semibold leading-snug">{e.label}</p>
-                {e.detail && <p className="text-sm text-muted">{e.detail}</p>}
-              </div>
-            </li>
-          )
-        })}
+      <ol className="mt-5 space-y-3 sm:hidden">
+        {events.map((e) => (
+          <li key={`${e.year}-${e.label}`} className="flex gap-3 pl-1">
+            <span className={cn('mt-1.5 size-3 shrink-0 rounded-full', toneOf(e.year).dot)} />
+            <div className="min-w-0">
+              <p className="text-sm">
+                <span className="font-display font-bold tabular">{e.year}</span>{' '}
+                {eras.length > 0 && <span className={cn('text-xs font-semibold', toneOf(e.year).text)}>{eras[eraIndex(e.year)]?.label}</span>}
+              </p>
+              <p className="font-semibold leading-snug">{e.label}</p>
+              {e.detail && <p className="text-sm text-muted">{e.detail}</p>}
+            </div>
+          </li>
+        ))}
       </ol>
     </figure>
-  )
-}
-
-export function TraitTable({ rows }: { rows: { event: string; traits: string[] }[] }) {
-  return (
-    <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
-      {rows.map((row) => (
-        <li key={row.event} className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <span className="font-semibold">{row.event}</span>
-          <span className="flex flex-wrap gap-1.5 sm:justify-end">
-            {row.traits.map((t) => (
-              <span key={t} className="rounded-full bg-primary-soft px-2.5 py-1 text-sm font-semibold text-primary-soft-fg">
-                {t}
-              </span>
-            ))}
-          </span>
-        </li>
-      ))}
-    </ul>
   )
 }
 
@@ -348,7 +280,7 @@ export function Question({
   )
 }
 
-export function SelfCheck({ items }: { items: { question: string; answer: string }[] }) {
+export function SelfCheck({ items }: { items: { question: ReactNode; answer: ReactNode }[] }) {
   const [open, setOpen] = useState<Set<number>>(new Set())
   const toggle = (i: number) =>
     setOpen((prev) => {
@@ -363,7 +295,7 @@ export function SelfCheck({ items }: { items: { question: string; answer: string
     <div className="space-y-3">
       <ol className="space-y-2">
         {items.map((item, i) => (
-          <li key={item.question} className="overflow-hidden rounded-2xl border border-line bg-surface">
+          <li key={i} className="overflow-hidden rounded-2xl border border-line bg-surface">
             <button
               type="button"
               onClick={() => toggle(i)}
@@ -375,13 +307,13 @@ export function SelfCheck({ items }: { items: { question: string; answer: string
               <ChevronDown className={cn('mt-1 size-4 shrink-0 text-muted transition-transform', open.has(i) && 'rotate-180')} />
             </button>
             {open.has(i) && (
-              <motion.p
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="border-t border-line bg-surface-2 px-4 py-3 pl-11 text-[15px] leading-relaxed"
               >
                 {item.answer}
-              </motion.p>
+              </motion.div>
             )}
           </li>
         ))}
@@ -397,30 +329,18 @@ export function SelfCheck({ items }: { items: { question: string; answer: string
   )
 }
 
-export function Figure({
-  src,
-  alt,
-  caption,
-  credit,
-  aspect = 'aspect-[4/3]',
-  side,
-}: {
-  src: string
-  alt: string
-  caption: ReactNode
-  credit: string
-  aspect?: string
-  side?: boolean
-}) {
+export function Figure({ src, alt, caption, credit }: { src: string; alt: string; caption: ReactNode; credit?: string }) {
   return (
-    <figure className={cn('overflow-hidden rounded-2xl border border-line bg-surface', side && 'sm:float-right sm:mb-3 sm:ml-5 sm:w-64')}>
-      <div className={cn('overflow-hidden bg-surface-2', aspect)}>
-        <img src={src} alt={alt} loading="lazy" decoding="async" className="size-full object-cover" />
+    <figure className="overflow-hidden rounded-2xl border border-line bg-surface">
+      <div className="grid place-items-center bg-surface-2">
+        <img src={src} alt={alt} loading="lazy" decoding="async" className="max-h-[30rem] w-auto max-w-full object-contain" />
       </div>
-      <figcaption className="px-4 py-3 text-sm leading-snug">
-        <span className="text-fg">{caption}</span>
-        <span className="mt-1 block text-xs text-subtle">{credit}</span>
-      </figcaption>
+      {(caption || credit) && (
+        <figcaption className="px-4 py-3 text-sm leading-snug">
+          {caption && <span className="text-fg">{caption}</span>}
+          {credit && <span className="mt-1 block text-xs text-subtle">{credit}</span>}
+        </figcaption>
+      )}
     </figure>
   )
 }

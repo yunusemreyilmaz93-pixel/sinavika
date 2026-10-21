@@ -218,3 +218,57 @@
   from { transform: translateX(-100%); }
   to { transform: translateX(300%); }
 }
+
+.lesson-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  font-size: 15px;
+  line-height: 1.55;
+  text-align: left;
+}
+.lesson-table th {
+  background: var(--surface-2);
+  color: var(--fg-muted);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+}
+.lesson-table td {
+  border-top: 1px solid var(--line);
+  padding: 0.75rem 1rem;
+  vertical-align: top;
+}
+.lesson-table td:first-child {
+  color: var(--fg);
+  font-weight: 600;
+}
+@media (max-width: 639px) {
+  .lesson-table thead {
+    display: none;
+  }
+  .lesson-table,
+  .lesson-table tbody,
+  .lesson-table tr,
+  .lesson-table td {
+    display: block;
+  }
+  .lesson-table tr + tr {
+    border-top: 1px solid var(--line);
+  }
+  .lesson-table td {
+    border-top: 0;
+    padding: 0.25rem 1rem;
+  }
+  .lesson-table td:first-child {
+    padding-top: 0.75rem;
+  }
+  .lesson-table td:last-child {
+    padding-bottom: 0.75rem;
+  }
+  .lesson-table[data-cols]:not([data-cols='2']) td[data-label]:not(:first-child)::before {
+    content: attr(data-label) ' ';
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+  }
+}

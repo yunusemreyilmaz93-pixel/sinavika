@@ -393,6 +393,29 @@ await test('hata kaydı: herkes yazabilir, sadece admin okur, sınır aşılınc
   assert.equal(n, 30)
 })
 
+await test('konu anlatımı: sadece admin yazar, taslağı sadece admin görür, öğretmen notunu öğrenci ve veli göremez', async () => {
+  const [{ id: topic }] = await service('select id from public.topics where id not in (select topic_id from public.lessons) order by id limit 1')
+  await as(adminId, `insert into public.lessons (topic_id, body, published) values ($1, '## Taslak', false)`, [topic])
+  await as(adminId, `insert into public.lesson_notes (topic_id, body) values ($1, 'gizli not')`, [topic])
+  assert.equal((await as(adminId, 'select * from public.lessons where topic_id = $1', [topic])).length, 1)
+  assert.equal((await as(s1, 'select * from public.lessons where topic_id = $1', [topic])).length, 0)
+  assert.equal((await as(teacherA, 'select * from public.lessons where topic_id = $1', [topic])).length, 0)
+  await as(adminId, `update public.lessons set published = true where topic_id = $1`, [topic])
+  for (const who of [s1, parent, teacherA]) assert.equal((await as(who, 'select * from public.lessons where topic_id = $1', [topic])).length, 1)
+  assert.equal((await as(teacherA, 'select * from public.lesson_notes where topic_id = $1', [topic])).length, 1)
+  assert.equal((await as(s1, 'select * from public.lesson_notes where topic_id = $1', [topic])).length, 0)
+  assert.equal((await as(parent, 'select * from public.lesson_notes where topic_id = $1', [topic])).length, 0)
+  for (const who of [s1, parent, teacherA]) {
+    await rejects(as(who, `insert into public.lessons (topic_id, body) values ($1, 'x') on conflict (topic_id) do update set body = 'x'`, [topic]), /row-level security/)
+    await rejects(as(who, `insert into public.lesson_notes (topic_id, body) values ($1, 'x')`, [topic]), /row-level security/)
+    assert.equal((await as(who, `update public.lessons set body = 'ele geçirildi' where topic_id = $1 returning 1`, [topic])).length, 0)
+    assert.equal((await as(who, `delete from public.lessons where topic_id = $1 returning 1`, [topic])).length, 0)
+  }
+  const [row] = await service('select body, updated_by from public.lessons where topic_id = $1', [topic])
+  assert.equal(row.body, '## Taslak')
+  assert.equal(row.updated_by, adminId)
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

@@ -1,19 +1,19 @@
-import { useQuery } from '@tanstack/react-query'
 import { motion, useScroll, useSpring } from 'motion/react'
-import { BookOpen, ChevronDown, Clock3, NotebookPen } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { BookOpen, ChevronDown, Clock3, NotebookPen, Pencil } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useParams } from 'react-router'
 import { PageHeader } from '@/components/app/page-header'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { PageSkeleton } from '@/components/ui/skeleton'
 import { useProfile } from '@/features/auth/session'
 import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
-import { formatDate } from '@/lib/dates'
 import { examLabel } from '@/lib/exam'
-import { lessonFor } from './registry'
-import type { LessonOutline } from './types'
+import { outlineOf, type OutlineItem } from './markdown/parse'
+import { LessonBody } from './markdown/render'
+import { useLesson } from './queries'
 
 export default function LessonPage() {
   const { topicId } = useParams()
@@ -21,38 +21,43 @@ export default function LessonPage() {
   const curriculum = useCurriculum()
   const topic = curriculum.data?.topicById.get(Number(topicId))
   const subject = topic ? curriculum.data?.subjectById.get(topic.subject_id) : undefined
-  const lesson = topic ? lessonFor(topic) : undefined
-  const body = useQuery({
-    queryKey: ['lesson', topic?.subject_id, topic?.name],
-    queryFn: () => lesson!.load(),
-    enabled: Boolean(lesson),
-    staleTime: Infinity,
-  })
+  const isTeacher = profile.role === 'teacher'
+  const data = useLesson(Number(topicId), isTeacher)
+  const lesson = data.data?.lesson
+  const outline = useMemo(() => (lesson ? outlineOf(lesson.body) : []), [lesson])
 
-  const back =
-    profile.role === 'teacher'
-      ? profile.is_admin
-        ? { to: '/app/yonetim?bolum=mufredat', label: 'Müfredat' }
-        : { to: '/app', label: 'Öğrenciler' }
-      : { to: '/app/konular', label: 'Konular' }
+  const back = isTeacher
+    ? profile.is_admin
+      ? { to: '/app/yonetim?bolum=mufredat', label: 'Müfredat' }
+      : { to: '/app', label: 'Öğrenciler' }
+    : { to: '/app/konular', label: 'Konular' }
 
-  if (curriculum.isPending || (lesson && body.isPending)) return <PageSkeleton />
+  if (curriculum.isPending || data.isPending) return <PageSkeleton />
 
-  if (!topic || !lesson || !body.data) {
+  if (!topic || !lesson) {
     return (
       <div>
         <PageHeader title={topic?.name ?? 'Konu anlatımı'} back={back} />
         <EmptyState
           icon={BookOpen}
-          title={body.isError ? 'Konu anlatımı açılamadı' : 'Bu konunun anlatımı henüz hazır değil'}
-          description={body.isError ? 'Sayfayı yenileyip tekrar dene.' : 'Hazır olduğunda Konular ekranında bu konunun yanında görünecek.'}
+          title={data.isError ? 'Konu anlatımı açılamadı' : 'Bu konunun anlatımı henüz hazır değil'}
+          description={data.isError ? 'Sayfayı yenileyip tekrar dene.' : 'Hazır olduğunda Konular ekranında bu konunun yanında görünecek.'}
+          action={
+            profile.is_admin && topic ? (
+              <Button asChild>
+                <Link to={`/app/yonetim/anlatim/${topic.id}`}>
+                  <Pencil />
+                  Anlatım yaz
+                </Link>
+              </Button>
+            ) : undefined
+          }
         />
       </div>
     )
   }
 
-  const Body = body.data.default
-  const outline = body.data.outline
+  const note = data.data?.note.trim()
 
   return (
     <div>
@@ -60,40 +65,41 @@ export default function LessonPage() {
       <PageHeader
         back={back}
         title={topic.name}
-        description={lesson.grade}
+        description={subject ? `${examLabel[subject.exam]} · ${subject.name}` : undefined}
         actions={
-          <Badge tone="neutral" className="h-8 px-3 text-sm">
-            <Clock3 />
-            Yaklaşık {lesson.readingMinutes} dakika
-          </Badge>
+          <>
+            {!lesson.published && <Badge tone="warning">Taslak</Badge>}
+            <Badge tone="neutral" className="h-8 px-3 text-sm">
+              <Clock3 />
+              Yaklaşık {lesson.reading_minutes} dakika
+            </Badge>
+            {profile.is_admin && (
+              <Button variant="soft" size="sm" asChild>
+                <Link to={`/app/yonetim/anlatim/${topic.id}`}>
+                  <Pencil />
+                  Düzenle
+                </Link>
+              </Button>
+            )}
+          </>
         }
       />
-      <p className="-mt-3 mb-6 text-sm text-muted">
-        {subject ? `${examLabel[subject.exam]} · ${subject.name}` : null} · {formatDate(lesson.date, 'd MMMM yyyy')}
-      </p>
 
-      {profile.role === 'teacher' && (
+      {isTeacher && note && (
         <aside className="mb-8 rounded-2xl border border-warning/30 bg-warning-soft p-4 sm:p-5">
           <p className="flex items-center gap-2 font-display font-bold text-warning">
             <NotebookPen className="size-5" />
             Öğretmen için not
           </p>
           <p className="mt-1 text-sm text-fg/80">Bu not öğrencilere ve velilere görünmez.</p>
-          <dl className="mt-3 space-y-2 text-[15px] leading-relaxed">
-            {lesson.teacherNote.map((n) => (
-              <div key={n.label}>
-                <dt className="inline font-semibold">{n.label}: </dt>
-                <dd className="inline">{n.text}</dd>
-              </div>
-            ))}
-          </dl>
+          <p className="mt-3 text-[15px] leading-relaxed whitespace-pre-line">{note}</p>
         </aside>
       )}
 
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-10">
         <div className="min-w-0">
           <MobileOutline outline={outline} />
-          <Body role={profile.role} />
+          <LessonBody source={lesson.body} />
         </div>
         <DesktopOutline outline={outline} />
       </div>
@@ -113,7 +119,7 @@ function ReadingProgress() {
   )
 }
 
-function useActiveSection(outline: LessonOutline) {
+function useActiveSection(outline: OutlineItem[]) {
   const [active, setActive] = useState(outline[0]?.id)
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -136,7 +142,7 @@ function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-function DesktopOutline({ outline }: { outline: LessonOutline }) {
+function DesktopOutline({ outline }: { outline: OutlineItem[] }) {
   const active = useActiveSection(outline)
   return (
     <nav aria-label="İçindekiler" className="hidden lg:block">
@@ -163,7 +169,7 @@ function DesktopOutline({ outline }: { outline: LessonOutline }) {
   )
 }
 
-function MobileOutline({ outline }: { outline: LessonOutline }) {
+function MobileOutline({ outline }: { outline: OutlineItem[] }) {
   const [open, setOpen] = useState(false)
   return (
     <div className="mb-8 rounded-2xl border border-line bg-surface lg:hidden">

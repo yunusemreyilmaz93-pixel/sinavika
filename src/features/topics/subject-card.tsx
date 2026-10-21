@@ -4,7 +4,7 @@ import { useId } from 'react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { ProgressBar } from '@/components/ui/progress'
-import { lessonFor } from '@/features/lessons/registry'
+import { useLessonIndex } from '@/features/lessons/queries'
 import { cn } from '@/lib/cn'
 import { subjectColor, type Subject, type Topic } from '@/lib/exam'
 import { formatPercent, nextStatus, statusMeta, type TopicState } from './status'
@@ -24,6 +24,7 @@ type Props = {
 }
 
 export function SubjectCard({ subject, topics, visible, statusOf, accuracy, open, onToggle, onCycle }: Props) {
+  const lessons = useLessonIndex().data
   const id = useId()
   let done = 0
   let review = 0
@@ -93,7 +94,7 @@ export function SubjectCard({ subject, topics, visible, statusOf, accuracy, open
                     accuracy={accuracy?.[topic.id]}
                     onCycle={onCycle ? () => onCycle(topic) : undefined}
                   />
-                  {lessonFor(topic) && (
+                  {lessons?.get(topic.id) === true && (
                     <Link
                       to={`/app/konular/${topic.id}`}
                       className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-accent-soft px-3 text-sm font-semibold text-accent-soft-fg transition-colors hover:brightness-95"
