@@ -272,8 +272,8 @@ function QuestionView({ text, cevap, number }: { text: string; cevap?: string; n
   )
 }
 
-export function LessonBody({ source }: { source: string }) {
-  let questions = 0
+export function LessonBody({ source, questionOffset = 0 }: { source: string; questionOffset?: number }) {
+  let questions = questionOffset
   const blocks = parseBlocks(source)
   return (
     <div className="space-y-4 text-[16px] leading-relaxed text-fg/90 [&_strong]:font-semibold [&_strong]:text-fg">

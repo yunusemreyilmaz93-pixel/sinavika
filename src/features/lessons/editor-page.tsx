@@ -1,23 +1,5 @@
-import {
-  Bold,
-  BookOpen,
-  ChevronDown,
-  Columns3,
-  Heading2,
-  ImagePlus,
-  Lightbulb,
-  Link2,
-  ListChecks,
-  Save,
-  Sigma,
-  Table2,
-  Trash2,
-  Video,
-  CircleHelp,
-  Eye,
-  type LucideIcon,
-} from 'lucide-react'
-import { useCallback, useDeferredValue, useMemo, useRef, useState, type ClipboardEvent } from 'react'
+import { BookOpen, ChevronDown, Plus, Save, Trash2, Undo2 } from 'lucide-react'
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useBeforeUnload, useBlocker, useNavigate, useParams } from 'react-router'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/app/page-header'
@@ -32,48 +14,13 @@ import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
 import { errorMessage } from '@/lib/supabase'
+import { BlockList } from './editor/block-list'
+import type { CatalogItem } from './editor/catalog'
+import { Palette } from './editor/palette'
+import { useBlockEditor } from './editor/use-block-editor'
 import { estimateMinutes, formatLessonMinutes } from './markdown/parse'
 import { LessonBody } from './markdown/render'
 import { uploadLessonImage, useDeleteLesson, useLesson, useSaveLesson, type LessonDraft } from './queries'
-
-type Snippet = { label: string; icon: LucideIcon; before: string; after?: string; placeholder?: string }
-
-const snippets: Snippet[] = [
-  { label: 'Başlık', icon: Heading2, before: '\n## ', placeholder: '1. Başlık' },
-  { label: 'Kalın', icon: Bold, before: '**', after: '**', placeholder: 'önemli' },
-  { label: 'İpucu', icon: Lightbulb, before: '\n:::ipucu\n', after: '\n:::\n', placeholder: 'Kısa bir ipucu.' },
-  { label: 'Bağlantı', icon: Link2, before: '\n:::baglanti\n', after: '\n:::\n', placeholder: 'Bu bilgi sonraki konuyla şöyle bağlanır.' },
-  {
-    label: 'Tablo',
-    icon: Table2,
-    before: '\n| Sütun 1 | Sütun 2 |\n| --- | --- |\n| ',
-    after: ' | |\n',
-    placeholder: 'Hücre',
-  },
-  { label: 'Formül', icon: Sigma, before: '\n$$\n', after: '\n$$\n', placeholder: 'a^2 + b^2 = c^2' },
-  {
-    label: 'Soru',
-    icon: CircleHelp,
-    before: '\n:::soru{cevap="A"}\n',
-    after: '\n:::\n',
-    placeholder: 'Soru kökü?\n\n- A) Birinci\n- B) İkinci\n- C) Üçüncü\n- D) Dördüncü\n\n---\n\nÇözüm açıklaması.',
-  },
-  { label: 'Video', icon: Video, before: '\n::video{url="', after: '" baslik="" kanal=""}\n', placeholder: 'https://www.youtube.com/watch?v=' },
-  {
-    label: 'Çizelge',
-    icon: Columns3,
-    before: '\n:::cizelge{baslik="Başlık"}\n',
-    after: '\n:::\n',
-    placeholder: '- 1839 | Olay\n- 1856 | Olay',
-  },
-  {
-    label: 'Kendini dene',
-    icon: ListChecks,
-    before: '\n:::dene\n',
-    after: '\n:::\n',
-    placeholder: '1. Soru? => Cevap.\n2. Soru? => Cevap.',
-  },
-]
 
 const guide = [
   ['Başlık', '## 1. Başlık', 'İçindekiler listesi ## başlıklarından oluşur. Başında sayı olan başlık numaralı görünür.'],
@@ -94,10 +41,6 @@ const guide = [
   ['Simülasyon', '::sim{tur="gaz"}', 'Gaz parçacıkları. Etkileşimli, öğrenci önce tahmin eder, sonra kaydırıcıyla dener.'],
   ['Video', '::video{url="https://youtu.be/..." baslik="" kanal="" etiket=""}', 'Tıklayınca yüklenir.'],
 ] as const
-
-function same(a: LessonDraft, b: LessonDraft) {
-  return a.body === b.body && a.published === b.published && a.note === b.note
-}
 
 export default function LessonEditorPage() {
   const { topicId } = useParams()
@@ -124,18 +67,20 @@ export default function LessonEditorPage() {
     published: lesson?.published ?? false,
     note,
   }
-  return <Editor key={id} topicId={id} topicName={topic.name} exists={Boolean(lesson)} initial={initial} back={back} />
+  return <Editor key={id} topicId={id} topicName={topic.name} subjectId={topic.subject_id} exists={Boolean(lesson)} initial={initial} back={back} />
 }
 
 function Editor({
   topicId,
   topicName,
+  subjectId,
   exists,
   initial,
   back,
 }: {
   topicId: number
   topicName: string
+  subjectId: string
   exists: boolean
   initial: LessonDraft
   back: { to: string; label: string }
@@ -143,19 +88,23 @@ function Editor({
   const navigate = useNavigate()
   const save = useSaveLesson(topicId)
   const remove = useDeleteLesson(topicId)
-  const [base, setBase] = useState(initial)
-  const [draft, setDraft] = useState(initial)
-  const [tab, setTab] = useState<'yaz' | 'onizleme'>('yaz')
+  const editor = useBlockEditor(initial.body)
+  const [meta, setMeta] = useState({ published: initial.published, note: initial.note })
+  const [baseMeta, setBaseMeta] = useState(meta)
+  const [tab, setTab] = useState<'blok' | 'onizleme' | 'kaynak'>('blok')
+  const [raw, setRaw] = useState('')
+  const [palette, setPalette] = useState<{ afterId: string | null; replaceId?: string } | null>(null)
   const [uploading, setUploading] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const area = useRef<HTMLTextAreaElement>(null)
   const files = useRef<HTMLInputElement>(null)
+  const imageAfter = useRef<string | null>(null)
   const savedRef = useRef(false)
 
-  const preview = useDeferredValue(draft.body)
-  const dirty = !same(draft, base)
-  const minutes = useMemo(() => estimateMinutes(draft.body), [draft.body])
-  const words = useMemo(() => (draft.body.trim() ? draft.body.trim().split(/\s+/).length : 0), [draft.body])
+  const optionCount = subjectId.startsWith('lgs') ? 4 : 5
+  const preview = useDeferredValue(editor.body)
+  const dirty = editor.dirty || meta.published !== baseMeta.published || meta.note !== baseMeta.note
+  const minutes = useMemo(() => estimateMinutes(editor.body), [editor.body])
+  const words = useMemo(() => (editor.body.trim() ? editor.body.trim().split(/\s+/).length : 0), [editor.body])
 
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) => dirty && !savedRef.current && currentLocation.pathname !== nextLocation.pathname,
@@ -169,31 +118,21 @@ function Editor({
     ),
   )
 
-  const setBody = (body: string) => setDraft((d) => ({ ...d, body }))
-
-  const insert = (before: string, after = '', placeholder = '') => {
-    const el = area.current
-    if (!el) return
-    const { selectionStart: start, selectionEnd: end, value } = el
-    const selected = value.slice(start, end) || placeholder
-    const next = value.slice(0, start) + before + selected + after + value.slice(end)
-    setBody(next)
-    setTab('yaz')
-    requestAnimationFrame(() => {
-      el.focus()
-      const from = start + before.length
-      el.setSelectionRange(from, from + selected.length)
-    })
+  const changeTab = (next: typeof tab) => {
+    if (tab === 'kaynak' && raw !== editor.body) editor.replaceAll(raw)
+    if (next === 'kaynak') setRaw(editor.body)
+    setTab(next)
   }
 
-  const addImages = async (list: File[]) => {
+  const addImages = async (list: File[], afterId: string | null) => {
     const images = list.filter((f) => f.type.startsWith('image/'))
     if (!images.length) return
     setUploading(true)
     try {
+      let after = afterId
       for (const file of images) {
         const url = await uploadLessonImage(topicId, file)
-        insert(`\n![`, `](${url} "Açıklama | Kaynak ve lisans")\n`, 'Görselin ne gösterdiğini yaz')
+        after = editor.insertAfter(after, { kind: 'md', text: `![](${url})` })
       }
     } catch (err) {
       toast.error(errorMessage(err))
@@ -202,25 +141,47 @@ function Editor({
     }
   }
 
-  const onPaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
-    const images = Array.from(e.clipboardData.files)
-    if (images.some((f) => f.type.startsWith('image/'))) {
-      e.preventDefault()
-      void addImages(images)
+  const pick = (item: CatalogItem) => {
+    const target = palette
+    setPalette(null)
+    if (!target) return
+    if (!item.make) {
+      imageAfter.current = target.afterId
+      files.current?.click()
+      return
     }
+    editor.insertAfter(target.afterId, item.make({ optionCount }), target.replaceId)
   }
 
-  const submit = async () => {
-    const next = { ...draft, reading_minutes: minutes }
+  const submit = useCallback(async () => {
+    const next: LessonDraft = { body: editor.body, reading_minutes: estimateMinutes(editor.body), published: meta.published, note: meta.note }
     try {
       await save.mutateAsync(next)
-      setDraft(next)
-      setBase(next)
+      editor.markSaved()
+      setBaseMeta(meta)
       toast.success(next.published ? 'Kaydedildi ve yayında' : 'Taslak olarak kaydedildi')
     } catch (err) {
       toast.error(errorMessage(err))
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor.body, meta, save])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault()
+        if (dirty && !save.isPending) void submit()
+      }
+      const field = document.activeElement
+      const typing = field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !e.shiftKey && !typing && tab === 'blok') {
+        e.preventDefault()
+        editor.undo()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [dirty, save.isPending, submit, editor, tab])
 
   return (
     <div>
@@ -246,8 +207,8 @@ function Editor({
 
       <Card className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-3 p-4">
         <label className="flex items-center gap-3 text-sm font-semibold">
-          <Switch label="Yayında" checked={draft.published} onCheckedChange={(published) => setDraft((d) => ({ ...d, published }))} />
-          {draft.published ? 'Yayında' : 'Taslak'}
+          <Switch label="Yayında" checked={meta.published} onCheckedChange={(published) => setMeta((m) => ({ ...m, published }))} />
+          {meta.published ? 'Yayında' : 'Taslak'}
         </label>
         <span className="tabular text-sm text-muted">
           {words} sözcük · yaklaşık {formatLessonMinutes(minutes)} dakika
@@ -257,68 +218,69 @@ function Editor({
         </span>
       </Card>
 
-      <Segmented
-        className="mb-4 xl:hidden"
-        value={tab}
-        onChange={setTab}
-        options={[
-          { value: 'yaz', label: 'Yaz' },
-          { value: 'onizleme', label: 'Önizleme' },
-        ]}
+      <div className="sticky top-14 z-20 -mx-4 mb-4 flex flex-wrap items-center gap-2 border-b border-line bg-bg px-4 py-2 sm:mx-0 sm:rounded-xl sm:border sm:px-3 lg:top-16">
+        <Segmented
+          value={tab}
+          onChange={changeTab}
+          options={[
+            { value: 'blok', label: 'Yaz' },
+            { value: 'onizleme', label: 'Önizleme' },
+            { value: 'kaynak', label: 'Kaynak' },
+          ]}
+        />
+        {tab === 'blok' && (
+          <div className="ml-auto flex items-center gap-1.5">
+            <Button type="button" variant="ghost" size="icon" onClick={editor.undo} disabled={!editor.canUndo} aria-label="Geri al">
+              <Undo2 />
+            </Button>
+            <Button type="button" variant="secondary" size="icon" loading={uploading} onClick={() => setPalette({ afterId: editor.activeId })} aria-label="Blok ekle">
+              <Plus />
+            </Button>
+          </div>
+        )}
+      </div>
+      <input
+        ref={files}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        multiple
+        hidden
+        onChange={(e) => {
+          void addImages(Array.from(e.target.files ?? []), imageAfter.current)
+          e.target.value = ''
+        }}
       />
 
-      <div className="xl:grid xl:grid-cols-2 xl:items-start xl:gap-6">
-        <section className={cn('space-y-3', tab === 'yaz' ? 'block' : 'hidden', 'xl:block')} aria-label="Yazı alanı">
-          <div className="scrollbar-none -mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
-            {snippets.map((s) => (
-              <Button
-                key={s.label}
-                type="button"
-                variant="secondary"
-                size="sm"
-                className="min-h-11 shrink-0"
-                onClick={() => insert(s.before, s.after, s.placeholder)}
-              >
-                <s.icon />
-                {s.label}
-              </Button>
-            ))}
-            <Button type="button" variant="secondary" size="sm" className="min-h-11 shrink-0" loading={uploading} onClick={() => files.current?.click()}>
-              <ImagePlus />
-              Görsel
-            </Button>
-            <input
-              ref={files}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              multiple
-              hidden
-              onChange={(e) => {
-                void addImages(Array.from(e.target.files ?? []))
-                e.target.value = ''
-              }}
-            />
-          </div>
+      {tab === 'blok' && (
+        <div className="mx-auto max-w-3xl">
+          <BlockList
+            editor={editor}
+            optionCount={optionCount}
+            onInsert={(afterId) => setPalette({ afterId })}
+            onSlash={(blockId) => setPalette({ afterId: blockId, replaceId: blockId })}
+            onFiles={(list, afterId) => void addImages(list, afterId)}
+          />
+        </div>
+      )}
 
+      {tab === 'onizleme' && (
+        <section className="mx-auto min-w-0 max-w-3xl rounded-2xl border border-line bg-bg p-4 sm:p-6" aria-label="Önizleme">
+          {preview.trim() ? <LessonBody source={preview} /> : <p className="py-10 text-center text-sm text-muted">Henüz bir şey yazılmadı.</p>}
+        </section>
+      )}
+
+      {tab === 'kaynak' && (
+        <section className="mx-auto max-w-3xl space-y-3" aria-label="Kaynak metin">
+          <p className="text-sm text-muted">Markdown olarak düzenle. Yaz sekmesine dönünce bloklara ayrılır.</p>
           <Textarea
-            ref={area}
-            value={draft.body}
-            onChange={(e) => setBody(e.target.value)}
-            onPaste={onPaste}
+            value={raw}
+            onChange={(e) => setRaw(e.target.value)}
             rows={28}
             spellCheck
             lang="tr"
-            aria-label="Konu anlatımı metni"
-            placeholder="Metni buraya yaz ya da yapıştır. Başlıklar ## ile başlar."
+            aria-label="Konu anlatımı kaynağı"
             className="min-h-[60vh] font-mono text-[14px] leading-relaxed"
           />
-
-          <Field label="Öğretmen notu" hint="Sadece öğretmenler görür. Öğrenci ve veli göremez.">
-            {(props) => (
-              <Textarea {...props} rows={4} value={draft.note} onChange={(e) => setDraft((d) => ({ ...d, note: e.target.value }))} />
-            )}
-          </Field>
-
           <details className="group rounded-2xl border border-line bg-surface">
             <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 font-semibold">
               Yazım rehberi
@@ -337,23 +299,15 @@ function Editor({
             </dl>
           </details>
         </section>
+      )}
 
-        <section
-          className={cn('min-w-0 rounded-2xl border border-line bg-bg p-4 sm:p-6 xl:sticky xl:top-20 xl:max-h-[calc(100dvh-6rem)] xl:overflow-y-auto', tab === 'onizleme' ? 'block' : 'hidden', 'xl:block')}
-          aria-label="Önizleme"
-        >
-          <p className="mb-4 flex items-center gap-2 text-xs font-semibold tracking-wide text-muted uppercase">
-            <Eye className="size-4" />
-            Önizleme
-          </p>
-          {preview.trim() ? (
-            <LessonBody source={preview} />
-          ) : (
-            <p className="py-10 text-center text-sm text-muted">Yazdıkça burada görünür.</p>
-          )}
-        </section>
+      <div className="mx-auto mt-6 max-w-3xl">
+        <Field label="Öğretmen notu" hint="Sadece öğretmenler görür. Öğrenci ve veli göremez.">
+          {(props) => <Textarea {...props} rows={4} value={meta.note} onChange={(e) => setMeta((m) => ({ ...m, note: e.target.value }))} />}
+        </Field>
       </div>
 
+      <Palette open={palette !== null} onOpenChange={(open) => !open && setPalette(null)} onPick={pick} />
       <Confirm
         open={confirmDelete}
         onOpenChange={setConfirmDelete}
