@@ -63,6 +63,7 @@ export const router = createBrowserRouter([
                 children: [
                   { path: 'ogrenciler/:studentId', ...page(() => import('@/features/teacher/student-detail-page')) },
                   { path: 'ogrenciler/:studentId/deneme-ekle', ...page(() => import('@/features/exams/new-exam-page')) },
+                  { path: 'asistan', ...page(() => import('@/features/assistant/assistant-page')) },
                   { path: 'planlayici', ...page(() => import('@/features/plan/planner-page')) },
                   { path: 'davetler', ...page(() => import('@/features/teacher/invites-page')) },
                 ],

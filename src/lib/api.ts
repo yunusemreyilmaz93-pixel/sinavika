@@ -13,7 +13,7 @@ function unexpected(status: number, text: string) {
   return `İşlem tamamlanamadı (hata ${status}). Sayfayı yenileyip tekrar dene`
 }
 
-export async function callApi<T = { ok: true }>(path: 'auth' | 'account' | 'push' | 'video', body: Record<string, unknown>): Promise<T> {
+export async function callApi<T = { ok: true }>(path: 'ai' | 'auth' | 'account' | 'push' | 'video', body: Record<string, unknown>): Promise<T> {
   const { data } = await supabase.auth.getSession()
   const headers: Record<string, string> = { 'content-type': 'application/json' }
   if (data.session) headers.authorization = `Bearer ${data.session.access_token}`

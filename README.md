@@ -43,7 +43,7 @@ npm run test:db     # migration + RLS testleri (boş bir Postgres gerekir, TEST_
 
 - `preview` branch'i Vercel önizlemesine, `main` canlıya gider
 - Supabase GitHub entegrasyonu `supabase/migrations` klasörünü `main`'e her push'ta uygular
-- Vercel ortam değişkenleri: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (Supabase entegrasyonu ekler), `ADMIN_EMAIL`, isteğe bağlı `CRON_SECRET`
+- Vercel ortam değişkenleri: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (Supabase entegrasyonu ekler), `ADMIN_EMAIL`, isteğe bağlı `CRON_SECRET`, asistan için `AI_KEY_SECRET`
 
 ## Hesap modeli
 

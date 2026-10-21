@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/cn'
 
-type Health = { ok: boolean; checks: Record<string, boolean>; version: string }
+type Health = { ok: boolean; checks: Record<string, boolean>; optional?: Record<string, boolean>; version: string }
 
 const labels: Record<string, string> = {
   supabase_url: 'Supabase adresi tanımlı',
@@ -72,6 +72,11 @@ export function SystemHealthCard() {
           <RotateCw className={cn(health.isFetching && 'animate-spin')} />
         </Button>
       </div>
+      {health.data?.optional?.ai_assistant === false && (
+        <p className="mt-3 border-t border-line pt-3 text-sm text-muted">
+          Yapay zekâ asistanı kapalı. Açmak için Vercel ortam değişkenlerine AI_KEY_SECRET ekle (en az 32 karakter, rastgele), sonra yeniden yayınla.
+        </p>
+      )}
       {failing.length > 0 && (
         <ul className="mt-3 space-y-2 border-t border-line pt-3 text-sm">
           {failing.map(([key]) => (

@@ -16,6 +16,7 @@ registerHooks({
 
 type Handler = (request: Request) => Promise<Response>
 const routes: Record<string, () => Promise<Record<string, Handler>>> = {
+  ai: () => import('../api/ai.ts'),
   auth: () => import('../api/auth.ts'),
   account: () => import('../api/account.ts'),
   cron: () => import('../api/cron.ts'),

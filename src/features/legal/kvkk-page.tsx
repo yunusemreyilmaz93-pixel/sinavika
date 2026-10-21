@@ -5,7 +5,7 @@ import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/ui/logo'
 
-const UPDATED = '20 Ekim 2026'
+const UPDATED = '21 Ekim 2026'
 
 type Section = { id: string; title: string; body: ReactNode }
 
@@ -139,6 +139,34 @@ const sections: Section[] = [
         <p>
           Verileriniz bunların dışında hiç kimseye satılmaz, kiralanmaz ve reklam amacıyla paylaşılmaz. Yetkili kamu kurum ve
           kuruluşlarının kanuna dayanan talepleri olması hâlinde, yalnızca bu yükümlülük kapsamında paylaşılabilir.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'yapay-zeka',
+    title: 'Yapay zekâ asistanı (isteğe bağlı)',
+    body: (
+      <>
+        <p>
+          Öğretmenler, isterlerse Ayarlar bölümünde kendi yapay zekâ servis anahtarlarını (Anthropic, OpenAI veya Google) ekleyerek
+          asistanı kullanabilir. Bu özellik varsayılan olarak kapalıdır ve öğretmenin açık onayıyla etkinleşir. Öğrenci ve veli
+          hesaplarında asistan yoktur.
+        </p>
+        <p>
+          Asistan kullanıldığında öğretmenin yazdığı mesaj ve asistanın istediği öğrenci özeti (çalışma süresi, çözülen soru sayısı,
+          görev durumu, deneme netleri, konu adları) öğretmenin seçtiği servise gönderilir. Öğrenci ve veli adları gönderilmeden önce
+          takma kimliğe çevrilir. Telefon, e-posta, T.C. kimlik numarası ve IBAN gibi bilgiler gizlenir. Öğrencilerin yazdığı not ve
+          mesajlar gönderilmez. Öğretmenin mesaja kendisinin yazdığı diğer bilgilerden öğretmen sorumludur.
+        </p>
+        <p>
+          Seçilen servis yurt dışında olabilir. Bu aktarım öğretmenin kendi hesabı ve kendi seçimiyle yapılır, servisin gizlilik
+          koşullarından öğretmen sorumludur. Yolumnet bu servislerle bir sözleşme yapmaz ve kullanım bedeli ödemez ya da almaz.
+        </p>
+        <p>
+          Anahtar sunucuda şifrelenerek saklanır ve kimse tarafından görüntülenemez. Öğretmen anahtarını istediği zaman silebilir.
+          Sohbet geçmişi Yolumnet'te saklanmaz. Asistan hiçbir kayıt eklemez, değiştirmez ya da silmez, hazırladığı görev taslağını
+          öğretmen onaylar.
         </p>
       </>
     ),

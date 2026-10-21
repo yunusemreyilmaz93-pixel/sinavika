@@ -53,5 +53,6 @@ LGS ve YKS koçluğu için ücretsiz web uygulaması. Öğretmen, öğrenci ve v
 - 10 öğrenci sınırı `enforce_student_capacity` trigger'ında. Arayüzde ayrıca kontrol etme, hatayı göster
 - Şema değişikliği yeni bir migration dosyasıdır. Eski migration'ı düzenleme
 - `api/` içindeki göreli importlar `.js` uzantısıyla yazılır (`./_lib/server.js`). Vercel dosyaları tek tek derler, `.ts` uzantılı import canlıda fonksiyonu çökertir. `npm run check:api` bunu denetler, build de çalıştırır
+- Öğretmen yapay zekâ asistanı `api/ai.ts` ve `api/_lib/ai/` altındadır. Öğretmenin anahtarı `AI_KEY_SECRET` ile şifrelenip `teacher_ai_keys` tablosuna yazılır, istemci okuyamaz. Sağlayıcıya giden metinde öğrenci ve veli adları takma kimliğe çevrilir (`privacy.ts`), öğrencinin yazdığı not ve mesajlar gönderilmez. Asistan hiçbir şey kaydetmez, görev taslağını öğretmen onaylar. Bu davranışı değiştiren her iş `tests/api-ai-*.test.ts` testlerini güncellemeli
 - Yayından sonra `/api/health` her şeyin çalıştığını gösterir. Admin panelindeki Sistem durumu kartı da bunu okur
 - Değişiklikten sonra `npm run lint`, `npm run typecheck`, `npm test` ve şema değiştiyse `npm run test:db` çalıştır

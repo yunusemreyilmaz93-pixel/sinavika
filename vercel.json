@@ -3,6 +3,7 @@
   "framework": "vite",
   "rewrites": [{ "source": "/((?!api/|assets/).*)", "destination": "/index.html" }],
   "crons": [{ "path": "/api/cron", "schedule": "17 6 * * *" }],
+  "functions": { "api/ai.ts": { "maxDuration": 60 } },
   "headers": [
     {
       "source": "/assets/(.*)",

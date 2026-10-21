@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import { PageHeader } from '@/components/app/page-header'
 import { useProfile } from '@/features/auth/session'
 import { AccountCard } from './account-card'
+import { AiKeyCard } from './ai-key-card'
 import { AppearanceCard } from './appearance-card'
 import { ChildrenCard } from './children-card'
 import { GoalsCard } from './goals-card'
@@ -28,6 +29,7 @@ export default function SettingsPage() {
         )}
         {profile.role === 'parent' && <ChildrenCard />}
         {profile.role === 'teacher' && <TeacherCard />}
+        {profile.role === 'teacher' && profile.status === 'active' && <AiKeyCard />}
         <SecurityCard />
         <PushCard />
         <AppearanceCard />

@@ -474,6 +474,28 @@ await test('yanlış defteri tekrarı: başarısızlık aralığı sıfırlar, a
   await rejects(as(parent, `select * from public.review_wrong_result($1, 'good')`, [id]), /yetkin yok/)
 })
 
+await test('yapay zekâ anahtarı: durumu sahibi görür, şifreli metni kimse okuyamaz, istemci yazamaz, günlük sınır çalışır', async () => {
+  await service(
+    `insert into public.teacher_ai_keys (teacher_id, provider, model, key_ciphertext, key_last4) values ($1, 'openai', 'gpt-x', 'v1.gizli', 'abcd')`,
+    [teacherA],
+  )
+  const [own] = await as(teacherA, 'select provider, model, key_last4 from public.teacher_ai_keys')
+  assert.deepEqual({ ...own }, { provider: 'openai', model: 'gpt-x', key_last4: 'abcd' })
+  await rejects(as(teacherA, 'select key_ciphertext from public.teacher_ai_keys'), /permission denied/)
+  await rejects(as(teacherA, 'select * from public.teacher_ai_keys'), /permission denied/)
+  await rejects(as(adminId, 'select key_ciphertext from public.teacher_ai_keys'), /permission denied/)
+  assert.equal((await as(teacherB, 'select provider from public.teacher_ai_keys')).length, 0)
+  await rejects(as(teacherA, `update public.teacher_ai_keys set model = 'x'`), /permission denied/)
+  await rejects(as(teacherA, 'delete from public.teacher_ai_keys'), /permission denied/)
+  await rejects(as(teacherA, `insert into public.teacher_ai_keys (teacher_id, provider, model, key_ciphertext, key_last4) values ($1, 'openai', 'm', 'c', 'abcd')`, [teacherA]), /permission denied/)
+  await rejects(as(teacherA, 'select * from public.ai_usage'), /permission denied/)
+  await rejects(as(teacherA, 'select public.ai_take_quota($1, 5)', [teacherA]), /permission denied/)
+  const takes = []
+  for (let i = 0; i < 4; i++) takes.push((await service('select public.ai_take_quota($1, 3) as ok', [teacherA]))[0].ok)
+  assert.deepEqual(takes, [true, true, true, false])
+  await service('delete from public.teacher_ai_keys where teacher_id = $1', [teacherA])
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

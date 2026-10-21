@@ -11,6 +11,7 @@ import {
   NotebookTabs,
   Settings,
   ShieldCheck,
+  Sparkles,
   Timer,
   Trophy,
   UserPlus,
@@ -57,6 +58,7 @@ export function navFor(profile: Profile): NavItem[] {
     { to: '/app/davetler', label: 'Davetler', icon: UserPlus, mobile: true },
     { to: '/app/bildirimler', label: 'Bildirimler', icon: Bell },
   ]
+  if (profile.status === 'active') items.splice(4, 0, { to: '/app/asistan', label: 'Asistan', icon: Sparkles })
   if (profile.is_admin) items.push({ to: '/app/yonetim', label: 'Yönetim', icon: ShieldCheck })
   items.push({ to: '/app/ayarlar', label: 'Ayarlar', icon: Settings })
   return items

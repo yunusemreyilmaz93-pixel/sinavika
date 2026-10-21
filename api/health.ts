@@ -1,3 +1,4 @@
+import { isConfigured } from './_lib/ai/crypto.js'
 import { admin, handle, json } from './_lib/server.js'
 
 const tables = ['profiles', 'invites', 'app_settings', 'subjects', 'topics', 'push_subscriptions', 'wrong_questions', 'video_progress'] as const
@@ -22,6 +23,7 @@ export const GET = handle(async () => {
     {
       ok,
       checks,
+      optional: { ai_assistant: isConfigured() },
       version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? 'local',
     },
     ok ? 200 : 503,
