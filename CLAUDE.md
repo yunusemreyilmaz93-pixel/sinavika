@@ -22,7 +22,8 @@ LGS ve YKS koçluğu için ücretsiz web uygulaması. Öğretmen, öğrenci ve v
 - Uzun tire (—) ve orta tire (–) kullanma. Gerekirse nokta ya da virgül kullan
 - Arayüz metninde noktalı virgül kullanma
 - İki noktadan sonra büyük harfle başla
-- Uygulama içi arayüz "sen" diliyle yazılır. Ana sayfa (landing), KVKK ve hukuki metinler "siz" diliyle yazılır. Ana sayfadaki uygulama önizlemeleri (`role-previews`, `hero-preview`) uygulamanın kendisini gösterdiği için "sen" kalır
+- Hitap role göre değişir. Öğrenci ekranları "sen" diliyle yazılır. Öğretmen ve veli ekranları, bildirimleri ve e-postaları "siz" diliyle yazılır, bu rollere hiçbir yerde "sen" denmez. Ana sayfa (landing), KVKK ve hukuki metinler de "siz". Ana sayfadaki uygulama önizlemeleri (`role-previews`, `hero-preview`) öğrenci ekranını gösterdiği yerde "sen" kalır
+- Gereksiz açıklama metni yazma. Bir alan ya da düğme kendini anlatıyorsa altına ek cümle koyma. Yalnızca kullanıcının karar vermesini ya da hata yapmamasını sağlayan bilgiyi yaz
 - Kısa yaz. Bir şeyi açıklamak gerekmiyorsa açıklama
 - Emoji kullanma. İkon gerekiyorsa `lucide-react`
 - Abartılı pazarlama dili yok: "yolculuk", "seviyeyi atla", "sorunsuz", "kusursuz", "devrim", "benzersiz", "keşfedin", "potansiyelini açığa çıkar" gibi

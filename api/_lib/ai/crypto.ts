@@ -24,14 +24,14 @@ export function encryptKey(plain: string, teacherId: string) {
 
 export function decryptKey(blob: string, teacherId: string) {
   const [version, nonce, body, tag] = blob.split('.')
-  if (version !== 'v1' || !nonce || !body || !tag) throw new HttpError(500, 'Kayıtlı anahtar okunamadı. Anahtarı silip yeniden gir')
+  if (version !== 'v1' || !nonce || !body || !tag) throw new HttpError(500, 'Kayıtlı anahtar okunamadı. Anahtarı silip yeniden girin')
   try {
     const decipher = createDecipheriv('aes-256-gcm', derive('ai-key'), Buffer.from(nonce, 'base64url'))
     decipher.setAAD(Buffer.from(teacherId))
     decipher.setAuthTag(Buffer.from(tag, 'base64url'))
     return Buffer.concat([decipher.update(Buffer.from(body, 'base64url')), decipher.final()]).toString('utf8')
   } catch {
-    throw new HttpError(500, 'Kayıtlı anahtar okunamadı. Anahtarı silip yeniden gir')
+    throw new HttpError(500, 'Kayıtlı anahtar okunamadı. Anahtarı silip yeniden girin')
   }
 }
 

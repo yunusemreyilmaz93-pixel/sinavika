@@ -271,7 +271,6 @@ function Editor({
 
       {tab === 'kaynak' && (
         <section className="mx-auto max-w-3xl space-y-3" aria-label="Kaynak metin">
-          <p className="text-sm text-muted">Markdown olarak düzenle. Yaz sekmesine dönünce bloklara ayrılır.</p>
           <Textarea
             value={raw}
             onChange={(e) => setRaw(e.target.value)}

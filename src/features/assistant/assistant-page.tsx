@@ -1,6 +1,8 @@
 import { ChevronDown, SendHorizontal, Settings, Sparkles } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { Link } from 'react-router'
+import remarkGfm from 'remark-gfm'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/app/page-header'
 import { Button } from '@/components/ui/button'
@@ -14,7 +16,7 @@ import { fold } from '@/lib/text'
 import { ProposalCard } from './proposal-card'
 import { askAssistant, useAiStatus, type ChatMessage } from './queries'
 
-const starters = ['Hangi öğrencilere bu hafta bakmam gerekiyor?', 'Öğrencilerimin son durumunu kısaca özetle', 'Bir öğrenciyi @ ile seçip ona görev öner']
+const starters = ['Hangi öğrencilere bu hafta bakmam gerekiyor?', 'Öğrencilerimin son durumunu kısaca özetle', '@ ile bir öğrenci seçip görev önerisi isteyin']
 
 export default function AssistantPage() {
   const status = useAiStatus()
@@ -42,12 +44,8 @@ export default function AssistantPage() {
         <PageHeader title="Asistan" />
         <EmptyState
           icon={Sparkles}
-          title="Önce yapay zekâ anahtarını ekle"
-          description={
-            status.data?.configured === false
-              ? 'Asistan henüz kurulmadı. Yönetici sunucu ayarını yapınca anahtarını Ayarlar bölümünden ekleyebilirsin.'
-              : 'Asistan kendi yapay zekâ anahtarınla çalışır. Ayarlar bölümünden ekleyebilirsin.'
-          }
+          title="Önce yapay zekâ anahtarınızı ekleyin"
+          description={status.data?.configured === false ? 'Asistan henüz kurulmadı.' : 'Anahtarınızı Ayarlar bölümünden ekleyebilirsiniz.'}
           action={
             <Button asChild className="min-h-11">
               <Link to="/app/ayarlar">
@@ -95,13 +93,12 @@ export default function AssistantPage() {
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col">
-      <PageHeader title="Asistan" description="Öğrencilerin hakkında soru sor, görev taslağı iste. Hiçbir şey sen onaylamadan kaydedilmez." />
+      <PageHeader title="Asistan" description="Öğrencileriniz hakkında soru sorun, görev taslağı isteyin." />
 
       <div className="space-y-4 pb-4">
         {messages.length === 0 && (
           <div className="rounded-2xl border border-dashed border-line-strong p-5">
-            <p className="text-[15px] text-muted">Mesajını yazarken adları olduğu gibi yazabilirsin. Gönderilmeden önce adlar takma kimliğe çevrilir.</p>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
               {starters.map((s) => (
                 <Button key={s} variant="secondary" size="sm" className="h-auto min-h-11 whitespace-normal py-2 text-left" onClick={() => setText(s)}>
                   {s}
@@ -114,7 +111,13 @@ export default function AssistantPage() {
         {messages.map((m, i) => (
           <div key={i} className={cn('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}>
             <div className={cn('max-w-[92%] rounded-2xl px-4 py-3 text-[15px] leading-relaxed', m.role === 'user' ? 'bg-primary text-primary-fg' : 'border border-line bg-surface')}>
-              <p className="break-words whitespace-pre-wrap">{m.content}</p>
+              {m.role === 'user' ? (
+                <p className="break-words whitespace-pre-wrap">{m.content}</p>
+              ) : (
+                <div className="break-words [&_li]:mt-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_p+p]:mt-2 [&_p+ul]:mt-2 [&_strong]:font-semibold [&_table]:my-2 [&_table]:block [&_table]:overflow-x-auto [&_td]:border [&_td]:border-line [&_td]:px-2 [&_td]:py-1 [&_th]:border [&_th]:border-line [&_th]:px-2 [&_th]:py-1 [&_ul]:list-disc [&_ul]:pl-5">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                </div>
+              )}
               {m.proposals?.map((p, j) => <ProposalCard key={j} proposal={p} />)}
               {m.sent && (
                 <details className="group mt-3 text-sm">
@@ -123,7 +126,7 @@ export default function AssistantPage() {
                     <ChevronDown className="size-4 transition-transform group-open:rotate-180" />
                   </summary>
                   <div className="space-y-2 rounded-lg bg-surface-2 p-3 text-[13px] text-fg">
-                    <p className="text-muted">Sağlayıcıya giden metin tam olarak şudur. Adların yerinde takma kimlik görünür.</p>
+                    <p className="text-muted">Sağlayıcıya giden metin. Adlar takma kimlikle değiştirilmiştir.</p>
                     {m.sent.turns.map((t, k) => (
                       <p key={k} className="break-words whitespace-pre-wrap">
                         <span className="font-semibold">{t.rol}: </span>
@@ -175,7 +178,7 @@ export default function AssistantPage() {
               }
             }}
             maxLength={4000}
-            placeholder="Bir şey sor. Öğrenci seçmek için @ yaz"
+            placeholder="Mesajınız. Öğrenci seçmek için @ yazın"
             aria-label="Mesaj"
             className="min-h-12 resize-none border-0 shadow-none focus:ring-0"
           />

@@ -68,6 +68,17 @@ export function useBlockEditor(initialBody: string) {
       setRevealId(block.id)
       return block.id
     },
+    insertBlocks: (afterId: string | null, inits: BlockInit[], replaceId?: string) => {
+      if (!inits.length) return
+      lastEdit.current = null
+      const blocks = inits.map(makeBlock)
+      const list = ref.current
+      const replaceAt = replaceId ? list.findIndex((b) => b.id === replaceId) : -1
+      const at = replaceAt >= 0 ? replaceAt : afterId ? list.findIndex((b) => b.id === afterId) + 1 : list.length
+      commit([...list.slice(0, at), ...blocks, ...list.slice(replaceAt >= 0 ? at + 1 : at)])
+      setActiveId(blocks[blocks.length - 1].id)
+      setRevealId(blocks[blocks.length - 1].id)
+    },
     remove: (id: string) => {
       lastEdit.current = null
       const at = indexOf(id)

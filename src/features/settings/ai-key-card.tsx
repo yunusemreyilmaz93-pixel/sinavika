@@ -42,7 +42,7 @@ export function AiKeyCard() {
     <SettingsCard
       icon={Sparkles}
       title="Yapay zekâ asistanı"
-      description="Kendi yapay zekâ anahtarınla çalışır. Maliyet sağlayıcıdaki hesabına yazılır, Yolumnet bir ücret almaz."
+      description="Kendi yapay zekâ anahtarınızla çalışır. Maliyet sağlayıcıdaki hesabınıza yazılır."
       action={key ? <Badge tone="primary">Bağlı</Badge> : undefined}
     >
       {status.isPending ? (
@@ -50,7 +50,7 @@ export function AiKeyCard() {
       ) : status.isError ? (
         <p className="text-sm text-danger">{errorMessage(status.error)}</p>
       ) : !ready ? (
-        <p className="text-sm text-muted">Asistan henüz kurulmadı. Yönetici sunucu ayarını yapınca burada anahtarını ekleyebilirsin.</p>
+        <p className="text-sm text-muted">Asistan henüz kurulmadı.</p>
       ) : (
         <>
           {key && !editing && (
@@ -58,7 +58,7 @@ export function AiKeyCard() {
               <p className="text-sm">
                 <span className="font-semibold">{providerLabels[key.provider]}</span>, model <span className="font-semibold">{key.model}</span>
                 <br />
-                <span className="text-muted">Anahtar sonu: ····{key.key_last4}. Kayıttan sonra tam anahtar bir daha gösterilmez.</span>
+                <span className="text-muted">Anahtar sonu: ····{key.key_last4}</span>
               </p>
               <div className="flex flex-wrap gap-2">
                 <Button asChild className="min-h-11">
@@ -93,7 +93,7 @@ export function AiKeyCard() {
                   </Select>
                 )}
               </Field>
-              <Field label="Model" hint="Boş bırakırsan önerilen model kullanılır. Sağlayıcının güncel model adını yazabilirsin">
+              <Field label="Model">
                 {(props) => (
                   <>
                     <Input {...props} list="ai-models" value={model} onChange={(e) => setModel(e.target.value)} placeholder={modelHints[provider][0]} autoComplete="off" />
@@ -105,14 +105,14 @@ export function AiKeyCard() {
                   </>
                 )}
               </Field>
-              <Field label="API anahtarı" hint="Sunucuda şifrelenerek saklanır. Kimse göremez, yönetici bile">
+              <Field label="API anahtarı">
                 {(props) => <Input {...props} type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} autoComplete="off" spellCheck={false} />}
               </Field>
               <label className="flex items-start gap-3 text-sm leading-relaxed">
                 <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-1 size-5 shrink-0 accent-primary" />
                 <span>
-                  Asistanı kullandığımda öğrenci bilgilerinin, adlar yerine takma kimlikle seçtiğim yapay zekâ servisine gönderildiğini biliyorum. Servisin
-                  gizlilik koşullarından ben sorumluyum.{' '}
+                  Asistanı kullandığımda öğrenci bilgilerinin, adlar yerine takma kimlikle, seçtiğim yapay zekâ servisine gönderildiğini biliyorum.
+                  Servisin gizlilik koşullarından ben sorumluyum.{' '}
                   <Link to="/kvkk#yapay-zeka" className="font-semibold text-accent underline-offset-4 hover:underline">
                     KVKK metni
                   </Link>
@@ -128,7 +128,6 @@ export function AiKeyCard() {
                   </Button>
                 )}
               </div>
-              <p className="text-sm text-muted">Kaydederken küçük bir deneme isteği gönderilir, çok küçük bir kullanım yazar.</p>
             </form>
           )}
         </>
@@ -138,7 +137,7 @@ export function AiKeyCard() {
         open={confirmRemove}
         onOpenChange={setConfirmRemove}
         title="Anahtar silinsin mi?"
-        description="Kayıtlı şifreli anahtar silinir. Asistanı tekrar kullanmak için yeniden eklemen gerekir."
+        description="Kayıtlı anahtar silinir."
         confirmLabel="Sil"
         onConfirm={async () => {
           try {

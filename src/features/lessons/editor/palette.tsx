@@ -9,7 +9,7 @@ export function Palette({ open, onOpenChange, onPick }: { open: boolean; onOpenC
   const [query, setQuery] = useState('')
   const items = useMemo(() => {
     const q = fold(query.trim())
-    return q ? catalog.filter((c) => fold(`${c.label} ${c.hint}`).includes(q)) : catalog
+    return q ? catalog.filter((c) => fold(`${c.label} ${c.hint} ${c.keywords ?? ''}`).includes(q)) : catalog
   }, [query])
 
   const pick = (item: CatalogItem) => {

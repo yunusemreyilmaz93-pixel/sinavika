@@ -16,8 +16,8 @@ const items: { icon: LucideIcon; title: string; text: string }[] = [
   },
   {
     icon: FlaskConical,
-    title: 'Etkileşimli simülasyon',
-    text: 'Anlatımlara simülasyon eklenebilir. Öğrenci önce tahmin eder, sonra kaydırıcıyla dener. İlk örnek gaz basıncı.',
+    title: 'Etkileşimli simülasyonlar',
+    text: 'Anlatımlarda gereken yerlerde etkileşimli animasyon ve simülasyonlar bulunur. Öğrenci önce tahmin eder, sonra kaydırıcıyla dener.',
   },
   {
     icon: MapIcon,

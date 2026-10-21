@@ -6,8 +6,8 @@ import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/compo
 import { cn } from '@/lib/cn'
 import { LessonBody } from '../markdown/render'
 import { describe, IMAGE_LINE, issuesOf } from './catalog'
-import { ImageForm, ListForm, PairsForm, ProseForm, QuestionForm, RawForm, SimForm, TextBoxForm, TimelineForm, VideoForm } from './forms'
-import { isEmpty, pairRows, serializeBlock, type EditorBlock } from './model'
+import { AffixForm, ImageForm, LifeTimelineForm, ListForm, PairsForm, ProseForm, QuestionForm, RawForm, SentenceLabForm, SimForm, TextBoxForm, TimelineForm, VideoForm } from './forms'
+import { fromSource, isEmpty, pairRows, serializeBlock, type EditorBlock } from './model'
 import type { BlockEditor } from './use-block-editor'
 
 const Preview = memo(function Preview({ source, offset }: { source: string; offset: number }) {
@@ -39,6 +39,7 @@ function Form({ block, optionCount, editor, onSlash, onFiles }: Pick<Props, 'blo
         onSplit={() => editor.insertAfter(block.id, { kind: 'md', text: '' })}
         onSlash={() => onSlash(block.id)}
         onPasteFiles={(files) => onFiles(files, block.id)}
+        onPasteBlocks={(text) => editor.insertBlocks(block.id, fromSource(text), block.text.trim() ? undefined : block.id)}
         onPasteVideo={(url) => editor.insertAfter(null, { kind: 'leaf', name: 'video', attrs: { url, baslik: '', kanal: '' } }, block.id)}
       />
     )
@@ -71,6 +72,12 @@ function Form({ block, optionCount, editor, onSlash, onFiles }: Pick<Props, 'blo
       )
     case 'cizelge':
       return <TimelineForm block={block} onPatch={onPatch} />
+    case 'zaman':
+      return <LifeTimelineForm block={block} onPatch={onPatch} />
+    case 'formul':
+      return <AffixForm block={block} onPatch={onPatch} />
+    case 'cumle-lab':
+      return <SentenceLabForm block={block} onPatch={onPatch} />
     default:
       return <RawForm block={block} onPatch={onPatch} />
   }
@@ -89,6 +96,9 @@ export function BlockCard(props: Props) {
   useEffect(() => {
     if (editor.revealId !== block.id) return
     node.current?.scrollIntoView({ block: 'center' })
+    requestAnimationFrame(() =>
+      node.current?.querySelector<HTMLElement>('input:not([type=radio]):not([type=file]):not([type=checkbox]), textarea, select')?.focus({ preventScroll: true }),
+    )
     editor.clearReveal()
   }, [editor, block.id])
 

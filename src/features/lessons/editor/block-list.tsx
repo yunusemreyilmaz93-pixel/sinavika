@@ -54,7 +54,7 @@ export function BlockList({ editor, optionCount, onInsert, onSlash, onFiles }: P
         </DndContext>
       )}
       <div className="mt-4 flex flex-col items-center gap-2 rounded-2xl border border-dashed border-line-strong p-5 text-center">
-        {blocks.length === 0 && <p className="text-[15px] text-muted">Anlatım boş. İlk bloğu ekleyerek başla.</p>}
+        {blocks.length === 0 && <p className="text-[15px] text-muted">Anlatım boş.</p>}
         <Button type="button" variant="secondary" className="min-h-11" onClick={() => onInsert(null)}>
           <Plus />
           Blok ekle

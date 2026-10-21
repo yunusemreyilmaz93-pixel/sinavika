@@ -62,7 +62,7 @@ export async function runChat(opts: {
       }),
     )
     turns.push({ role: 'tool', results })
-    if (step === MAX_STEPS - 1) text = 'Bu istek çok adım gerektirdi. Daha kısa ya da tek öğrenciye odaklı yazar mısın?'
+    if (step === MAX_STEPS - 1) text = 'Bu istek çok adım gerektirdi. Daha kısa ya da tek öğrenciye odaklı yazar mısınız?'
   }
-  return { text: ctx.privacy.restore(text || 'Yanıt alamadım, tekrar dener misin?'), proposals: ctx.proposals, sent: { system, turns: render(turns) } }
+  return { text: ctx.privacy.restore(text || 'Yanıt alamadım, tekrar dener misiniz?'), proposals: ctx.proposals, sent: { system, turns: render(turns) } }
 }

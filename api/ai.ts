@@ -16,7 +16,7 @@ const schema = z.discriminatedUnion('action', [
     provider: z.enum(['anthropic', 'openai', 'gemini']),
     model: z.string().trim().regex(/^[\w.:/-]{1,80}$/, 'Model adı geçersiz'),
     apiKey: z.string().trim().min(16, 'Anahtar çok kısa').max(400, 'Anahtar çok uzun').regex(/^\S+$/, 'Anahtarda boşluk olmamalı'),
-    consent: z.literal(true, { message: 'Devam etmek için aydınlatmayı onaylamalısın' }),
+    consent: z.literal(true, { message: 'Devam etmek için aydınlatmayı onaylamalısınız' }),
   }),
   z.object({ action: z.literal('remove_key') }),
   z.object({
@@ -45,7 +45,7 @@ function userClient(token: string) {
 
 async function requireTeacher(id: string) {
   const { data } = await admin().from('profiles').select('role, status').eq('id', id).maybeSingle()
-  if (data?.role !== 'teacher' || data.status !== 'active') throw new HttpError(403, 'Asistan yalnızca onaylı öğretmenler için')
+  if (data?.role !== 'teacher' || data.status !== 'active') throw new HttpError(403, 'Asistan yalnızca onaylı öğretmenler içindir')
 }
 
 const istanbulToday = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' }).format(new Date())
@@ -111,10 +111,10 @@ export const POST = handle(async (request) => {
 
   if (input.messages[input.messages.length - 1].role !== 'user') throw new HttpError(400, 'Geçersiz istek')
   const { data: stored } = await admin().from('teacher_ai_keys').select('provider, model, key_ciphertext').eq('teacher_id', id).maybeSingle()
-  if (!stored) throw new HttpError(400, 'Önce Ayarlar bölümünden yapay zekâ anahtarını ekle')
+  if (!stored) throw new HttpError(400, 'Önce Ayarlar bölümünden yapay zekâ anahtarınızı ekleyin')
   const apiKey = decryptKey(stored.key_ciphertext, id)
   const { data: allowed } = await admin().rpc('ai_take_quota', { p_teacher: id, p_limit: DAILY_LIMIT })
-  if (!allowed) throw new HttpError(429, `Bugünlük asistan sınırına ulaştın (${DAILY_LIMIT} mesaj). Yarın tekrar dene`)
+  if (!allowed) throw new HttpError(429, `Bugünlük asistan sınırına ulaştınız (${DAILY_LIMIT} mesaj). Yarın tekrar deneyin`)
 
   const db = userClient(bearer(request))
   const { students, people, nameOf } = await loadPeople(db)

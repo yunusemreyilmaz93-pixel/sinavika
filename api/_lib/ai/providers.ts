@@ -20,16 +20,16 @@ const OPENAI_BASE: Record<'openai' | 'gemini', string> = {
 function failure(status: number, body: string): never {
   const text = body.toLowerCase()
   if (status === 401 || status === 403 || (status === 400 && /api key|api_key|invalid_api_key|api-key/.test(text))) {
-    throw new HttpError(400, 'Anahtar geçersiz görünüyor. Sağlayıcının sayfasından kopyalayıp tekrar dene')
+    throw new HttpError(400, 'Anahtar geçersiz görünüyor. Sağlayıcının sayfasından kopyalayıp tekrar deneyin')
   }
   if (status === 402 || /insufficient_quota|credit balance|billing|exceeded your current quota/.test(text)) {
-    throw new HttpError(400, 'Sağlayıcı hesabında kota ya da bakiye bitmiş. Sağlayıcının sayfasından kontrol et')
+    throw new HttpError(400, 'Sağlayıcı hesabında kota ya da bakiye bitmiş. Sağlayıcının sayfasından kontrol edin')
   }
   if (status === 404 || /model.*(not found|does not exist)|not_found_error/.test(text)) {
-    throw new HttpError(400, 'Bu model bulunamadı. Model adını kontrol et')
+    throw new HttpError(400, 'Bu model bulunamadı. Model adını kontrol edin')
   }
-  if (status === 429) throw new HttpError(429, 'Sağlayıcı şu an çok fazla istek aldığını söylüyor. Bir dakika sonra tekrar dene')
-  if (status >= 500) throw new HttpError(502, 'Yapay zekâ sağlayıcısı geçici olarak yanıt vermiyor. Biraz sonra tekrar dene')
+  if (status === 429) throw new HttpError(429, 'Sağlayıcı şu an çok fazla istek aldığını söylüyor. Bir dakika sonra tekrar deneyin')
+  if (status >= 500) throw new HttpError(502, 'Yapay zekâ sağlayıcısı geçici olarak yanıt vermiyor. Biraz sonra tekrar deneyin')
   throw new HttpError(400, `Sağlayıcı isteği kabul etmedi (hata ${status}). Model adını kontrol et`)
 }
 
@@ -38,7 +38,7 @@ async function send(url: string, init: RequestInit, fetchImpl: typeof fetch) {
   try {
     response = await fetchImpl(url, { ...init, signal: AbortSignal.timeout(45_000) })
   } catch {
-    throw new HttpError(504, 'Yapay zekâ sağlayıcısına ulaşılamadı ya da yanıt çok uzun sürdü. Tekrar dene')
+    throw new HttpError(504, 'Yapay zekâ sağlayıcısına ulaşılamadı ya da yanıt çok uzun sürdü. Tekrar deneyin')
   }
   const raw = await response.text().catch(() => '')
   if (!response.ok) failure(response.status, raw)

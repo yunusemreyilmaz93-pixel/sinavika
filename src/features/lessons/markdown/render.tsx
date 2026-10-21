@@ -195,10 +195,12 @@ function BlockView({ block, questionNumber }: { block: Block; questionNumber: nu
       return (
         <YearScale
           title={attrs.baslik || ''}
-          events={listItems(text).map((l) => {
-            const [year, label] = splitPipes(l)
-            return { year: Number(year), label: label ?? '' }
-          })}
+          events={listItems(text)
+            .map((l) => {
+              const [year, label] = splitPipes(l)
+              return { year: Number(year), label: label ?? '' }
+            })
+            .filter((e) => Number.isFinite(e.year) && e.year > 0)}
         />
       )
     case 'zaman':
@@ -206,10 +208,12 @@ function BlockView({ block, questionNumber }: { block: Block; questionNumber: nu
         <LifeTimeline
           title={attrs.baslik || 'Zaman çizelgesi'}
           eras={parseEras(attrs.donemler)}
-          events={listItems(text).map((l) => {
-            const [year, label, detail] = splitPipes(l)
-            return { year: Number(year), label: label ?? '', detail: detail || undefined }
-          })}
+          events={listItems(text)
+            .map((l) => {
+              const [year, label, detail] = splitPipes(l)
+              return { year: Number(year), label: label ?? '', detail: detail || undefined }
+            })
+            .filter((e) => Number.isFinite(e.year) && e.year > 0)}
         />
       )
     case 'formul':

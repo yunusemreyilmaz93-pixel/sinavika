@@ -65,7 +65,6 @@ export function ProposalCard({ proposal }: { proposal: Proposal }) {
           {done ? <Check /> : <ListPlus />}
           {done ? 'Eklendi' : added > 0 ? 'Kalanları ekle' : 'Görevleri ekle'}
         </Button>
-        {!done && <p className="text-sm text-muted">Onaylayana kadar hiçbir şey kaydedilmez.</p>}
       </div>
     </div>
   )
