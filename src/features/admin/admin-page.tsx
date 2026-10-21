@@ -5,6 +5,7 @@ import { PageHeader } from '@/components/app/page-header'
 import { Segmented } from '@/components/ui/segmented'
 import { AppSettingsSection } from './app-settings-section'
 import { ApplicationsSection } from './applications-section'
+import { BookSuggestionsSection } from './book-suggestions-section'
 import { CurriculumSection } from './curriculum-section'
 import { ErrorsSection } from './errors-section'
 import { OverviewSection } from './overview-section'
@@ -20,6 +21,7 @@ const sections = [
   { value: 'ayarlar', label: 'Ayarlar' },
   { value: 'mufredat', label: 'Müfredat' },
   { value: 'bildirimler', label: 'Hata bildirimleri' },
+  { value: 'kitaplar', label: 'Kitap önerileri' },
   { value: 'test', label: 'Test hesapları' },
   { value: 'hatalar', label: 'Hatalar' },
 ] as const
@@ -69,6 +71,7 @@ export default function AdminPage() {
           {section === 'ayarlar' && <AppSettingsSection />}
           {section === 'mufredat' && <CurriculumSection />}
           {section === 'bildirimler' && <ReportsSection />}
+          {section === 'kitaplar' && <BookSuggestionsSection />}
           {section === 'test' && <TestAccountsSection />}
           {section === 'hatalar' && <ErrorsSection />}
         </motion.div>

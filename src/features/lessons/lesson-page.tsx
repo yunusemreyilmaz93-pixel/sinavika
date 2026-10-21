@@ -17,7 +17,7 @@ import { estimateMinutes, formatLessonMinutes, outlineOf, type OutlineItem } fro
 import { LessonTrackProvider } from './answers'
 import { LessonSummary } from './lesson-summary'
 import { LessonBody } from './markdown/render'
-import { useLesson } from './queries'
+import { useLesson, useLessonIndex } from './queries'
 
 export default function LessonPage() {
   const { topicId } = useParams()
@@ -116,6 +116,7 @@ export default function LessonPage() {
         </div>
         <DesktopOutline outline={outline} />
       </div>
+      {subject && <LessonNeighbours subjectId={subject.id} topicId={topic.id} />}
     </div>
   )
 }
@@ -137,6 +138,38 @@ function TopicStatusBadge({ studentId, topicId, publishedLesson }: { studentId: 
     <Badge tone="neutral" className="h-8 px-3 text-sm">
       {statusMeta[status].label}
     </Badge>
+  )
+}
+
+function LessonNeighbours({ subjectId, topicId }: { subjectId: string; topicId: number }) {
+  const curriculum = useCurriculum().data
+  const lessons = useLessonIndex().data
+  const list = (curriculum?.topicsBySubject.get(subjectId) ?? []).filter((t) => lessons?.has(t.id))
+  const index = list.findIndex((t) => t.id === topicId)
+  const prev = index > 0 ? list[index - 1] : undefined
+  const next = index >= 0 ? list[index + 1] : undefined
+  if (!prev && !next) return null
+
+  const link = 'flex min-h-14 min-w-0 flex-1 flex-col justify-center rounded-2xl border border-line bg-surface px-4 py-2 transition-colors hover:bg-surface-2'
+  return (
+    <nav aria-label="Konular arasında geçiş" className="mt-10 flex gap-3">
+      {prev ? (
+        <Link to={`/app/konular/${prev.id}`} className={link}>
+          <span className="text-xs text-muted">Önceki konu</span>
+          <span className="text-[15px] leading-snug font-semibold">{prev.name}</span>
+        </Link>
+      ) : (
+        <span className="flex-1" />
+      )}
+      {next ? (
+        <Link to={`/app/konular/${next.id}`} className={cn(link, 'text-right')}>
+          <span className="text-xs text-muted">Sonraki konu</span>
+          <span className="text-[15px] leading-snug font-semibold">{next.name}</span>
+        </Link>
+      ) : (
+        <span className="flex-1" />
+      )}
+    </nav>
   )
 }
 

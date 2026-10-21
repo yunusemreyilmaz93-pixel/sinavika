@@ -7,6 +7,8 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/field'
 import { Segmented } from '@/components/ui/segmented'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useProfile } from '@/features/auth/session'
+import { NextLesson } from '@/features/lessons/next-lesson'
 import { useCurriculum } from '@/lib/data'
 import { examKindsFor, examLabel, subjectsFor, type ExamKind, type Field, type Topic, type Track } from '@/lib/exam'
 import { errorMessage } from '@/lib/supabase'
@@ -57,6 +59,7 @@ function toggled<T>(set: ReadonlySet<T>, value: T) {
 
 export function TopicMap({ studentId, student, canEdit }: Props) {
   const curriculum = useCurriculum()
+  const isStudent = useProfile().role === 'student'
   const progress = useTopicProgress(studentId)
   const accuracy = useTopicAccuracy(studentId)
   const lessonStats = useLessonStats(studentId)
@@ -168,6 +171,7 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
         />
       ) : (
         <>
+          {isStudent && <NextLesson studentId={studentId} student={student} />}
           <TopicSummary counts={counts} canEdit={canEdit} showAccuracyHint={hasAccuracy} />
           <MasteryPanel studentId={studentId} groups={groups} progress={progress.data} accuracy={accuracy.data} />
 

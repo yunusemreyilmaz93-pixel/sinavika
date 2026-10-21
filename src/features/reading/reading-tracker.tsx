@@ -283,7 +283,9 @@ function AddBook({ open, onOpenChange, onSubmit }: { open: boolean; onOpenChange
             </ul>
           )}
         </div>
-        <Field label="Yazar">{(props) => <Input {...props} value={author} onChange={(e) => setAuthor(e.target.value)} maxLength={80} />}</Field>
+        <Field label="Yazar" hint={picked ? undefined : 'Listede olmayan kitaplar yazar adıyla birlikte öneri olarak kaydedilir.'}>
+          {(props) => <Input {...props} value={author} onChange={(e) => setAuthor(e.target.value)} maxLength={80} />}
+        </Field>
         <Field label="Sayfa sayısı">
           {(props) => <Input {...props} inputMode="numeric" value={total} onChange={(e) => setTotal(e.target.value.replace(/\D/g, '').slice(0, 4))} />}
         </Field>

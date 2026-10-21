@@ -1737,6 +1737,14 @@ export type Database = {
       };
     };
     Functions: {
+      admin_book_suggestions: {
+        Args: Record<PropertyKey, never>;
+        Returns: { author: string; created_at: string; id: number; title: string; votes: number }[];
+      };
+      review_book_suggestion: {
+        Args: { p_approve: boolean; p_author?: string; p_id: number; p_title?: string };
+        Returns: undefined;
+      };
       admin_test_accounts: {
         Args: Record<PropertyKey, never>;
         Returns: {

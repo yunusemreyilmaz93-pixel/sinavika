@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Modal } from '@/components/ui/modal'
 import { useAuth, useViewedStudent } from '@/features/auth/session'
+import { NextLesson } from '@/features/lessons/next-lesson'
 import { TodayTasks } from '@/features/plan/today-tasks'
 import { QuestionLogForm } from '@/features/tracking/question-log-form'
 import { useTimerState } from '@/features/tracking/timer-store'
@@ -49,6 +50,7 @@ export default function TodayPage() {
       </header>
 
       <InboxStrip userId={profile.id} className="mb-4" />
+      <NextLesson studentId={studentId} student={student} className="mb-4" />
 
       <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start lg:gap-5">
         <div className="contents lg:flex lg:flex-col lg:gap-5">

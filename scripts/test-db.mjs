@@ -617,6 +617,30 @@ await test('kitap kataloğu: giriş yapan arar, yazım hatası ve Türkçe karak
   await rejects(as(s1, `insert into public.catalog_books (title, author) values ('x', 'y')`), /permission denied/)
 })
 
+await test('kitap önerisi: katalogda olmayan kitap öneri olur, üç öğrenci ekleyince listeye girer, yönetici inceler', async () => {
+  const s3 = await redeem(codes[2], 'Üçüncü Öğrenci', 'ucuncu')
+  const add = (student, title, author) =>
+    service('insert into public.books (student_id, title, author) values ($1, $2, $3)', [student, title, author])
+  await add(s1, 'Qxzv Pırtı Kitabı', 'Deneme Yazar')
+  await add(s2, 'qxzv pırtı kitabı', 'deneme yazar')
+  assert.equal((await as(s1, `select 1 from public.search_catalog_books('qxzv pirti kitabi')`)).length, 0)
+  await add(s3, 'QXZV PIRTI KİTABI', 'Deneme Yazar')
+  assert.equal((await as(s1, `select 1 from public.search_catalog_books('qxzv pirti kitabi')`)).length, 1)
+
+  await add(s1, 'wjkl harfli kitap', 'Başka Yazar')
+  await add(s2, 'Wjkl Harfli Kitap', 'Başka Yazar')
+  await add(s3, 'WJKL HARFLİ KİTAP', 'Başka Yazar')
+  const pending = await as(adminId, 'select * from public.admin_book_suggestions()')
+  assert.equal(pending.length, 1)
+  assert.equal(pending[0].votes, 3)
+  await rejects(as(teacherA, 'select * from public.admin_book_suggestions()'), /Yetkiniz yok/)
+  await rejects(as(s1, 'select * from public.book_suggestions'), /permission denied/)
+  await as(adminId, `select public.review_book_suggestion($1, true, 'Wjkl Harfli Kitap', null)`, [pending[0].id])
+  assert.equal((await as(s1, `select 1 from public.search_catalog_books('wjkl harfli kitap')`)).length, 1)
+  await service('delete from public.books')
+  await service("delete from public.catalog_books where author in ('Deneme Yazar', 'Başka Yazar')")
+})
+
 await test('soru bazlı karne: ders sonucu ve konu yanlışları cevaplardan üretilir, başkası yazamaz, veli okur', async () => {
   const [e] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Soru bazlı', current_date, '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]') as id`, [s1])
   const [t1, t2] = await service(`select id from public.topics where subject_id = 'tyt-fiz' order by sort limit 2`)
