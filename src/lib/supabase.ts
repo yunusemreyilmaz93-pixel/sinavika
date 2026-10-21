@@ -6,8 +6,17 @@ const key = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export const isConfigured = Boolean(url && key)
 
+// Yönetici test hesabını ayrı bir pencerede açar. O pencerenin oturumu yalnızca kendi sekmesinde durur, yöneticinin oturumu bozulmaz.
+export const isTestTab = typeof window !== 'undefined' && window.name === 'yolumnet-test'
+
 export const supabase = createClient<Database>(url || 'http://localhost', key || 'missing', {
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'sinavika-auth' },
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false,
+    storage: isTestTab ? window.sessionStorage : undefined,
+    storageKey: isTestTab ? 'yolumnet-test-auth' : 'sinavika-auth',
+  },
 })
 
 export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']

@@ -593,6 +593,20 @@ await test('hata bildirimi: herkes kendi adına yazar, yönetici okur ve bildiri
   await service('delete from public.bug_reports')
 })
 
+await test('test hesapları: yalnızca sunucu oluşturur, yönetici listeler, istatistiklere ve öğretmen listesine girmez', async () => {
+  const [t, a, b, c] = [randomUUID(), randomUUID(), randomUUID(), randomUUID()]
+  for (const id of [t, a, b, c]) await service('insert into auth.users (id, email) values ($1, $2)', [id, `${id}@x.test`])
+  const before = (await as(adminId, 'select * from public.admin_overview()'))[0]
+  await rejects(as(adminId, `select public.create_test_environment($1, $2, $3, $4, 'abc123')`, [t, a, b, c]), /permission denied/)
+  await service(`select public.create_test_environment($1, $2, $3, $4, 'abc123')`, [t, a, b, c])
+  assert.equal((await as(adminId, 'select * from public.admin_test_accounts()')).length, 4)
+  await rejects(as(teacherA, 'select * from public.admin_test_accounts()'), /Yetkiniz yok/)
+  assert.deepEqual((await as(adminId, 'select * from public.admin_overview()'))[0], before)
+  assert.ok(!(await as(adminId, 'select id from public.admin_teachers()')).some((r) => r.id === t))
+  await service("delete from public.profiles where is_test and role <> 'teacher'")
+  await service('delete from public.profiles where is_test')
+})
+
 await test('kitap kataloğu: giriş yapan arar, yazım hatası ve Türkçe karakter toleransı var, kimse yazamaz', async () => {
   const find = async (q) => (await as(s1, 'select title from public.search_catalog_books($1)', [q])).map((r) => r.title)
   assert.ok((await find('harry poter')).some((t) => t.startsWith('Harry Potter')))

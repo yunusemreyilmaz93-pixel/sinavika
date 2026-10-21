@@ -11,6 +11,7 @@ import { OverviewSection } from './overview-section'
 import { ReportsSection, useOpenReportCount } from './reports-section'
 import { useAdminOverview } from './queries'
 import { TeachersSection } from './teachers-section'
+import { TestAccountsSection } from './test-accounts-section'
 
 const sections = [
   { value: 'genel', label: 'Genel' },
@@ -19,6 +20,7 @@ const sections = [
   { value: 'ayarlar', label: 'Ayarlar' },
   { value: 'mufredat', label: 'Müfredat' },
   { value: 'bildirimler', label: 'Hata bildirimleri' },
+  { value: 'test', label: 'Test hesapları' },
   { value: 'hatalar', label: 'Hatalar' },
 ] as const
 
@@ -67,6 +69,7 @@ export default function AdminPage() {
           {section === 'ayarlar' && <AppSettingsSection />}
           {section === 'mufredat' && <CurriculumSection />}
           {section === 'bildirimler' && <ReportsSection />}
+          {section === 'test' && <TestAccountsSection />}
           {section === 'hatalar' && <ErrorsSection />}
         </motion.div>
     </div>

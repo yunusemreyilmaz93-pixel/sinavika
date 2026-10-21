@@ -1099,6 +1099,7 @@ export type Database = {
           full_name: string;
           id: string;
           is_admin: boolean;
+          is_test: boolean;
           last_seen_at: string | null;
           role: Database["public"]["Enums"]["user_role"];
           school: string | null;
@@ -1116,6 +1117,7 @@ export type Database = {
           full_name: string;
           id: string;
           is_admin?: boolean;
+          is_test?: boolean;
           last_seen_at?: string | null;
           role: Database["public"]["Enums"]["user_role"];
           school?: string | null;
@@ -1132,6 +1134,7 @@ export type Database = {
           full_name?: string;
           id?: string;
           is_admin?: boolean;
+          is_test?: boolean;
           last_seen_at?: string | null;
           role?: Database["public"]["Enums"]["user_role"];
           school?: string | null;
@@ -1734,6 +1737,16 @@ export type Database = {
       };
     };
     Functions: {
+      admin_test_accounts: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          created_at: string;
+          environment: string;
+          full_name: string;
+          id: string;
+          role: Database["public"]["Enums"]["user_role"];
+        }[];
+      };
       search_catalog_books: {
         Args: { p_query: string };
         Returns: { author: string; id: number; title: string }[];

@@ -13,6 +13,7 @@ import { NotificationBell } from '@/features/notifications/bell'
 import { QuickAddSheet } from '@/features/tracking/quick-add'
 import { PendingApproval } from '@/features/auth/pending-approval'
 import { cn } from '@/lib/cn'
+import { isTestTab } from '@/lib/supabase'
 import { useTheme, type ThemeChoice } from '@/lib/theme'
 import { navFor, type NavItem } from './nav'
 import { ReportIssueButton } from '@/features/feedback/report-issue'
@@ -37,6 +38,7 @@ export function AppShell() {
 
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[248px_1fr]">
+      {isTestTab && <TestBanner name={profile.full_name} role={roleLabel[profile.role]} />}
       <aside className="sticky top-0 hidden h-dvh flex-col border-r border-line bg-surface lg:flex">
         <Link to="/" aria-label="Yolumnet ana sayfa" className="flex h-16 items-center px-5">
           <Logo />
@@ -92,6 +94,20 @@ export function AppShell() {
 
       <BottomNav items={items} onQuickAdd={isStudent ? () => setQuickAdd(true) : undefined} support={!isStudent} />
       {isStudent && <QuickAddSheet open={quickAdd} onOpenChange={setQuickAdd} />}
+    </div>
+  )
+}
+
+function TestBanner({ name, role }: { name: string; role: string }) {
+  const { signOut } = useAuth()
+  return (
+    <div className="fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-[60] mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-warning/40 bg-warning-soft px-4 py-2 text-sm shadow-pop lg:bottom-4 lg:left-auto lg:mr-4">
+      <p className="min-w-0 flex-1">
+        <span className="font-semibold">Test hesabı:</span> {name} ({role})
+      </p>
+      <Button size="sm" variant="secondary" className="min-h-11 shrink-0" onClick={() => void signOut().then(() => window.close())}>
+        Çıkış yap
+      </Button>
     </div>
   )
 }
