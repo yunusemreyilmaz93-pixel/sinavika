@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { useProfile } from '@/features/auth/session'
 import { invalidateActivity } from '@/features/tracking/stats'
 import { errorMessage, supabase, unwrap } from '@/lib/supabase'
+import { completionKey } from './progress'
 
 export function questionKey(stem: string, options: string[]) {
   const text = `${stem}\n${options.join('\n')}`.toLowerCase().replace(/\s+/g, ' ').trim()
@@ -48,6 +49,7 @@ export function LessonTrackProvider({ topicId, topicName, subjectId, children }:
     onSuccess: (row) => {
       queryClient.setQueryData<LessonAnswer[]>(answersKey(studentId, topicId), (rows = []) => [...rows.filter((r) => r.question_key !== row.question_key), row])
       invalidateActivity(queryClient, studentId)
+      void queryClient.invalidateQueries({ queryKey: completionKey(studentId) })
     },
     onError: (error) => toast.error(errorMessage(error)),
   })

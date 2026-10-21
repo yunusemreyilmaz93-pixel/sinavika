@@ -1,8 +1,10 @@
 import { motion } from 'motion/react'
 import { ArrowRight, Check, ChevronDown, CirclePlay, ExternalLink, Lightbulb, Link2, X } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { useCallback, useState, type ReactNode } from 'react'
 import { watchUrl } from '@/features/video/youtube'
 import { cn } from '@/lib/cn'
+import { useLessonProgress } from './progress'
+import { TrackedPlayer } from './youtube-player'
 
 export function Connect({ children }: { children: ReactNode }) {
   return (
@@ -355,10 +357,15 @@ export function Figure({ src, alt, caption, credit }: { src: string; alt: string
 
 export function Video({ id, title, channel, label = 'Video' }: { id: string; title: string; channel: string; label?: string }) {
   const [playing, setPlaying] = useState(false)
+  const [plain, setPlain] = useState(false)
+  const tracked = useLessonProgress() !== null && !plain
+  const fallback = useCallback(() => setPlain(true), [])
   return (
     <figure className="overflow-hidden rounded-2xl border border-line bg-surface">
       <div className="relative aspect-video bg-black">
-        {playing ? (
+        {playing && tracked ? (
+          <TrackedPlayer id={id} onFallback={fallback} />
+        ) : playing ? (
           <iframe
             src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`}
             title={title}

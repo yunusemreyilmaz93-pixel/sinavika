@@ -15,6 +15,7 @@ import { useCurriculum } from '@/lib/data'
 import { examLabel } from '@/lib/exam'
 import { estimateMinutes, formatLessonMinutes, outlineOf, type OutlineItem } from './markdown/parse'
 import { LessonTrackProvider } from './answers'
+import { LessonProgressProvider } from './progress'
 import { LessonSummary } from './lesson-summary'
 import { LessonBody } from './markdown/render'
 import { useLesson, useLessonIndex } from './queries'
@@ -29,6 +30,7 @@ export default function LessonPage() {
   const data = useLesson(Number(topicId), isTeacher)
   const lesson = data.data?.lesson
   const outline = useMemo(() => (lesson ? outlineOf(lesson.body) : []), [lesson])
+  const sectionIds = useMemo(() => outline.map((o) => o.id), [outline])
   const minutes = useMemo(() => (lesson ? formatLessonMinutes(estimateMinutes(lesson.body)) : 0), [lesson])
 
   const back = isTeacher
@@ -107,8 +109,10 @@ export default function LessonPage() {
           <MobileOutline outline={outline} />
           {profile.role === 'student' && topic && subject ? (
             <LessonTrackProvider topicId={topic.id} topicName={topic.name} subjectId={subject.id}>
-              <LessonBody source={lesson.body} />
-              <LessonSummary source={lesson.body} />
+              <LessonProgressProvider topicId={topic.id} sectionIds={sectionIds}>
+                <LessonBody source={lesson.body} />
+                <LessonSummary />
+              </LessonProgressProvider>
             </LessonTrackProvider>
           ) : (
             <LessonBody source={lesson.body} />

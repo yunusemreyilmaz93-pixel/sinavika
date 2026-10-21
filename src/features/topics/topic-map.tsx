@@ -9,6 +9,8 @@ import { Segmented } from '@/components/ui/segmented'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useProfile } from '@/features/auth/session'
 import { NextLesson } from '@/features/lessons/next-lesson'
+import { useLessonCompletion } from '@/features/lessons/progress'
+import { useLessonIndex } from '@/features/lessons/queries'
 import { useCurriculum } from '@/lib/data'
 import { examKindsFor, examLabel, subjectsFor, type ExamKind, type Field, type Topic, type Track } from '@/lib/exam'
 import { errorMessage } from '@/lib/supabase'
@@ -17,7 +19,7 @@ import { matchesFilter, nextStatus, statusMeta, type TopicFilter, type TopicStat
 import { MasteryPanel } from './mastery-panel'
 import { SubjectCard } from './subject-card'
 import { TopicSummary, type TopicCounts } from './topic-summary'
-import { useLessonStats, useSetTopicStatus, useTopicAccuracy, useTopicProgress } from './use-topics'
+import { useSetTopicStatus, useTopicAccuracy, useTopicProgress } from './use-topics'
 
 type Props = {
   studentId: string
@@ -62,7 +64,8 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
   const isStudent = useProfile().role === 'student'
   const progress = useTopicProgress(studentId)
   const accuracy = useTopicAccuracy(studentId)
-  const lessonStats = useLessonStats(studentId)
+  const completion = useLessonCompletion(studentId)
+  const lessons = useLessonIndex().data
   const setStatus = useSetTopicStatus(studentId)
 
   const kinds = examKindsFor(student)
@@ -139,7 +142,11 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
   }
 
   const cycle = (topic: Topic, topics: Topic[], subjectName: string) => {
-    const next = nextStatus(statusOf(topic.id))
+    let next = nextStatus(statusOf(topic.id))
+    if (next === 'done' && isStudent && lessons?.get(topic.id) && !completion.data?.get(topic.id)?.complete) {
+      toast.info('Tamam için konu anlatımındaki ölçütlerin tamamlanması gerekir')
+      next = nextStatus(next)
+    }
     if (filter !== 'all') setTouched((prev) => new Set(prev).add(topic.id))
     setStatus.mutate({ topicId: topic.id, status: next })
     setAnnouncement(`${topic.name}: ${statusMeta[next].label}`)
@@ -241,7 +248,7 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
                       visible={g.visible}
                       statusOf={statusOf}
                       accuracy={accuracy.data}
-                      lessonStats={lessonStats.data}
+                      completion={completion.data}
                       open={open}
                       onToggle={() =>
                         filter === 'all'

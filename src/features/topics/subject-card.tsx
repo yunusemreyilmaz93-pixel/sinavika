@@ -5,10 +5,11 @@ import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { ProgressBar } from '@/components/ui/progress'
 import { useLessonIndex } from '@/features/lessons/queries'
+import type { Completion } from '@/features/lessons/progress'
 import { cn } from '@/lib/cn'
 import { subjectColor, type Subject, type Topic } from '@/lib/exam'
 import { formatPercent, nextStatus, statusMeta, type TopicState } from './status'
-import type { Accuracy, LessonStats } from './use-topics'
+import type { Accuracy } from './use-topics'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -18,13 +19,13 @@ type Props = {
   visible: Topic[]
   statusOf: (topicId: number) => TopicState
   accuracy: Record<number, Accuracy> | undefined
-  lessonStats?: Map<number, LessonStats>
+  completion?: Map<number, Completion>
   open: boolean
   onToggle: () => void
   onCycle?: (topic: Topic) => void
 }
 
-export function SubjectCard({ subject, topics, visible, statusOf, accuracy, lessonStats, open, onToggle, onCycle }: Props) {
+export function SubjectCard({ subject, topics, visible, statusOf, accuracy, completion, open, onToggle, onCycle }: Props) {
   const lessons = useLessonIndex().data
   const id = useId()
   let done = 0
@@ -94,7 +95,7 @@ export function SubjectCard({ subject, topics, visible, statusOf, accuracy, less
                   status={statusOf(topic.id)}
                   accuracy={accuracy?.[topic.id]}
                   lesson={lessons?.get(topic.id) === true}
-                  lessonStats={lessonStats?.get(topic.id)}
+                  completion={completion?.get(topic.id)}
                   onCycle={onCycle ? () => onCycle(topic) : undefined}
                 />
               ))}
@@ -111,14 +112,14 @@ function TopicRow({
   status,
   accuracy,
   lesson,
-  lessonStats,
+  completion,
   onCycle,
 }: {
   topic: Topic
   status: TopicState
   accuracy?: Accuracy
   lesson: boolean
-  lessonStats?: LessonStats
+  completion?: Completion
   onCycle?: () => void
 }) {
   const meta = statusMeta[status]
@@ -164,11 +165,7 @@ function TopicRow({
         <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-muted">
           <span>{meta.label}</span>
           {accuracy && accuracy.total > 0 && <AccuracyTag accuracy={accuracy} />}
-          {lessonStats && lessonStats.answered > 0 && (
-            <span className="tabular">
-              Anlatım: {lessonStats.answered} soru çözüldü, ilk denemede {lessonStats.correct} doğru
-            </span>
-          )}
+          {completion && <CompletionTag completion={completion} />}
         </p>
       </div>
       {lesson && (
@@ -183,6 +180,14 @@ function TopicRow({
       )}
     </li>
   )
+}
+
+function CompletionTag({ completion: c }: { completion: Completion }) {
+  const parts = [`okuma %${c.reading_pct}`]
+  if (c.video_count > 0) parts.push(`video %${c.video_pct}`)
+  if (c.test_total > 0) parts.push(`test ${c.test_answered}/${c.test_total}`)
+  const first = c.test_answered > 0 ? `, ilk denemede ${c.test_first} doğru` : ''
+  return <span className="tabular">{`Anlatım: ${parts.join(', ')}${first}`}</span>
 }
 
 function AccuracyTag({ accuracy }: { accuracy: Accuracy }) {

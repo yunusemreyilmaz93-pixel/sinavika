@@ -175,6 +175,49 @@ export type Database = {
           },
         ];
       };
+      lesson_progress: {
+        Row: {
+          active_seconds: number;
+          sections_seen: number;
+          student_id: string;
+          topic_id: number;
+          updated_at: string;
+          videos: Json;
+        };
+        ComputedFields: never;
+        Insert: {
+          active_seconds?: number;
+          sections_seen?: number;
+          student_id: string;
+          topic_id: number;
+          updated_at?: string;
+          videos?: Json;
+        };
+        Update: {
+          active_seconds?: number;
+          sections_seen?: number;
+          student_id?: string;
+          topic_id?: number;
+          updated_at?: string;
+          videos?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lesson_progress_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "lesson_progress_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       lesson_answers: {
         Row: {
           answered_at: string;
@@ -1774,6 +1817,27 @@ export type Database = {
       report_by_token: {
         Args: { p_token: string };
         Returns: Json;
+      };
+      record_lesson_progress: {
+        Args: { p_sections: number; p_seconds: number; p_topic: number; p_videos: Json };
+        Returns: undefined;
+      };
+      lesson_completion: {
+        Args: { p_student: string; p_topic?: number };
+        Returns: {
+          complete: boolean;
+          reading_ok: boolean;
+          reading_pct: number;
+          test_answered: number;
+          test_first: number;
+          test_now: number;
+          test_ok: boolean;
+          test_total: number;
+          topic_id: number;
+          video_count: number;
+          video_ok: boolean;
+          video_pct: number;
+        }[];
       };
       answer_lesson_question: {
         Args: { p_correct: boolean; p_key: string; p_topic: number };

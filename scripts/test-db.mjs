@@ -452,6 +452,92 @@ await test('anlatım sorusu: ilk cevap istatistiğe yazılır, tekrar yazılmaz,
   await rejects(as(s1, 'insert into public.lesson_answers (student_id, topic_id, question_key, first_correct, last_correct) values ($1, $2, $3, true, true)', [s1, topic, 'z']), /permission denied/)
 })
 
+await test('anlatım ilerlemesi: sunucu süreyi ve video dilimlerini sınırlar, ölçütler sağlanmadan öğrenci Tamam yapamaz', async () => {
+  const [lesson] = await service(`
+    select l.topic_id, l.reading_minutes, regexp_count(l.body, '^## ', 1, 'n') as sections, regexp_count(l.body, '^:::soru', 1, 'n') as questions,
+           (regexp_match(l.body, '^::video\\{id="([^"]+)"', 'n'))[1] as video
+    from public.lessons l
+    where regexp_count(l.body, '^::video\\{id=', 1, 'n') >= 1 and regexp_count(l.body, '^:::soru', 1, 'n') >= 3
+    order by l.topic_id limit 1`)
+  assert.ok(lesson, 'videolu ve sorulu bir anlatım olmalı')
+  const topic = lesson.topic_id
+  await service('update public.lessons set published = true where topic_id = $1', [topic])
+  await service('delete from public.lesson_answers where student_id = $1 and topic_id = $2', [s1, topic])
+  const completion = async () => (await as(s1, 'select * from public.lesson_completion($1, $2)', [s1, topic]))[0]
+  const progress = async () => (await service('select * from public.lesson_progress where student_id = $1 and topic_id = $2', [s1, topic]))[0]
+  const done = (who, student = s1) =>
+    as(who, `insert into public.topic_progress (student_id, topic_id, status) values ($1, $2, 'done') on conflict (student_id, topic_id) do update set status = 'done'`, [student, topic])
+  const rewind = () => service(`update public.lesson_progress set updated_at = now() - interval '10 minutes' where student_id = $1 and topic_id = $2`, [s1, topic])
+  const range = (from, to) => Array.from({ length: to - from }, (_, i) => from + i)
+  const send = (seconds, sections, buckets, duration = 600) =>
+    as(s1, 'select public.record_lesson_progress($1, $2, $3, $4::jsonb)', [topic, seconds, sections, JSON.stringify({ [lesson.video]: { duration, buckets } })])
+
+  await rejects(done(s1), /Tamam için konu anlatımındaki ölçütlerin/)
+
+  await send(15, 99, range(0, 30))
+  let row = await progress()
+  assert.equal(row.active_seconds, 15)
+  assert.equal(row.sections_seen, lesson.sections)
+  assert.equal(row.videos[lesson.video].buckets.length, 26, 'ilk çağrıda en fazla 26 dilim')
+
+  await send(100, 0, range(30, 60))
+  row = await progress()
+  assert.ok(row.active_seconds <= 18, `anında ikinci çağrı süreyi şişiremez: ${row.active_seconds}`)
+  assert.ok(row.videos[lesson.video].buckets.length <= 28)
+  assert.equal(row.sections_seen, lesson.sections, 'bölüm sayısı geri düşmez')
+
+  await as(s1, 'select public.record_lesson_progress($1, 5, 0, $2::jsonb)', [topic, JSON.stringify({ 'baskasi': { duration: 60, buckets: [0, 1] } })])
+  assert.equal(Object.keys((await progress()).videos).join(), lesson.video, 'anlatımda olmayan video kaydedilmez')
+
+  const needed = Math.max(60, Math.min(900, Math.round(0.4 * lesson.reading_minutes * 60)))
+  for (let i = 0; i < 12 && (await progress()).active_seconds < needed; i++) {
+    await rewind()
+    await send(120, 0, [])
+  }
+  let c = await completion()
+  assert.equal(c.reading_ok, true)
+  assert.equal(c.video_ok, false)
+  assert.equal(c.complete, false)
+
+  for (let from = 0; from < 120; from += 50) {
+    await rewind()
+    await send(120, 0, range(0, 120))
+  }
+  c = await completion()
+  assert.equal(c.video_ok, true)
+  assert.equal(c.video_pct, 100)
+  assert.equal(c.test_ok, false)
+  assert.equal(c.complete, false)
+  await rejects(done(s1), /Tamam için konu anlatımındaki ölçütlerin/)
+
+  for (let i = 0; i < lesson.questions; i++) await as(s1, 'select public.answer_lesson_question($1, $2, $3)', [topic, `q${i}`, i === 0 ? false : true])
+  c = await completion()
+  assert.deepEqual([c.test_total, c.test_answered, c.test_first, c.test_now], [lesson.questions, lesson.questions, lesson.questions - 1, lesson.questions - 1])
+  assert.equal(c.complete, lesson.questions - 1 >= Math.ceil(0.75 * lesson.questions))
+  if (!c.complete) {
+    await as(s1, 'select public.answer_lesson_question($1, $2, true)', [topic, 'q0'])
+    c = await completion()
+  }
+  assert.equal(c.complete, true)
+  await done(s1)
+  assert.equal((await service('select status from public.topic_progress where student_id = $1 and topic_id = $2', [s1, topic]))[0].status, 'done')
+
+  const [{ id: other }] = await service(`select topic_id as id from public.lessons where published and topic_id <> $1 order by topic_id limit 1`, [topic])
+  await as(teacherA, `insert into public.topic_progress (student_id, topic_id, status) values ($1, $2, 'done')`, [s1, other])
+  await rejects(as(s1, `insert into public.topic_progress (student_id, topic_id, status) values ($1, $2, 'done') on conflict (student_id, topic_id) do update set status = 'done'`, [s1, other]).then(() => as(s1, `update public.topic_progress set status = 'learning' where student_id = $1 and topic_id = $2`, [s1, other])).then(() => as(s1, `update public.topic_progress set status = 'done' where student_id = $1 and topic_id = $2`, [s1, other])), /Tamam için/)
+
+  assert.ok((await as(parent, 'select * from public.lesson_completion($1)', [s1])).some((r) => r.topic_id === topic))
+  assert.equal((await as(teacherA, 'select * from public.lesson_completion($1, $2)', [s1, topic])).length, 1)
+  assert.equal((await as(s2, 'select * from public.lesson_completion($1)', [s1])).length, 0)
+  assert.equal((await as(teacherB, 'select * from public.lesson_completion($1)', [s1])).length, 0)
+  assert.equal((await as(s2, 'select * from public.lesson_progress')).length, 0)
+  assert.equal((await as(parent, 'select * from public.lesson_progress where student_id = $1', [s1])).length, 1)
+  await rejects(as(s1, 'insert into public.lesson_progress (student_id, topic_id) values ($1, $2)', [s1, topic]), /permission denied/)
+  await rejects(as(teacherA, 'select public.record_lesson_progress($1, 5, 0, $2::jsonb)', [topic, '{}']), /Sadece öğrenciler/)
+  const [{ id: bare }] = await service('select id from public.topics where id not in (select topic_id from public.lessons) order by id limit 1')
+  await rejects(as(s1, 'select public.record_lesson_progress($1, 5, 0, $2::jsonb)', [bare, '{}']), /yayınlanmış/)
+})
+
 await test('yanlış defteri tekrarı: başarısızlık aralığı sıfırlar, art arda beş başarı öğrenildi yapar, başkası değiştiremez', async () => {
   const [{ id }] = await as(s1, `insert into public.wrong_questions (student_id, subject_id, note) values ($1, 'lgs-mat', 'tekrar sorusu') returning id`, [s1])
   const days = async () => (await service(`select (next_review_on - private.today())::int as d, box, lapses, learned_at is not null as learned from public.wrong_questions where id = $1`, [id]))[0]
