@@ -26,7 +26,7 @@ describe('konu anlatımı içeriği', () => {
           if (b.type === 'box') expect(BOXES.has(b.name), `bilinmeyen kutu: ${b.name}`).toBe(true)
           if (b.type === 'leaf') expect(LEAVES.has(b.name), `bilinmeyen blok: ${b.name}`).toBe(true)
         }
-        expect(body.split('\n').filter((l) => /^:::[a-zA-Z]/.test(l)).length).toBe(body.split('\n').filter((l) => /^:::\s*$/.test(l)).length)
+        expect(body.split('\n').filter((l: string) => /^:::[a-zA-Z]/.test(l)).length).toBe(body.split('\n').filter((l: string) => /^:::\s*$/.test(l)).length)
       })
 
       it('sorular geçerli: seçenekler, doğru cevap ve çözüm var', () => {
@@ -57,7 +57,7 @@ describe('konu anlatımı içeriği', () => {
         expect(body.trimStart().startsWith('## Bu konuda ne öğreneceksin')).toBe(true)
         expect(blocks.some((b) => b.type === 'box' && b.name === 'hedefler')).toBe(true)
         expect(body.split(/\s+/).length).toBeGreaterThan(700)
-        expect(body).not.toMatch(/[—–]/)
+        expect(body).not.toMatch(/[—–]/) // copy-ok
         expect(body.replace(/\$[^$]*\$/g, '')).not.toContain(';')
         expect(body).not.toMatch(/\p{Extended_Pictographic}/u)
       })
