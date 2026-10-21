@@ -146,7 +146,7 @@ function Thread({ studentId, channel }: { studentId: string; channel: Channel })
 
   return (
     <div>
-      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-20 -mx-4 -mt-5 mb-2 border-b border-line bg-bg/90 px-2 py-2 backdrop-blur-md sm:-mx-6 sm:-mt-8 sm:px-4 lg:top-16">
+      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-20 -mx-4 -mt-5 mb-2 border-b border-line bg-bg px-2 py-2 sm:-mx-6 sm:-mt-8 sm:px-4 lg:top-16">
         <div className="flex items-center gap-2">
           <Button asChild variant="ghost" size="icon" aria-label="Geri">
             <Link to={direct ? '/app' : '/app/mesajlar'}>

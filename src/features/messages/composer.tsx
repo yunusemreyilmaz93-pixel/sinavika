@@ -41,7 +41,7 @@ export function ComposerDock({ children, onHeight, inset = 0 }: { children: Reac
       ref={ref}
       style={inset ? { bottom: inset } : undefined}
       className={cn(
-        'fixed inset-x-0 z-30 border-t border-line bg-bg/95 backdrop-blur-md lg:left-[248px]',
+        'fixed inset-x-0 z-30 border-t border-line bg-bg lg:left-[248px]',
         !inset && 'bottom-[calc(4rem+env(safe-area-inset-bottom))] lg:bottom-0',
       )}
     >

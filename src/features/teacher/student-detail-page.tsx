@@ -113,7 +113,7 @@ export default function StudentDetailPage() {
     <div>
       <StudentHeader student={student} signals={signals} parentCount={parentCount} />
 
-      <div ref={tabsRef} className="sticky top-14 z-20 -mx-4 mb-5 bg-bg/90 px-4 py-2 backdrop-blur-md sm:static sm:mx-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
+      <div ref={tabsRef} className="sticky top-14 z-20 -mx-4 mb-5 bg-bg px-4 py-2 sm:static sm:mx-0 sm:bg-transparent sm:px-0 sm:py-0">
         <Segmented options={[...tabs]} value={tab} onChange={setTab} className="[&>button]:min-w-fit [&>button]:px-3.5" />
       </div>
 

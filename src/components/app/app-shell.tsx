@@ -58,7 +58,7 @@ export function AppShell() {
       </aside>
 
       <div className="flex min-w-0 flex-col">
-        <header className="pt-safe sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur-md">
+        <header className="pt-safe sticky top-0 z-30 border-b border-line bg-bg">
           <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-4 sm:px-6 lg:h-16">
             <Link to="/" className="-ml-1.5 grid size-11 place-items-center rounded-xl lg:hidden" aria-label="Yolumnet ana sayfa">
               <LogoMark />
@@ -133,7 +133,7 @@ function BottomNav({ items, onQuickAdd }: { items: NavItem[]; onQuickAdd?: () =>
     <>
       <nav
         aria-label="Alt menü"
-        className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 backdrop-blur-md lg:hidden"
+        className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface lg:hidden"
       >
         <div className="mx-auto flex h-16 max-w-lg items-stretch px-1">
           {slots.map((slot) =>

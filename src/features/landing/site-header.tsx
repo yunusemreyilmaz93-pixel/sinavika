@@ -60,7 +60,7 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
     <header
       className={cn(
         'pt-safe sticky top-0 z-40 border-b transition-[background-color,border-color] duration-200',
-        scrolled || open ? 'border-line bg-bg/85 backdrop-blur-md' : 'border-transparent',
+        scrolled || open ? 'border-line bg-bg' : 'border-transparent',
       )}
     >
       <div className={cn(container, 'flex h-16 items-center gap-2')}>
