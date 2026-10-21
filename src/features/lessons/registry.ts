@@ -24,6 +24,29 @@ const lessons: Lesson[] = [
     ],
     load: () => import('./content/bir-kahraman-doguyor'),
   },
+  {
+    subjectId: 'lgs-tr',
+    topic: 'Fiilimsiler',
+    grade: '8. sınıf Türkçe, Fiilimsiler',
+    date: '2026-10-21',
+    author: 'Yunus Emre Yılmaz',
+    readingMinutes: 10,
+    teacherNote: [
+      {
+        label: 'Program',
+        text: 'Kazanım T.8.3.9: “Fiilimsilerin cümledeki işlevlerini kavrar.” Programdaki açıklamaya göre fiilimsi türleri fark ettirilir, ekler ezberletilmez. Bu yüzden metin ekleri örnek olarak verir ve cümledeki göreve odaklanır. Kazanım kodunu ve açıklamayı MEB programından doğrulayın.',
+      },
+      {
+        label: 'Kaynak',
+        text: 'Metin özgündür, ders kitabından kopya değildir. Örnek cümleler bu metin için yazıldı. Yayından önce ders kitabıyla karşılaştırılmalıdır.',
+      },
+      {
+        label: 'Kontrol edilecekler',
+        text: 'Zarf-fiil örneklerinin 8. sınıf kapsamına uygunluğu (özellikle “gelir gelmez”), zarf-fiillerin “Nasıl?” ve “Ne zaman?” diye gruplanması, dilin 8. sınıfa uygunluğu ve örnek soruların LGS tarzına uyup uymadığı.',
+      },
+    ],
+    load: () => import('./content/fiilimsiler'),
+  },
 ]
 
 const key = (subjectId: string, topic: string) => `${subjectId}:${topic.toLocaleLowerCase('tr').trim()}`

@@ -287,9 +287,9 @@ export function Question({
   solution,
 }: {
   number: number
-  passage: ReactNode
+  passage?: ReactNode
   stem: ReactNode
-  options: string[]
+  options: ReactNode[]
   answer: number
   solution: ReactNode
 }) {
@@ -300,14 +300,16 @@ export function Question({
   return (
     <article className="rounded-2xl border border-line bg-surface p-4 sm:p-5">
       <p className="text-sm font-semibold text-muted">Örnek soru {number}</p>
-      <blockquote className="mt-3 border-l-4 border-line-strong pl-4 text-[15px] leading-relaxed text-fg/90 italic">{passage}</blockquote>
-      <p className="mt-4 font-medium">{stem}</p>
+      {passage && (
+        <blockquote className="mt-3 border-l-4 border-line-strong pl-4 text-[15px] leading-relaxed text-fg/90 italic">{passage}</blockquote>
+      )}
+      <p className={cn('font-medium', passage ? 'mt-4' : 'mt-3')}>{stem}</p>
       <ul className="mt-3 space-y-2">
         {options.map((option, i) => {
           const correct = i === answer
           const chosen = picked === i
           return (
-            <li key={option}>
+            <li key={i}>
               <button
                 type="button"
                 disabled={done}
@@ -464,5 +466,108 @@ export function Video({ id, title, channel, label = 'Video' }: { id: string; tit
         </a>
       </figcaption>
     </figure>
+  )
+}
+
+export function Hit({ children }: { children: ReactNode }) {
+  return <strong className="underline decoration-primary decoration-2 underline-offset-4">{children}</strong>
+}
+
+export function Ek({ children }: { children: ReactNode }) {
+  return <span className="rounded-md bg-accent-soft px-1.5 py-0.5 text-[0.92em] font-semibold whitespace-nowrap text-accent-soft-fg">{children}</span>
+}
+
+export function Formula({ items }: { items: { root: string; suffix: string; result: string; kind: string; tone: 'primary' | 'accent' | 'warning' }[] }) {
+  const tones = {
+    primary: 'bg-primary-soft text-primary-soft-fg',
+    accent: 'bg-accent-soft text-accent-soft-fg',
+    warning: 'bg-warning-soft text-warning',
+  }
+  return (
+    <ul className="grid gap-3 sm:grid-cols-3">
+      {items.map((item, i) => (
+        <motion.li
+          key={item.result}
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.3, delay: i * 0.08 }}
+          className="rounded-2xl border border-line bg-surface p-4"
+        >
+          <p className="flex flex-wrap items-center gap-1.5 font-display text-lg font-bold">
+            <span>{item.root}</span>
+            <span className="text-subtle">+</span>
+            <span className="rounded-md bg-surface-2 px-1.5 text-accent">{item.suffix}</span>
+            <span className="text-subtle">=</span>
+            <span>{item.result}</span>
+          </p>
+          <p className={cn('mt-3 inline-flex rounded-full px-2.5 py-1 text-sm font-semibold', tones[item.tone])}>{item.kind}</p>
+        </motion.li>
+      ))}
+    </ul>
+  )
+}
+
+export type LabWord = { text: string; kind?: 'isim' | 'sifat' | 'zarf' | 'yuklem'; note?: string }
+
+const labKinds = {
+  isim: { label: 'İsim-fiil', chip: 'bg-primary-soft text-primary-soft-fg border-primary/30' },
+  sifat: { label: 'Sıfat-fiil', chip: 'bg-accent-soft text-accent-soft-fg border-accent/30' },
+  zarf: { label: 'Zarf-fiil', chip: 'bg-warning-soft text-warning border-warning/30' },
+  yuklem: { label: 'Yüklem', chip: 'bg-surface-2 text-fg border-line-strong' },
+}
+
+export function SentenceLab({ sentences }: { sentences: LabWord[][] }) {
+  const [picked, setPicked] = useState<{ s: number; w: number } | null>(null)
+  const word = picked ? sentences[picked.s][picked.w] : null
+  return (
+    <div className="space-y-3 rounded-2xl border border-line bg-surface p-4 sm:p-5">
+      <p className="text-sm text-muted">Renkli sözcüklere dokun. Türünü ve cümledeki görevini gör.</p>
+      <ul className="space-y-3">
+        {sentences.map((sentence, s) => (
+          <li key={s} className="flex flex-wrap gap-x-1.5 gap-y-1 text-[17px] leading-relaxed">
+            {sentence.map((w, i) => {
+              const kind = w.kind ? labKinds[w.kind] : null
+              const active = picked?.s === s && picked.w === i
+              return kind ? (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setPicked(active ? null : { s, w: i })}
+                  aria-pressed={active}
+                  className={cn(
+                    'min-h-11 rounded-lg border px-2 font-semibold transition-[transform,box-shadow] active:scale-95',
+                    kind.chip,
+                    active && 'ring-2 ring-fg/20',
+                  )}
+                >
+                  {w.text}
+                </button>
+              ) : (
+                <span key={i} className="inline-flex min-h-11 items-center">
+                  {w.text}
+                </span>
+              )
+            })}
+          </li>
+        ))}
+      </ul>
+      <div className="flex flex-wrap gap-2 text-xs font-semibold">
+        {(Object.keys(labKinds) as (keyof typeof labKinds)[]).map((k) => (
+          <span key={k} className={cn('rounded-full border px-2.5 py-1', labKinds[k].chip)}>
+            {labKinds[k].label}
+          </span>
+        ))}
+      </div>
+      <div className="min-h-16 rounded-xl bg-surface-2 px-4 py-3 text-[15px] leading-relaxed" aria-live="polite">
+        {word?.kind ? (
+          <motion.p key={`${picked?.s}-${picked?.w}`} initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }}>
+            <strong>{word.text}:</strong> {labKinds[word.kind].label}. {word.note}
+          </motion.p>
+        ) : (
+          <span className="text-muted">Bir sözcük seçilmedi.</span>
+        )}
+      </div>
+    </div>
   )
 }
