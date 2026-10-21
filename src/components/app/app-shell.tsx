@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { Check, ChevronsUpDown, LogOut, Menu as MenuIcon, Monitor, Moon, Plus, Settings, Sun } from 'lucide-react'
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -24,6 +24,13 @@ export function AppShell() {
   const [quickAdd, setQuickAdd] = useState(false)
   const items = navFor(profile)
   const isStudent = profile.role === 'student'
+  const current = items
+    .filter((i) => (i.end ? location.pathname === i.to : location.pathname === i.to || location.pathname.startsWith(`${i.to}/`)))
+    .sort((a, b) => b.to.length - a.to.length)[0]
+  const title = current ? `${current.label} · Yolumnet` : 'Yolumnet'
+  useEffect(() => {
+    document.title = title
+  }, [title])
   const pending = profile.role === 'teacher' && profile.status !== 'active' && location.pathname !== '/app/ayarlar'
 
   return (

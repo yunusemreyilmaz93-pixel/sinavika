@@ -10,9 +10,14 @@ export function NotFound() {
         <p className="mt-6 font-display text-6xl font-extrabold text-primary">404</p>
         <h1 className="mt-2 text-xl font-bold">Bu sayfa bulunamadı</h1>
         <p className="mt-2 text-muted">Adres yanlış yazılmış ya da sayfa kaldırılmış olabilir.</p>
-        <Button asChild className="mt-6">
-          <Link to="/">Ana sayfaya dön</Link>
-        </Button>
+        <div className="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
+          <Button asChild>
+            <Link to="/app">Uygulamaya git</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link to="/">Ana sayfa</Link>
+          </Button>
+        </div>
       </div>
     </div>
   )

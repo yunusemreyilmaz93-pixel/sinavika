@@ -32,7 +32,6 @@ export type StudyActivity = {
   sessions: SessionRow[]
   logs: LogRow[]
   byDay: Map<string, DayStat>
-  streak: number
   todayMinutes: number
   todayQuestions: number
   weekMinutes: number
@@ -138,16 +137,6 @@ export function subjectStats(sessions: SessionRow[], logs: LogRow[], from = '000
   return [...map.values()].sort((a, b) => b.questions - a.questions || b.minutes - a.minutes)
 }
 
-export function computeStreak(byDay: Map<string, DayStat>, today: string, from: string) {
-  let day = isActive(byDay.get(today)) ? today : shiftDays(today, -1)
-  let streak = 0
-  while (day >= from && isActive(byDay.get(day))) {
-    streak += 1
-    day = shiftDays(day, -1)
-  }
-  return streak
-}
-
 export function buildActivity(sessions: SessionRow[], logs: LogRow[], today: string, days: number): StudyActivity {
   const from = shiftDays(today, -(days - 1))
   const byDay = new Map<string, DayStat>()
@@ -185,7 +174,6 @@ export function buildActivity(sessions: SessionRow[], logs: LogRow[], today: str
     sessions,
     logs,
     byDay,
-    streak: computeStreak(byDay, today, from),
     todayMinutes: todayStat.minutes,
     todayQuestions: todayStat.questions,
     weekMinutes,

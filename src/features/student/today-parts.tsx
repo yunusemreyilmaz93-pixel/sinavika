@@ -1,4 +1,4 @@
-import { Flame, ListChecks, RotateCw, Timer, Trophy, type LucideIcon } from 'lucide-react'
+import { ListChecks, RotateCw, Timer, Trophy, type LucideIcon } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router'
@@ -41,7 +41,7 @@ export function TodayProgress({ studentId, goals, className }: { studentId: stri
     )
   }
 
-  const { todayMinutes, weekQuestions, streak } = activity.data
+  const { todayMinutes, weekQuestions } = activity.data
   const daily = goals.daily_minutes_goal
   const weekly = goals.weekly_questions_goal
   const dailyRatio = daily ? todayMinutes / daily : 0
@@ -79,17 +79,6 @@ export function TodayProgress({ studentId, goals, className }: { studentId: stri
           </div>
           {weekly > 0 && <ProgressBar value={weekQuestions / weekly} tone="accent" className="mt-1.5" />}
         </div>
-
-        <p className="flex items-center gap-1.5 text-sm font-semibold">
-          <Flame className={cn('size-5 shrink-0', streak > 0 ? 'text-warning' : 'text-subtle')} aria-hidden />
-          {streak > 0 ? (
-            <span>
-              <span className="marker tabular font-display text-lg font-extrabold">{streak} gün</span> seri
-            </span>
-          ) : (
-            <span className="text-muted">Bugün kayıt ekle, seri başlasın</span>
-          )}
-        </p>
       </div>
     </Card>
   )

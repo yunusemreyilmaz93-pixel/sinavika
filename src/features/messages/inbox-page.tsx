@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth, type Child } from '@/features/auth/session'
 import { cn } from '@/lib/cn'
 import { keys } from '@/lib/data'
+import { fold } from '@/lib/text'
 import { errorMessage, supabase, unwrap } from '@/lib/supabase'
 import { firstName, loadSummaries, shortStamp, threadLink, type Channel, type ThreadSummary } from './lib'
 
@@ -65,7 +66,7 @@ async function teacherRows(userId: string): Promise<Row[]> {
       avatar: studentName,
       badge: t.channel === 'student' ? 'Öğrenci' : 'Veli',
       subtitle: t.channel === 'parent' ? parents.join(', ') : undefined,
-      search: [studentName, ...(t.channel === 'parent' ? parents : [])].join(' ').toLocaleLowerCase('tr'),
+      search: fold([studentName, ...(t.channel === 'parent' ? parents : [])].join(' ')),
       names,
       summary: summaries.get(`${t.studentId}:${t.channel}`) ?? { last: null, unread: 0 },
     }
@@ -87,7 +88,7 @@ async function parentRows(userId: string, kids: Child[]): Promise<Row[]> {
       title: teacher,
       avatar: teacher,
       subtitle: k.full_name,
-      search: `${teacher} ${k.full_name}`.toLocaleLowerCase('tr'),
+      search: fold(`${teacher} ${k.full_name}`),
       names,
       summary: summaries.get(`${k.id}:parent`) ?? { last: null, unread: 0 },
     }
@@ -109,7 +110,7 @@ function TeacherInbox({ userId }: { userId: string }) {
   const [query, setQuery] = useState('')
   const inbox = useQuery({ queryKey: keys.inbox, queryFn: () => teacherRows(userId) })
   const rows = useMemo(() => sortRows(inbox.data ?? []), [inbox.data])
-  const q = query.trim().toLocaleLowerCase('tr')
+  const q = fold(query)
   const visible = q ? rows.filter((r) => r.search.includes(q)) : rows
   const unread = rows.reduce((sum, r) => sum + r.summary.unread, 0)
 

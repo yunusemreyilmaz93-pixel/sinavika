@@ -165,7 +165,7 @@ export default function JoinPage() {
         <ValuePanel
           title="Öğretmeninle aynı planda çalış"
           points={points}
-          footer="Şifreni unutursan öğretmenin yenisini verir."
+          footer="Ücretsiz. Hesabını ayarlardan istediğin zaman silebilirsin. Şifreni unutursan öğretmenin yenisini verir."
         />
       }
     >

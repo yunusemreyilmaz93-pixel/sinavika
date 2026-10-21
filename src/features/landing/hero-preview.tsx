@@ -1,4 +1,4 @@
-import { Check, CornerRightDown, Flame, TrendingUp } from 'lucide-react'
+import { Check, CornerRightDown, TrendingUp } from 'lucide-react'
 import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransform } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
@@ -66,7 +66,7 @@ function TodayCard({ play, still }: { play: boolean; still: boolean }) {
           <h3 className="mt-0.5 text-2xl font-extrabold">Bugün</h3>
         </div>
         <Badge tone="marker" className="mt-1">
-          <Flame />6 gün seri
+          Bu hafta 5 aktif gün
         </Badge>
       </div>
 

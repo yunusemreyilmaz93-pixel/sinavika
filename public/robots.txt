@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /api/
+Disallow: /katil
+
+Sitemap: https://yolumnet.vercel.app/sitemap.xml

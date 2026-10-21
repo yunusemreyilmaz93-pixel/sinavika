@@ -1,14 +1,16 @@
 import { motion } from 'motion/react'
-import { BookOpenCheck, CircleAlert, ListChecks, RotateCcw } from 'lucide-react'
+import { BookOpenCheck, CircleAlert, ListChecks, RotateCcw, Search } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
+import { Input } from '@/components/ui/field'
 import { Segmented } from '@/components/ui/segmented'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCurriculum } from '@/lib/data'
 import { examKindsFor, examLabel, subjectsFor, type ExamKind, type Field, type Topic, type Track } from '@/lib/exam'
 import { errorMessage } from '@/lib/supabase'
+import { fold } from '@/lib/text'
 import { matchesFilter, nextStatus, statusMeta, type TopicFilter, type TopicState } from './status'
 import { SubjectCard } from './subject-card'
 import { TopicSummary, type TopicCounts } from './topic-summary'
@@ -46,6 +48,7 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(() => new Set())
   const [touched, setTouched] = useState<ReadonlySet<number>>(() => new Set())
   const [announcement, setAnnouncement] = useState('')
+  const [query, setQuery] = useState('')
 
   if (curriculum.isPending || progress.isPending) return <TopicMapSkeleton tabs={kinds.length > 1} />
 
@@ -90,12 +93,13 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
 
   const hasAccuracy = groups.some((g) => g.topics.some((t) => (accuracy.data?.[t.id]?.total ?? 0) > 0))
 
+  const search = fold(query)
   const visibleGroups = groups
-    .map((g) => ({
-      ...g,
-      visible:
-        filter === 'all' ? g.topics : g.topics.filter((t) => matchesFilter(filter, statusOf(t.id)) || touched.has(t.id)),
-    }))
+    .map((g) => {
+      const byStatus =
+        filter === 'all' ? g.topics : g.topics.filter((t) => matchesFilter(filter, statusOf(t.id)) || touched.has(t.id))
+      return { ...g, visible: search ? byStatus.filter((t) => fold(t.name).includes(search)) : byStatus }
+    })
     .filter((g) => g.visible.length > 0)
 
   const changeFilter = (next: TopicFilter) => {
@@ -159,7 +163,30 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
             />
           </div>
 
-          {visibleGroups.length === 0 && filter !== 'all' ? (
+          <div className="relative">
+            <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted" aria-hidden />
+            <Input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Konu ara"
+              aria-label="Konu ara"
+              className="pl-10"
+            />
+          </div>
+
+          {visibleGroups.length === 0 && search ? (
+            <EmptyState
+              icon={Search}
+              title="Konu bulunamadı"
+              description="Yazımı kontrol et ya da konunun adından bir parça yaz. Türkçe karakter şart değil."
+              action={
+                <Button variant="secondary" onClick={() => setQuery('')}>
+                  Aramayı temizle
+                </Button>
+              }
+            />
+          ) : visibleGroups.length === 0 && filter !== 'all' ? (
             <EmptyState
               icon={filter === 'review' ? RotateCcw : ListChecks}
               title={filterEmpty[filter].title}
@@ -173,7 +200,7 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
           ) : (
             <ul className="space-y-3">
               {visibleGroups.map((g, i) => {
-                const open = filter === 'all' ? opened.has(g.subject.id) : !collapsed.has(g.subject.id)
+                const open = search ? true : filter === 'all' ? opened.has(g.subject.id) : !collapsed.has(g.subject.id)
                 return (
                   <motion.li
                     key={g.subject.id}

@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { BarChart3, CheckCircle2, Clock, Flame, ListChecks, Plus, RotateCw, type LucideIcon } from 'lucide-react'
+import { BarChart3, CalendarCheck, CheckCircle2, Clock, ListChecks, Plus, RotateCw, type LucideIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardBody, CardHeader } from '@/components/ui/card'
@@ -7,7 +7,6 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { Segmented } from '@/components/ui/segmented'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/session'
-import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
 import { formatMinutes } from '@/lib/dates'
 import { subjectColor } from '@/lib/exam'
@@ -93,7 +92,7 @@ export function ProgressStats({ studentId }: { studentId: string }) {
           value={formatPercent(summary.accuracy)}
           sub={summary.questions ? `${formatCount(summary.correct)} D · ${formatCount(summary.wrong)} Y · ${formatCount(summary.blank)} B` : 'Soru kaydı yok'}
         />
-        <Tile icon={Flame} label="Seri" value={`${data.streak} gün`} highlight={data.streak > 1} sub={`${days} günde ${summary.activeDays} aktif gün`} />
+        <Tile icon={CalendarCheck} label="Aktif gün" value={`${summary.activeDays} gün`} sub={`Son ${days} günde kayıt girdiğin gün`} />
       </motion.div>
 
       <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
@@ -125,13 +124,11 @@ function Tile({
   label,
   value,
   sub,
-  highlight,
 }: {
   icon: LucideIcon
   label: string
   value: string
   sub: string
-  highlight?: boolean
 }) {
   return (
     <Card className="p-4">
@@ -140,7 +137,7 @@ function Tile({
         {label}
       </p>
       <p className="tabular mt-2 font-display text-2xl leading-tight font-extrabold sm:text-[28px]">
-        <span className={cn(highlight && 'marker')}>{value}</span>
+        {value}
       </p>
       <p className="mt-1 text-xs leading-snug text-muted">{sub}</p>
     </Card>

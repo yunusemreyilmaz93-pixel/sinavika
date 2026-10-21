@@ -25,21 +25,6 @@ const log = (solved_on: string, correct: number, wrong: number, blank: number, s
 const today = '2026-10-21'
 
 describe('buildActivity', () => {
-  it('bugün dahil art arda aktif günleri sayar', () => {
-    const a = buildActivity([session('2026-10-21', 30), session('2026-10-20', 20)], [log('2026-10-19', 5, 1, 0)], today, 90)
-    expect(a.streak).toBe(3)
-  })
-
-  it('bugün kayıt yoksa seriyi dünden başlatır', () => {
-    const a = buildActivity([session('2026-10-20', 20), session('2026-10-19', 20), session('2026-10-17', 20)], [], today, 90)
-    expect(a.streak).toBe(2)
-  })
-
-  it('dün de boşsa seri sıfırdır', () => {
-    const a = buildActivity([session('2026-10-19', 20)], [], today, 90)
-    expect(a.streak).toBe(0)
-  })
-
   it('haftayı pazartesiden sayar ve bugünü ayırır', () => {
     const a = buildActivity(
       [session('2026-10-18', 50), session('2026-10-19', 40), session('2026-10-21', 25)],

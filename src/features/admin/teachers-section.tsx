@@ -11,6 +11,7 @@ import { Segmented } from '@/components/ui/segmented'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useProfile } from '@/features/auth/session'
 import { formatRelative } from '@/lib/dates'
+import { fold } from '@/lib/text'
 import { useAdminTeachers, type AccountStatus, type AdminTeacher } from './queries'
 import { TeacherActions } from './teacher-actions'
 import { LoadError } from './ui'
@@ -31,10 +32,6 @@ const statusBadge: Record<AccountStatus, { label: string; tone: 'primary' | 'war
   rejected: { label: 'Reddedildi', tone: 'danger' },
 }
 
-function normalize(value: string) {
-  return value.toLocaleLowerCase('tr').trim()
-}
-
 export function TeachersSection() {
   const profile = useProfile()
   const teachers = useAdminTeachers()
@@ -44,11 +41,11 @@ export function TeachersSection() {
 
   const all = useMemo(() => (teachers.data ?? []).filter((t) => t.status !== 'pending'), [teachers.data])
   const visible = useMemo(() => {
-    const q = normalize(deferred)
+    const q = fold(deferred)
     return all.filter((t) => {
       if (filter !== 'all' && t.status !== filter) return false
       if (!q) return true
-      return [t.full_name, t.email, t.school, t.branch].some((v) => v && normalize(v).includes(q))
+      return [t.full_name, t.email, t.school, t.branch].some((v) => v && fold(v).includes(q))
     })
   }, [all, deferred, filter])
 
