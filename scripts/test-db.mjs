@@ -577,6 +577,32 @@ await test('YÖK Atlas verisi: giriş yapan okur, kimse yazamaz, öğrenci hedef
   await service('delete from public.universities where id = 999001')
 })
 
+await test('soru bazlı karne: ders sonucu ve konu yanlışları cevaplardan üretilir, başkası yazamaz, veli okur', async () => {
+  const [e] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Soru bazlı', current_date, '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]') as id`, [s1])
+  const [t1, t2] = await service(`select id from public.topics where subject_id = 'tyt-fiz' order by sort limit 2`)
+  const [mat] = await service(`select id from public.topics where subject_id = 'tyt-mat' order by sort limit 1`)
+  const rows = JSON.stringify([
+    { number: 1, key: 'A', answer: 'A' },
+    { number: 2, key: 'B', answer: 'C', topic_id: t1.id },
+    { number: 3, key: 'C', answer: null, topic_id: t1.id },
+    { number: 4, key: 'D', answer: 'D' },
+    { number: 5, key: 'E', answer: 'A', topic_id: t2.id },
+  ])
+  await as(s1, `select public.save_exam_answers($1, 'tyt-fiz', $2::jsonb)`, [e.id, rows])
+  const [score] = await as(s1, `select correct, wrong, blank from public.mock_exam_scores where mock_exam_id = $1 and subject_id = 'tyt-fiz'`, [e.id])
+  assert.deepEqual(score, { correct: 2, wrong: 2, blank: 3 })
+  const misses = await as(s1, 'select topic_id, misses from public.mock_exam_topic_misses where mock_exam_id = $1 order by misses desc', [e.id])
+  assert.deepEqual(misses, [{ topic_id: t1.id, misses: 2 }, { topic_id: t2.id, misses: 1 }])
+  await as(s1, `select public.save_exam_answers($1, 'tyt-fiz', $2::jsonb)`, [e.id, JSON.stringify([{ number: 1, key: 'A', answer: 'A' }])])
+  assert.equal((await as(s1, 'select 1 from public.mock_exam_topic_misses where mock_exam_id = $1', [e.id])).length, 0)
+  await rejects(as(s1, `select public.save_exam_answers($1, 'tyt-fiz', '[{"number": 8, "key": "A", "answer": "A"}]')`, [e.id]), /uymuyor/)
+  await rejects(as(s1, `select public.save_exam_answers($1, 'tyt-fiz', $2::jsonb)`, [e.id, JSON.stringify([{ number: 1, key: 'A', answer: 'A', topic_id: mat.id }])]), /uymuyor/)
+  await rejects(as(s1, `select public.save_exam_answers($1, 'lgs-mat', '[]')`, [e.id]), /ait değil/)
+  await rejects(as(s2, `select public.save_exam_answers($1, 'tyt-fiz', '[{"number": 1, "key": "A", "answer": "A"}]')`, [e.id]), /Deneme bulunamadı|row-level security/)
+  assert.equal((await as(parent, 'select 1 from public.mock_exam_answers where mock_exam_id = $1', [e.id])).length, 1)
+  await rejects(as(parent, `select public.save_exam_answers($1, 'tyt-fiz', '[]')`, [e.id]), /row-level security/)
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

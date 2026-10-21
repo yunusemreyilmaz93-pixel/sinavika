@@ -678,6 +678,42 @@ export type Database = {
           },
         ];
       };
+      mock_exam_answers: {
+        Row: {
+          answer: string | null;
+          key: string | null;
+          mock_exam_id: number;
+          number: number;
+          subject_id: string;
+          topic_id: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          answer?: string | null;
+          key?: string | null;
+          mock_exam_id: number;
+          number: number;
+          subject_id: string;
+          topic_id?: number | null;
+        };
+        Update: {
+          answer?: string | null;
+          key?: string | null;
+          mock_exam_id?: number;
+          number?: number;
+          subject_id?: string;
+          topic_id?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "mock_exam_answers_mock_exam_id_fkey";
+            columns: ["mock_exam_id"];
+            isOneToOne: false;
+            referencedRelation: "mock_exams";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       mock_exam_topic_misses: {
         Row: {
           misses: number;
@@ -1616,6 +1652,10 @@ export type Database = {
       };
     };
     Functions: {
+      save_exam_answers: {
+        Args: { p_exam_id: number; p_rows: Json; p_subject_id: string };
+        Returns: undefined;
+      };
       create_report_link: {
         Args: { p_days: number; p_label?: string; p_student: string };
         Returns: string;

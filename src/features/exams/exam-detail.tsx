@@ -12,6 +12,7 @@ import { useCurriculum } from '@/lib/data'
 import { formatDate } from '@/lib/dates'
 import { formatNet, net, subjectColor, type Subject } from '@/lib/exam'
 import { errorMessage } from '@/lib/supabase'
+import { ExamAnswers } from './answers/exam-answers'
 import { Delta } from './delta'
 import { LossAnalysis } from './loss-analysis'
 import { CountTiles } from './overview-cards'
@@ -199,6 +200,8 @@ export function ExamDetail({ examId, canEdit, onDeleted }: { examId: number; can
         canAssign={canEdit}
         assignLabel={profile.role === 'teacher' ? 'Görevleri öğrenciye ver' : 'Görevleri planıma ekle'}
       />
+
+      <ExamAnswers examId={exam.id} studentId={exam.student_id} kind={kind} canEdit={canEdit} />
 
       <ExamTopicMisses examId={exam.id} scores={data.scores} canEdit={canEdit} />
 
