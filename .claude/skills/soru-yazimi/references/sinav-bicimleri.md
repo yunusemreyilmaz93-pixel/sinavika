@@ -1,6 +1,6 @@
 # Sınav biçimleri ve soru tipleri
 
-Bu notlar genel bilgidir. ÖSYM ve MEB'in resmi madde yazım kılavuzlarına bu çalışmada erişilemedi. Yayınlanmış örnek sorularla karşılaştırmadan "resmi biçim" diye sunma.
+Bu notlar genel bilgidir ve doğrulanmamıştır. ÖSYM'nin madde yazım kılavuzuna erişilemedi. MEB'in bağlam temelli soru yazım kılavuzu (Mart 2026) okundu, özeti `meb-baglam-temelli-kilavuz.md` içindedir. Oradaki ilkeler (bağlam işlevselliği, çeldirici, şık biçimi) LGS tarzı bağlamlı sorular için kaynak olarak kullanılabilir. Bu dosyadaki sınav biçimi ve konu dağılımı notlarını yayınlanmış örnek sorularla karşılaştırmadan "resmi biçim" diye sunma.
 
 ## LGS (8. sınıf, 4 şık)
 

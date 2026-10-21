@@ -1,11 +1,13 @@
 ---
 name: soru-yazimi
-description: Yolumnet konu anlatımlarındaki mini test (`:::soru`) ve "Kendini dene" (`:::dene`) sorularını yazarken kullan. Çoktan seçmeli madde yazım ilkeleri, çeldirici tasarımı, doğru şık yerleşimi, şık uzunluğu dengesi, zorluk ayarı, çözüm yazımı ve denetim komutları. LGS, TYT, AYT ve YDT soruları için geçerlidir.
+description: Yolumnet konu anlatımlarındaki mini test (`:::soru`) ve "Kendini dene" (`:::dene`) sorularını yazarken kullan. Çoktan seçmeli madde yazım ilkeleri, MEB bağlam temelli soru yazım kılavuzu, bağlam işlevselliği, çeldirici tasarımı, doğru şık yerleşimi, şık uzunluğu dengesi, zorluk ayarı, çözüm yazımı ve denetim komutları. LGS, TYT, AYT ve YDT soruları için geçerlidir.
 ---
 
 # Soru yazımı
 
 Bu dosya, soru yazarken yapay zekânın bilinen hatalarını önlemek içindir. Her anlatımın sorularını yazmadan önce oku. Soruları yazdıktan sonra "Denetim" bölümündeki komutları çalıştır.
+
+Ayrıntılı kural ve örnekler için MEB'in bağlam temelli soru yazım kılavuzunun özeti `references/meb-baglam-temelli-kilavuz.md` dosyasındadır. Bağlamlı (metin, tablo, grafik, senaryo) soru yazarken önce onu oku.
 
 ## Biçim
 
@@ -19,12 +21,13 @@ Bu dosya, soru yazarken yapay zekânın bilinen hatalarını önlemek içindir. 
 1. **Hedefi yaz.** Soru hangi kazanımı ölçüyor? Düzey: hatırlama, anlama, uygulama, çözümleme. Mini testte hatırlama en fazla bir soru olur. Yeni nesil sorular çoğunlukla anlama, uygulama ve çözümleme düzeyindedir.
 2. **Önce kavram yanılgılarını listele.** Bu konuda öğrencilerin yaptığı gerçek hataları yaz (işlem hatası, işaret hatası, birim hatası, yakın kavram karışıklığı, kökü yanlış okuma, genelleme). Çeldiriciler bu listeden gelir. Liste çıkmadan şık yazma.
 3. **Doğru şık dizisini önceden planla.** Soruları yazmadan `node scripts/questions/plan-keys.mjs 4 4` çalıştır (soru sayısı, şık sayısı). Çıkan harfler soruların doğru cevabı olur. Doğru şıkkı "içimden geldiği yere" koyma.
-4. **Kökü yaz.** Tek bir soru sorsun. Gereksiz bilgi ve tuzak yok. Olumsuz kök ("değildir", "yanlıştır") mümkün olduğunca az kullanılır, kullanılacaksa kalın yazılır. Çift olumsuz yok.
+4. **Kökü yaz.** Tek bir soru sorsun. Gereksiz bilgi ve tuzak yok. Olumsuz kök ("değildir", "yanlıştır") mümkün olduğunca az kullanılır, kullanılacaksa kalın yazılır. Çift olumsuz yok. Kökte konu anlatma, "sizce" deme. Bilgi bağlamda olsun, kök yalnızca ne istendiğini söylesin.
 5. **Doğru şıkkı planlanan harfe yaz, sonra çeldiricileri yaz.** Her çeldirici, listendeki bir hatayı temsil etsin. Çözümde bu hatanın adı geçecek.
 6. **Uzunluğu dengele.** Aşağıdaki "Şık uzunluğu" kuralını uygula.
 7. **Çözümü yaz.** Adım adım. Doğru cevabın gerekçesi ve her çeldiricinin hangi hatadan geldiği yazılır.
 8. **Doğrula.** Sayısal ve mantıksal her cevabı kodla (python) hesapla. Tarih, ayet, hadis, formül gibi bilgileri kaynakla karşılaştır. Emin değilsen soruyu yazma, anlatımın öğretmen notuna kontrol edilecekler olarak yaz.
 9. **Hile testi.** Soruyu kökü okumadan yalnızca şıklara bakarak çözmeyi dene. Doğru şıkkı bulabiliyorsan soru kötüdür, yeniden yaz.
+   **Bağlam işlevselliği testi (MEB):** bağlam (metin, tablo, grafik, senaryo) varsa onu okumadan, yalnızca ön bilgiyle soruyu çözmeyi dene. Çözülüyorsa bağlam süstür, soruyu bağlamdan veri okumayı gerektirecek biçimde yeniden kur. Tersi de hatadır: çözüm için gereken bilginin hepsi metinde verilirse soru alan bilgisini değil okuma anlamayı ölçer.
 10. **Denetim komutlarını çalıştır.**
 
 ## Yapay zekânın sık yaptığı hatalar
@@ -45,6 +48,14 @@ Bu hatalar ölçülmüştür. Yolumnet'in ilk 216 LGS sorusunda belirgin biçimd
 | "Hepsi", "hiçbiri", "yukarıdakilerin hepsi" | Kolay çeldirici ya da kaçış | Kullanma. Test bunu denetler |
 | Aynı kalıpta çözüm: "A yanlış. B yanlış. C yanlış." | Tembel çözüm | Her çeldiricinin hatasını adlandır |
 | Dört sorunun dördü de aynı güçlükte | Zorluk planlanmaz | Aşağıdaki dağılımı kullan |
+| Bağlam süs, soru bağlamsız çözülür | Önce soru yazılır, bağlam sonradan eklenir | Bağlam işlevselliği testi (iş akışı 9) |
+| Doğru şık metindeki cümleyi aynen alır | Kopyalama kolaydır | Doğru şıkkı anlamca özdeş, farklı sözcüklerle yaz. Çeldirici de metinden sözcük alabilir |
+| Köke ders bilgisi girer ("Hücre canlılığın temel birimidir, buna göre ...") | Bağlam ile kök karışır | Bilgiyi bağlama taşı |
+| Çift olumsuzluk ("olmadığı söylenemez") | Model olumsuzu iki kez kurar | Tek olumsuz kök, koyu yazılı |
+| İkinci soru birincinin cevabına dayanır | Zincir kurgu | Her soru ortak veriye dayansın ama bağımsız çözülsün ("Verilen tabloya göre ...") |
+| Çözümde yalnızca doğru şık anlatılır | Çeldirici hata adı yazılmaz | Her çeldirici için hangi yanılgıdan geldiğini yaz |
+| Bağlam yalnızca belirli bir kesimin bildiği şeyi anlatır (borsa, golf) | Kurgu sınırlı bir dünyadan gelir | Okul, park, doğa, alışveriş gibi ortak bağlam |
+| Bağlam yapay ("3 × 2 + 5 ekmek aldı") | Soru bağlama sonradan yapıştırılır | Gerçek durum: birim fiyat karşılaştırma, tarif büyütme, ölçekli plan |
 
 ## Şık uzunluğu
 
@@ -63,6 +74,10 @@ Hedef güçlük indeksi (doğru yanıtlayanların oranı) p = 0,30 ile 0,70 aras
 
 Zorluğu şıklarla değil bilişsel basamakla ayarla. Daha uzun kök ya da daha kafa karıştırıcı dil zorluk değildir. Gerçek öğrenci verisi gelince `lesson_answers.first_correct` oranıyla (soru başına) güçlük hesaplanır. p 0,25'in altı ya da 0,85'in üstü olan sorular gözden geçirilir. Ayırt edicilik hedefi D 0,30 ve üzeri, çeldiricilerin her biri en az yaklaşık %5 oranında seçilmeli.
 
+## Sesli düşünme ile sınama
+
+MEB kılavuzu (3.5) soruların pilot uygulama ve bilişsel görüşmeyle doğrulanmasını ister. Öğrenci soruyu çözerken sesli düşünür, ardından kısa sorular sorulur: bağlamı özetle, cevabı nasıl buldun, şıkları neden eledin, metne bakmadan çözebilir miydin. Soru kökü yanlış anlaşılıyorsa, bağlam okunmadan cevaplanıyorsa ya da doğru şık gerekçesiz seçiliyorsa soru yeniden yazılır. Soru formu ve bulgular `references/meb-baglam-temelli-kilavuz.md` içindedir. Yolumnet'te `lesson_answers` verisi (ilk deneme doğruluğu, hiç seçilmeyen çeldirici) soruyu gözden geçirme işaretidir.
+
 ## Sınav biçimleri
 
 Ayrıntılar `references/sinav-bicimleri.md` içindedir. Kısaca: LGS yeni nesil sorular bağlam, tablo ve grafik içerir. TYT ve AYT sorular kısa ve nettir, matematikte işlem ağırlıklıdır. YDT sorular boşluk doldurma, cümle tamamlama, anlam bulma ve çeviridir.
@@ -75,13 +90,17 @@ npx vitest run tests/question-quality.test.ts   # dağılım, uzunluk ve yasak �
 npx vitest run tests/lessons-content.test.ts    # söz dizimi, doğru cevap ve çözüm var mı
 ```
 
-`tests/question-quality.test.ts` şunları denetler: doğru şık dağılımı (ki-kare), aynı harfin üst üste gelmesi, belirgin en uzun şıkkın doğru olma oranı (en fazla %40), anlatım başına en uzun şık yanlılığı, "hepsi" ya da "hiçbiri" şıkları.
+`tests/question-quality.test.ts` şunları denetler: doğru şık dağılımı (ki-kare), aynı harfin üst üste gelmesi, belirgin en uzun şıkkın doğru olma oranı (en fazla %40), anlatım başına en uzun şık yanlılığı, "hepsi" ya da "hiçbiri" şıkları, "sizce" gibi öznel kök, çift olumsuz kök, olumsuz kökün koyu yazılması, "önceki soruda" gibi zincir kök.
+
+Testin yakalayamadığı şeyler elle denetlenir: bağlam işlevselliği, çeldiricinin gerçek bir yanılgıya dayanması, tek doğru şık, metinden aynen alınmış şık.
 
 ## Kaynaklar
 
 - Haladyna, Downing ve Rodriguez (2002), "A Review of Multiple-Choice Item-Writing Guidelines for Classroom Assessment": 31 madde yazım ilkesi. Çeldiriciler yaygın öğrenci hatalarından gelmeli, ipucu vermemeli.
 - Rodriguez (2005) meta-analizi: 3 şık çoğu durumda yeterli. Biz sınav biçimi için 4 ve 5 şık kullanırız.
 - Tang, Duan ve Cai (2026), "Do Large Language Models Plan Answer Positions?": yapay zekâ ile üretilen sorularda doğru şık konumu yanlılığı. Dengeli dağılım isteyen açık talimat yanlılığı azaltır, küçük modellerde sınırlı.
-- Güçlük ve ayırt edicilik eşikleri klasik test kuramından alınmıştır. ÖSYM ve MEB'in resmi madde yazım kılavuzlarına erişilemedi, bu dosyadaki sınav biçimi notları doğrulanmamış genel bilgidir.
+- MEB, Türkiye Yüzyılı Maarif Modeli Bağlam Temelli Çoktan Seçmeli Soru Yazım Kılavuzu (Mart 2026). Özeti `references/meb-baglam-temelli-kilavuz.md` içindedir. Branş örnek soruları (3.4) ilke düzeyinde özetlendi, tek tek sorulara aktarılmadı.
+- Kılavuzun dayandığı kaynaklar (kılavuzdan aktarılan atıflar): Haladyna (1992, 1997), Haladyna ve Rodriguez (2013) çeldirici ve şık kuralları, Sweller (1988) bilişsel yük, Wiggins (1998) özgün görev, Ebel (1951) bağlama dayalı soruların kökeni, Messick (1995) ve Ericsson ve Simon (1993) bilişsel görüşme.
+- Güçlük ve ayırt edicilik eşikleri klasik test kuramından alınmıştır. ÖSYM'nin madde yazım kılavuzuna erişilemedi, `references/sinav-bicimleri.md` içindeki ÖSYM ve sınav biçimi notları doğrulanmamış genel bilgidir.
 
 Bu dosyayı yeni bir hata gözlemlediğinde güncelle.
