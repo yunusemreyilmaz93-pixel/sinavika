@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { listItems, outlineOf, parseAttrs, parseBlocks, parseEras, parseLabSentence, parseQuestion, slug } from './parse'
+import { estimateMinutes, formatLessonMinutes, listItems, outlineOf, parseAttrs, parseBlocks, parseEras, parseLabSentence, parseQuestion, slug } from './parse'
 
 describe('parseAttrs', () => {
   it('değerli ve değersiz öznitelikleri okur', () => {
@@ -60,5 +60,22 @@ describe('diğer ayrıştırıcılar', () => {
       { label: 'Çocukluk', from: 1881, to: 1893 },
       { label: 'Okul yılları', from: 1893, to: 1905 },
     ])
+  })
+})
+
+describe('estimateMinutes', () => {
+  it('kelime sayısından okuma süresi çıkarır', () => {
+    expect(estimateMinutes('kelime '.repeat(280))).toBe(2)
+    expect(estimateMinutes('')).toBe(1)
+  })
+  it('soru ve kendini dene maddelerini ayrıca sayar, videoyu saymaz', () => {
+    const q = ':::soru{cevap="A"}\nSoru?\n- A) a\n- B) b\n---\nÇözüm\n:::'
+    const d = ':::dene\n1. a => b\n2. c => d\n:::'
+    expect(estimateMinutes(`${q}\n\n${d}\n\n::video{id="abcdefghijk"}`)).toBe(3)
+  })
+  it('uzun süreleri 5 dakikaya yuvarlar ve 120 ile sınırlar', () => {
+    expect(formatLessonMinutes(18)).toBe(18)
+    expect(formatLessonMinutes(47)).toBe(45)
+    expect(estimateMinutes('kelime '.repeat(100000))).toBe(120)
   })
 })

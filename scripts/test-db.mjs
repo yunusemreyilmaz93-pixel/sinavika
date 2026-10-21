@@ -416,6 +416,23 @@ await test('konu anlatımı: sadece admin yazar, taslağı sadece admin görür,
   assert.equal(row.updated_by, adminId)
 })
 
+await test('yeni anlatımlar: anonim sadece yayındakinin adını görür, yayın tarihi yayınlanınca düşer', async () => {
+  const [{ id: topic }] = await service('select id from public.topics where id not in (select topic_id from public.lessons) order by id limit 1')
+  await as(adminId, `insert into public.lessons (topic_id, body, published) values ($1, 'gizli metin', false)`, [topic])
+  let rows = await as(null, 'select * from public.recent_lessons(20)')
+  assert.ok(!rows.some((r) => r.topic_id === topic))
+  await as(adminId, `update public.lessons set published = true where topic_id = $1`, [topic])
+  rows = await as(null, 'select * from public.recent_lessons(20)')
+  assert.equal(rows[0].topic_id, topic)
+  assert.deepEqual(Object.keys(rows[0]).sort(), ['exam', 'published_at', 'subject_name', 'topic_id', 'topic_name'])
+  assert.ok(rows[0].published_at)
+  await as(adminId, `update public.lessons set published = false where topic_id = $1`, [topic])
+  const [{ published_at }] = await service('select published_at from public.lessons where topic_id = $1', [topic])
+  assert.equal(published_at, null)
+  rows = await as(null, 'select * from public.recent_lessons(20)')
+  assert.ok(!rows.some((r) => r.topic_id === topic))
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

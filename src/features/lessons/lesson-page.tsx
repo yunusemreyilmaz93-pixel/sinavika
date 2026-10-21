@@ -11,7 +11,7 @@ import { useProfile } from '@/features/auth/session'
 import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
 import { examLabel } from '@/lib/exam'
-import { outlineOf, type OutlineItem } from './markdown/parse'
+import { estimateMinutes, formatLessonMinutes, outlineOf, type OutlineItem } from './markdown/parse'
 import { LessonBody } from './markdown/render'
 import { useLesson } from './queries'
 
@@ -25,6 +25,7 @@ export default function LessonPage() {
   const data = useLesson(Number(topicId), isTeacher)
   const lesson = data.data?.lesson
   const outline = useMemo(() => (lesson ? outlineOf(lesson.body) : []), [lesson])
+  const minutes = useMemo(() => (lesson ? formatLessonMinutes(estimateMinutes(lesson.body)) : 0), [lesson])
 
   const back = isTeacher
     ? profile.is_admin
@@ -71,7 +72,7 @@ export default function LessonPage() {
             {!lesson.published && <Badge tone="warning">Taslak</Badge>}
             <Badge tone="neutral" className="h-8 px-3 text-sm">
               <Clock3 />
-              Yaklaşık {lesson.reading_minutes} dakika
+              Yaklaşık {minutes} dakika
             </Badge>
             {profile.is_admin && (
               <Button variant="soft" size="sm" asChild>

@@ -207,6 +207,7 @@ export type Database = {
           body: string;
           created_at: string;
           published: boolean;
+          published_at: string | null;
           reading_minutes: number;
           topic_id: number;
           updated_at: string;
@@ -217,6 +218,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           published?: boolean;
+          published_at?: string | null;
           reading_minutes?: number;
           topic_id: number;
           updated_at?: string;
@@ -226,6 +228,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           published?: boolean;
+          published_at?: string | null;
           reading_minutes?: number;
           topic_id?: number;
           updated_at?: string;
@@ -1329,6 +1332,16 @@ export type Database = {
           student_name: string;
           teacher_name: string;
           track: Database["public"]["Enums"]["exam_track"];
+        }[];
+      };
+      recent_lessons: {
+        Args: { p_limit?: number };
+        Returns: {
+          exam: Database["public"]["Enums"]["exam_kind"];
+          published_at: string;
+          subject_name: string;
+          topic_id: number;
+          topic_name: string;
         }[];
       };
       redeem_invite: {

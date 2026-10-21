@@ -25,13 +25,14 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Confirm } from '@/components/ui/confirm'
 import { EmptyState } from '@/components/ui/empty-state'
-import { Field, Input, Textarea } from '@/components/ui/field'
+import { Field, Textarea } from '@/components/ui/field'
 import { Segmented } from '@/components/ui/segmented'
 import { PageSkeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
 import { errorMessage } from '@/lib/supabase'
+import { estimateMinutes, formatLessonMinutes } from './markdown/parse'
 import { LessonBody } from './markdown/render'
 import { uploadLessonImage, useDeleteLesson, useLesson, useSaveLesson, type LessonDraft } from './queries'
 
@@ -94,7 +95,7 @@ const guide = [
 ] as const
 
 function same(a: LessonDraft, b: LessonDraft) {
-  return a.body === b.body && a.reading_minutes === b.reading_minutes && a.published === b.published && a.note === b.note
+  return a.body === b.body && a.published === b.published && a.note === b.note
 }
 
 export default function LessonEditorPage() {
@@ -146,14 +147,13 @@ function Editor({
   const [tab, setTab] = useState<'yaz' | 'onizleme'>('yaz')
   const [uploading, setUploading] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const [minutes, setMinutes] = useState(String(initial.reading_minutes))
   const area = useRef<HTMLTextAreaElement>(null)
   const files = useRef<HTMLInputElement>(null)
   const savedRef = useRef(false)
 
   const preview = useDeferredValue(draft.body)
-  const minutesValid = /^\d+$/.test(minutes) && Number(minutes) >= 1 && Number(minutes) <= 120
-  const dirty = !same(draft, base) || (minutesValid && Number(minutes) !== base.reading_minutes)
+  const dirty = !same(draft, base)
+  const minutes = useMemo(() => estimateMinutes(draft.body), [draft.body])
   const words = useMemo(() => (draft.body.trim() ? draft.body.trim().split(/\s+/).length : 0), [draft.body])
 
   const blocker = useBlocker(
@@ -210,8 +210,7 @@ function Editor({
   }
 
   const submit = async () => {
-    if (!minutesValid) return void toast.error('Okuma süresi 1 ile 120 dakika arasında olmalı')
-    const next = { ...draft, reading_minutes: Number(minutes) }
+    const next = { ...draft, reading_minutes: minutes }
     try {
       await save.mutateAsync(next)
       setDraft(next)
@@ -249,18 +248,9 @@ function Editor({
           <Switch label="Yayında" checked={draft.published} onCheckedChange={(published) => setDraft((d) => ({ ...d, published }))} />
           {draft.published ? 'Yayında' : 'Taslak'}
         </label>
-        <label className="flex items-center gap-2 text-sm font-semibold">
-          Okuma süresi
-          <Input
-            inputMode="numeric"
-            value={minutes}
-            onChange={(e) => setMinutes(e.target.value)}
-            aria-invalid={!minutesValid}
-            className="w-20 text-center"
-          />
-          dakika
-        </label>
-        <span className="tabular text-sm text-muted">{words} sözcük</span>
+        <span className="tabular text-sm text-muted">
+          {words} sözcük · yaklaşık {formatLessonMinutes(minutes)} dakika
+        </span>
         <span className={cn('ml-auto text-sm font-semibold', dirty ? 'text-warning' : 'text-muted')}>
           {dirty ? 'Kaydedilmemiş değişiklik var' : 'Kaydedildi'}
         </span>

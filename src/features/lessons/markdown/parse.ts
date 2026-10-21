@@ -97,6 +97,32 @@ export function outlineOf(source: string): OutlineItem[] {
   return items
 }
 
+const WORDS_PER_MINUTE = 140
+const MINUTES_PER_QUESTION = 1.5
+const MINUTES_PER_SELF_CHECK = 0.5
+
+export function estimateMinutes(source: string) {
+  let words = 0
+  let extra = 0
+  for (const block of parseBlocks(source)) {
+    if (block.type === 'leaf') continue
+    if (block.type === 'box' && block.name === 'soru') {
+      extra += MINUTES_PER_QUESTION
+      continue
+    }
+    if (block.type === 'box' && block.name === 'dene') {
+      extra += listItems(block.text).length * MINUTES_PER_SELF_CHECK
+      continue
+    }
+    words += plainText(block.text).split(/\s+/).filter(Boolean).length
+  }
+  return Math.min(120, Math.max(1, Math.ceil(words / WORDS_PER_MINUTE + extra)))
+}
+
+export function formatLessonMinutes(minutes: number) {
+  return minutes >= 20 ? Math.min(120, Math.round(minutes / 5) * 5) : minutes
+}
+
 export function listItems(text: string) {
   return text
     .split('\n')

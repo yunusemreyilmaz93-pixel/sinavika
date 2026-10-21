@@ -3,6 +3,7 @@ import { ExamsSection } from './exams-section'
 import { FaqSection } from './faq-section'
 import { Hero } from './hero'
 import { HowItWorks } from './how-it-works'
+import { NewLessons } from './new-lessons'
 import { scrollToHash, sectionLinks, type Role, type SectionLink } from './primitives'
 import { RolesSection } from './roles-section'
 import { ClosingCta, SiteFooter } from './site-footer'
@@ -53,6 +54,7 @@ export default function LandingPage() {
       <main id="icerik" tabIndex={-1} className="relative outline-none">
         <Hero />
         <ExamsSection />
+        <NewLessons />
         <RolesSection role={role} onRoleChange={setRole} />
         <HowItWorks />
         <WhyFree />
