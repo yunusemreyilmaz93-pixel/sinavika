@@ -35,7 +35,7 @@ export function LoadError({ error, onRetry }: { error: unknown; onRetry: () => v
       </div>
       <Button variant="secondary" onClick={onRetry}>
         <RotateCw />
-        Tekrar dene
+        Tekrar deneyin
       </Button>
     </div>
   )

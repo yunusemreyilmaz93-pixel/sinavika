@@ -16,7 +16,7 @@ export default function WrongPage() {
         <EmptyState
           icon={UserRound}
           title="Bağlı öğrenci yok"
-          description="Öğretmenin ya da çocuğunun oluşturduğu veli koduyla çocuğunun hesabını bağlayabilirsin."
+          description="Öğretmen ya da çocuğunuz tarafından oluşturulan veli koduyla çocuğunuzun hesabını bağlayabilirsiniz."
           action={
             <Button asChild variant="secondary">
               <Link to="/app/ayarlar">Ayarlara git</Link>
@@ -31,11 +31,7 @@ export default function WrongPage() {
     <div>
       <PageHeader
         title="Yanlış soru defteri"
-        description={
-          viewed.canEdit
-            ? 'Yanlış yaptığın soruları ekle. Tekrar zamanı gelince karşına çıkarlar.'
-            : `${viewed.name} adlı öğrencinin yanlış yaptığı ve tekrar ettiği sorular`
-        }
+        description={viewed.canEdit ? undefined : `${viewed.name} adlı öğrencinin yanlış yaptığı ve tekrar ettiği sorular`}
       />
       <WrongList studentId={viewed.studentId} viewer={viewed.canEdit ? 'student' : 'parent'} />
     </div>

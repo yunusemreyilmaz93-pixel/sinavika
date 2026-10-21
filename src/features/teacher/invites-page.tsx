@@ -77,7 +77,7 @@ export default function InvitesPage() {
 
   return (
     <div>
-      <PageHeader title="Davetler" description="Öğrencin davet koduyla ya da linkle katılır." />
+      <PageHeader title="Davetler" description="Öğrenciniz davet koduyla ya da linkle katılır." />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_288px] lg:items-start">
         <div className="min-w-0 space-y-7">
@@ -95,12 +95,12 @@ export default function InvitesPage() {
               )}
               <Button size="lg" className="w-full sm:w-auto" onClick={openForm}>
                 <UserPlus />
-                Öğrenci davet et
+                Öğrenci davet edin
               </Button>
             </CardBody>
             {full && (
               <p className="border-t border-line px-4 py-3 text-sm text-muted sm:px-5">
-                Yer açmak için bekleyen bir daveti iptal edebilir ya da bir öğrenciyi arşive alabilirsin.
+                Yer açmak için bekleyen bir daveti iptal edebilir ya da bir öğrenciyi arşive alabilirsiniz.
               </p>
             )}
           </Card>
@@ -118,7 +118,7 @@ export default function InvitesPage() {
                   <Ticket className="size-5" />
                 </span>
                 <p className="text-sm text-muted">
-                  Bekleyen davet yok. Kod oluşturduğunda burada durur, öğrencin katılınca listeden düşer.
+                  Bekleyen davet yok. Kod oluşturduğunuzda burada durur, öğrenciniz katılınca listeden düşer.
                 </p>
               </div>
             )}
@@ -145,7 +145,7 @@ export default function InvitesPage() {
                 <Rule icon={<Clock3 />}>Kodlar 14 gün geçerli.</Rule>
                 <Rule icon={<KeyRound />}>Her kod tek kullanımlık.</Rule>
                 <Rule icon={<RotateCcw />}>İptal edilen ya da süresi dolan davet kontenjandan düşer.</Rule>
-                <Rule icon={<UsersRound />}>Veli davetini öğrencinin sayfasından oluşturursun.</Rule>
+                <Rule icon={<UsersRound />}>Veli davetini öğrencinin sayfasından oluşturursunuz.</Rule>
               </ul>
             </CardBody>
           </Card>
@@ -159,7 +159,7 @@ export default function InvitesPage() {
           open={detailOpen}
           onOpenChange={setDetailOpen}
           title="Davet kodu"
-          description="Kodu öğrencine göster ya da gönder."
+          description="Kodu öğrencinize gösterin ya da gönderin."
           footer={
             <>
               <Button
@@ -170,7 +170,7 @@ export default function InvitesPage() {
                   askCancel(detail)
                 }}
               >
-                Daveti iptal et
+                Daveti iptal edin
               </Button>
               <Button onClick={() => setDetailOpen(false)}>Kapat</Button>
             </>
@@ -185,7 +185,7 @@ export default function InvitesPage() {
         onOpenChange={setCancelOpen}
         title="Davet iptal edilsin mi?"
         description={`${cancelTarget?.student_name ?? 'Öğrenci'} bu kodla katılamaz. Kontenjandaki yeri boşalır.`}
-        confirmLabel="Daveti iptal et"
+        confirmLabel="Daveti iptal edin"
         onConfirm={() => (cancelTarget ? cancel(cancelTarget) : undefined)}
       />
     </div>
@@ -228,7 +228,7 @@ function LoadError({ message, onRetry }: { message: string; onRetry: () => void 
     <div role="alert" className="flex flex-col items-start gap-3 rounded-2xl border border-line bg-surface p-4 sm:flex-row sm:items-center">
       <p className="flex-1 text-sm text-danger">{message}</p>
       <Button variant="secondary" size="sm" onClick={onRetry}>
-        Tekrar dene
+        Tekrar deneyin
       </Button>
     </div>
   )

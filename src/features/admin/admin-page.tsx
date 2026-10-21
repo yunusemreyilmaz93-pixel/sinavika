@@ -44,7 +44,7 @@ export default function AdminPage() {
 
   return (
     <div>
-      <PageHeader title="Yönetim" description="Başvurular, öğretmenler ve uygulama ayarları" />
+      <PageHeader title="Yönetim" />
       <div ref={tabsRef} className="mb-5">
         <Segmented
           options={sections.map((s) => (s.value === 'basvurular' ? { ...s, badge: pending } : { ...s }))}

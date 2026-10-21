@@ -95,7 +95,7 @@ export function TodayTasks({ studentId, canEdit }: { studentId: string; canEdit:
             viewer === 'student'
               ? 'Bugün ne çalışacağını ekle, bitirince işaretle.'
               : viewer === 'teacher'
-                ? 'Bugüne bir görev ekle, öğrencine bildirim gider.'
+                ? 'Bugüne bir görev ekleyin, öğrencinize bildirim gider.'
                 : 'Öğretmen görev ekleyince burada görünür.'
           }
           action={

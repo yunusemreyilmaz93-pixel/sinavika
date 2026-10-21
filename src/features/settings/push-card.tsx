@@ -70,7 +70,7 @@ export function PushCard() {
       setState('on')
       toast.success('Bildirimler açıldı')
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Bildirimler açılamadı, tekrar dene')
+      toast.error(error instanceof Error ? error.message : 'Bildirimler açılamadı, tekrar deneyin')
     } finally {
       setBusy(false)
     }
@@ -96,9 +96,9 @@ export function PushCard() {
   if (state === 'loading' || state === 'unsupported') return null
 
   const description = {
-    'ios-install': "iPhone ve iPad'de bildirim almak için önce Yolumnet'i ana ekrana ekle, sonra buradan aç.",
-    blocked: 'Bildirimlere bu tarayıcıda izin verilmemiş. Tarayıcının site ayarlarından Yolumnet için bildirimlere izin ver.',
-    off: 'Yeni görev, mesaj, hatırlatma ve haftalık rapor geldiğinde telefonuna bildirim gelsin.',
+    'ios-install': "iPhone ve iPad'de bildirim almak için önce Yolumnet'i ana ekrana ekleyin, sonra buradan açın.",
+    blocked: 'Bildirimlere bu tarayıcıda izin verilmemiş. Tarayıcının site ayarlarından Yolumnet için bildirimlere izin verin.',
+    off: 'Yeni görev, mesaj, hatırlatma ve haftalık rapor geldiğinde telefona bildirim gelsin.',
     on: 'Bu cihaza bildirim gönderiliyor.',
   }[state]
 

@@ -116,7 +116,7 @@ export const POST = handle(async (request) => {
       },
       { onConflict: 'endpoint' },
     )
-    if (error) throw new HttpError(500, 'Bildirim açılamadı, tekrar dene')
+    if (error) throw new HttpError(500, 'Bildirim açılamadı, tekrar deneyin')
     return json({ ok: true })
   }
   await db.from('push_subscriptions').delete().eq('endpoint', input.endpoint).eq('user_id', userId)

@@ -74,7 +74,7 @@ type Patch = Partial<Pick<Task, 'done_at' | 'due_on'>>
 
 async function updateTask(id: number, patch: Partial<TaskValues & Pick<Task, 'done_at' | 'due_on'>>) {
   const rows = unwrap(await supabase.from('tasks').update(patch).eq('id', id).select())
-  if (!rows.length) throw new AppError('Bu görevi değiştirme yetkin yok')
+  if (!rows.length) throw new AppError('Bu görevi değiştirme yetkisi yok')
   return rows[0]
 }
 
@@ -112,7 +112,7 @@ export function useTaskActions(studentId: string) {
   const remove = useMutation({
     mutationFn: async (task: Task) => {
       const rows = unwrap(await supabase.from('tasks').delete().eq('id', task.id).select('id'))
-      if (!rows.length) throw new AppError('Bu görevi silme yetkin yok')
+      if (!rows.length) throw new AppError('Bu görevi silme yetkisi yok')
     },
     onSuccess: (_data, task) => {
       dropTask(qc, studentId, task.id)

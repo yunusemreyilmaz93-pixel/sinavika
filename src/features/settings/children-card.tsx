@@ -34,12 +34,11 @@ export function ChildrenCard() {
     <SettingsCard
       icon={Users}
       title="Çocuklarım"
-      description="Bağlı olduğun öğrenci hesapları"
       action={
         children.length > 0 ? (
           <Button variant="soft" onClick={() => setLinking(true)} className="-mt-1 shrink-0">
             <Plus />
-            Çocuk bağla
+            Çocuk bağlayın
           </Button>
         ) : undefined
       }
@@ -47,9 +46,9 @@ export function ChildrenCard() {
       {children.length === 0 ? (
         <EmptyState
           icon={UserPlus}
-          title="Henüz bağlı çocuğun yok"
-          description="Öğretmenin ya da çocuğunun oluşturduğu veli kodunu gir."
-          action={<Button onClick={() => setLinking(true)}>Çocuk bağla</Button>}
+          title="Henüz bağlı çocuğunuz yok"
+          description="Öğretmen ya da çocuğunuz tarafından oluşturulan veli kodunu girin."
+          action={<Button onClick={() => setLinking(true)}>Çocuk bağlayın</Button>}
         />
       ) : (
         <ul className="divide-y divide-line">
@@ -78,7 +77,7 @@ export function ChildrenCard() {
 
 function LinkChildModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   return (
-    <Modal open={open} onOpenChange={onOpenChange} title="Çocuk bağla" description="Öğretmenin ya da çocuğunun oluşturduğu veli kodunu gir." size="sm">
+    <Modal open={open} onOpenChange={onOpenChange} title="Çocuk bağlama" description="Öğretmen ya da çocuğunuz tarafından oluşturulan veli kodunu girin." size="sm">
       {open && <LinkChildForm onDone={() => onOpenChange(false)} />}
     </Modal>
   )
@@ -102,8 +101,8 @@ function LinkChildForm({ onDone }: { onDone: () => void }) {
     setError(null)
     try {
       const row = unwrap(await supabase.rpc('preview_invite', { p_code: value }))[0]
-      if (!row) setError('Kod geçersiz ya da süresi dolmuş. Öğretmeninden ya da çocuğundan yeni kod iste.')
-      else if (row.kind !== 'parent') setError('Bu bir öğrenci davet kodu. Veli kodunu öğretmenin ya da çocuğun oluşturabilir.')
+      if (!row) setError('Kod geçersiz ya da süresi dolmuş. Öğretmeninizden ya da çocuğunuzdan yeni kod isteyin.')
+      else if (row.kind !== 'parent') setError('Bu bir öğrenci davet kodu. Veli kodunu öğretmeniniz ya da çocuğunuz oluşturabilir.')
       else setPreview(row)
     } catch (err) {
       setError(errorMessage(err))
@@ -122,7 +121,7 @@ function LinkChildForm({ onDone }: { onDone: () => void }) {
       unwrap(await supabase.rpc('link_parent', { p_code: code }))
       await refresh()
       void queryClient.invalidateQueries()
-      toast.success(`${preview.student_name} hesabına bağlandın`)
+      toast.success(`${preview.student_name} hesabına bağlandınız`)
       onDone()
     } catch (err) {
       setError(errorMessage(err))

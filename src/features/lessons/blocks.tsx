@@ -264,7 +264,7 @@ export function Question({
                 <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-surface-2 font-display text-sm font-bold">{letters[i]}</span>
                 <span className="min-w-0 flex-1">{option}</span>
                 {done && correct && <Check className="size-5 shrink-0" aria-label="Doğru cevap" />}
-                {done && chosen && !correct && <X className="size-5 shrink-0" aria-label="Senin cevabın" />}
+                {done && chosen && !correct && <X className="size-5 shrink-0" aria-label="Seçilen cevap" />}
               </button>
             </li>
           )
@@ -278,7 +278,7 @@ export function Question({
           <div className="rounded-xl bg-surface-2 p-4 text-[15px] leading-relaxed">{solution}</div>
           {picked !== answer && onWrong}
           <button type="button" onClick={() => setPicked(null)} className="text-sm font-semibold text-accent hover:underline">
-            Tekrar dene
+            Tekrar deneyin
           </button>
         </motion.div>
       ) : (
@@ -450,7 +450,7 @@ export function SentenceLab({ sentences }: { sentences: LabWord[][] }) {
   const word = picked ? sentences[picked.s][picked.w] : null
   return (
     <div className="space-y-3 rounded-2xl border border-line bg-surface p-4 sm:p-5">
-      <p className="text-sm text-muted">Renkli sözcüklere dokun. Türünü ve cümledeki görevini gör.</p>
+      <p className="text-sm text-muted">Renkli sözcüklere dokununca türü ve cümledeki görevi görünür.</p>
       <ul className="space-y-3">
         {sentences.map((sentence, s) => (
           <li key={s} className="flex flex-wrap gap-x-1.5 gap-y-1 text-[17px] leading-relaxed">

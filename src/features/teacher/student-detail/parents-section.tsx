@@ -18,7 +18,7 @@ import { canShare, copyText, inviteLink } from '../invites'
 import { parentInviteKey, refreshStudent, useLinkedParents, useParentInvite, type LinkedParent, type StudentDetail } from './queries'
 
 function inviteText(studentName: string, code: string) {
-  return `${studentName} için Yolumnet veli davet kodu: ${code}. Bu bağlantıdan hesabını oluşturabilirsin: ${inviteLink(code)}`
+  return `${studentName} için Yolumnet veli davet kodu: ${code}. Bu bağlantıdan hesabınızı oluşturabilirsiniz: ${inviteLink(code)}`
 }
 
 async function share(studentName: string, code: string) {
@@ -30,7 +30,7 @@ async function share(studentName: string, code: string) {
   try {
     await navigator.share({ title: 'Yolumnet veli daveti', text })
   } catch (error) {
-    if ((error as Error)?.name !== 'AbortError') toast.error('Paylaşılamadı, kodu kopyalayıp gönderebilirsin')
+    if ((error as Error)?.name !== 'AbortError') toast.error('Paylaşılamadı, kodu kopyalayıp gönderebilirsiniz')
   }
 }
 
@@ -73,7 +73,7 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
 
   return (
     <Card>
-      <CardHeader title="Veliler" description="Veli planı, ilerlemeyi, denemeleri ve paylaştığın notları görür." />
+      <CardHeader title="Veliler" description="Veli planı, ilerlemeyi, denemeleri ve paylaştığınız notları görür." />
       <CardBody className="space-y-5">
         <div>
           {parents.isPending ? (
@@ -82,7 +82,7 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
             <div className="flex flex-wrap items-center justify-between gap-3" role="alert">
               <p className="text-sm text-danger">{errorMessage(parents.error)}</p>
               <Button variant="secondary" size="sm" onClick={() => void parents.refetch()}>
-                Tekrar dene
+                Tekrar deneyin
               </Button>
             </div>
           ) : parents.data.length === 0 ? (
@@ -107,7 +107,7 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
                         {p.last_seen_at ? `son görülme ${formatRelative(p.last_seen_at)}` : `${formatRelative(p.linked_at)} bağlandı`}
                       </p>
                     </div>
-                    <Button variant="ghost" size="icon" className="text-muted" aria-label={`${p.full_name} bağlantısını kaldır`} onClick={() => setRemoving(p)}>
+                    <Button variant="ghost" size="icon" className="text-muted" aria-label={`${p.full_name} bağlantısını kaldırın`} onClick={() => setRemoving(p)}>
                       <Unlink />
                     </Button>
                   </motion.li>
@@ -145,7 +145,7 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
               <div className="mt-3 grid gap-2 sm:grid-cols-3">
                 <Button onClick={() => void copyText(current.code, 'Kod kopyalandı')}>
                   <Copy />
-                  Kodu kopyala
+                  Kodu kopyalayın
                 </Button>
                 <Button variant="secondary" onClick={() => void share(student.full_name, current.code)}>
                   {canShare ? <Share2 /> : <MessageCircle />}
@@ -153,15 +153,15 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
                 </Button>
                 <Button variant="secondary" onClick={() => void copyText(inviteLink(current.code), 'Link kopyalandı')}>
                   <Link2 />
-                  Linki kopyala
+                  Linki kopyalayın
                 </Button>
               </div>
               <p className="mt-3 text-sm text-muted">
-                Veli linke dokunup hesabını oluşturur. Hesabı varsa kodu kendi Ayarlar sayfasına girer. Her veli için ayrı kod oluştur.
+                Veli linke dokunup hesabını oluşturur. Hesabı varsa kodu kendi Ayarlar sayfasına girer. Her veli için ayrı kod oluşturun.
               </p>
               <Button variant="ghost" className="mt-1 -ml-3 text-muted" loading={create.isPending} onClick={() => create.mutate()}>
                 {!create.isPending && <RefreshCw />}
-                Yeni kod oluştur
+                Yeni kod oluşturun
               </Button>
             </div>
           ) : (
@@ -169,7 +169,7 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
               <p className="text-sm text-muted">Kod 14 gün geçerli ve tek kullanımlık. Öğrenci kontenjanını etkilemez.</p>
               <Button loading={create.isPending} onClick={() => create.mutate()} className="w-full sm:w-auto">
                 {!create.isPending && <UserPlus />}
-                Veli davet kodu oluştur
+                Veli davet kodu oluşturun
               </Button>
             </div>
           )}
@@ -179,13 +179,13 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
       <Confirm
         open={removing != null}
         onOpenChange={(open) => !open && setRemoving(null)}
-        title="Veli bağlantısını kaldır"
+        title="Veli bağlantısı kaldırılsın mı?"
         description={
           removing
             ? `${removing.full_name} artık ${student.full_name} adlı öğrencinin bilgilerini ve veli mesajlarını göremez. Veli hesabı silinmez.`
             : undefined
         }
-        confirmLabel="Bağlantıyı kaldır"
+        confirmLabel="Bağlantıyı kaldırın"
         onConfirm={async () => {
           if (removing) await unlink.mutateAsync(removing).catch(() => {})
         }}

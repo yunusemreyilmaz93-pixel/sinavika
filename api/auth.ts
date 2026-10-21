@@ -40,7 +40,7 @@ async function createUser(email: string, password: string, fullName: string) {
       throw new HttpError(409, 'Bu bilgilerle kayıtlı bir hesap zaten var')
     }
     await logServerError('Hesap oluşturulamadı', `${code} ${message}`)
-    throw new HttpError(500, 'Hesap oluşturulamadı. Biraz bekleyip tekrar dene')
+    throw new HttpError(500, 'Hesap oluşturulamadı. Biraz bekleyip tekrar deneyin')
   }
   return data.user.id
 }
@@ -88,7 +88,7 @@ async function join(input: z.infer<typeof joinSchema>) {
     .from('profiles')
     .select('id', { count: 'exact', head: true })
     .eq('username', input.username)
-  if (count) throw new HttpError(409, 'Bu kullanıcı adı alınmış, başka bir tane dene')
+  if (count) throw new HttpError(409, 'Bu kullanıcı adı alınmış, başka bir tane deneyin')
 
   const id = await createUser(usernameToEmail(input.username), input.password, input.fullName)
   const { data, error } = await admin().rpc('redeem_invite', {
@@ -107,6 +107,6 @@ async function join(input: z.infer<typeof joinSchema>) {
 
 export const POST = handle(async (request) => {
   const parsed = schema.safeParse(await readJson(request))
-  if (!parsed.success) throw new HttpError(400, 'Bilgileri kontrol edip tekrar dene')
+  if (!parsed.success) throw new HttpError(400, 'Bilgileri kontrol edip tekrar deneyin')
   return parsed.data.action === 'join' ? join(parsed.data) : registerTeacher(parsed.data)
 })

@@ -83,7 +83,7 @@ export function useAddWrong(studentId: string) {
         const blob = await shrink(input.photo)
         photo_path = `${studentId}/${crypto.randomUUID()}.jpg`
         const { error } = await supabase.storage.from(BUCKET).upload(photo_path, blob, { contentType: 'image/jpeg' })
-        if (error) throw new Error('Fotoğraf yüklenemedi. Bağlantını kontrol edip tekrar dene')
+        if (error) throw new Error('Fotoğraf yüklenemedi. Bağlantıyı kontrol edip tekrar deneyin')
       }
       const { data: auth } = await supabase.auth.getUser()
       unwrap(

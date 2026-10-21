@@ -114,8 +114,8 @@ export function AuthProvider({ children: node }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithPassword({ email: loginEmail(identifier), password })
     if (error) {
       if (/invalid/i.test(error.message)) throw new Error('Kullanıcı adı veya şifre hatalı')
-      if (/rate|too many/i.test(error.message)) throw new Error('Çok fazla deneme yaptın, biraz bekleyip tekrar dene')
-      throw new Error('Giriş yapılamadı, tekrar dene')
+      if (/rate|too many/i.test(error.message)) throw new Error('Çok fazla deneme yapıldı, biraz bekleyip tekrar deneyin')
+      throw new Error('Giriş yapılamadı, tekrar deneyin')
     }
   }, [])
 

@@ -14,7 +14,7 @@ export const POST = handle(async (request) => {
     return json({ ok: true, embeddable: false, title: null, author: null })
   }
   if (res.status === 404 || res.status === 400)
-    throw new HttpError(404, 'Bu video bulunamadı. Bağlantıyı kontrol et ya da video gizli olabilir')
+    throw new HttpError(404, 'Bu video bulunamadı. Bağlantıyı kontrol edin ya da video gizli olabilir')
   const body = (await res.json().catch(() => null)) as { title?: string; author_name?: string } | null
   return json({ ok: true, embeddable: true, title: body?.title?.slice(0, 200) ?? null, author: body?.author_name ?? null })
 })

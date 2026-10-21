@@ -30,9 +30,9 @@ export function SignedInCard({ profile }: { profile: Profile }) {
       <div className="grid size-12 place-items-center rounded-2xl bg-primary-soft text-primary-soft-fg">
         <UserCheck className="size-6" />
       </div>
-      <h1 className="mt-5 text-2xl font-extrabold">Zaten giriş yaptın</h1>
+      <h1 className="mt-5 text-2xl font-extrabold">Zaten giriş yaptınız</h1>
       <p className="mt-2 text-[15px] leading-relaxed text-muted">
-        <b className="font-semibold text-fg">{profile.full_name}</b> hesabıyla giriş yaptın. Davet kodu yeni hesap açmak için kullanılır.
+        <b className="font-semibold text-fg">{profile.full_name}</b> hesabıyla giriş yaptınız. Davet kodu yeni hesap açmak için kullanılır.
       </p>
       <Button asChild size="lg" className="mt-6 w-full">
         <Link to="/app">Uygulamaya git</Link>
@@ -56,7 +56,7 @@ export function LinkChild({ profile, invite, code }: { profile: Profile; invite:
     return (
       <div className="mt-5 flex flex-col gap-3">
         <FormAlert tone="info">
-          Bu kod bir öğrenci daveti. Öğrenci hesabı açmak için önce veli hesabından çıkış yapman gerekiyor.
+          Bu kod bir öğrenci daveti. Öğrenci hesabı açmak için önce veli hesabından çıkış yapmanız gerekiyor.
         </FormAlert>
         <Button size="lg" variant="secondary" className="w-full" loading={leaving} onClick={() => void leave()}>
           Çıkış yap ve devam et
@@ -77,7 +77,7 @@ export function LinkChild({ profile, invite, code }: { profile: Profile; invite:
       unwrap(await supabase.rpc('link_parent', { p_code: code }))
       await refresh()
       void queryClient.invalidateQueries()
-      toast.success(`${invite.student_name} hesabına bağlandın`)
+      toast.success(`${invite.student_name} hesabına bağlandınız`)
       navigate('/app', { replace: true })
     } catch (err) {
       setError(errorMessage(err))
@@ -88,8 +88,8 @@ export function LinkChild({ profile, invite, code }: { profile: Profile; invite:
   return (
     <form onSubmit={link} className="mt-5 flex flex-col gap-3">
       <p className="text-[15px] leading-relaxed text-muted">
-        <b className="font-semibold text-fg">{profile.full_name}</b> olarak giriş yaptın. Bağladıktan sonra {invite.student_name} için
-        planı, ilerlemeyi ve mesajları kendi hesabından görürsün.
+        <b className="font-semibold text-fg">{profile.full_name}</b> olarak giriş yaptınız. Bağladıktan sonra {invite.student_name} için
+        planı, ilerlemeyi ve mesajları kendi hesabınızdan görürsünüz.
       </p>
       {error && <FormAlert>{error}</FormAlert>}
       <Button type="submit" size="lg" className="mt-2 w-full" loading={linking}>

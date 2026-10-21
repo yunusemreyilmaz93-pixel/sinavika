@@ -98,7 +98,7 @@ await test('bekleyen öğretmen davet oluşturamaz', async () => {
 })
 
 await test('admin olmayan öğretmen onaylayamaz', async () => {
-  await rejects(as(teacherB, `select public.set_teacher_status($1, 'active')`, [teacherA]), /Yetkin yok/)
+  await rejects(as(teacherB, `select public.set_teacher_status($1, 'active')`, [teacherA]), /Yetkiniz yok/)
 })
 
 await test('admin öğretmeni onaylar ve bildirim gider', async () => {
@@ -110,7 +110,7 @@ await test('admin öğretmeni onaylar ve bildirim gider', async () => {
 
 await test('admin öğretmen listesini görür, öğretmen göremez', async () => {
   assert.equal((await as(adminId, 'select * from public.admin_teachers()')).length, 3)
-  await rejects(as(teacherA, 'select * from public.admin_teachers()'), /Yetkin yok/)
+  await rejects(as(teacherA, 'select * from public.admin_teachers()'), /Yetkiniz yok/)
 })
 
 const codes = []

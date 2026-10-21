@@ -88,7 +88,7 @@ export async function shareInvite(code: string) {
   try {
     await navigator.share({ title: 'Yolumnet daveti', text: inviteMessage(code) })
   } catch (error) {
-    if ((error as Error)?.name !== 'AbortError') toast.error('Paylaşılamadı, kodu kopyalayıp gönderebilirsin')
+    if ((error as Error)?.name !== 'AbortError') toast.error('Paylaşılamadı, kodu kopyalayıp gönderebilirsiniz')
   }
 }
 
@@ -107,7 +107,7 @@ export async function copyText(text: string, success: string) {
     const ok = document.execCommand('copy')
     area.remove()
     if (ok) toast.success(success)
-    else toast.error('Kopyalanamadı, kodu elle seçip kopyala')
+    else toast.error('Kopyalanamadı, kodu elle seçip kopyalayın')
   }
 }
 

@@ -13,14 +13,14 @@ export function OverviewTab({ studentId, onOpenExams }: { studentId: string; onO
         <TodayTasks studentId={studentId} canEdit />
         <LastExamSummary
           studentId={studentId}
-          more={{ label: 'Denemelere git', onClick: onOpenExams }}
+          more={{ label: 'Denemelere gidin', onClick: onOpenExams }}
           empty={{
-            description: 'Öğrencinin deneme sonucunu buradan da girebilirsin.',
+            description: 'Öğrencinin deneme sonucunu buradan da girebilirsiniz.',
             action: (
               <Button variant="secondary" asChild>
                 <Link to={`/app/ogrenciler/${studentId}/deneme-ekle`}>
                   <Plus />
-                  Deneme ekle
+                  Deneme ekleyin
                 </Link>
               </Button>
             ),

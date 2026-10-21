@@ -60,7 +60,7 @@ const MAX_SIDE = 1600
 
 async function toWebp(file: File): Promise<Blob> {
   const bitmap = await createImageBitmap(file).catch(() => null)
-  if (!bitmap) throw new AppError('Bu dosya bir görsel gibi görünmüyor. JPG, PNG ya da WebP yükle')
+  if (!bitmap) throw new AppError('Bu dosya bir görsel gibi görünmüyor. JPG, PNG ya da WebP yükleyin')
   const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height))
   const canvas = document.createElement('canvas')
   canvas.width = Math.round(bitmap.width * scale)
@@ -68,7 +68,7 @@ async function toWebp(file: File): Promise<Blob> {
   canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
   bitmap.close()
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.85))
-  if (!blob) throw new AppError('Görsel küçültülemedi. Başka bir dosya dene')
+  if (!blob) throw new AppError('Görsel küçültülemedi. Başka bir dosya deneyin')
   return blob
 }
 
@@ -76,6 +76,6 @@ export async function uploadLessonImage(topicId: number, file: File) {
   const blob = await toWebp(file)
   const path = `${topicId}/${crypto.randomUUID()}.webp`
   const { error } = await supabase.storage.from('lesson-images').upload(path, blob, { contentType: 'image/webp', cacheControl: '31536000' })
-  if (error) throw new AppError('Görsel yüklenemedi. Tekrar dene')
+  if (error) throw new AppError('Görsel yüklenemedi. Tekrar deneyin')
   return supabase.storage.from('lesson-images').getPublicUrl(path).data.publicUrl
 }

@@ -63,13 +63,13 @@ export function TeachersSection() {
     <div className="space-y-3">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <label className="relative block flex-1">
-          <span className="sr-only">Öğretmen ara</span>
+          <span className="sr-only">Öğretmen arama</span>
           <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-subtle" />
           <Input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Ad, e-posta veya okul ara"
+            placeholder="Ad, e-posta veya okul arayın"
             className="pl-10"
             enterKeyHint="search"
           />
@@ -79,12 +79,12 @@ export function TeachersSection() {
 
       {visible.length === 0 ? (
         all.length === 0 ? (
-          <EmptyState icon={Users} title="Henüz öğretmen yok" description="Onayladığın başvurular burada listelenir." />
+          <EmptyState icon={Users} title="Henüz öğretmen yok" description="Onayladığınız başvurular burada listelenir." />
         ) : (
           <EmptyState
             icon={UserX}
             title="Eşleşen öğretmen yok"
-            description="Aramayı ya da filtreyi değiştirmeyi dene."
+            description="Aramayı ya da filtreyi değiştirmeyi deneyin."
             action={
               <Button
                 variant="secondary"
@@ -93,7 +93,7 @@ export function TeachersSection() {
                   setFilter('all')
                 }}
               >
-                Filtreyi temizle
+                Filtreyi temizleyin
               </Button>
             }
           />
@@ -136,7 +136,7 @@ function TeacherRow({ teacher, self }: { teacher: AdminTeacher; self: boolean })
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span className="min-w-0 font-semibold break-words">{teacher.full_name}</span>
-          {self && <Badge tone="primary">Sen</Badge>}
+          {self && <Badge tone="primary">Siz</Badge>}
           {teacher.is_admin && !self && <Badge tone="accent">Yönetici</Badge>}
           {teacher.status !== 'active' && <Badge tone={badge.tone}>{badge.label}</Badge>}
         </div>

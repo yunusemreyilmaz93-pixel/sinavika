@@ -27,7 +27,7 @@ export async function callerId(request: Request) {
   const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '')
   if (!token) throw new HttpError(401, 'Oturum bulunamadı')
   const { data, error } = await admin().auth.getUser(token)
-  if (error || !data.user) throw new HttpError(401, 'Oturumun sona ermiş, tekrar giriş yap')
+  if (error || !data.user) throw new HttpError(401, 'Oturum sona ermiş, tekrar giriş yapın')
   return data.user.id
 }
 
@@ -53,7 +53,7 @@ export function handle(fn: (request: Request) => Promise<Response>) {
     } catch (err) {
       if (err instanceof HttpError) return json({ error: err.message }, err.status)
       console.error(err)
-      return json({ error: 'Beklenmeyen bir hata oluştu, tekrar dene' }, 500)
+      return json({ error: 'Beklenmeyen bir hata oluştu, tekrar deneyin' }, 500)
     }
   }
 }

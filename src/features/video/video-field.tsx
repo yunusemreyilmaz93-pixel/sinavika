@@ -43,8 +43,8 @@ export function VideoField({
     <div className="space-y-3">
       <Field
         label="YouTube bağlantısı"
-        error={invalid ? 'Bu bir YouTube bağlantısı değil. Videonun adresini kopyalayıp yapıştır' : undefined}
-        hint={!value.trim() ? 'Öğrencin videoyu uygulamanın içinde izler, ne kadarını izlediğini görürsün.' : undefined}
+        error={invalid ? 'Bu bir YouTube bağlantısı değil. Videonun adresini kopyalayıp yapıştırın' : undefined}
+        hint={!value.trim() ? 'Öğrenciniz videoyu uygulamanın içinde izler, ne kadarını izlediğini görürsünüz.' : undefined}
       >
         {(props) => (
           <Input
@@ -79,7 +79,7 @@ export function VideoField({
             {info.data && !info.data.embeddable && (
               <p className="mt-1 flex items-start gap-1.5 text-xs text-warning">
                 <CircleAlert className="mt-px size-3.5 shrink-0" />
-                Bu video başka sitelerde oynatılamıyor. Öğrencin YouTube'da izleyebilir ama izleme kaydı tutulamaz.
+                Bu video başka sitelerde oynatılamıyor. Öğrenciniz YouTube'da izleyebilir ama izleme kaydı tutulamaz.
               </p>
             )}
           </div>

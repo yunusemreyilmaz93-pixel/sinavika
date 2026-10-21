@@ -197,14 +197,18 @@ function Player({ task, tracking, resumeAt }: { task: VideoTask; tracking: boole
               </p>
               <p className="text-sm text-muted">
                 {state === 'blocked'
-                  ? "YouTube'da izleyebilirsin ama o zaman izleme kaydı tutulamaz."
-                  : "Bağlantını kontrol edip tekrar dene. Sorun sürerse videoyu YouTube'da aç."}
+                  ? tracking
+                    ? "YouTube'da izleyebilirsin ama o zaman izleme kaydı tutulamaz."
+                    : "YouTube'da izlenebilir ama o zaman izleme kaydı tutulamaz."
+                  : tracking
+                    ? "Bağlantını kontrol edip tekrar dene. Sorun sürerse videoyu YouTube'da aç."
+                    : "Bağlantıyı kontrol edip tekrar deneyin. Sorun sürerse videoyu YouTube'da açın."}
               </p>
               <div className="flex flex-wrap justify-center gap-2">
                 {state === 'failed' && (
                   <Button variant="secondary" onClick={() => setAttempt((n) => n + 1)}>
                     <RotateCw />
-                    Tekrar dene
+                    Tekrar deneyin
                   </Button>
                 )}
                 <Button asChild variant="secondary">

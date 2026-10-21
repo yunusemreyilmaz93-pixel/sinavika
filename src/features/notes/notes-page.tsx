@@ -23,7 +23,7 @@ export default function NotesPage() {
         <EmptyState
           icon={UserRound}
           title="Bağlı öğrenci yok"
-          description="Öğretmenin ya da çocuğunun oluşturduğu veli koduyla çocuğunun hesabını bağlayabilirsin."
+          description="Öğretmen ya da çocuğunuz tarafından oluşturulan veli koduyla çocuğunuzun hesabını bağlayabilirsiniz."
           action={
             <Button asChild variant="secondary">
               <Link to="/app/ayarlar">Ayarlara git</Link>
@@ -51,14 +51,14 @@ export default function NotesPage() {
         <div className="rounded-2xl border border-line bg-surface p-6 text-center">
           <p className="text-sm text-muted">{errorMessage(notes.error)}</p>
           <Button variant="secondary" size="sm" className="mt-4" onClick={() => void notes.refetch()}>
-            Tekrar dene
+            Tekrar deneyin
           </Button>
         </div>
       ) : list.length === 0 ? (
         <EmptyState
           icon={NotebookPen}
           title="Henüz paylaşılan not yok"
-          description="Öğretmenin bir not ya da görüşme özeti paylaştığında burada görürsün."
+          description={isParent ? 'Öğretmen bir not ya da görüşme özeti paylaştığında burada görürsünüz.' : 'Öğretmenin bir not ya da görüşme özeti paylaştığında burada görürsün.'}
           action={
             <Button asChild variant="secondary">
               <Link to="/app/mesajlar">

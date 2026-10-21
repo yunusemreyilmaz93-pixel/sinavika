@@ -28,10 +28,10 @@ export function ArchiveSection({ student }: { student: StudentDetail }) {
         .eq('id', student.id)
         .select('id')
       if (error) {
-        if (isCapacityError(error)) throw new AppError(`${error.message}. Önce başka bir öğrenciyi arşive al ya da bekleyen bir daveti sil.`)
+        if (isCapacityError(error)) throw new AppError(`${error.message}. Önce başka bir öğrenciyi arşive alın ya da bekleyen bir daveti silin.`)
         throw new AppError(errorMessage(error))
       }
-      if (!data.length) throw new AppError('Bu öğrenciyi değiştirme yetkin yok')
+      if (!data.length) throw new AppError('Bu öğrenciyi değiştirme yetkiniz yok')
     },
     onSuccess: async (_, archive) => {
       await Promise.all([refreshStudent(queryClient, student.id), queryClient.invalidateQueries({ queryKey: keys.invites })])
@@ -43,23 +43,23 @@ export function ArchiveSection({ student }: { student: StudentDetail }) {
   return (
     <Card>
       <CardHeader
-        title={archived ? 'Arşivde' : 'Arşive al'}
+        title={archived ? 'Arşivde' : 'Arşivleme'}
         description={
           archived
             ? 'Arşivdeki öğrenci kontenjana sayılmaz. Geri alınca tekrar sayılır.'
-            : 'Çalışmayı bırakan öğrenciyi arşive al. Kayıtları silinmez, kontenjanda yer açılır.'
+            : 'Çalışmayı bırakan öğrenciyi arşive alın. Kayıtları silinmez, kontenjanda yer açılır.'
         }
       />
       <CardBody>
         {archived ? (
           <Button variant="secondary" loading={toggle.isPending} onClick={() => toggle.mutate(false)} className="w-full sm:w-auto">
             {!toggle.isPending && <ArchiveRestore />}
-            Arşivden çıkar
+            Arşivden çıkarın
           </Button>
         ) : (
           <Button variant="secondary" onClick={() => setConfirming(true)} className="w-full sm:w-auto">
             <Archive />
-            Arşive al
+            Arşive alın
           </Button>
         )}
       </CardBody>
@@ -67,8 +67,8 @@ export function ArchiveSection({ student }: { student: StudentDetail }) {
         open={confirming}
         onOpenChange={setConfirming}
         title="Arşive alınsın mı?"
-        description={`${student.full_name} öğrenci listende arşiv sekmesine taşınır. İstediğin zaman geri alabilirsin.`}
-        confirmLabel="Arşive al"
+        description={`${student.full_name} öğrenci listenizde arşiv sekmesine taşınır. İstediğiniz zaman geri alabilirsiniz.`}
+        confirmLabel="Arşive alın"
         tone="primary"
         onConfirm={async () => {
           await toggle.mutateAsync(true).catch(() => {})
@@ -100,7 +100,7 @@ export function DeleteSection({ student }: { student: StudentDetail }) {
 
   return (
     <Card className="border-danger/30">
-      <CardHeader title="Kalıcı olarak sil" description="Öğrencinin hesabı ve tüm kayıtları silinir. Geri alınamaz." />
+      <CardHeader title="Kalıcı silme" description="Öğrencinin hesabı ve tüm kayıtları silinir. Geri alınamaz." />
       <CardBody>
         <Button
           variant="danger"
@@ -111,7 +111,7 @@ export function DeleteSection({ student }: { student: StudentDetail }) {
           className="w-full sm:w-auto"
         >
           <Trash2 />
-          Öğrenciyi sil
+          Öğrenciyi silin
         </Button>
       </CardBody>
       <Confirm
@@ -119,13 +119,13 @@ export function DeleteSection({ student }: { student: StudentDetail }) {
         onOpenChange={setOpen}
         title="Öğrenci kalıcı olarak silinsin mi?"
         description="Çalışma, soru, deneme, görev, not ve mesaj kayıtlarının hepsi silinir. Sadece bu öğrenciye bağlı veli hesapları da silinir."
-        confirmLabel="Kalıcı olarak sil"
+        confirmLabel="Kalıcı olarak silin"
         disabled={!matches}
         onConfirm={async () => {
           await remove.mutateAsync().catch(() => {})
         }}
       >
-        <Field label={<>Onaylamak için <span className="font-bold">{student.full_name}</span> yaz</>}>
+        <Field label={<>Onaylamak için <span className="font-bold">{student.full_name}</span> yazın</>}>
           {(p) => (
             <Input {...p} value={typed} autoComplete="off" autoCapitalize="words" spellCheck={false} onChange={(e) => setTyped(e.target.value)} />
           )}

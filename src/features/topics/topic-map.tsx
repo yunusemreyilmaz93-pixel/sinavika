@@ -70,7 +70,7 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
             if (progress.isError) void progress.refetch()
           }}
         >
-          Tekrar dene
+          Tekrar deneyin
         </Button>
       </div>
     )
@@ -181,7 +181,7 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
             <EmptyState
               icon={Search}
               title="Konu bulunamadı"
-              description="Yazımı kontrol et ya da konunun adından bir parça yaz. Türkçe karakter şart değil."
+              description="Yazımı kontrol edin ya da konunun adından bir parça yazın. Türkçe karakter şart değil."
               action={
                 <Button variant="secondary" onClick={() => setQuery('')}>
                   Aramayı temizle

@@ -49,33 +49,32 @@ export function InstallCard() {
   return (
     <SettingsCard
       icon={Smartphone}
-      title={env.mobile ? 'Uygulamayı telefona ekle' : 'Uygulamayı yükle'}
-      description="Yolumnet'i ana ekrandan tek dokunuşla aç."
+      title={env.mobile ? 'Uygulamayı telefona ekleyin' : 'Uygulamayı yükleyin'}
     >
       {prompt ? (
         <Button onClick={() => void install()} loading={busy} className="w-full sm:w-auto">
           {!busy && <Download />}
-          {env.mobile ? 'Ana ekrana ekle' : 'Yükle'}
+          {env.mobile ? 'Ana ekrana ekleyin' : 'Yükle'}
         </Button>
       ) : env.ios ? (
         <ol className="space-y-2.5">
           <Step n={1}>
-            Safari'de alttaki <Share className={inlineIcon} aria-label="Paylaş" /> <b className="font-semibold">Paylaş</b> düğmesine dokun.
+            Safari'de alttaki <Share className={inlineIcon} aria-label="Paylaş" /> <b className="font-semibold">Paylaş</b> düğmesine dokunun.
           </Step>
           <Step n={2}>
-            <SquarePlus className={inlineIcon} aria-hidden /> <b className="font-semibold">Ana Ekrana Ekle</b> seçeneğini bul.
+            <SquarePlus className={inlineIcon} aria-hidden /> <b className="font-semibold">Ana Ekrana Ekle</b> seçeneğini bulun.
           </Step>
           <Step n={3}>
-            Sağ üstteki <b className="font-semibold">Ekle</b> düğmesine dokun.
+            Sağ üstteki <b className="font-semibold">Ekle</b> düğmesine dokunun.
           </Step>
         </ol>
       ) : (
         <ol className="space-y-2.5">
           <Step n={1}>
-            Tarayıcının sağ üstündeki <EllipsisVertical className={inlineIcon} aria-label="menü" /> menüye dokun.
+            Tarayıcının sağ üstündeki <EllipsisVertical className={inlineIcon} aria-label="menü" /> menüye dokunun.
           </Step>
           <Step n={2}>
-            <b className="font-semibold">Ana ekrana ekle</b> ya da <b className="font-semibold">Uygulamayı yükle</b> seçeneğine dokun.
+            <b className="font-semibold">Ana ekrana ekle</b> ya da <b className="font-semibold">Uygulamayı yükle</b> seçeneğine dokunun.
           </Step>
         </ol>
       )}

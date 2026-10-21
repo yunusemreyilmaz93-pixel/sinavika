@@ -98,7 +98,7 @@ function BellButton({ userId }: { userId: string }) {
                 ))}
               </div>
             ) : recent.isError ? (
-              <p className="px-4 py-8 text-center text-sm text-muted">Bildirimler yüklenemedi. Biraz sonra tekrar dene.</p>
+              <p className="px-4 py-8 text-center text-sm text-muted">Bildirimler yüklenemedi. Biraz sonra tekrar deneyin.</p>
             ) : items.length === 0 ? (
               <div className="flex flex-col items-center px-6 py-10 text-center">
                 <span className="grid size-11 place-items-center rounded-2xl bg-surface-2 text-muted">

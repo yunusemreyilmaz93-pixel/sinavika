@@ -18,9 +18,9 @@ const slide: Variants = {
   exit: (dir: number) => ({ x: dir * -32, opacity: 0 }),
 }
 
-const titles: Record<Exclude<Step, 'menu'>, { title: string; description: string }> = {
-  questions: { title: 'Soru çözdüm', description: 'Doğru, yanlış ve boş sayılarını gir.' },
-  study: { title: 'Çalıştım', description: 'Hangi derse ne kadar çalıştığını gir.' },
+const titles: Record<Exclude<Step, 'menu'>, { title: string }> = {
+  questions: { title: 'Soru çözdüm' },
+  study: { title: 'Çalıştım' },
 }
 
 type SheetProps = { open: boolean; onOpenChange: (open: boolean) => void }
@@ -81,7 +81,6 @@ export function QuickAddModal({ open, onOpenChange }: SheetProps) {
       open={open}
       onOpenChange={onOpenChange}
       title={header ?? 'Kayıt ekle'}
-      description={step === 'menu' ? 'Ne yaptığını seç, birkaç dokunuşla kaydet.' : titles[step].description}
     >
       <div className="-mx-5 overflow-x-clip px-5">
           <motion.div

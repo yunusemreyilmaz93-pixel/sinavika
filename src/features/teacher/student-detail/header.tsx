@@ -60,14 +60,14 @@ export function StudentHeader({
           <Button variant="secondary" className="flex-1 sm:flex-none" asChild>
             <Link to={threadLink(student.id, 'student')}>
               <MessageCircle />
-              Öğrenciye yaz
+              Öğrenciye yazın
             </Link>
           </Button>
           {parentCount > 0 && (
             <Button variant="secondary" className="flex-1 sm:flex-none" asChild>
               <Link to={threadLink(student.id, 'parent')}>
                 <UsersRound />
-                Velilere yaz
+                Velilere yazın
               </Link>
             </Button>
           )}

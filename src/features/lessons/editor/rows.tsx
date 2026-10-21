@@ -43,7 +43,7 @@ export function RowsForm({
   columns,
   rows,
   onChange,
-  addLabel = 'Satır ekle',
+  addLabel = 'Satır ekleyin',
   name,
   minRows = 1,
 }: {
@@ -122,7 +122,7 @@ export function RowsForm({
           </div>
           <button
             type="button"
-            aria-label={`${name} ${r + 1} sil`}
+            aria-label={`${name} ${r + 1} silin`}
             onClick={() => onChange(rows.length > minRows ? rows.filter((_, i) => i !== r) : [empty()])}
             className="grid size-11 shrink-0 place-items-center rounded-xl text-muted hover:bg-surface-2 hover:text-danger"
           >

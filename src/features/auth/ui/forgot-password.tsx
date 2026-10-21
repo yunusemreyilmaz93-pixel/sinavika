@@ -19,7 +19,7 @@ export function ForgotPassword() {
           className="z-50 w-[min(21rem,calc(100vw-2rem))] rounded-2xl border border-line bg-surface p-4 shadow-pop outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
         >
           <div className="flex items-start justify-between gap-3">
-            <p className="pt-1 font-display text-base font-bold">Şifreni mi unuttun?</p>
+            <p className="pt-1 font-display text-base font-bold">Şifrenizi mi unuttunuz?</p>
             <Popover.Close
               aria-label="Kapat"
               className="-mt-1.5 -mr-1.5 grid size-10 shrink-0 place-items-center rounded-xl text-muted hover:bg-surface-2"
@@ -34,7 +34,7 @@ export function ForgotPassword() {
               </span>
               <div>
                 <p className="font-semibold">Öğrenci ve veliler</p>
-                <p className="mt-0.5 leading-relaxed text-muted">Öğretmenine haber ver. Şifreni sıfırlayıp yenisini sana iletir.</p>
+                <p className="mt-0.5 leading-relaxed text-muted">Öğretmene haber verin. Şifreyi sıfırlayıp yenisini iletir.</p>
               </div>
             </li>
             <li className="flex gap-3">
@@ -44,7 +44,7 @@ export function ForgotPassword() {
               <div>
                 <p className="font-semibold">Öğretmenler</p>
                 <p className="mt-0.5 leading-relaxed text-muted">
-                  Kayıtlı e-posta adresinden yöneticiye yaz. Şifreni sıfırlayıp sana bilgi verir.
+                  Kayıtlı e-posta adresinizden yöneticiye yazın. Şifreyi sıfırlayıp bilgi verir.
                 </p>
                 {contactEmail && (
                   <a href={`mailto:${contactEmail}`} className="mt-1 inline-flex min-h-9 items-center font-semibold break-all text-accent hover:underline">

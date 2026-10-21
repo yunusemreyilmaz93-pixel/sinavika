@@ -114,7 +114,7 @@ export function TaskFields({
       <Field
         label="Başlık"
         error={titleError}
-        hint={suggestion && !draft.title.trim() ? `Boş bırakırsan: ${suggestion}` : undefined}
+        hint={suggestion && !draft.title.trim() ? `Boş bırakılırsa: ${suggestion}` : undefined}
       >
         {(props) => (
           <Input

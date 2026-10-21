@@ -30,7 +30,7 @@ async function copy(text: string, label: string) {
     await navigator.clipboard.writeText(text)
     toast.success(`${label} kopyalandı`)
   } catch {
-    toast.error('Kopyalanamadı, elle seçip kopyala')
+    toast.error('Kopyalanamadı, elle seçip kopyalayın')
   }
 }
 
@@ -73,24 +73,24 @@ export function TeacherActions({ teacher }: { teacher: AdminTeacher }) {
           {teacher.status === 'active' ? (
             <MenuItem onSelect={() => setDialog('stop')}>
               <Ban />
-              Hesabı durdur
+              Hesabı durdurun
             </MenuItem>
           ) : (
             <MenuItem onSelect={() => void setStatus('active')}>
               {teacher.status === 'rejected' ? <Check /> : <RotateCcw />}
-              {teacher.status === 'rejected' ? 'Onayla' : 'Yeniden aç'}
+              {teacher.status === 'rejected' ? 'Onayla' : 'Yeniden açın'}
             </MenuItem>
           )}
           <MenuItem onSelect={() => setDialog('password')}>
             <KeyRound />
-            Şifre sıfırla
+            Şifre sıfırlayın
           </MenuItem>
           {teacher.student_count === 0 && (
             <>
               <MenuSeparator />
               <MenuItem tone="danger" onSelect={() => setDialog('delete')}>
                 <Trash2 />
-                Hesabı sil
+                Hesabı silin
               </MenuItem>
             </>
           )}
@@ -101,7 +101,7 @@ export function TeacherActions({ teacher }: { teacher: AdminTeacher }) {
         open={dialog === 'stop'}
         onOpenChange={close}
         title="Hesap durdurulsun mu?"
-        description={`${teacher.full_name} giriş yapabilir ama öğrencilerine ulaşamaz. Öğrencileri kendi kayıtlarını girmeye devam eder. İstediğin zaman yeniden açabilirsin.`}
+        description={`${teacher.full_name} giriş yapabilir ama öğrencilerine ulaşamaz. Öğrencileri kendi kayıtlarını girmeye devam eder. İstediğiniz zaman yeniden açabilirsiniz.`}
         confirmLabel="Durdur"
         onConfirm={() => setStatus('disabled')}
       />
@@ -110,7 +110,7 @@ export function TeacherActions({ teacher }: { teacher: AdminTeacher }) {
         onOpenChange={close}
         title="Hesap silinsin mi?"
         description={`${teacher.full_name} hesabı kalıcı olarak silinir. Bu işlem geri alınamaz.`}
-        confirmLabel="Hesabı sil"
+        confirmLabel="Hesabı silin"
         onConfirm={remove}
       />
       <ResetPassword teacher={teacher} open={dialog === 'password'} onOpenChange={close} />
@@ -120,7 +120,7 @@ export function TeacherActions({ teacher }: { teacher: AdminTeacher }) {
 
 function ResetPassword({ teacher, open, onOpenChange }: { teacher: AdminTeacher; open: boolean; onOpenChange: (open: boolean) => void }) {
   return (
-    <Modal open={open} onOpenChange={onOpenChange} title="Şifre sıfırla" description={`${teacher.full_name} için yeni bir şifre belirle.`} size="sm">
+    <Modal open={open} onOpenChange={onOpenChange} title="Şifre sıfırlama" description={`${teacher.full_name} için yeni bir şifre belirleyin.`} size="sm">
       {open && <ResetPasswordForm teacher={teacher} onDone={() => onOpenChange(false)} />}
     </Modal>
   )
@@ -152,10 +152,10 @@ function ResetPasswordForm({ teacher, onDone }: { teacher: AdminTeacher; onDone:
   if (saved) {
     return (
       <div className="space-y-4">
-        <p className="text-sm text-muted">Yeni şifre kaydedildi. Öğretmene güvendiğin bir yoldan ilet. Giriş yaptıktan sonra Ayarlar sayfasından değiştirebilir.</p>
+        <p className="text-sm text-muted">Yeni şifre kaydedildi. Öğretmene güvendiğiniz bir yoldan iletin. Giriş yaptıktan sonra Ayarlar sayfasından değiştirebilir.</p>
         <div className="grid-paper flex items-center gap-2 rounded-2xl border border-line-strong p-3 pl-4">
           <span className="tabular min-w-0 flex-1 font-display text-xl font-bold tracking-wide break-all select-all">{saved}</span>
-          <Button variant="secondary" size="icon" aria-label="Şifreyi kopyala" onClick={() => void copy(saved, 'Şifre')}>
+          <Button variant="secondary" size="icon" aria-label="Şifreyi kopyalayın" onClick={() => void copy(saved, 'Şifre')}>
             <Copy />
           </Button>
         </div>
@@ -191,8 +191,8 @@ function ResetPasswordForm({ teacher, onDone }: { teacher: AdminTeacher; onDone:
               type="button"
               variant="secondary"
               size="icon"
-              aria-label="Rastgele şifre üret"
-              title="Rastgele şifre üret"
+              aria-label="Rastgele şifre üretin"
+              title="Rastgele şifre üretin"
               onClick={() => {
                 setPassword(randomPassword())
                 setError(null)
@@ -209,7 +209,7 @@ function ResetPasswordForm({ teacher, onDone }: { teacher: AdminTeacher; onDone:
           Vazgeç
         </Button>
         <Button type="submit" loading={saving}>
-          Şifreyi kaydet
+          Şifreyi kaydedin
         </Button>
       </div>
     </form>

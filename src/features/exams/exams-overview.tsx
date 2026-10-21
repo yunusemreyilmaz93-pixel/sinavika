@@ -65,7 +65,7 @@ export function ExamsOverview({ studentId, student, canEdit, newExamHref, examHr
           <p className="text-sm text-danger">{errorMessage(exams.error ?? curriculum.error)}</p>
           <Button variant="secondary" size="sm" className="h-11" onClick={() => (exams.isError ? exams.refetch() : curriculum.refetch())}>
             <RotateCw />
-            Tekrar dene
+            Tekrar deneyin
           </Button>
         </CardBody>
       </Card>
@@ -94,7 +94,7 @@ export function ExamsOverview({ studentId, student, canEdit, newExamHref, examHr
           title={all.length ? `Henüz ${examLabel[kind]} denemesi yok` : 'Henüz deneme yok'}
           description={
             canEdit
-              ? 'Deneme sonucunu ders ders girdiğinde netler ve gelişim burada görünür.'
+              ? 'Deneme sonucu ders ders girildiğinde netler ve gelişim burada görünür.'
               : 'Deneme eklendiğinde netler ve gelişim burada görünür.'
           }
           action={

@@ -44,7 +44,7 @@ export default function LessonPage() {
         <EmptyState
           icon={BookOpen}
           title={data.isError ? 'Konu anlatımı açılamadı' : 'Bu konunun anlatımı henüz hazır değil'}
-          description={data.isError ? 'Sayfayı yenileyip tekrar dene.' : 'Hazır olduğunda Konular ekranında bu konunun yanında görünecek.'}
+          description={data.isError ? 'Sayfayı yenileyip tekrar deneyin.' : 'Hazır olduğunda Konular ekranında bu konunun yanında görünecek.'}
           action={
             profile.is_admin && topic ? (
               <Button asChild>

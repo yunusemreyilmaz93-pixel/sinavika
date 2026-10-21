@@ -25,7 +25,7 @@ export function BlockList({ editor, optionCount, onInsert, onSlash, onFiles }: P
 
   const remove = (id: string) => {
     editor.remove(id)
-    toast('Blok silindi', { action: { label: 'Geri al', onClick: editor.undo } })
+    toast('Blok silindi', { action: { label: 'Geri alın', onClick: editor.undo } })
   }
 
   return (
@@ -57,7 +57,7 @@ export function BlockList({ editor, optionCount, onInsert, onSlash, onFiles }: P
         {blocks.length === 0 && <p className="text-[15px] text-muted">Anlatım boş.</p>}
         <Button type="button" variant="secondary" className="min-h-11" onClick={() => onInsert(null)}>
           <Plus />
-          Blok ekle
+          Blok ekleyin
         </Button>
       </div>
     </div>

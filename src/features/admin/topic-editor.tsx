@@ -93,7 +93,7 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
     event.preventDefault()
     const trimmed = name.trim()
     if (!trimmed) {
-      setAddError('Konu adını yaz')
+      setAddError('Konu adını yazın')
       addRef.current?.focus()
       return
     }
@@ -115,7 +115,7 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
   return (
     <Card className="overflow-hidden">
       <div className="flex items-center gap-1 border-b border-line py-2 pr-4 pl-1.5 lg:px-5 lg:py-4">
-        <Button variant="ghost" size="icon" className="lg:hidden" onClick={onBack} aria-label="Derslere dön">
+        <Button variant="ghost" size="icon" className="lg:hidden" onClick={onBack} aria-label="Derslere dönün">
           <ArrowLeft />
         </Button>
         <div className="min-w-0 flex-1">
@@ -127,7 +127,7 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
       </div>
 
       {topics.length === 0 ? (
-        <p className="px-4 py-8 text-center text-sm text-muted sm:px-5">Bu derste henüz konu yok. İlk konuyu aşağıdan ekle.</p>
+        <p className="px-4 py-8 text-center text-sm text-muted sm:px-5">Bu derste henüz konu yok. İlk konuyu aşağıdan ekleyin.</p>
       ) : (
         <ol className="divide-y divide-line">
           <AnimatePresence initial={false}>
@@ -158,7 +158,7 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
                       variant="ghost"
                       size="icon"
                       className="text-muted"
-                      aria-label={`${topic.name}, yukarı taşı`}
+                      aria-label={`${topic.name}, yukarı taşıyın`}
                       disabled={index === 0}
                       onClick={() => move(index, -1)}
                     >
@@ -168,7 +168,7 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
                       variant="ghost"
                       size="icon"
                       className="text-muted"
-                      aria-label={`${topic.name}, aşağı taşı`}
+                      aria-label={`${topic.name}, aşağı taşıyın`}
                       disabled={index === topics.length - 1}
                       onClick={() => move(index, 1)}
                     >
@@ -183,7 +183,7 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
                       <MenuContent>
                         <MenuItem onSelect={() => setEditing(topic.id)}>
                           <Pencil />
-                          Yeniden adlandır
+                          Yeniden adlandırın
                         </MenuItem>
                         <MenuItem
                           tone="danger"
@@ -249,7 +249,7 @@ export function TopicEditor({ subject, topics, onBack }: { subject: Subject; top
             </>
           ) : null
         }
-        confirmLabel="Konuyu sil"
+        confirmLabel="Konuyu silin"
         onConfirm={() => deleting && remove(deleting)}
       />
     </Card>

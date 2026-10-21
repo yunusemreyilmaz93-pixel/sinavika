@@ -40,10 +40,10 @@ export function ApplicationsSection({ onNavigate }: { onNavigate: (section: 'ogr
       <EmptyState
         icon={Inbox}
         title="Bekleyen başvuru yok"
-        description="Yeni öğretmen başvuruları burada görünür. Onayladığın öğretmen hemen öğrenci davet edebilir."
+        description="Yeni öğretmen başvuruları burada görünür. Onayladığınız öğretmen hemen öğrenci davet edebilir."
         action={
           <Button variant="secondary" onClick={() => onNavigate('ogretmenler')}>
-            Öğretmenleri gör
+            Öğretmenleri görün
           </Button>
         }
       />
@@ -162,7 +162,7 @@ function ApplicationCard({ teacher }: { teacher: AdminTeacher }) {
         open={rejecting}
         onOpenChange={setRejecting}
         title="Başvuru reddedilsin mi?"
-        description={`${teacher.full_name} uygulamayı kullanamaz. Fikrini değiştirirsen Öğretmenler bölümünden onaylayabilirsin.`}
+        description={`${teacher.full_name} uygulamayı kullanamaz. Fikrinizi değiştirirseniz Öğretmenler bölümünden onaylayabilirsiniz.`}
         confirmLabel="Reddet"
         onConfirm={reject}
       />

@@ -18,17 +18,17 @@ const usernameSchema = z
   .string()
   .min(3, 'En az 3 karakter olmalı')
   .max(24, 'En fazla 24 karakter olabilir')
-  .regex(USERNAME_PATTERN, 'Sadece küçük harf, rakam, nokta ve alt çizgi kullanabilirsin')
+  .regex(USERNAME_PATTERN, 'Sadece küçük harf, rakam, nokta ve alt çizgi kullanılabilir')
 
 const schema = z.object({
-  fullName: z.string().min(2, 'Adını ve soyadını yaz').max(80, 'En fazla 80 karakter olabilir'),
+  fullName: z.string().min(2, 'Adınızı ve soyadınızı yazın').max(80, 'En fazla 80 karakter olabilir'),
   username: usernameSchema,
   password: z.string().superRefine((value, ctx) => {
     const issue = passwordIssueMessage(value)
     if (issue) ctx.addIssue({ code: 'custom', message: issue })
   }),
-  passwordAgain: z.string().min(1, 'Şifreni tekrar yaz'),
-  consent: z.literal(true, 'Devam etmek için onaylaman gerekiyor'),
+  passwordAgain: z.string().min(1, 'Şifrenizi tekrar yazın'),
+  consent: z.literal(true, 'Devam etmek için onay gerekiyor'),
   transfer: z.literal(true, 'Hesap açmak için bu onay gerekiyor'),
 })
 
@@ -120,7 +120,7 @@ export function JoinForm({ code, invite, flow }: JoinFormProps) {
     } catch (err) {
       const message = errorMessage(err)
       if (/kullanıcı adı|zaten var/i.test(message)) {
-        setErrors({ username: 'Bu kullanıcı adı alınmış, başka bir tane dene' })
+        setErrors({ username: 'Bu kullanıcı adı alınmış, başka bir tane deneyin' })
         setUsernameEdited(true)
         focusFirstInvalid(formRef.current)
       } else if (/şifre/i.test(message)) {
@@ -132,7 +132,7 @@ export function JoinForm({ code, invite, flow }: JoinFormProps) {
       setSubmitting(false)
       return
     }
-    toast.success(`Hoş geldin, ${fullName.split(' ')[0]}`)
+    toast.success(`Hoş geldiniz, ${fullName.split(' ')[0]}`)
     try {
       await flow.signIn(values.username, values.password)
     } catch {
@@ -146,8 +146,8 @@ export function JoinForm({ code, invite, flow }: JoinFormProps) {
     return (
       <div className="mt-5 space-y-4">
         <FormAlert tone="info">
-          Hesabın oluşturuldu ama otomatik giriş yapılamadı. Kullanıcı adın <b className="font-semibold">{values.username}</b>, bununla
-          ve şifrenle giriş yapabilirsin.
+          Hesabınız oluşturuldu ama otomatik giriş yapılamadı. Kullanıcı adınız <b className="font-semibold">{values.username}</b>, bununla
+          ve şifrenizle giriş yapabilirsiniz.
         </FormAlert>
         <Button asChild size="lg" className="w-full">
           <Link to="/giris">Giriş yap</Link>
@@ -202,10 +202,10 @@ export function JoinForm({ code, invite, flow }: JoinFormProps) {
         <p className="min-w-0 break-words text-muted">
           {usernameValid ? (
             <>
-              Kullanıcı adın <b className="font-semibold text-fg">{values.username}</b>. Bir yere not al, giriş yaparken lazım olacak.
+              Kullanıcı adınız <b className="font-semibold text-fg">{values.username}</b>. Bir yere not edin, giriş yaparken lazım olacak.
             </>
           ) : (
-            'Giriş yaparken kullanıcı adını kullanacaksın. Seçtikten sonra bir yere not al.'
+            'Giriş yaparken kullanıcı adını kullanacaksınız. Seçtikten sonra bir yere not edin.'
           )}
         </p>
       </div>

@@ -11,9 +11,9 @@ import { PasswordInput } from './ui/password-input'
 import { useSignIn } from './ui/use-sign-in'
 
 const points: ValuePoint[] = [
-  { icon: CalendarCheck2, title: 'Haftalık plan', text: 'Öğretmenin görevleri verir, sen yaptıkça işaretlersin.' },
-  { icon: Timer, title: 'Çalışma ve soru takibi', text: 'Süreni ve çözdüğün soruları ders ders kaydedersin.' },
-  { icon: TrendingUp, title: 'Deneme netleri', text: 'Her denemeden sonra netlerin ve konu durumun görünür.' },
+  { icon: CalendarCheck2, title: 'Haftalık plan', text: 'Öğretmen görevleri verir, öğrenci yaptıkça işaretler.' },
+  { icon: Timer, title: 'Çalışma ve soru takibi', text: 'Çalışma süresi ve çözülen sorular ders ders kaydedilir.' },
+  { icon: TrendingUp, title: 'Deneme netleri', text: 'Her denemeden sonra netler ve konu durumu görünür.' },
   { icon: MessagesSquare, title: 'Öğretmen, öğrenci ve veli', text: 'Herkes aynı planı kendi ekranından görür, gerektiğinde yazışır.' },
 ]
 
@@ -37,8 +37,8 @@ export default function LoginPage() {
     event.preventDefault()
     if (submitting || flow.waiting) return
     const nextErrors = {
-      identifier: identifier.trim() ? undefined : 'Kullanıcı adını ya da e-posta adresini yaz',
-      password: password ? undefined : 'Şifreni yaz',
+      identifier: identifier.trim() ? undefined : 'Kullanıcı adını ya da e-posta adresini girin',
+      password: password ? undefined : 'Şifrenizi girin',
     }
     setErrors(nextErrors)
     setFormError(null)
@@ -131,7 +131,7 @@ export default function LoginPage() {
       </form>
 
       <div className="mt-8 border-t border-line pt-6">
-        <p className="text-sm font-semibold text-muted">Hesabın yok mu?</p>
+        <p className="text-sm font-semibold text-muted">Hesabınız yok mu?</p>
         <div className="mt-3 grid gap-2">
           <Button variant="secondary" asChild className="w-full justify-start">
             <Link to="/katil">

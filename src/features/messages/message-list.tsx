@@ -98,7 +98,7 @@ export function MessageList({
                     onClick={() => onRetry(m)}
                     className="mt-0.5 inline-flex h-9 items-center px-2 text-xs font-semibold text-danger hover:underline"
                   >
-                    Gönderilemedi. Tekrar dene
+                    Gönderilemedi. Tekrar deneyin
                   </button>
                 )}
             </motion.li>

@@ -71,7 +71,7 @@ export function loadYouTube(): Promise<YTNamespace> {
     script.async = true
     script.onerror = () => {
       loading = null
-      reject(new Error('YouTube oynatıcısı yüklenemedi. Bağlantını kontrol edip tekrar dene'))
+      reject(new Error('YouTube oynatıcısı yüklenemedi. Bağlantıyı kontrol edip tekrar deneyin'))
     }
     document.head.appendChild(script)
   })

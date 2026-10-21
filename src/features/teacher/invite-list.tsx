@@ -68,7 +68,7 @@ export function PendingInvites({
                 </span>
               </span>
             </button>
-            <Button variant="ghost" size="icon" aria-label={`${name} için kodu kopyala`} onClick={() => void copyText(invite.code, 'Kod kopyalandı')}>
+            <Button variant="ghost" size="icon" aria-label={`${name} için kodu kopyalayın`} onClick={() => void copyText(invite.code, 'Kod kopyalandı')}>
               <Copy />
             </Button>
             <Menu>
@@ -84,12 +84,12 @@ export function PendingInvites({
                 </MenuItem>
                 <MenuItem onSelect={() => void copyText(inviteLink(invite.code), 'Link kopyalandı')}>
                   <Link2 />
-                  Linki kopyala
+                  Linki kopyalayın
                 </MenuItem>
                 <MenuSeparator />
                 <MenuItem tone="danger" onSelect={() => onCancel(invite)}>
                   <X />
-                  Daveti iptal et
+                  Daveti iptal edin
                 </MenuItem>
               </MenuContent>
             </Menu>
@@ -158,7 +158,7 @@ export function ExpiredInvites({ invites, onRenewed }: { invites: Invite[]; onRe
             <Button
               variant="ghost"
               size="icon"
-              aria-label={`${name} için süresi dolan daveti sil`}
+              aria-label={`${name} için süresi dolan daveti silin`}
               disabled={busy}
               onClick={() => remove.mutate(invite.code)}
             >

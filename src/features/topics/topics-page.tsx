@@ -16,7 +16,7 @@ export default function TopicsPage() {
         <EmptyState
           icon={UserRound}
           title="Bağlı öğrenci yok"
-          description="Öğretmenin ya da çocuğunun oluşturduğu veli koduyla çocuğunun hesabını bağlayabilirsin."
+          description="Öğretmen ya da çocuğunuz tarafından oluşturulan veli koduyla çocuğunuzun hesabını bağlayabilirsiniz."
           action={
             <Button asChild>
               <Link to="/katil">Kodu gir</Link>
@@ -31,7 +31,7 @@ export default function TopicsPage() {
     <>
       <PageHeader
         title="Konular"
-        description={viewed.canEdit ? 'Konuya dokunarak durumunu değiştir.' : `${viewed.name} için konu durumları.`}
+        description={viewed.canEdit ? 'Konuya dokununca durum değişir.' : `${viewed.name} için konu durumları.`}
       />
       <TopicMap key={viewed.studentId} studentId={viewed.studentId} student={viewed.student} canEdit={viewed.canEdit} />
     </>

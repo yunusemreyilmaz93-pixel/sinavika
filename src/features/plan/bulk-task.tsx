@@ -58,10 +58,10 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
   const submit = async (event: FormEvent) => {
     event.preventDefault()
     const values = draftValues(draft, curriculum.data)
-    if (!values) return setTitleError('Başlık yaz ya da bir ders seç')
-    if (videoUrlInvalid(draft)) return void toast.error('YouTube bağlantısı geçersiz. Videonun adresini kopyalayıp yapıştır')
-    if (!studentIds.length) return setError('En az bir öğrenci seç')
-    if (!dates.length) return setError('En az bir gün seç')
+    if (!values) return setTitleError('Başlık yazın ya da bir ders seçin')
+    if (videoUrlInvalid(draft)) return void toast.error('YouTube bağlantısı geçersiz. Videonun adresini kopyalayıp yapıştırın')
+    if (!studentIds.length) return setError('En az bir öğrenci seçin')
+    if (!dates.length) return setError('En az bir gün seçin')
     setBusy(true)
     try {
       const rows = studentIds.flatMap((student_id) => [...dates].sort().map((due_on) => ({ ...values, student_id, due_on })))
@@ -84,7 +84,7 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
       open={open}
       onOpenChange={onOpenChange}
       title="Toplu görev"
-      description="Aynı görevi birden fazla öğrenciye ve güne ekle."
+      description="Aynı görevi birden fazla öğrenciye ve güne ekleyin."
       size="lg"
       footer={
         <>
@@ -175,7 +175,7 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
             })}
           </div>
           {weekStartISO(today) > week && (
-            <p className="text-sm text-warning">Geçmiş bir hafta seçtin.</p>
+            <p className="text-sm text-warning">Geçmiş bir hafta seçildi.</p>
           )}
         </section>
 

@@ -14,7 +14,7 @@ export default function StudentPlanPage() {
         <EmptyState
           icon={UserPlus}
           title="Bağlı öğrenci yok"
-          description="Öğretmenin ya da çocuğunun oluşturduğu veli kodunu girince çocuğunun planı burada görünür."
+          description="Öğretmen ya da çocuğunuz tarafından oluşturulan veli kodunu girince çocuğunuzun planı burada görünür."
         />
       </>
     )
@@ -24,7 +24,7 @@ export default function StudentPlanPage() {
     <>
       <PageHeader
         title="Haftalık plan"
-        description={viewed.canEdit ? 'Görevlerini işaretle, kendi çalışmanı ekle.' : `${viewed.name} için haftanın planı`}
+        description={viewed.canEdit ? undefined : `${viewed.name} için haftanın planı`}
       />
       <WeekPlan key={viewed.studentId} studentId={viewed.studentId} viewer={viewed.canEdit ? 'student' : 'parent'} />
     </>

@@ -73,7 +73,7 @@ export function NoteForm({
         className="space-y-5"
         onSubmit={(e) => {
           e.preventDefault()
-          if (!body.trim()) return setError('Notu yazmayı unutma')
+          if (!body.trim()) return setError('Not boş olamaz')
           save.mutate()
         }}
       >
@@ -109,7 +109,7 @@ export function NoteForm({
                 setBody(e.target.value)
                 if (error) setError(null)
               }}
-              placeholder={kind === 'meeting' ? 'Konuşulanlar, kararlar, bir sonraki adım' : 'Öğrenciyle ilgili aklında tutmak istediğin şey'}
+              placeholder={kind === 'meeting' ? 'Konuşulanlar, kararlar, bir sonraki adım' : 'Öğrenciyle ilgili aklınızda tutmak istediğiniz şey'}
             />
           )}
         </Field>
@@ -135,7 +135,7 @@ export function NoteForm({
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-semibold">{o.label}</span>
-                    <span className="block text-xs text-muted">{o.hint}</span>
+                    {o.hint && <span className="block text-xs text-muted">{o.hint}</span>}
                   </span>
                   <span className="grid size-5 shrink-0 place-items-center rounded-full border-2 border-line-strong transition-colors group-data-[state=checked]:border-primary group-data-[state=checked]:bg-primary">
                     <RadioGroup.Indicator>
@@ -149,7 +149,7 @@ export function NoteForm({
           {sharesWithParent && parentCount === 0 ? (
             <p className="mt-2 text-sm text-muted">Henüz bağlı veli yok. Veli bağlandığında bu notu görür.</p>
           ) : willNotify ? (
-            <p className="mt-2 text-sm text-muted">Kaydedince paylaştığın kişilere bildirim gider.</p>
+            <p className="mt-2 text-sm text-muted">Kaydedince paylaştığınız kişilere bildirim gider.</p>
           ) : null}
         </fieldset>
       </form>

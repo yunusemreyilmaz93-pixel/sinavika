@@ -66,14 +66,14 @@ async function hasStudents(teacherId: string) {
 
 export const POST = handle(async (request) => {
   const parsed = schema.safeParse(await readJson(request))
-  if (!parsed.success) throw new HttpError(400, 'Bilgileri kontrol edip tekrar dene')
+  if (!parsed.success) throw new HttpError(400, 'Bilgileri kontrol edip tekrar deneyin')
   const input = parsed.data
   const caller = await profile(await callerId(request))
-  if (!caller) throw new HttpError(403, 'Hesabın bulunamadı')
+  if (!caller) throw new HttpError(403, 'Hesap bulunamadı')
 
   if (input.action === 'delete-self') {
     if (caller.role === 'teacher' && (await hasStudents(caller.id))) {
-      throw new HttpError(409, 'Hesabını silmeden önce öğrencilerini silmen gerekiyor')
+      throw new HttpError(409, 'Hesabınızı silmeden önce öğrencilerinizi silmeniz gerekiyor')
     }
     if (caller.role === 'student') await deleteStudent(caller.id)
     else await deleteUser(caller.id)
@@ -83,7 +83,7 @@ export const POST = handle(async (request) => {
   const targetId =
     input.action === 'reset-password' ? input.userId : input.action === 'delete-student' ? input.studentId : input.teacherId
   const target = await profile(targetId)
-  if (!target || !(await canManage(caller, target))) throw new HttpError(403, 'Bu işlem için yetkin yok')
+  if (!target || !(await canManage(caller, target))) throw new HttpError(403, 'Bu işlem için yetkiniz yok')
 
   if (input.action === 'reset-password') {
     const issue = passwordIssueMessage(input.password)
@@ -100,7 +100,7 @@ export const POST = handle(async (request) => {
   }
 
   if (target.role !== 'teacher') throw new HttpError(400, 'Bu hesap öğretmen değil')
-  if (await hasStudents(target.id)) throw new HttpError(409, 'Öğrencisi olan öğretmen silinemez, hesabını durdurabilirsin')
+  if (await hasStudents(target.id)) throw new HttpError(409, 'Öğrencisi olan öğretmen silinemez, hesabı durdurabilirsiniz')
   await deleteUser(target.id)
   return json({ ok: true })
 })

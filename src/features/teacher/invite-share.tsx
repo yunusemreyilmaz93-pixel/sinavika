@@ -34,7 +34,7 @@ export function InviteShare({ invite }: { invite: Invite }) {
       <div className="grid gap-2 sm:grid-cols-3">
         <Button variant="primary" onClick={() => void copyText(code, 'Kod kopyalandı')}>
           <Copy />
-          Kodu kopyala
+          Kodu kopyalayın
         </Button>
         {canShare ? (
           <Button variant="secondary" onClick={() => void shareInvite(code)}>
@@ -51,11 +51,11 @@ export function InviteShare({ invite }: { invite: Invite }) {
         )}
         <Button variant="secondary" onClick={() => void copyText(inviteLink(code), 'Link kopyalandı')}>
           <Link2 />
-          Linki kopyala
+          Linki kopyalayın
         </Button>
       </div>
       <p className="text-center text-sm text-muted">
-        Öğrencin linke dokunur ya da <span className="font-semibold break-all text-fg">{window.location.host}/katil</span> adresinde
+        Öğrenciniz linke dokunur ya da <span className="font-semibold break-all text-fg">{window.location.host}/katil</span> adresinde
         kodu girer.
       </p>
     </div>

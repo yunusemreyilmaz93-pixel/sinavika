@@ -27,7 +27,7 @@ export default function ExamDetailPage() {
         <EmptyState
           icon={SearchX}
           title="Deneme bulunamadı"
-          description="Silinmiş olabilir ya da bu denemeyi görme iznin yok."
+          description="Silinmiş olabilir ya da bu denemeyi görme yetkisi yok."
           action={
             <Button asChild variant="secondary">
               <Link to="/app/denemeler">Denemelere dön</Link>

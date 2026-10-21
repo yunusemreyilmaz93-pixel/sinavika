@@ -22,7 +22,7 @@ async function saveSetting(key: string, value: NonNullable<Json>) {
   const rows = unwrap(
     await supabase.from('app_settings').update({ value, updated_at: new Date().toISOString() }).eq('key', key).select('key'),
   )
-  if (!rows.length) throw new AppError('Bu işlem için yetkin yok')
+  if (!rows.length) throw new AppError('Bu işlem için yetkiniz yok')
 }
 
 export function AppSettingsSection() {
@@ -89,9 +89,9 @@ function SettingsForm({ initial, activeTeachers }: { initial: Settings; activeTe
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const nextErrors: typeof errors = {}
-    if (!Number.isInteger(teacherCap) || teacherCap < 1 || teacherCap > 100000) nextErrors.teacher = '1 ile 100000 arasında bir sayı gir'
+    if (!Number.isInteger(teacherCap) || teacherCap < 1 || teacherCap > 100000) nextErrors.teacher = '1 ile 100000 arasında bir sayı girin'
     for (const k of examKeys) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(examDates[k].date)) nextErrors[k] = 'Geçerli bir tarih seç'
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(examDates[k].date)) nextErrors[k] = 'Geçerli bir tarih seçin'
     }
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length || !dirty) return
@@ -111,11 +111,11 @@ function SettingsForm({ initial, activeTeachers }: { initial: Settings; activeTe
   return (
     <form onSubmit={submit} noValidate className="space-y-4">
       <Card>
-        <CardHeader title="Kontenjan ve başvurular" description="Ücretsiz hizmetin kapasitesini buradan yönetirsin." />
+        <CardHeader title="Kontenjan ve başvurular" />
         <CardBody className="divide-y divide-line">
           <Row
             title="Öğretmen başına öğrenci"
-            hint="Sınırı düşürürsen mevcut öğrenciler silinmez, öğretmen yeni davet oluşturamaz."
+            hint="Sınırı düşürürseniz mevcut öğrenciler silinmez, öğretmen yeni davet oluşturamaz."
             control={<Stepper label="Öğrenci" value={studentCapacity} onChange={setStudentCapacity} min={1} max={50} />}
           />
           <div className="py-4">
@@ -170,7 +170,7 @@ function SettingsForm({ initial, activeTeachers }: { initial: Settings; activeTe
                     left == null
                       ? undefined
                       : left < 0
-                        ? 'Bu tarih geçti. Yeni dönemin tarihini gir.'
+                        ? 'Bu tarih geçti. Yeni dönemin tarihini girin.'
                         : `${formatDate(value.date, 'd MMMM yyyy EEEE')}, ${left} gün kaldı`
                   }
                 >

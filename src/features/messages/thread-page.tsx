@@ -29,7 +29,7 @@ function NotFoundThread() {
     <EmptyState
       icon={MessageCircle}
       title="Bu sohbet bulunamadı"
-      description="Bağlantı hatalı olabilir ya da bu sohbete erişimin yok."
+      description="Bağlantı hatalı olabilir ya da bu sohbete erişim yetkisi yok."
       action={
         <Button asChild variant="secondary">
           <Link to="/app/mesajlar">Mesajlara dön</Link>
@@ -105,7 +105,7 @@ function Thread({ studentId, channel }: { studentId: string; channel: Channel })
         description={errorMessage(meta.error)}
         action={
           <Button variant="secondary" onClick={() => void meta.refetch()}>
-            Tekrar dene
+            Tekrar deneyin
           </Button>
         }
       />
@@ -137,12 +137,14 @@ function Thread({ studentId, channel }: { studentId: string; channel: Channel })
   const privacy =
     channel === 'student'
       ? role === 'teacher'
-        ? 'Bu sohbeti sadece sen ve öğrencin görürsünüz.'
-        : 'Bu sohbeti sadece sen ve öğretmenin görürsünüz.'
+        ? 'Bu sohbeti sadece siz ve öğrenciniz görürsünüz.'
+        : role === 'student'
+          ? 'Bu sohbeti sadece sen ve öğretmenin görürsünüz.'
+          : 'Bu sohbeti sadece siz ve öğretmen görürsünüz.'
       : 'Bu sohbeti öğretmen ve bağlı veliler görür. Öğrenci görmez.'
 
   const placeholder =
-    role === 'teacher' ? (channel === 'student' ? `${studentName} için mesaj yaz` : 'Velilere mesaj yaz') : role === 'student' ? 'Öğretmenine mesaj yaz' : 'Öğretmene mesaj yaz'
+    role === 'teacher' ? (channel === 'student' ? `${studentName} için mesaj yazın` : 'Velilere mesaj yazın') : role === 'student' ? 'Öğretmenine mesaj yaz' : 'Öğretmene mesaj yazın'
 
   return (
     <div>
@@ -195,7 +197,7 @@ function Thread({ studentId, channel }: { studentId: string; channel: Channel })
         <div className="py-10 text-center">
           <p className="text-sm text-muted">{errorMessage(messages.error)}</p>
           <Button variant="secondary" size="sm" className="mt-4" onClick={() => void messages.refetch()}>
-            Tekrar dene
+            Tekrar deneyin
           </Button>
         </div>
       ) : list.length === 0 ? (
@@ -206,12 +208,14 @@ function Thread({ studentId, channel }: { studentId: string; channel: Channel })
           <h2 className="mt-4 text-base font-bold">Henüz mesaj yok</h2>
           <p className="mt-1 max-w-xs text-sm text-muted">
             {noParents
-              ? 'Veli bağlandığında buradan yazışabilirsin.'
+              ? 'Veli bağlandığında buradan yazışabilirsiniz.'
               : role === 'teacher'
                 ? channel === 'student'
-                  ? 'İlk mesajı yaz, öğrencine bildirim gider.'
-                  : 'İlk mesajı yaz, velilere bildirim gider.'
-                : 'İlk mesajı yaz, öğretmenine bildirim gider.'}
+                  ? 'İlk mesajı yazın, öğrencinize bildirim gider.'
+                  : 'İlk mesajı yazın, velilere bildirim gider.'
+                : role === 'student'
+                  ? 'İlk mesajı yaz, öğretmenine bildirim gider.'
+                  : 'İlk mesajı yazın, öğretmene bildirim gider.'}
           </p>
         </div>
       ) : (

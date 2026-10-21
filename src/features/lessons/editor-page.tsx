@@ -26,7 +26,7 @@ const guide = [
   ['Başlık', '## 1. Başlık', 'İçindekiler listesi ## başlıklarından oluşur. Başında sayı olan başlık numaralı görünür.'],
   ['Vurgu', '**kalın**, *eğik*', 'Altı çizili sözcük için [kelime](#altcizgi), ek için [-mak](#ek).'],
   ['Görsel', '![Alt metin](adres "Açıklama | Kaynak")', 'Görsel düğmesi yükler ve satırı kendisi ekler.'],
-  ['Formül', '$x^2$ satır içi\n$$\\frac{a}{b}$$ ayrı satır', 'KaTeX söz dizimi. Tablo hücresinde | kullanma.'],
+  ['Formül', '$x^2$ satır içi\n$$\\frac{a}{b}$$ ayrı satır', 'KaTeX söz dizimi. Tablo hücresinde | kullanmayın.'],
   ['Tablo', '| A | B |\n| --- | --- |\n| 1 | 2 |', 'Telefonda satırlar kart olarak görünür.'],
   ['İpucu', ':::ipucu{baslik="İpucu"}\nMetin\n:::', 'Başlık isteğe bağlı.'],
   ['Bağlantı', ':::baglanti\nMetin\n:::', '"Bağlantıyı kur" kutusu.'],
@@ -55,7 +55,7 @@ export default function LessonEditorPage() {
     return (
       <div>
         <PageHeader title="Konu anlatımı" back={back} />
-        <EmptyState icon={BookOpen} title={data.isError ? 'Anlatım açılamadı' : 'Konu bulunamadı'} description="Müfredat ekranına dönüp tekrar dene." />
+        <EmptyState icon={BookOpen} title={data.isError ? 'Anlatım açılamadı' : 'Konu bulunamadı'} description="Müfredat ekranına dönüp tekrar deneyin." />
       </div>
     )
   }
@@ -188,7 +188,7 @@ function Editor({
       <PageHeader
         back={back}
         title={topicName}
-        description={exists ? 'Konu anlatımını düzenle' : 'Bu konu için anlatım yaz'}
+        description={exists ? 'Konu anlatımını düzenleyin' : 'Bu konu için anlatım yazın'}
         actions={
           <>
             {exists && (
@@ -230,10 +230,10 @@ function Editor({
         />
         {tab === 'blok' && (
           <div className="ml-auto flex items-center gap-1.5">
-            <Button type="button" variant="ghost" size="icon" onClick={editor.undo} disabled={!editor.canUndo} aria-label="Geri al">
+            <Button type="button" variant="ghost" size="icon" onClick={editor.undo} disabled={!editor.canUndo} aria-label="Geri alın">
               <Undo2 />
             </Button>
-            <Button type="button" variant="secondary" size="icon" loading={uploading} onClick={() => setPalette({ afterId: editor.activeId })} aria-label="Blok ekle">
+            <Button type="button" variant="secondary" size="icon" loading={uploading} onClick={() => setPalette({ afterId: editor.activeId })} aria-label="Blok ekleyin">
               <Plus />
             </Button>
           </div>

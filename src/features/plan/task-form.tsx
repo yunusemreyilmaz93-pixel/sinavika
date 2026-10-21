@@ -44,10 +44,10 @@ function TaskFormDialog({ open, onOpenChange, studentId, task, defaultDate, onSa
     event.preventDefault()
     const values = draftValues(draft, curriculum.data)
     if (!values) {
-      setTitleError('Başlık yaz ya da bir ders seç')
+      setTitleError('Başlık yazın ya da bir ders seçin')
       return
     }
-    if (videoUrlInvalid(draft)) return void toast.error('YouTube bağlantısı geçersiz. Videonun adresini kopyalayıp yapıştır')
+    if (videoUrlInvalid(draft)) return void toast.error('YouTube bağlantısı geçersiz. Videonun adresini kopyalayıp yapıştırın')
     try {
       const saved = await save.mutateAsync({ id: task?.id, values: { ...values, due_on: draft.dueOn } })
       toast.success(editing ? 'Görev güncellendi' : 'Görev eklendi')

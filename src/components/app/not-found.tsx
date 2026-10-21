@@ -12,7 +12,7 @@ export function NotFound() {
         <p className="mt-2 text-muted">Adres yanlış yazılmış ya da sayfa kaldırılmış olabilir.</p>
         <div className="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
           <Button asChild>
-            <Link to="/app">Uygulamaya git</Link>
+            <Link to="/app">Uygulamaya gidin</Link>
           </Button>
           <Button asChild variant="secondary">
             <Link to="/">Ana sayfa</Link>

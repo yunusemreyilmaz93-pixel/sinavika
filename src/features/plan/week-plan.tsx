@@ -290,7 +290,7 @@ function DayPanel({
             title={canAdd ? 'Bu gün boş' : 'Bu gün için görev yok'}
             description={
               viewer === 'teacher'
-                ? 'Bu güne görev ekle, öğrencine bildirim gider.'
+                ? 'Bu güne görev ekleyin, öğrencinize bildirim gider.'
                 : viewer === 'student'
                   ? 'Kendi çalışmanı ekle, öğretmenin de görür.'
                   : 'Öğretmen görev ekleyince burada görünür.'

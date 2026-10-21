@@ -11,7 +11,7 @@ export const visibilityOptions: { value: NoteVisibility; label: string; hint: st
   { value: 'private', label: 'Sadece ben', hint: 'Öğrenci ve veli görmez', icon: Lock },
   { value: 'student', label: 'Öğrenci görür', hint: 'Öğrencinin Notlar sayfasında çıkar', icon: UserRound },
   { value: 'parent', label: 'Veli görür', hint: 'Velinin Notlar sayfasında çıkar', icon: Users },
-  { value: 'both', label: 'Öğrenci ve veli görür', hint: 'İkisi de görür', icon: Eye },
+  { value: 'both', label: 'Öğrenci ve veli görür', hint: '', icon: Eye },
 ]
 
 export function visibilityOf(value: NoteVisibility) {

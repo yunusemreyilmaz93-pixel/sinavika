@@ -7,7 +7,7 @@ export function LoadError({ message, onRetry }: { message: string; onRetry: () =
       <p className="text-sm font-medium text-danger">{message}</p>
       <Button variant="secondary" size="sm" onClick={onRetry}>
         <RotateCw />
-        Tekrar dene
+        Tekrar deneyin
       </Button>
     </div>
   )

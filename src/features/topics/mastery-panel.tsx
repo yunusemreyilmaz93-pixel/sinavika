@@ -95,8 +95,8 @@ export function MasteryPanel({
       </section>
 
       {priorities.length > 0 && (
-        <section aria-label="Önce bunlara bak" className="border-t border-line pt-4">
-          <h3 className="font-display text-base font-bold">Önce bunlara bak</h3>
+        <section aria-label="Öncelikli konular" className="border-t border-line pt-4">
+          <h3 className="font-display text-base font-bold">Öncelikli konular</h3>
           <ul className="mt-2 divide-y divide-line">
             {priorities.map(({ topic, subject, mastery }) => (
               <li key={topic.id} className="flex items-center justify-between gap-3 py-2.5">

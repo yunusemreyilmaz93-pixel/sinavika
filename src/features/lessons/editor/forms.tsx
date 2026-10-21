@@ -82,7 +82,7 @@ export function ListForm({ block, onPatch, numbered }: { block: BoxBlock; onPatc
     setRows(next)
     onPatch({ text: compose(next) })
   }
-  return <RowsForm name="Madde" columns={[{ label: 'Madde', basis: '16rem' }]} rows={rows} onChange={update} addLabel="Madde ekle" />
+  return <RowsForm name="Madde" columns={[{ label: 'Madde', basis: '16rem' }]} rows={rows} onChange={update} addLabel="Madde ekleyin" />
 }
 
 export function PairsForm({ block, onPatch, labels, numbered }: { block: BoxBlock; onPatch: (p: Patch) => void; labels: [string, string]; numbered?: boolean }) {
@@ -113,7 +113,7 @@ export function TimelineForm({ block, onPatch }: { block: BoxBlock; onPatch: (p:
       <Field label="Başlık">
         {(props) => <Input {...props} value={block.attrs.baslik ?? ''} onChange={(e) => onPatch({ attrs: { ...block.attrs, baslik: e.target.value } })} />}
       </Field>
-      <RowsForm name="Olay" columns={[{ label: 'Yıl', placeholder: 'Yıl (1839)', basis: '6rem', numeric: true }, { label: 'Olay', basis: '14rem' }]} rows={rows} onChange={update} addLabel="Olay ekle" />
+      <RowsForm name="Olay" columns={[{ label: 'Yıl', placeholder: 'Yıl (1839)', basis: '6rem', numeric: true }, { label: 'Olay', basis: '14rem' }]} rows={rows} onChange={update} addLabel="Olay ekleyin" />
     </div>
   )
 }
@@ -154,7 +154,7 @@ export function LifeTimelineForm({ block, onPatch }: { block: BoxBlock; onPatch:
             setEvents(next)
             onPatch({ text: composeEvents(next) })
           }}
-          addLabel="Olay ekle"
+          addLabel="Olay ekleyin"
         />
       </div>
       <div className="space-y-2">
@@ -172,7 +172,7 @@ export function LifeTimelineForm({ block, onPatch }: { block: BoxBlock; onPatch:
             setEras(next)
             onPatch({ attrs: { ...block.attrs, donemler: composeEras(next) } })
           }}
-          addLabel="Dönem ekle"
+          addLabel="Dönem ekleyin"
         />
       </div>
     </div>
@@ -208,7 +208,7 @@ export function AffixForm({ block, onPatch }: { block: BoxBlock; onPatch: (p: Pa
           setRows(next)
           onPatch({ text: compose(next) })
         }}
-        addLabel="Örnek ekle"
+        addLabel="Örnek ekleyin"
       />
     </div>
   )
@@ -244,7 +244,7 @@ export function SentenceLabForm({ block, onPatch }: { block: BoxBlock; onPatch: 
             <p className="text-sm font-semibold">Cümle {i + 1}</p>
             <button
               type="button"
-              aria-label={`Cümle ${i + 1} sil`}
+              aria-label={`Cümle ${i + 1} silin`}
               onClick={() => update(sentences.length > 1 ? sentences.filter((_, j) => j !== i) : [[['', '', '']]])}
               className="grid size-9 place-items-center rounded-lg text-muted hover:bg-surface-2 hover:text-danger"
             >
@@ -256,17 +256,17 @@ export function SentenceLabForm({ block, onPatch }: { block: BoxBlock; onPatch: 
             columns={[
               { label: 'Parça', placeholder: 'Cümle parçası', basis: '10rem' },
               { label: 'Tür', basis: '7rem', options: LAB_KINDS },
-              { label: 'Not', placeholder: 'Not (türü seçtiysen)', basis: '10rem' },
+              { label: 'Not', placeholder: 'Not (tür seçildiyse)', basis: '10rem' },
             ]}
             rows={sentence}
             onChange={(next) => update(sentences.map((s, j) => (j === i ? next : s)))}
-            addLabel="Parça ekle"
+            addLabel="Parça ekleyin"
           />
         </div>
       ))}
       <Button type="button" variant="secondary" size="sm" className="min-h-11" onClick={() => update([...sentences, [['', '', '']]])}>
         <Plus />
-        Cümle ekle
+        Cümle ekleyin
       </Button>
     </div>
   )
@@ -304,7 +304,7 @@ export function QuestionForm({ block, onPatch, optionCount }: { block: BoxBlock;
       <RawForm
         block={block}
         onPatch={onPatch}
-        note="Bu sorunun düzeni standart dışı, o yüzden ham metinle düzenleniyor. Şıkları A) ile başlat, çözümden önce --- koy."
+        note="Bu sorunun düzeni standart dışı, o yüzden ham metinle düzenleniyor. Şıkları A) ile başlatın, çözümden önce --- koyun."
       />
     )
   }
@@ -329,7 +329,7 @@ export function QuestionForm({ block, onPatch, optionCount }: { block: BoxBlock;
       {!f.passage && !passageOpen && (
         <Button type="button" variant="ghost" size="sm" className="min-h-11" onClick={() => setPassageOpen(true)}>
           <Plus />
-          Alıntı ekle
+          Alıntı ekleyin
         </Button>
       )}
       <fieldset className="space-y-2">
@@ -364,14 +364,14 @@ export function QuestionForm({ block, onPatch, optionCount }: { block: BoxBlock;
             />
             {f.options.length > 2 && i === f.options.length - 1 && (
               <Remove
-                label={`${letters[i]} şıkkını sil`}
+                label={`${letters[i]} şıkkını silin`}
                 onClick={() => update({ ...f, options: f.options.slice(0, -1) }, answer >= f.options.length - 1 ? { ...block.attrs, cevap: letters[f.options.length - 2] } : undefined)}
               />
             )}
           </div>
         ))}
         {f.options.length < 5 && (
-          <RowButtons onAdd={() => update({ ...f, options: [...f.options, ''] })} addLabel={`${letters[f.options.length]} şıkkı ekle`} />
+          <RowButtons onAdd={() => update({ ...f, options: [...f.options, ''] })} addLabel={`${letters[f.options.length]} şıkkını ekleyin`} />
         )}
       </fieldset>
       <Field label="Çözüm">
@@ -435,7 +435,7 @@ export function VideoForm({ block, onPatch }: { block: LeafBlock; onPatch: (p: P
       {id && info.data && (
         <Button type="button" variant="ghost" size="sm" className="min-h-11" onClick={() => onPatch({ attrs: { ...attrs, baslik: info.data?.title ?? attrs.baslik ?? '', kanal: info.data?.author ?? attrs.kanal ?? '' } })}>
           <RefreshCw />
-          Başlık ve kanalı yeniden getir
+          Başlık ve kanalı yeniden getirin
         </Button>
       )}
     </div>

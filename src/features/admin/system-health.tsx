@@ -22,12 +22,12 @@ const labels: Record<string, string> = {
 }
 
 const fixes: Record<string, string> = {
-  supabase_url: 'Vercel ortam değişkenlerine SUPABASE_URL ekle, sonra yeniden yayınla.',
-  service_key: 'Vercel ortam değişkenlerine SUPABASE_SERVICE_ROLE_KEY ekle, sonra yeniden yayınla.',
-  curriculum: 'Veritabanı şeması kurulmamış olabilir. Supabase migration kayıtlarına bak.',
-  table_push_subscriptions: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bak.',
-  table_wrong_questions: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bak.',
-  table_video_progress: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bak.',
+  supabase_url: 'Vercel ortam değişkenlerine SUPABASE_URL ekleyin, sonra yeniden yayınlayın.',
+  service_key: 'Vercel ortam değişkenlerine SUPABASE_SERVICE_ROLE_KEY ekleyin, sonra yeniden yayınlayın.',
+  curriculum: 'Veritabanı şeması kurulmamış olabilir. Supabase migration kayıtlarına bakın.',
+  table_push_subscriptions: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bakın.',
+  table_wrong_questions: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bakın.',
+  table_video_progress: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bakın.',
 }
 
 async function fetchHealth(): Promise<Health> {
@@ -68,13 +68,13 @@ export function SystemHealthCard() {
         <Badge tone={down ? 'danger' : 'primary'} className="hidden sm:inline-flex">
           {health.isPending ? 'Bekleniyor' : down ? 'Sorun var' : 'Çalışıyor'}
         </Badge>
-        <Button variant="ghost" size="icon" aria-label="Yeniden kontrol et" onClick={() => health.refetch()} disabled={health.isFetching}>
+        <Button variant="ghost" size="icon" aria-label="Yeniden kontrol edin" onClick={() => health.refetch()} disabled={health.isFetching}>
           <RotateCw className={cn(health.isFetching && 'animate-spin')} />
         </Button>
       </div>
       {health.data?.optional?.ai_assistant === false && (
         <p className="mt-3 border-t border-line pt-3 text-sm text-muted">
-          Yapay zekâ asistanı kapalı. Açmak için Vercel ortam değişkenlerine AI_KEY_SECRET ekle (en az 32 karakter, rastgele), sonra yeniden yayınla.
+          Yapay zekâ asistanı kapalı. Açmak için Vercel ortam değişkenlerine AI_KEY_SECRET ekleyin (en az 32 karakter, rastgele), sonra yeniden yayınlayın.
         </p>
       )}
       {failing.length > 0 && (

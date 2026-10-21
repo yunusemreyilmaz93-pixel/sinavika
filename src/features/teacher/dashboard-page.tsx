@@ -67,7 +67,7 @@ export default function DashboardPage() {
           <Button variant="secondary" className="flex-1 sm:flex-none" asChild>
             <Link to="/app/davetler?yeni=1">
               <UserPlus />
-              Öğrenci davet et
+              Öğrenci davet edin
             </Link>
           </Button>
           <Button className="flex-1 sm:flex-none" asChild>
@@ -114,7 +114,7 @@ export default function DashboardPage() {
             to="/app/davetler"
             className="inline-flex min-h-11 items-center gap-1 self-start text-sm font-semibold text-accent hover:underline sm:min-h-0"
           >
-            Davetleri yönet
+            Davetleri yönetin
             <ArrowRight className="size-4" />
           </Link>
         </Card>
@@ -126,24 +126,24 @@ export default function DashboardPage() {
         <div role="alert" className="flex flex-col items-start gap-3 rounded-2xl border border-line bg-surface p-5 sm:flex-row sm:items-center">
           <p className="flex-1 text-sm text-danger">{errorMessage(overview.error)}</p>
           <Button variant="secondary" size="sm" onClick={() => void overview.refetch()}>
-            Tekrar dene
+            Tekrar deneyin
           </Button>
         </div>
       ) : noStudents && start.visible ? null : noStudents ? (
         <EmptyState
           icon={UserPlus}
           className="py-14 sm:py-20 [&_h3]:text-xl"
-          title="Henüz öğrencin yok"
+          title="Henüz öğrenciniz yok"
           description={
             capacity.pending
-              ? `${capacity.pending} davet katılım bekliyor. Öğrencin kodu girdiğinde burada görünür.`
-              : 'Davet kodu oluştur, öğrencine gönder. Katıldığında çalışmasını, görevlerini ve denemelerini buradan takip edersin.'
+              ? `${capacity.pending} davet katılım bekliyor. Öğrenciniz kodu girdiğinde burada görünür.`
+              : 'Davet kodu oluşturup öğrencinize gönderin. Katıldığında çalışmasını, görevlerini ve denemelerini buradan takip edersiniz.'
           }
           action={
             <Button size="lg" asChild>
               <Link to="/app/davetler?yeni=1">
                 <UserPlus />
-                İlk öğrencini davet et
+                İlk öğrencinizi davet edin
               </Link>
             </Button>
           }
@@ -184,7 +184,7 @@ export default function DashboardPage() {
             <EmptyState
               icon={Archive}
               title="Arşiv boş"
-              description="Öğrenci sayfasından arşive aldığın öğrenciler burada durur. Arşivdeki öğrenci kontenjana sayılmaz."
+              description="Öğrenci sayfasından arşive aldığınız öğrenciler burada durur. Arşivdeki öğrenci kontenjana sayılmaz."
               action={
                 <Button variant="secondary" onClick={() => setFilter('aktif')}>
                   Aktif öğrencilere dön
@@ -194,13 +194,13 @@ export default function DashboardPage() {
           ) : (
             <EmptyState
               icon={UserPlus}
-              title="Aktif öğrencin yok"
-              description="Yeni bir öğrenci davet edebilir ya da arşivdeki bir öğrenciyi geri alabilirsin."
+              title="Aktif öğrenciniz yok"
+              description="Yeni bir öğrenci davet edebilir ya da arşivdeki bir öğrenciyi geri alabilirsiniz."
               action={
                 <Button asChild>
                   <Link to="/app/davetler?yeni=1">
                     <UserPlus />
-                    Öğrenci davet et
+                    Öğrenci davet edin
                   </Link>
                 </Button>
               }

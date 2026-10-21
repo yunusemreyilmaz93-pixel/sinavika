@@ -142,7 +142,7 @@ export function ErrorsSection() {
         open={clearing}
         onOpenChange={setClearing}
         title="Bütün hata kayıtları silinsin mi?"
-        description="Sorunları düzelttikten sonra temizlersen yeni gelen hataları daha kolay görürsün."
+        description="Sorunları düzelttikten sonra temizlerseniz yeni gelen hataları daha kolay görürsünüz."
         confirmLabel="Temizle"
         onConfirm={() => clear.mutateAsync()}
       />

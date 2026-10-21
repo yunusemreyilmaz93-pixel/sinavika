@@ -23,7 +23,6 @@ export function WrongForm({
       open={open}
       onOpenChange={onOpenChange}
       title="Yanlış soru ekle"
-      description="Sorunun fotoğrafını çek, dersini ve konusunu seç."
     >
       {open && <WrongFormBody studentId={studentId} onDone={() => onOpenChange(false)} />}
     </Modal>
@@ -57,21 +56,21 @@ function WrongFormBody({ studentId, onDone }: { studentId: string; onDone: () =>
 
   const pick = (file: File | undefined) => {
     if (!file) return
-    if (!file.type.startsWith('image/')) return setFormError('Sadece fotoğraf ekleyebilirsin')
-    if (file.size > 15 * 1024 * 1024) return setFormError('Fotoğraf çok büyük, daha küçük bir fotoğraf seç')
+    if (!file.type.startsWith('image/')) return setFormError('Sadece fotoğraf eklenebilir')
+    if (file.size > 15 * 1024 * 1024) return setFormError('Fotoğraf çok büyük, daha küçük bir fotoğraf seçin')
     setFormError(null)
     setPhoto(file)
   }
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
-    if (!subjectId) return setFormError('Önce dersi seç')
-    if (!photo && !note.trim()) return setFormError('Bir fotoğraf ekle ya da soruyu kısaca yaz')
+    if (!subjectId) return setFormError('Önce dersi seçin')
+    if (!photo && !note.trim()) return setFormError('Bir fotoğraf ekleyin ya da soruyu kısaca yazın')
     add.mutate(
       { subject_id: subjectId, topic_id: topicId, note, source, photo },
       {
         onSuccess: () => {
-          toast.success('Yanlış soru deftere eklendi. Yarın tekrar karşına çıkacak')
+          toast.success('Yanlış soru deftere eklendi. Yarın tekrar gösterilecek')
           onDone()
         },
         onError: (err) => setFormError(errorMessage(err)),
@@ -130,7 +129,7 @@ function WrongFormBody({ studentId, onDone }: { studentId: string; onDone: () =>
       />
       <TopicSelect curriculum={curriculum} subjectId={subjectId} value={topicId} onChange={setTopicId} />
 
-      <Field label="Not" hint="İsteğe bağlı. Neden yanlış yaptığını yazmak tekrar ederken çok işe yarar.">
+      <Field label="Not" hint="İsteğe bağlı">
         {(props) => (
           <Textarea
             {...props}

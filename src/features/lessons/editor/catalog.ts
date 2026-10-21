@@ -35,7 +35,7 @@ export const catalog: CatalogItem[] = [
   { id: 'liste', label: 'Liste', hint: 'Madde işaretli liste', icon: List, make: () => ({ kind: 'md', text: '- ' }) },
   { id: 'tablo', label: 'Tablo', hint: 'Telefonda satırlar kart olur', icon: Table2, make: () => ({ kind: 'md', text: '| Sütun 1 | Sütun 2 |\n| --- | --- |\n|  |  |' }) },
   { id: 'formul-blok', label: 'Formül', keywords: 'matematik denklem katex', hint: 'Ayrı satırda matematik (KaTeX)', icon: Sigma, make: () => ({ kind: 'md', text: '$$\n\n$$' }) },
-  { id: 'gorsel', label: 'Görsel', hint: 'Bilgisayardan ya da telefondan yükle', icon: ImagePlus },
+  { id: 'gorsel', label: 'Görsel', hint: 'Bilgisayardan ya da telefondan yükleyin', icon: ImagePlus },
   { id: 'video', label: 'Video', hint: 'YouTube bağlantısı, başlık ve kanal kendiliğinden gelir', icon: Video, make: () => ({ kind: 'leaf', name: 'video', attrs: { url: '', baslik: '', kanal: '' } }) },
   { id: 'soru', label: 'Soru', hint: 'Seçenekli soru ve çözüm', icon: CircleHelp, make: ({ optionCount }) => ({ kind: 'box', name: 'soru', attrs: { cevap: 'A' }, text: Array.from({ length: optionCount }, (_, i) => `- ${'ABCDE'[i]}) `).join('\n') }) },
   { id: 'dene', label: 'Kendini dene', keywords: 'alıştırma soru cevap kart', hint: 'Cevabı gizli soru kartları', icon: ListChecks, make: () => ({ kind: 'box', name: 'dene' }) },

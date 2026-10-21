@@ -36,7 +36,7 @@ describe('api/auth', () => {
     const { POST } = await import('../api/auth.ts')
     const res = await POST(post({ action: 'join', code: 'KISA' }))
     expect(res.status).toBe(400)
-    expect(((await res.json()) as { error: string }).error).toBe('Bilgileri kontrol edip tekrar dene')
+    expect(((await res.json()) as { error: string }).error).toBe('Bilgileri kontrol edip tekrar deneyin')
   })
 
   it('sunucu anahtarı yoksa bunu açıkça söyler', async () => {
@@ -81,8 +81,8 @@ describe('passwordProblem', () => {
           'Password should contain at least one character of each: abcdefghijklmnopqrstuvwxyz, ABCDEFGHIJKLMNOPQRSTUVWXYZ, 0123456789, !@#$%^&*()_+-=[]{};\'\\:"|<>?,./`~.',
         reasons: ['characters'],
       }),
-    ).toBe('Şifren en az bir küçük harf, bir büyük harf, bir rakam, bir sembol (örneğin ! ya da ?) içermeli')
-    expect(passwordProblem({ message: 'Password should be at least 10 characters.', reasons: ['length'] })).toBe('Şifren en az 10 karakter olmalı')
+    ).toBe('Şifre en az bir küçük harf, bir büyük harf, bir rakam, bir sembol (örneğin ! ya da ?) içermeli')
+    expect(passwordProblem({ message: 'Password should be at least 10 characters.', reasons: ['length'] })).toBe('Şifre en az 10 karakter olmalı')
     expect(passwordProblem({ message: 'Password is known to be weak and easy to guess, please choose a different one.', reasons: ['pwned'] })).toMatch(
       /sızdırılmış/,
     )
@@ -100,6 +100,6 @@ describe('api/auth şifre kuralları', () => {
       }),
     )
     expect(res.status).toBe(400)
-    expect(((await res.json()) as { error: string }).error).toBe('Şifrende eksik olanlar: bir rakam, bir sembol')
+    expect(((await res.json()) as { error: string }).error).toBe('Şifrede eksik olanlar: bir rakam, bir sembol')
   })
 })

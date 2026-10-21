@@ -16,10 +16,10 @@ import { LinkChild, SignedInCard } from './ui/signed-in-join'
 import { useSignIn, type SignInFlow } from './ui/use-sign-in'
 
 const points: ValuePoint[] = [
-  { icon: KeyRound, title: 'Davet koduyla katıl', text: 'Kodu öğretmenin verir. Her kod bir kez kullanılır.' },
-  { icon: AtSign, title: 'E-posta gerekmez', text: 'Kullanıcı adın ve şifrenle giriş yaparsın.' },
-  { icon: CalendarCheck2, title: 'Öğrenciler için', text: 'Görevlerin, çalışma süren ve denemelerin bir arada.' },
-  { icon: HeartHandshake, title: 'Veliler için', text: 'Çocuğunun planını ve ilerlemesini görür, öğretmenle yazışırsın.' },
+  { icon: KeyRound, title: 'Davet koduyla katılım', text: 'Kodu öğretmen verir. Her kod bir kez kullanılır.' },
+  { icon: AtSign, title: 'E-posta gerekmez', text: 'Kullanıcı adı ve şifreyle giriş yapılır.' },
+  { icon: CalendarCheck2, title: 'Öğrenciler için', text: 'Görevler, çalışma süresi ve denemeler bir arada.' },
+  { icon: HeartHandshake, title: 'Veliler için', text: 'Çocuğunun planını ve ilerlemesini görür, öğretmenle yazışır.' },
 ]
 
 const linkClass = 'inline-flex min-h-11 items-center font-semibold text-accent hover:underline'
@@ -81,7 +81,7 @@ export default function JoinPage() {
     (sameCode && preview.isError
       ? errorMessage(preview.error)
       : sameCode && preview.data === null
-        ? 'Bu kod geçersiz ya da süresi dolmuş. Öğretmeninden yeni bir kod iste.'
+        ? 'Bu kod geçersiz ya da süresi dolmuş. Öğretmenden yeni bir kod isteyin.'
         : null)
 
   let content
@@ -114,11 +114,11 @@ export default function JoinPage() {
             />
           ) : (
             <CodeStep
-              title={parentLinking ? 'Çocuğunu bağla' : 'Davet koduyla katıl'}
+              title={parentLinking ? 'Çocuğunuzu bağlayın' : 'Davet koduyla katılın'}
               description={
                 parentLinking
-                  ? 'Öğretmeninin ya da çocuğunun verdiği veli kodunu gir. Çocuğunun hesabına bağlanırsın.'
-                  : `Öğretmeninden aldığın ${CODE_LENGTH} karakterlik kodu gir.`
+                  ? 'Öğretmen ya da çocuğunuz tarafından verilen veli kodunu girin.'
+                  : `${CODE_LENGTH} karakterlik davet kodunu girin.`
               }
               code={code}
               onCodeChange={(value) => {
@@ -163,9 +163,9 @@ export default function JoinPage() {
     <AuthLayout
       aside={
         <ValuePanel
-          title="Öğretmeninle aynı planda çalış"
+          title="Öğretmenle aynı planda çalışın"
           points={points}
-          footer="Ücretsiz. Hesabını ayarlardan istediğin zaman silebilirsin. Şifreni unutursan öğretmenin yenisini verir."
+          footer="Ücretsiz. Hesabınızı ayarlardan istediğiniz zaman silebilirsiniz. Şifrenizi unutursanız öğretmen yenisini verir."
         />
       }
     >
@@ -192,11 +192,11 @@ function InviteDetails({ code, invite, flow, signedInProfile, onChangeCode }: In
 
   const title = signedInProfile
     ? parentInvite
-      ? 'Çocuğunu bağla'
+      ? 'Çocuğunuzu bağlayın'
       : 'Öğrenci daveti'
     : parentInvite
-      ? 'Veli hesabını oluştur'
-      : 'Hesabını oluştur'
+      ? 'Veli hesabı oluşturun'
+      : 'Hesap oluşturun'
 
   return (
     <div>
@@ -215,7 +215,7 @@ function InviteDetails({ code, invite, flow, signedInProfile, onChangeCode }: In
         <>
           {parentInvite && (
             <p className="mt-4 text-sm leading-relaxed text-muted">
-              Zaten veli hesabın var mı?{' '}
+              Zaten veli hesabınız var mı?{' '}
               <Link to={`/giris?next=${encodeURIComponent('/app/ayarlar')}`} className="font-semibold text-accent hover:underline">
                 Giriş yap
               </Link>
@@ -225,7 +225,7 @@ function InviteDetails({ code, invite, flow, signedInProfile, onChangeCode }: In
                 <ChevronRight className="mx-0.5 inline size-3.5 align-[-2px]" aria-hidden />
                 Çocuk bağla
               </span>{' '}
-              bölümüne bu kodu gir.
+              bölümüne bu kodu girin.
             </p>
           )}
           <JoinForm code={code} invite={invite} flow={flow} />

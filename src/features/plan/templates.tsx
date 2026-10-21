@@ -53,7 +53,7 @@ function TemplatesDialog({ open, onOpenChange, students, student, week }: Props)
       open={open}
       onOpenChange={onOpenChange}
       title={applying ? applying.name : 'Şablonlar'}
-      description={applying ? 'Şablondaki görevleri seçtiğin haftaya ekle.' : 'Bir haftayı kaydet, sonra başka öğrencilere ya da haftalara uygula.'}
+      description={applying ? 'Şablondaki görevleri seçtiğiniz haftaya ekleyin.' : 'Bir haftayı kaydedin, sonra başka öğrencilere ya da haftalara uygulayın.'}
       size="lg"
     >
       {applying ? (
@@ -187,7 +187,7 @@ function TemplateList({ onApply }: { onApply: (template: Applicable) => void }) 
         <EmptyState
           icon={LayoutTemplate}
           title="Henüz şablon yok"
-          description="Planı hazır bir haftayı yukarıdan şablon olarak kaydet."
+          description="Planı hazır bir haftayı yukarıdan şablon olarak kaydedin."
         />
       ) : (
         <ul className="divide-y divide-line rounded-2xl border border-line">
@@ -289,7 +289,7 @@ function ApplyTemplate({
         <p className="text-sm text-muted">
           {studentIds.length
             ? `${studentIds.length} öğrenciye ${template.parsed.length} görev, toplam ${total}`
-            : 'En az bir öğrenci seç'}
+            : 'En az bir öğrenci seçin'}
         </p>
         <Button loading={apply.isPending} disabled={!studentIds.length} onClick={() => apply.mutate()}>
           {total ? `${total} görev ekle` : 'Uygula'}

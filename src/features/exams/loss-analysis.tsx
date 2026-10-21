@@ -65,7 +65,7 @@ export function LossAnalysis({ examId, studentId, kind, scores, canAssign, assig
 
   return (
     <Card>
-      <CardHeader title="Net kaybı" description="Mükemmel netten ne kadar uzak kaldığın ve nerede" />
+      <CardHeader title="Net kaybı" description="Mükemmel netten uzaklık ve kaybın nerede olduğu" />
       <CardBody className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
           <p className="tabular font-display text-4xl leading-none font-extrabold">{formatNet(loss.total)}</p>
@@ -117,7 +117,7 @@ export function LossAnalysis({ examId, studentId, kind, scores, canAssign, assig
             )}
           </div>
         ) : (
-          <p className="border-t border-line pt-4 text-sm text-muted">Aşağıdan hangi konularda takıldığını işaretlersen, çalışma önerisi burada çıkar.</p>
+          <p className="border-t border-line pt-4 text-sm text-muted">Aşağıdan takılınan konular işaretlenince çalışma önerisi burada çıkar.</p>
         )}
       </CardBody>
     </Card>

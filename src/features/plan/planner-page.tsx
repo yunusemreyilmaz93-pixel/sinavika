@@ -78,8 +78,8 @@ export default function PlannerPage() {
         {header}
         <EmptyState
           icon={UserPlus}
-          title="Henüz öğrencin yok"
-          description="Davet kodu oluştur. Öğrencin katılınca haftalık planını buradan hazırlarsın."
+          title="Henüz öğrenciniz yok"
+          description="Davet kodu oluşturun. Öğrenciniz katılınca haftalık planını buradan hazırlarsınız."
           action={
             <Button asChild>
               <Link to="/app/davetler">Davet oluştur</Link>

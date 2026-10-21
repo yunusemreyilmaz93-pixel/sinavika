@@ -27,7 +27,7 @@ export function Stepper({ value, onChange, min = 0, max = 999, step = 1, label, 
       <div className="flex items-center rounded-xl border border-line bg-surface">
         <button
           type="button"
-          aria-label={`${label} azalt`}
+          aria-label={`${label} azaltın`}
           onClick={() => set(value - step)}
           className="grid size-11 place-items-center rounded-l-xl text-muted transition-colors hover:bg-surface-2 active:scale-95"
         >
@@ -43,7 +43,7 @@ export function Stepper({ value, onChange, min = 0, max = 999, step = 1, label, 
         />
         <button
           type="button"
-          aria-label={`${label} artır`}
+          aria-label={`${label} artırın`}
           onClick={() => set(value + step)}
           className="grid size-11 place-items-center rounded-r-xl text-muted transition-colors hover:bg-surface-2 active:scale-95"
         >

@@ -22,7 +22,7 @@ export function InviteCard({ invite, code }: { invite: InvitePreview; code: stri
           <p className="mt-0.5 text-[15px] leading-snug">
             {student ? (
               <>
-                <b className="font-semibold">{invite.teacher_name}</b> seni <b className="font-semibold">{classLabel(invite)}</b>{' '}
+                <b className="font-semibold">{invite.teacher_name}</b> sizi <b className="font-semibold">{classLabel(invite)}</b>{' '}
                 öğrencisi olarak davet etti.
               </>
             ) : (

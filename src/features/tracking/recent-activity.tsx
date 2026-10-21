@@ -94,7 +94,7 @@ export function RecentActivity({ studentId, canEdit }: { studentId: string; canE
 
   return (
     <Card>
-      <CardHeader title="Son kayıtlar" description={canEdit ? 'Yanlış girdiğin bir kaydı buradan silebilirsin.' : undefined} />
+      <CardHeader title="Son kayıtlar" description={canEdit ? 'Yanlış girilen kayıt buradan silinebilir.' : undefined} />
       <div className="px-4 pt-3 pb-2 sm:px-5 sm:pb-3">
         {isPending ? (
           <div className="space-y-3 py-2" aria-busy="true" aria-label="Yükleniyor">
@@ -113,7 +113,7 @@ export function RecentActivity({ studentId, canEdit }: { studentId: string; canE
             <p className="text-sm text-muted">{errorMessage(error)}</p>
             <Button variant="secondary" size="sm" onClick={() => void refetch()}>
               <RotateCw />
-              Tekrar dene
+              Tekrar deneyin
             </Button>
           </div>
         ) : groups.length === 0 ? (

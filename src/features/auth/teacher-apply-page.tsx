@@ -28,8 +28,8 @@ import { useSignIn } from './ui/use-sign-in'
 const NOTE_MAX = 600
 
 const schema = z.object({
-  fullName: z.string().min(2, 'Adını ve soyadını yaz').max(80, 'En fazla 80 karakter olabilir'),
-  email: z.email('Geçerli bir e-posta adresi yaz').max(160, 'En fazla 160 karakter olabilir'),
+  fullName: z.string().min(2, 'Adınızı ve soyadınızı yazın').max(80, 'En fazla 80 karakter olabilir'),
+  email: z.email('Geçerli bir e-posta adresi girin').max(160, 'En fazla 160 karakter olabilir'),
   password: z.string().superRefine((value, ctx) => {
     const issue = passwordIssueMessage(value)
     if (issue) ctx.addIssue({ code: 'custom', message: issue })
@@ -37,7 +37,7 @@ const schema = z.object({
   school: z.string().max(120, 'En fazla 120 karakter olabilir'),
   branch: z.string().max(60, 'En fazla 60 karakter olabilir'),
   note: z.string().max(NOTE_MAX, `En fazla ${NOTE_MAX} karakter olabilir`),
-  consent: z.literal(true, 'Devam etmek için onaylaman gerekiyor'),
+  consent: z.literal(true, 'Devam etmek için onaylamanız gerekiyor'),
   transfer: z.literal(true, 'Hesap açmak için bu onay gerekiyor'),
 })
 
@@ -47,13 +47,13 @@ type Key = keyof Values
 const empty: Values = { fullName: '', email: '', password: '', school: '', branch: '', note: '', consent: false, transfer: false }
 
 const points: ValuePoint[] = [
-  { icon: Users, title: 'En fazla 10 öğrenci', text: 'Her öğrenciyle yakından ilgilenebilmen için sınır 10.' },
-  { icon: ClipboardList, title: 'Plan şablonları', text: 'Haftalık planı şablondan hazırlar, öğrencine gönderirsin.' },
+  { icon: Users, title: 'En fazla 10 öğrenci', text: 'Her öğrenciyle yakından ilgilenebilmeniz için sınır 10.' },
+  { icon: ClipboardList, title: 'Plan şablonları', text: 'Haftalık planı şablondan hazırlar, öğrencinize gönderirsiniz.' },
   { icon: LayoutDashboard, title: 'Haftalık özet', text: 'Kim ne kadar çalıştı, kimin görevi gecikti, son netler ne durumda.' },
-  { icon: MessagesSquare, title: 'Öğrenci ve veliyle yazışma', text: 'Görüşme notların ve mesajların öğrencinin sayfasında durur.' },
+  { icon: MessagesSquare, title: 'Öğrenci ve veliyle yazışma', text: 'Görüşme notlarınız ve mesajlarınız öğrencinin sayfasında durur.' },
 ]
 
-const steps = ['Başvurunu gönder', 'Onaylanınca hesabın açılır', 'Öğrencilerine davet kodu gönder']
+const steps = ['Başvurunuzu gönderin', 'Onaylanınca hesabınız açılır', 'Öğrencilerinize davet kodu gönderin']
 
 function trimmed(values: Values) {
   return {
@@ -79,7 +79,7 @@ export default function TeacherApplyPage() {
     <AuthLayout
       aside={
         <ValuePanel
-          title="Öğrencilerini tek ekrandan takip et"
+          title="Öğrencilerinizi tek ekrandan takip edin"
           points={points}
           footer={
             <ol className="space-y-2">
@@ -125,10 +125,10 @@ function ApplicationsClosed() {
       </div>
       <h1 className="mt-5 text-2xl font-extrabold">Başvurular şu an kapalı</h1>
       <p className="mt-2 text-[15px] leading-relaxed text-muted">
-        Yeni öğretmen hesaplarını bir süreliğine açmıyoruz. Daha sonra tekrar bakabilirsin.
+        Yeni öğretmen hesaplarını bir süreliğine açmıyoruz. Daha sonra tekrar bakabilirsiniz.
       </p>
       <p className="mt-3 text-[15px] leading-relaxed text-muted">
-        Öğrenci ya da veliysen öğretmeninden davet kodu istemen yeterli.
+        Öğrenci ya da veliyseniz öğretmenden davet kodu istemeniz yeterli.
       </p>
       <div className="mt-6 grid gap-2">
         <Button asChild size="lg">
@@ -191,7 +191,7 @@ function ApplyForm() {
     } catch (err) {
       const message = errorMessage(err)
       if (/zaten var/i.test(message)) {
-        setErrors({ email: 'Bu e-posta adresiyle kayıtlı bir hesap var. Giriş yapmayı dene' })
+        setErrors({ email: 'Bu e-posta adresiyle kayıtlı bir hesap var. Giriş yapmayı deneyin' })
         focusFirstInvalid(formRef.current)
       } else if (/şifre/i.test(message)) {
         setErrors({ password: message })
@@ -203,7 +203,7 @@ function ApplyForm() {
       setSubmitting(false)
       return
     }
-    toast.success('Başvurun alındı')
+    toast.success('Başvurunuz alındı')
     try {
       await flow.signIn(input.email, input.password)
     } catch {
@@ -216,9 +216,9 @@ function ApplyForm() {
   if (registeredEmail) {
     return (
       <div>
-        <AuthHeading title="Başvurun alındı" description="Hesabın onaylandığında öğrencilerini davet edebileceksin." />
+        <AuthHeading title="Başvurunuz alındı" description="Hesabınız onaylandığında öğrencilerinizi davet edebileceksiniz." />
         <FormAlert tone="info">
-          Otomatik giriş yapılamadı. {registeredEmail} adresin ve şifrenle giriş yaparak başvurunun durumunu görebilirsin.
+          Otomatik giriş yapılamadı. {registeredEmail} adresiniz ve şifrenizle giriş yaparak başvurunuzun durumunu görebilirsiniz.
         </FormAlert>
         <Button asChild size="lg" className="mt-5 w-full">
           <Link to="/giris">Giriş yap</Link>
@@ -233,7 +233,7 @@ function ApplyForm() {
     <>
       <AuthHeading
         title="Öğretmen başvurusu"
-        description="Yolumnet öğretmenler için ücretsiz. Başvurunu inceledikten sonra hesabın açılır."
+        description="Yolumnet öğretmenler için ücretsiz. Başvurunuzu inceledikten sonra hesabınız açılır."
       />
 
       <form ref={formRef} onSubmit={submit} noValidate className="flex flex-col gap-4">
@@ -250,7 +250,7 @@ function ApplyForm() {
             />
           )}
         </Field>
-        <Field label="E-posta" hint="Giriş yaparken bunu kullanacaksın." error={errors.email}>
+        <Field label="E-posta" error={errors.email}>
           {(props) => (
             <Input
               {...props}
@@ -311,7 +311,7 @@ function ApplyForm() {
           label={<OptionalLabel>Kısa not</OptionalLabel>}
           hint={
             <span className="flex justify-between gap-3">
-              <span>Kaç öğrenciyle çalışmayı düşündüğünü yazabilirsin.</span>
+              <span>Kaç öğrenciyle çalışmayı düşündüğünüzü yazabilirsiniz.</span>
               <span className="shrink-0 tabular">
                 {values.note.length}/{NOTE_MAX}
               </span>
@@ -354,7 +354,7 @@ function ApplyForm() {
       </form>
 
       <p className="mt-6 text-center text-sm text-muted">
-        Hesabın var mı?{' '}
+        Hesabınız var mı?{' '}
         <Link to="/giris" className="inline-flex min-h-11 items-center font-semibold text-accent hover:underline">
           Giriş yap
         </Link>

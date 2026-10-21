@@ -46,7 +46,7 @@ export default function NotificationsPage() {
     <div>
       <PageHeader
         title="Bildirimler"
-        description={count ? `${count} okunmamış bildirimin var` : 'Hepsini okudun'}
+        description={count ? `${count} okunmamış bildirim` : 'Hepsi okundu'}
         actions={
           count > 0 ? (
             <Button variant="secondary" size="sm" onClick={() => void markAllRead()}>
@@ -70,14 +70,14 @@ export default function NotificationsPage() {
         <div className="rounded-2xl border border-line bg-surface p-6 text-center">
           <p className="text-sm text-muted">{errorMessage(list.error)}</p>
           <Button variant="secondary" size="sm" className="mt-4" onClick={() => void list.refetch()}>
-            Tekrar dene
+            Tekrar deneyin
           </Button>
         </div>
       ) : items.length === 0 ? (
         <EmptyState
           icon={Bell}
           title="Bildirim yok"
-          description="Yeni görev, not ve mesajlar geldiğinde burada görürsün."
+          description="Yeni görev, not ve mesajlar geldiğinde burada görünür."
           action={
             <Button asChild variant="secondary">
               <Link to="/app">Ana sayfaya dön</Link>

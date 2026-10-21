@@ -195,7 +195,7 @@ function GoalForm({
         onSubmit={(e) => {
           e.preventDefault()
           const value = parseNet(text)
-          if (value == null || value <= 0) return setError('Bir net değeri yaz')
+          if (value == null || value <= 0) return setError('Bir net değeri girilmeli')
           if (value > max) return setError(`${examLabel[kind]} için en fazla ${max} net olabilir`)
           setError(null)
           void submit(value)

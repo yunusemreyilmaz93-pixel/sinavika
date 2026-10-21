@@ -74,12 +74,12 @@ export function ExamForm({ studentId, student, subjects: allSubjects, recent, in
     e.preventDefault()
     const cleanTitle = title.trim()
     const next: typeof errors = {}
-    if (!cleanTitle) next.title = 'Deneme adını yaz'
-    if (!takenOn || takenOn > todayISO()) next.date = 'Bugün ya da daha önceki bir tarih seç'
+    if (!cleanTitle) next.title = 'Deneme adı gerekli'
+    if (!takenOn || takenOn > todayISO()) next.date = 'Bugün ya da daha önceki bir tarih gerekli'
     setErrors(next)
     if (next.title) return titleRef.current?.focus()
     if (next.date || hasOver) return
-    if (!filled.length) return void toast.error('En az bir dersin sonucunu gir')
+    if (!filled.length) return void toast.error('En az bir dersin sonucu girilmeli')
     try {
       const id = await create.mutateAsync({
         studentId,
@@ -114,7 +114,7 @@ export function ExamForm({ studentId, student, subjects: allSubjects, recent, in
         )}
         <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_12rem]">
           <div className="space-y-2">
-            <Field label="Deneme adı" hint={errors.title ? undefined : 'Yayın adı ve deneme numarası'} error={errors.title}>
+            <Field label="Deneme adı" error={errors.title}>
               {(props) => (
                 <Input
                   {...props}

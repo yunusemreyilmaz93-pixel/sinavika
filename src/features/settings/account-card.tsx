@@ -23,8 +23,8 @@ function RowContent({ icon, children }: { icon: ReactNode; children: ReactNode }
 
 const deleteNote = {
   student: 'Hesabın ve tüm kayıtların (çalışmalar, denemeler, görevler, mesajlar) kalıcı olarak silinir. Sadece sana bağlı olan veli hesapları da silinir.',
-  parent: 'Hesabın kalıcı olarak silinir. Çocuğunun hesabı ve kayıtları etkilenmez.',
-  teacher: 'Hesabın kalıcı olarak silinir. Öğrencilerin varsa önce onları silmen gerekir.',
+  parent: 'Hesabınız kalıcı olarak silinir. Çocuğunuzun hesabı ve kayıtları etkilenmez.',
+  teacher: 'Hesabınız kalıcı olarak silinir. Öğrencileriniz varsa önce onları silmeniz gerekir.',
 } as const
 
 export function AccountCard() {
@@ -43,7 +43,7 @@ export function AccountCard() {
       toast.error(errorMessage(err))
       return
     }
-    toast.success('Hesabın silindi')
+    toast.success('Hesap silindi')
     navigate('/', { replace: true })
     await signOut()
   }
@@ -64,7 +64,7 @@ export function AccountCard() {
             await signOut()
           }}
         >
-          <RowContent icon={<LogOut className="text-muted" />}>Çıkış yap</RowContent>
+          <RowContent icon={<LogOut className="text-muted" />}>Çıkış</RowContent>
         </button>
         <button
           type="button"
@@ -81,13 +81,13 @@ export function AccountCard() {
       <Confirm
         open={open}
         onOpenChange={setOpen}
-        title="Hesabın silinsin mi?"
+        title="Hesap silinsin mi?"
         description={`${deleteNote[profile.role]} Bu işlem geri alınamaz.`}
         confirmLabel="Hesabımı sil"
         disabled={!confirmed}
         onConfirm={remove}
       >
-        <Field label={<>Onaylamak için <b>SİL</b> yaz</>}>
+        <Field label={<>Onaylamak için <b>SİL</b> yazın</>}>
           {(props) => (
             <Input
               {...props}

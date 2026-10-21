@@ -54,7 +54,7 @@ export function WeekSummary({ studentId, className }: { studentId: string; class
               }}
             >
               <RotateCw />
-              Tekrar dene
+              Tekrar deneyin
             </Button>
           </div>
         ) : (
@@ -156,7 +156,7 @@ export function SharedNote({ studentId, className }: { studentId: string; classN
           <p className="text-sm text-danger">{errorMessage(notes.error)}</p>
           <Button variant="secondary" size="sm" onClick={() => void notes.refetch()}>
             <RotateCw />
-            Tekrar dene
+            Tekrar deneyin
           </Button>
         </Card>
       ) : latest ? (

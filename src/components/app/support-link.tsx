@@ -12,7 +12,7 @@ export function SupportLink({ className }: { className?: string }) {
     >
       <Coffee className="size-5 shrink-0" aria-hidden />
       <span>
-        Destek ol
+        Destek olun
         <span className="block text-xs font-normal text-subtle">Ücretsiz kalır, destek özellik açmaz</span>
       </span>
     </a>

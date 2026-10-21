@@ -15,7 +15,7 @@ function raw(error: unknown) {
 
 function ignorable(message: string, shown: string) {
   if (typeof navigator !== 'undefined' && navigator.onLine === false) return true
-  if (/Bağlantı kurulamadı|İnternet bağlantın yok/.test(shown)) return true
+  if (/Bağlantı kurulamadı|İnternet bağlantısı yok/.test(shown)) return true
   if (/ResizeObserver loop|AbortError|The operation was aborted|Script error\.?$/i.test(message)) return true
   return false
 }

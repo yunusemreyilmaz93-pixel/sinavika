@@ -65,7 +65,7 @@ export function ExamInfoForm({ student }: { student: StudentDetail }) {
           .eq('id', student.id)
           .select('id'),
       )
-      if (!rows.length) throw new AppError('Bu öğrencinin bilgilerini değiştirme yetkin yok')
+      if (!rows.length) throw new AppError('Bu öğrencinin bilgilerini değiştirme yetkiniz yok')
     },
     onSuccess: async () => {
       await refreshStudent(queryClient, student.id)

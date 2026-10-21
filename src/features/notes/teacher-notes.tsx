@@ -47,14 +47,14 @@ export function TeacherNotes({ studentId }: { studentId: string }) {
         <div className="rounded-2xl border border-line bg-surface p-6 text-center">
           <p className="text-sm text-muted">{errorMessage(notes.error)}</p>
           <Button variant="secondary" size="sm" className="mt-4" onClick={() => void notes.refetch()}>
-            Tekrar dene
+            Tekrar deneyin
           </Button>
         </div>
       ) : list.length === 0 ? (
         <EmptyState
           icon={NotebookPen}
-          title="Görüşme notlarını burada tut"
-          description="Kendine not al ya da görüşme özetini öğrenci ve veliyle paylaş."
+          title="Görüşme notlarını burada tutun"
+          description="Kendinize not alın ya da görüşme özetini öğrenci ve veliyle paylaşın."
           action={
             <Button onClick={() => openForm(null)}>
               <Plus />
@@ -133,7 +133,7 @@ export function TeacherNotes({ studentId }: { studentId: string }) {
         title="Not silinsin mi?"
         description={
           deleting && deleting.visibility !== 'private'
-            ? 'Not kalıcı olarak silinir ve paylaştığın kişiler de artık göremez.'
+            ? 'Not kalıcı olarak silinir ve paylaştığınız kişiler de artık göremez.'
             : 'Not kalıcı olarak silinir.'
         }
         confirmLabel="Sil"

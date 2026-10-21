@@ -83,7 +83,7 @@ export default function TodayPage() {
         </div>
       </div>
 
-      <Modal open={addingQuestions} onOpenChange={setAddingQuestions} title="Soru çözdüm" description="Doğru, yanlış ve boş sayılarını gir.">
+      <Modal open={addingQuestions} onOpenChange={setAddingQuestions} title="Soru çözdüm">
         <QuestionLogForm studentId={studentId} onDone={() => setAddingQuestions(false)} />
       </Modal>
     </div>

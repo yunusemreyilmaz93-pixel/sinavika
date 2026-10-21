@@ -116,7 +116,7 @@ function TeacherInbox({ userId }: { userId: string }) {
 
   return (
     <div>
-      <PageHeader title="Mesajlar" description={unread ? `${unread} okunmamış mesaj` : 'Öğrencilerin ve velileriyle yazış'} />
+      <PageHeader title="Mesajlar" description={unread ? `${unread} okunmamış mesaj` : undefined} />
       {inbox.isPending ? (
         <ListSkeleton />
       ) : inbox.isError ? (
@@ -124,8 +124,8 @@ function TeacherInbox({ userId }: { userId: string }) {
       ) : rows.length === 0 ? (
         <EmptyState
           icon={MessageCircle}
-          title="Henüz öğrencin yok"
-          description="Öğrenci davet ettiğinde onunla ve velisiyle buradan yazışırsın."
+          title="Henüz öğrenciniz yok"
+          description="Öğrenci davet ettiğinizde onunla ve velisiyle buradan yazışırsınız."
           action={
             <Button asChild>
               <Link to="/app/davetler">
@@ -171,12 +171,12 @@ function ParentInbox({ userId, kids }: { userId: string; kids: Child[] }) {
 
   return (
     <div>
-      <PageHeader title="Mesajlar" description="Çocuklarının öğretmeniyle yazış" />
+      <PageHeader title="Mesajlar" />
       {kids.length === 0 ? (
         <EmptyState
           icon={UserRound}
           title="Bağlı öğrenci yok"
-          description="Öğretmenin ya da çocuğunun oluşturduğu veli koduyla çocuğunun hesabını bağlayabilirsin."
+          description="Öğretmen ya da çocuğunuz tarafından oluşturulan veli koduyla çocuğunuzun hesabını bağlayabilirsiniz."
           action={
             <Button asChild variant="secondary">
               <Link to="/app/ayarlar">Ayarlara git</Link>
@@ -271,7 +271,7 @@ function ErrorBox({ message, onRetry }: { message: string; onRetry: () => void }
     <div className="rounded-2xl border border-line bg-surface p-6 text-center">
       <p className="text-sm text-muted">{message}</p>
       <Button variant="secondary" size="sm" className="mt-4" onClick={onRetry}>
-        Tekrar dene
+        Tekrar deneyin
       </Button>
     </div>
   )

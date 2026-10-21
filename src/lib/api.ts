@@ -5,12 +5,12 @@ export const SITE_HOST = 'yolumnet.vercel.app'
 
 function unexpected(status: number, text: string) {
   if (/DEPLOYMENT_NOT_FOUND|NOT_FOUND/.test(text) || status === 404) {
-    return `Sunucuya bu adresten ulaşılamıyor. Yolumnet'e ${SITE_HOST} adresinden girip tekrar dene`
+    return `Sunucuya bu adresten ulaşılamıyor. Yolumnet'e ${SITE_HOST} adresinden girip tekrar deneyin`
   }
-  if (status === 413) return 'Gönderdiğin bilgi çok büyük. Daha kısa yazıp tekrar dene'
-  if (status === 429) return 'Çok fazla deneme yaptın. Biraz bekleyip tekrar dene'
-  if (status >= 500) return 'Sunucuda geçici bir sorun var. Bir dakika sonra tekrar dene, sorun sürerse sayfayı yenile'
-  return `İşlem tamamlanamadı (hata ${status}). Sayfayı yenileyip tekrar dene`
+  if (status === 413) return 'Gönderilen bilgi çok büyük. Daha kısa yazıp tekrar deneyin'
+  if (status === 429) return 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar deneyin'
+  if (status >= 500) return 'Sunucuda geçici bir sorun var. Bir dakika sonra tekrar deneyin, sorun sürerse sayfayı yenileyin'
+  return `İşlem tamamlanamadı (hata ${status}). Sayfayı yenileyip tekrar deneyin`
 }
 
 export async function callApi<T = { ok: true }>(path: 'ai' | 'auth' | 'account' | 'push' | 'video', body: Record<string, unknown>): Promise<T> {
@@ -21,7 +21,7 @@ export async function callApi<T = { ok: true }>(path: 'ai' | 'auth' | 'account' 
   try {
     response = await fetch(`/api/${path}`, { method: 'POST', headers, body: JSON.stringify(body) })
   } catch {
-    throw new AppError('Bağlantı kurulamadı. İnternetini kontrol edip tekrar dene')
+    throw new AppError('Bağlantı kurulamadı. İnternet bağlantınızı kontrol edip tekrar deneyin')
   }
   const text = await response.text().catch(() => '')
   let json: { error?: string } | null

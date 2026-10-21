@@ -30,10 +30,10 @@ export function ProfileCard() {
     setError(null)
     try {
       const rows = unwrap(await supabase.from('profiles').update({ full_name: trimmed }).eq('id', profile.id).select('id'))
-      if (!rows.length) throw new AppError('Bu işlem için yetkin yok')
+      if (!rows.length) throw new AppError('Bu işlem için yetkiniz yok')
       await refresh()
       setName(trimmed)
-      toast.success('Adın güncellendi')
+      toast.success('Ad güncellendi')
     } catch (err) {
       setError(errorMessage(err))
     } finally {
@@ -83,7 +83,7 @@ export function ProfileCard() {
         <p className="text-xs font-semibold text-muted">{profile.username ? 'Kullanıcı adı' : 'E-posta'}</p>
         <p className="mt-0.5 font-semibold break-all">{loginId}</p>
         <p className="mt-1 text-sm text-muted">
-          Giriş yaparken {profile.username ? 'bu kullanıcı adını' : 'bu e-postayı'} kullanıyorsun. Değiştirilemez.
+          Giriş yaparken {profile.username ? 'bu kullanıcı adı' : 'bu e-posta'} kullanılır. Değiştirilemez.
         </p>
       </div>
     </SettingsCard>

@@ -83,7 +83,7 @@ export default function StudentDetailPage() {
           <p className="text-sm text-danger">{errorMessage(detail.error)}</p>
           <Button variant="secondary" size="sm" onClick={() => void detail.refetch()}>
             <RotateCw />
-            Tekrar dene
+            Tekrar deneyin
           </Button>
         </div>
       </div>
@@ -98,10 +98,10 @@ export default function StudentDetailPage() {
         <EmptyState
           icon={UserRoundX}
           title="Öğrenci bulunamadı"
-          description="Bu öğrenci silinmiş ya da senin öğrencin değil."
+          description="Bu öğrenci silinmiş ya da sizin öğrenciniz değil."
           action={
             <Button asChild>
-              <Link to="/app">Öğrencilere dön</Link>
+              <Link to="/app">Öğrencilere dönün</Link>
             </Button>
           }
         />

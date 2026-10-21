@@ -50,7 +50,7 @@ describe('satır formları gerçek yazımla', () => {
     render(<Harness name="zaman" Form={(p) => <LifeTimelineForm {...p} />} />)
     await user.click(screen.getByLabelText('Yıl 1'))
     await user.keyboard("1881{Enter}Selanik'te doğdu{Enter}Ali Rıza Efendi'nin oğlu")
-    await user.click(screen.getByRole('button', { name: 'Dönem ekle' }))
+    await user.click(screen.getByRole('button', { name: 'Dönem ekleyin' }))
     await user.keyboard('Çocukluk{Enter}1881{Enter}1893')
     expect(out()).toContain("- 1881 | Selanik'te doğdu | Ali Rıza Efendi'nin oğlu")
     expect(out()).toContain('"donemler":"Çocukluk:1881-1893"')

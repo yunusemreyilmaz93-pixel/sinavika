@@ -43,7 +43,7 @@ export function masteryOf(s: TopicSignals): Mastery {
   if (priority > 0) return { level: 'review', reasons, priority }
 
   if (s.status === 'done' && s.daysSinceUpdate !== null && s.daysSinceUpdate >= 30) {
-    return { level: 'solid', reasons: ['Konuya en son 30 günden önce dokundun'], priority: 1 }
+    return { level: 'solid', reasons: ['Konuya 30 günden uzun süredir dokunulmadı'], priority: 1 }
   }
   if (s.status === 'done' && s.total >= 10 && accuracy !== null && accuracy >= 0.75 && s.openWrong === 0) {
     return { level: 'mastered', reasons: [], priority: 0 }

@@ -44,6 +44,6 @@ export async function copyText(text: string, success: string) {
     await navigator.clipboard.writeText(text)
     toast.success(success)
   } catch {
-    toast.error('Kopyalanamadı, elle seçip kopyala')
+    toast.error('Kopyalanamadı, elle seçip kopyalayın')
   }
 }

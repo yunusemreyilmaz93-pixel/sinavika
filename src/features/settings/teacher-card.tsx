@@ -84,11 +84,11 @@ export function TeacherCard() {
                 {usage.data.students} öğrenci
                 {usage.data.invites > 0 && `, ${usage.data.invites} açık davet`}.{' '}
                 {usage.data.students + usage.data.invites >= capacity
-                  ? 'Kontenjan dolu. Açık bir daveti iptal edersen yer açılır.'
+                  ? 'Kontenjan dolu. Açık bir daveti iptal ederseniz yer açılır.'
                   : `${capacity - usage.data.students - usage.data.invites} yer boş.`}
               </p>
               <Button asChild variant="secondary" className="mt-3 w-full sm:w-auto">
-                <Link to="/app/davetler">Davetlere git</Link>
+                <Link to="/app/davetler">Davetlere gidin</Link>
               </Button>
             </>
           )}

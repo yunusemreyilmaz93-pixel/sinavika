@@ -76,7 +76,7 @@ export default function NewExamPage() {
     return (
       <>
         {header}
-        <EmptyState icon={UserX} title="Öğrenci bulunamadı" description="Bu öğrenciye deneme eklemek için yetkin yok ya da kayıt silinmiş." />
+        <EmptyState icon={UserX} title="Öğrenci bulunamadı" description="Bu öğrenciye deneme eklemek için yetkiniz yok ya da kayıt silinmiş." />
       </>
     )
   }

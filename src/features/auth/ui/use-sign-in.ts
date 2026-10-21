@@ -27,9 +27,9 @@ export function useSignIn() {
   const lost = phase === 'waiting' && !session
   const error =
     phase === 'stalled'
-      ? 'Hesap bilgilerin yüklenemedi. Bağlantını kontrol edip tekrar dene'
+      ? 'Hesap bilgileri yüklenemedi. Bağlantıyı kontrol edip tekrar deneyin'
       : lost
-        ? 'Bu hesapla şu an giriş yapılamıyor. Sorun devam ederse öğretmenine ya da yöneticiye yaz'
+        ? 'Bu hesapla şu an giriş yapılamıyor. Sorun devam ederse öğretmene ya da yöneticiye yazın'
         : null
 
   return {

@@ -56,7 +56,7 @@ export function ProgressStats({ studentId }: { studentId: string }) {
           <p className="text-sm text-muted">{errorMessage(activity.error)}</p>
           <Button variant="secondary" onClick={() => void activity.refetch()}>
             <RotateCw />
-            Tekrar dene
+            Tekrar deneyin
           </Button>
         </CardBody>
       </Card>
@@ -92,7 +92,7 @@ export function ProgressStats({ studentId }: { studentId: string }) {
           value={formatPercent(summary.accuracy)}
           sub={summary.questions ? `${formatCount(summary.correct)} D · ${formatCount(summary.wrong)} Y · ${formatCount(summary.blank)} B` : 'Soru kaydı yok'}
         />
-        <Tile icon={CalendarCheck} label="Aktif gün" value={`${summary.activeDays} gün`} sub={`Son ${days} günde kayıt girdiğin gün`} />
+        <Tile icon={CalendarCheck} label="Aktif gün" value={`${summary.activeDays} gün`} sub={`Son ${days} günde kayıt girilen gün`} />
       </motion.div>
 
       <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">

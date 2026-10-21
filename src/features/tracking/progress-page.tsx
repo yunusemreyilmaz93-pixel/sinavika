@@ -15,7 +15,7 @@ export default function ProgressPage() {
         <EmptyState
           icon={UserRound}
           title="Bağlı öğrenci yok"
-          description="Öğretmenin ya da çocuğunun oluşturduğu veli koduyla çocuğunun hesabını bağladığında ilerlemesi burada görünür."
+          description="Öğretmen ya da çocuğunuz tarafından oluşturulan veli koduyla çocuğunuzun hesabını bağladığınızda ilerlemesi burada görünür."
         />
       </>
     )
@@ -27,7 +27,7 @@ function Progress({ studentId, name, canEdit, self }: { studentId: string; name:
   const { data } = useStudyActivity(studentId)
   return (
     <>
-      <PageHeader title="İlerleme" description={self ? 'Çalışma süren, soruların ve düzenin.' : `${name} için çalışma ve soru özeti.`} />
+      <PageHeader title="İlerleme" description={self ? undefined : `${name} için çalışma ve soru özeti.`} />
       <div className="space-y-4 sm:space-y-5">
         <ProgressStats studentId={studentId} />
         {data && !data.isEmpty && <RecentActivity studentId={studentId} canEdit={canEdit} />}

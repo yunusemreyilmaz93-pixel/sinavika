@@ -133,7 +133,7 @@ export function BlockCard(props: Props) {
               type="button"
               {...attributes}
               {...listeners}
-              aria-label={`${label} bloğunu sürükle`}
+              aria-label={`${label} bloğunu sürükleyin`}
               className="grid size-11 cursor-grab touch-none place-items-center rounded-xl text-muted hover:bg-surface-2 active:cursor-grabbing"
             >
               <GripVertical className="size-5" />
@@ -146,7 +146,7 @@ export function BlockCard(props: Props) {
               <button
                 type="button"
                 onClick={() => onInsert(block.id)}
-                aria-label="Altına blok ekle"
+                aria-label="Altına blok ekleyin"
                 className="grid size-11 place-items-center rounded-xl text-muted hover:bg-surface-2 hover:text-fg"
               >
                 <Plus className="size-5" />
@@ -160,11 +160,11 @@ export function BlockCard(props: Props) {
                 <MenuContent>
                   <MenuItem onSelect={() => editor.move(block.id, -1)}>
                     <ArrowUp />
-                    Yukarı taşı
+                    Yukarı taşıyın
                   </MenuItem>
                   <MenuItem onSelect={() => editor.move(block.id, 1)}>
                     <ArrowDown />
-                    Aşağı taşı
+                    Aşağı taşıyın
                   </MenuItem>
                   <MenuItem onSelect={() => editor.duplicate(block.id)}>
                     <Copy />
@@ -192,7 +192,7 @@ export function BlockCard(props: Props) {
           <div
             role={active ? undefined : 'button'}
             tabIndex={active ? undefined : 0}
-            aria-label={active ? undefined : `${label} bloğunu düzenle`}
+            aria-label={active ? undefined : `${label} bloğunu düzenleyin`}
             onClick={active ? undefined : activate}
             onKeyDown={
               active
@@ -208,7 +208,7 @@ export function BlockCard(props: Props) {
           >
             {empty && !active ? (
               <p className="text-[15px] text-subtle">
-                {label} bloğu boş. Düzenlemek için dokun.
+                {label} bloğu boş. Düzenlemek için dokunun.
               </p>
             ) : block.kind === 'box' && block.name === 'soru' && issues.length > 0 ? (
               <p className="text-[15px] text-subtle">Soru tamamlanınca önizleme görünür.</p>

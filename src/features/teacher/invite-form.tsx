@@ -87,7 +87,7 @@ export function InviteFormModal({ open, onOpenChange }: { open: boolean; onOpenC
     event.preventDefault()
     const trimmed = name.trim().replace(/\s+/g, ' ')
     if (trimmed.length < 2) {
-      setNameError('Öğrencinin adını yaz')
+      setNameError('Öğrencinin adını yazın')
       return
     }
     setNameError(null)
@@ -112,7 +112,7 @@ export function InviteFormModal({ open, onOpenChange }: { open: boolean; onOpenC
         open={open}
         onOpenChange={onOpenChange}
         title="Davet hazır"
-        description="Kodu öğrencine gönder. Kod 14 gün geçerli ve tek kullanımlık."
+        description="Kodu öğrencinize gönderin. Kod 14 gün geçerli ve tek kullanımlık."
         footer={
           <>
             <Button variant="secondary" onClick={startOver}>
@@ -131,15 +131,14 @@ export function InviteFormModal({ open, onOpenChange }: { open: boolean; onOpenC
     <Modal
       open={open}
       onOpenChange={onOpenChange}
-      title="Öğrenci davet et"
-      description="Kod oluştur, öğrencine gönder. Katılınca listende görünür."
+      title="Öğrenci davet edin"
       footer={
         <>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Vazgeç
           </Button>
           <Button type="submit" form={formId} loading={create.isPending}>
-            Kod oluştur
+            Kod oluşturun
           </Button>
         </>
       }

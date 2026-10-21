@@ -24,7 +24,7 @@ export function Palette({ open, onOpenChange, onPick }: { open: boolean; onOpenC
         if (!o) setQuery('')
         onOpenChange(o)
       }}
-      title="Blok ekle"
+      title="Blok ekleyin"
       size="lg"
     >
       <div className="relative mb-3">
@@ -36,8 +36,8 @@ export function Palette({ open, onOpenChange, onPick }: { open: boolean; onOpenC
           onKeyDown={(e) => {
             if (e.key === 'Enter' && items[0]) pick(items[0])
           }}
-          placeholder="Ara: soru, video, tablo"
-          aria-label="Blok ara"
+          placeholder="Soru, video ya da tablo arayın"
+          aria-label="Blok arayın"
           className="pl-10"
         />
       </div>

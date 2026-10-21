@@ -48,29 +48,29 @@ export function useStartChecklist(rows: OverviewRow[] | undefined, pendingInvite
   const steps: Step[] = [
     {
       id: 'invite',
-      title: 'İlk öğrencini davet et',
-      text: 'Kod oluştur ve öğrencine gönder.',
+      title: 'İlk öğrencinizi davet edin',
+      text: 'Kod oluşturup öğrencinize gönderin.',
       to: '/app/davetler?yeni=1',
       done: pendingInvites > 0 || students.length > 0,
     },
     {
       id: 'join',
-      title: 'Öğrencinin katılmasını bekle',
-      text: 'Öğrencin kodu girince listende görünür.',
+      title: 'Öğrencinin katılmasını bekleyin',
+      text: 'Öğrenciniz kodu girince listenizde görünür.',
       to: '/app/davetler',
       done: students.length > 0,
     },
     {
       id: 'plan',
-      title: 'İlk haftalık programı hazırla',
-      text: 'Planlayıcıda hazır şablonlardan biriyle hızlıca başlayabilirsin.',
+      title: 'İlk haftalık programı hazırlayın',
+      text: 'Planlayıcıda hazır şablonlardan biriyle hızlıca başlayabilirsiniz.',
       to: '/app/planlayici',
       done: (plannedTasks.data ?? 0) > 0,
     },
     {
       id: 'parent',
-      title: 'Veliyi bağla',
-      text: 'Öğrencinin sayfasından veli kodu oluştur.',
+      title: 'Veliyi bağlayın',
+      text: 'Öğrencinin sayfasından veli kodu oluşturun.',
       to: students[0] ? `/app/ogrenciler/${students[0].id}` : '/app/davetler',
       done: students.some((s) => s.parent_count > 0),
     },
@@ -104,7 +104,7 @@ export function StartChecklist({ steps, onDismiss }: { steps: Step[]; onDismiss:
             {steps.length} adımdan {done} tanesi tamam
           </p>
         </div>
-        <Button variant="ghost" size="icon" className="-mt-1.5 -mr-2" aria-label="Başlangıç listesini gizle" onClick={onDismiss}>
+        <Button variant="ghost" size="icon" className="-mt-1.5 -mr-2" aria-label="Başlangıç listesini gizleyin" onClick={onDismiss}>
           <X />
         </Button>
       </div>

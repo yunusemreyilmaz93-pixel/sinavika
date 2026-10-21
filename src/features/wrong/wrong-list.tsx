@@ -77,7 +77,7 @@ export function WrongList({ studentId, viewer }: { studentId: string; viewer: Vi
         <p className="text-sm text-danger">{errorMessage(list.error ?? curriculum.error)}</p>
         <Button variant="secondary" size="sm" onClick={() => void list.refetch()}>
           <RotateCw />
-          Tekrar dene
+          Tekrar deneyin
         </Button>
       </div>
     )
@@ -100,8 +100,8 @@ export function WrongList({ studentId, viewer }: { studentId: string; viewer: Vi
             viewer === 'student'
               ? 'Yanlış yaptığın bir sorunun fotoğrafını çek. Unutmaman için belli aralıklarla tekrar karşına çıkar.'
               : viewer === 'teacher'
-                ? 'Öğrencin yanlış yaptığı soruları buraya ekledikçe hangi konularda takıldığını görürsün. Sen de ekleyebilirsin.'
-                : 'Çocuğun yanlış yaptığı soruları deftere ekledikçe burada görünür.'
+                ? 'Öğrenci yanlış yaptığı soruları buraya ekledikçe hangi konularda takıldığını görürsünüz. Siz de ekleyebilirsiniz.'
+                : 'Çocuğunuzun yanlış yaptığı sorular deftere eklendikçe burada görünür.'
           }
           action={addButton}
         />
@@ -136,9 +136,9 @@ export function WrongList({ studentId, viewer }: { studentId: string; viewer: Vi
               }
               description={
                 filter === 'tekrar'
-                  ? 'Tekrar zamanı gelen sorular burada çıkar. Diğerlerini Hepsi sekmesinde görebilirsin.'
+                  ? 'Tekrar zamanı gelen sorular burada çıkar. Diğerleri Hepsi sekmesinde görünür.'
                   : filter === 'ogrenildi'
-                    ? 'Bir soruyu tekrar ederken Artık biliyorum dediğinde buraya taşınır.'
+                    ? 'Bir soru tekrar edilirken Artık biliyorum denince buraya taşınır.'
                     : 'Bütün sorular öğrenildi olarak işaretli.'
               }
             />
@@ -195,7 +195,7 @@ function WrongCard({
             row.learned_at
               ? 'Harika, öğrenildi olarak işaretlendi'
               : result === 'again'
-                ? 'Sorun değil. Yarın tekrar karşına çıkacak'
+                ? 'Sorun değil. Yarın tekrar gösterilecek'
                 : `Güzel. ${formatDate(row.next_review_on, 'd MMMM')} günü tekrar göstereceğiz`,
           ),
         onError: (err) => toast.error(errorMessage(err)),

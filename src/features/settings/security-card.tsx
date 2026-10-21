@@ -11,8 +11,8 @@ import { errorMessage, supabase } from '@/lib/supabase'
 import { SettingsCard } from './ui'
 
 function passwordError(message: string) {
-  if (/different from the old/i.test(message)) return 'Yeni şifren eskisiyle aynı olamaz'
-  if (/reauth/i.test(message)) return 'Güvenlik için çıkış yapıp tekrar giriş yaptıktan sonra dene'
+  if (/different from the old/i.test(message)) return 'Yeni şifre eskisiyle aynı olamaz'
+  if (/reauth/i.test(message)) return 'Güvenlik için çıkış yapıp tekrar giriş yaptıktan sonra deneyin'
   if (/weak|at least|pwned|characters|password/i.test(message)) return passwordProblem({ message })
   return errorMessage(message)
 }
@@ -41,11 +41,11 @@ export function SecurityCard() {
     }
     setPassword('')
     setRepeat('')
-    toast.success('Şifren değişti')
+    toast.success('Şifre değişti')
   }
 
   return (
-    <SettingsCard icon={LockKeyhole} title="Şifre" description="Bir sonraki girişte yeni şifreni kullanırsın.">
+    <SettingsCard icon={LockKeyhole} title="Şifre" description="Bir sonraki girişte yeni şifre kullanılır.">
       <form onSubmit={submit} noValidate className="space-y-3">
         <input type="text" autoComplete="username" value={profile.username ?? profile.email ?? ''} readOnly hidden />
         <div className="grid gap-3 sm:grid-cols-2">
@@ -80,7 +80,7 @@ export function SecurityCard() {
         </div>
         {password && <PasswordChecklist password={password} />}
         <Button type="submit" loading={saving} disabled={!password && !repeat} className="w-full sm:w-auto">
-          Şifreyi değiştir
+          Şifreyi değiştirin
         </Button>
       </form>
     </SettingsCard>

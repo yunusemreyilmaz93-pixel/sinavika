@@ -60,7 +60,7 @@ export function ExamDetail({ examId, canEdit, onDeleted }: { examId: number; can
         <p className="text-sm text-danger">{errorMessage(detail.error ?? curriculum.error)}</p>
         <Button variant="secondary" size="sm" className="h-11" onClick={() => (detail.isError ? detail.refetch() : curriculum.refetch())}>
           <RotateCw />
-          Tekrar dene
+          Tekrar deneyin
         </Button>
       </div>
     )
@@ -68,7 +68,7 @@ export function ExamDetail({ examId, canEdit, onDeleted }: { examId: number; can
 
   const data = detail.data
   if (!data) {
-    return <EmptyState icon={SearchX} title="Deneme bulunamadı" description="Silinmiş olabilir ya da bu denemeyi görme iznin yok." />
+    return <EmptyState icon={SearchX} title="Deneme bulunamadı" description="Silinmiş olabilir ya da bu denemeyi görme yetkisi yok." />
   }
 
   const { exam, previous } = data

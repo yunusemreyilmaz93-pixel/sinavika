@@ -15,7 +15,7 @@ export function AppearanceCard() {
     <SettingsCard
       icon={Palette}
       title="Görünüm"
-      description={theme === 'system' ? 'Cihazının açık ya da koyu ayarına uyar.' : 'Bu cihazda seçtiğin tema kullanılır.'}
+      description={theme === 'system' ? 'Cihazın açık ya da koyu ayarına uyar.' : 'Bu cihazda seçilen tema kullanılır.'}
     >
       <Segmented options={options} value={theme} onChange={setTheme} className="[&>button]:h-10" />
     </SettingsCard>

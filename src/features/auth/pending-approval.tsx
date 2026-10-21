@@ -13,12 +13,12 @@ export function PendingApproval() {
         <Clock3 className="size-7" />
       </div>
       <h1 className="mt-5 text-2xl font-extrabold">
-        {rejected ? 'Hesabın şu an aktif değil' : 'Başvurun inceleniyor'}
+        {rejected ? 'Hesabınız şu an aktif değil' : 'Başvurunuz inceleniyor'}
       </h1>
       <p className="mt-2 text-muted">
         {rejected
-          ? 'Hesabın yönetici tarafından durduruldu. Bir hata olduğunu düşünüyorsan bizimle iletişime geç.'
-          : `Merhaba ${profile.full_name.split(' ')[0]}. Kapasitemizi adil kullanmak için öğretmen hesaplarını tek tek onaylıyoruz. Onaylandığında buradan öğrencilerini davet edebileceksin.`}
+          ? 'Hesabınız yönetici tarafından durduruldu. Bir hata olduğunu düşünüyorsanız bizimle iletişime geçin.'
+          : `Merhaba ${profile.full_name.split(' ')[0]}. Kapasitemizi adil kullanmak için öğretmen hesaplarını tek tek onaylıyoruz. Onaylandığında buradan öğrencilerinizi davet edebileceksiniz.`}
       </p>
       <div className="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
         {!rejected && (

@@ -266,7 +266,7 @@ function UserMenu({ profile, wide }: { profile: Profile; wide?: boolean }) {
         <MenuSeparator />
         <MenuItem tone="danger" onSelect={() => void signOut()}>
           <LogOut />
-          Çıkış yap
+          Çıkış
         </MenuItem>
       </MenuContent>
     </Menu>
@@ -288,7 +288,7 @@ function ChildSwitcher() {
         </button>
       </MenuTrigger>
       <MenuContent align="start">
-        <MenuLabel>Çocuğunu seç</MenuLabel>
+        <MenuLabel>Çocuğunuzu seçin</MenuLabel>
         {children.map((c) => (
           <MenuItem key={c.id} onSelect={() => setActiveChild(c.id)}>
             {c.full_name}

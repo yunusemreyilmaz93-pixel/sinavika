@@ -73,7 +73,7 @@ export function ExamTopicMisses({ examId, scores, canEdit }: { examId: number; s
         title="Konu analizi"
         description={
           canEdit
-            ? 'Yanlış ve boşlarının hangi konulardan geldiğini işaretle. Hangi konuda takıldığın netleşir.'
+            ? 'Yanlış ve boşların hangi konulardan geldiğini işaretleyin.'
             : 'Yanlış ve boşların hangi konulardan geldiği'
         }
       />

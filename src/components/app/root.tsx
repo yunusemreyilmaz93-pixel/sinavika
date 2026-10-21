@@ -58,7 +58,7 @@ function OfflineBanner() {
     <div role="status" className="pt-safe fixed inset-x-0 top-0 z-[70] border-b border-warning/30 bg-warning-soft text-warning">
       <p className="mx-auto flex max-w-5xl items-center justify-center gap-2 px-4 py-2 text-sm font-semibold">
         <WifiOff className="size-4 shrink-0" />
-        İnternet bağlantın yok. Bağlantı gelince kaldığın yerden devam edebilirsin.
+        İnternet bağlantısı yok. Bağlantı gelince kaldığınız yerden devam edebilirsiniz.
       </p>
     </div>
   )
@@ -87,11 +87,11 @@ export function RouteError() {
         <LogoMark className="mx-auto size-10" />
         <h1 className="mt-5 text-2xl font-extrabold">{chunk ? 'Yeni sürüm hazır' : 'Bir şeyler ters gitti'}</h1>
         <p className="mt-2 text-muted">
-          {chunk ? 'Yolumnet güncellendi. Sayfayı yenileyince devam edebilirsin.' : 'Bu hata bize otomatik olarak bildirildi. Sayfayı yenilemeyi dene. Sorun devam ederse öğretmenine haber ver.'}
+          {chunk ? 'Yolumnet güncellendi. Sayfayı yenileyince devam edebilirsiniz.' : 'Bu hata bize otomatik olarak bildirildi. Sayfayı yenilemeyi deneyin. Sorun devam ederse yöneticiye haber verin.'}
         </p>
         <Button className="mt-6" onClick={() => window.location.reload()}>
           <RotateCw />
-          Sayfayı yenile
+          Sayfayı yenileyin
         </Button>
       </div>
     </div>
