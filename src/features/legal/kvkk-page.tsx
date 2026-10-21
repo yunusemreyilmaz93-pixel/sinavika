@@ -53,10 +53,13 @@ const sections: Section[] = [
         </li>
         <li>
           <strong>Çalışma kayıtları:</strong> Çalışma süreleri, soru kayıtları, deneme sonuçları ve netler, konu durumları, görevler,
-          hedefler, yanlış soru defterine eklenen fotoğraflar ve notlar, görev olarak verilen videoların izlenme bilgisi.
+          hedefler (hedef bölüm dahil), okuma kayıtları, yanlış soru defterine eklenen fotoğraflar ve notlar, görev olarak verilen
+          videoların izlenme bilgisi.
         </li>
         <li>
-          <strong>Notlar ve mesajlar:</strong> Öğretmenin aldığı notlar, görüşme kayıtları ve uygulama içi mesajlar.
+          <strong>Notlar, duyurular ve mesajlar:</strong> Öğretmenin aldığı notlar, öğrencinin kendi notları, görüşme kayıtları, öğretmenin
+          yazdığı duyurular ve uygulama içi mesajlar. Öğrenci notlarından yalnızca öğrencinin öğretmenle paylaşmayı seçtikleri
+          öğretmene görünür.
         </li>
         <li>
           <strong>Kullanım bilgileri:</strong> Son giriş zamanı, bildirimler, telefona bildirim almayı açtıysanız cihazınızın bildirim adresi ve hizmetin güvenliği için tutulan teknik kayıtlar (IP
@@ -126,6 +129,19 @@ const sections: Section[] = [
           açık rızanız alınır.
         </p>
         <p>
+          Öğretmen, öğrencisi için süreli bir veli rapor bağlantısı oluşturabilir. Bağlantıyı bilen herkes süre dolana ya da öğretmen
+          iptal edene kadar o raporu hesap açmadan görüntüleyebilir. Rapor sayfası arama motorlarına kapalıdır. Bağlantıyı yalnızca
+          velinizle paylaşın.
+        </p>
+        <p>
+          Hedef bölüm seçiminde gösterilen taban puan, başarı sırası ve net bilgileri YÖK Atlas'ta herkese açık yayımlanan verilerdir.
+          Bu veriler Yolumnet'in veritabanına alınmıştır, öğrenciye ait hiçbir bilgi YÖK Atlas'a gönderilmez.
+        </p>
+        <p>
+          Deneme girişinde seçilen karne PDF'i cihazınızda okunur, dosya Yolumnet'e yüklenmez. Forma yalnızca onayladığınız ders
+          sonuçları yazılır.
+        </p>
+        <p>
           Öğretmeninizin görev olarak eklediği YouTube videoları, YouTube'un çerez kullanmayan oynatıcısıyla (youtube-nocookie.com)
           uygulamanın içinde oynatılır. Video oynatıldığında IP adresiniz ve tarayıcı bilginiz YouTube'a (Google) iletilir. Videonun
           ne kadarının izlendiği ve nerede kalındığı, öğretmenin takip edebilmesi için Yolumnet'in kendi veritabanında
@@ -149,7 +165,7 @@ const sections: Section[] = [
     body: (
       <>
         <p>
-          Öğretmenler, isterlerse Ayarlar bölümünde kendi yapay zekâ servis anahtarlarını (Anthropic, OpenAI veya Google) ekleyerek
+          Öğretmenler, isterlerse Ayarlar bölümünde kendi yapay zekâ servis anahtarlarını (Claude, OpenAI, Gemini, Grok, Mistral, DeepSeek, Groq, OpenRouter veya Together) ekleyerek
           asistanı kullanabilir. Bu özellik varsayılan olarak kapalıdır ve öğretmenin açık onayıyla etkinleşir. Öğrenci ve veli
           hesaplarında asistan yoktur.
         </p>
