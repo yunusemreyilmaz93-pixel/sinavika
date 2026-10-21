@@ -16,6 +16,7 @@ export const router = createBrowserRouter([
     hydrateFallbackElement: <FullPageSpinner />,
     children: [
       { index: true, ...page(() => import('@/features/landing/landing-page')) },
+      { path: 'hakkinda', ...page(() => import('@/features/about/about-page')) },
       { path: 'kvkk', ...page(() => import('@/features/legal/kvkk-page')) },
       {
         element: <RedirectIfAuthed />,

@@ -110,6 +110,11 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
                 </li>
               ))}
             <li>
+              <Link to="/hakkinda" className={linkClass}>
+                Hakkında
+              </Link>
+            </li>
+            <li>
               <Link to="/kvkk" className={linkClass}>
                 KVKK aydınlatma metni
               </Link>
