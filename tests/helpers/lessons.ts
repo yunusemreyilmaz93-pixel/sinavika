@@ -14,6 +14,11 @@ const edit = new RegExp(
   'g',
 )
 
+const mini = new RegExp(
+  `update public\\.lessons l\\s+set body = left\\(l\\.body, position\\(E'## Mini test\\\\n\\\\n' in l\\.body\\) - 1\\) \\|\\| \\$mt\\$([\\s\\S]*?)\\$mt\\$ \\|\\| substring\\(l\\.body from position\\(E'\\\\n\\\\n## Kendini dene' in l\\.body\\)\\)\\s+from public\\.topics t\\s+where t\\.id = l\\.topic_id and t\\.subject_id = '([\\w-]+)' and t\\.name = '${name}'`,
+  'g',
+)
+
 // Migration sırasıyla anlatım eklemelerini ve `replace` ile yapılan metin düzeltmelerini uygular
 export function loadLessons(): LessonSource[] {
   const lessons = new Map<string, LessonSource>()
@@ -29,6 +34,13 @@ export function loadLessons(): LessonSource[] {
     for (const m of sql.matchAll(edit)) {
       const lesson = lessons.get(`${m[3]}/${m[4].replace(/''/g, "'")}`)
       if (lesson) lesson.body = lesson.body.split(m[1]).join(m[2])
+    }
+    for (const m of sql.matchAll(mini)) {
+      const lesson = lessons.get(`${m[2]}/${m[3].replace(/''/g, "'")}`)
+      if (!lesson) continue
+      const from = lesson.body.indexOf('## Mini test\n\n')
+      const to = lesson.body.indexOf('\n\n## Kendini dene')
+      if (from >= 0 && to > from) lesson.body = lesson.body.slice(0, from) + m[1] + lesson.body.slice(to)
     }
   }
   return [...lessons.values()]
