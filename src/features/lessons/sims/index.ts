@@ -88,6 +88,14 @@ export const SIMS: Record<string, Sim> = {
     label: 'Atatürk dönemi inkılapları (zaman şeridi)',
     Component: lazy(() => import('./history-sims').then((m) => ({ default: m.ReformsSim }))),
   },
+  ilkcagfelsefe: {
+    label: 'İlk Çağ filozofları (zaman şeridi)',
+    Component: lazy(() => import('./philosophy-sims').then((m) => ({ default: m.AncientPhilosophySim }))),
+  },
+  ortacagfelsefe: {
+    label: 'Orta Çağ düşünürleri (zaman şeridi)',
+    Component: lazy(() => import('./philosophy-sims').then((m) => ({ default: m.MedievalPhilosophySim }))),
+  },
   ph: { label: 'pH ölçeği ve indikatörler', Component: lazy(() => import('./ph-sim').then((m) => ({ default: m.PhSim }))) },
   parabol: {
     label: 'Parabol (a, b, c katsayıları, kökler ve tepe noktası)',
