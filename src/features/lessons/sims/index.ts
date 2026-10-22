@@ -60,6 +60,34 @@ export const SIMS: Record<string, Sim> = {
     label: 'Coğrafya biliminin gelişimi (zaman şeridi)',
     Component: lazy(() => import('./geography-history-sim').then((m) => ({ default: m.GeographyHistorySim }))),
   },
+  selcuklu: {
+    label: 'Anadolu Selçuklu Devleti (zaman şeridi)',
+    Component: lazy(() => import('./history-sims').then((m) => ({ default: m.SeljukSim }))),
+  },
+  osmanlikurulus: {
+    label: 'Osmanlı’nın kuruluşu ve yükselişi 1299 ile 1453 (zaman şeridi)',
+    Component: lazy(() => import('./history-sims').then((m) => ({ default: m.OttomanRiseSim }))),
+  },
+  osmanlidunya: {
+    label: 'Osmanlı’nın yükseliş dönemi 1461 ile 1571 (zaman şeridi)',
+    Component: lazy(() => import('./history-sims').then((m) => ({ default: m.OttomanPowerSim }))),
+  },
+  osmanlidegisim: {
+    label: 'Osmanlı’da duraklama, gerileme ve ıslahatlar (zaman şeridi)',
+    Component: lazy(() => import('./history-sims').then((m) => ({ default: m.OttomanReformSim }))),
+  },
+  yirminciyuzyil: {
+    label: 'II. Meşrutiyet’ten Mondros’a 1908 ile 1918 (zaman şeridi)',
+    Component: lazy(() => import('./history-sims').then((m) => ({ default: m.EarlyCenturySim }))),
+  },
+  kurtulus: {
+    label: 'Millî Mücadele haritası ve olay şeridi',
+    Component: lazy(() => import('./history-sims').then((m) => ({ default: m.LiberationSim }))),
+  },
+  inkilaplar: {
+    label: 'Atatürk dönemi inkılapları (zaman şeridi)',
+    Component: lazy(() => import('./history-sims').then((m) => ({ default: m.ReformsSim }))),
+  },
   ph: { label: 'pH ölçeği ve indikatörler', Component: lazy(() => import('./ph-sim').then((m) => ({ default: m.PhSim }))) },
   parabol: {
     label: 'Parabol (a, b, c katsayıları, kökler ve tepe noktası)',

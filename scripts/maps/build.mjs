@@ -97,11 +97,12 @@ function lambert(lon0, lat0, p1, p2) {
   const F = (Math.cos(rad(p1)) * Math.tan(Math.PI / 4 + rad(p1) / 2) ** n) / n
   const rho = (lat) => F / Math.tan(Math.PI / 4 + rad(lat) / 2) ** n
   const rho0 = rho(lat0)
-  return (lon, lat) => {
+  const project = (lon, lat) => {
     const r = rho(lat)
     const t = n * rad(lon - lon0)
     return [r * Math.sin(t), rho0 - r * Math.cos(t)]
   }
+  return { project, n, F, rho0 }
 }
 
 const REGIONS = {
@@ -118,7 +119,8 @@ const regionOf = Object.fromEntries(Object.entries(REGIONS).flatMap(([r, list]) 
 async function turkiye() {
   const data = await get('ne_10m_admin_1_states_provinces.geojson')
   const features = data.features.filter((f) => f.properties.adm0_a3 === 'TUR')
-  const project = lambert(35, 39, 36, 42)
+  const cone = lambert(35, 39, 36, 42)
+  const project = cone.project
   // ölçek: genişlik 800
   const all = features.flatMap((f) => (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates)).flatMap((p) => p[0]).map(([lon, lat]) => project(lon, lat))
   const minX = Math.min(...all.map((p) => p[0]))
@@ -145,6 +147,17 @@ async function turkiye() {
   )
   const body = `// Natural Earth (kamu malı) 1:10m il sınırları, Lambert konik izdüşüm. scripts/maps/build.mjs üretir, elle düzenlemeyin.
 export const TURKIYE_VIEW = { width: 800, height: ${height} }
+
+// Boylam ve enlemi bu haritadaki noktaya çevirir (kent işaretleri için)
+export function turkiyeNokta(lon: number, lat: number): [number, number] {
+  const n = ${cone.n}
+  const F = ${cone.F}
+  const rho0 = ${cone.rho0}
+  const rad = Math.PI / 180
+  const r = F / Math.tan(Math.PI / 4 + (lat * rad) / 2) ** n
+  const t = n * (lon - 35) * rad
+  return [(r * Math.sin(t) - ${minX}) * ${scale}, (${maxY} - (rho0 - r * Math.cos(t))) * ${scale}]
+}
 
 export type BolgeKodu = ${Object.keys(REGIONS).map((r) => `'${r}'`).join(' | ')}
 

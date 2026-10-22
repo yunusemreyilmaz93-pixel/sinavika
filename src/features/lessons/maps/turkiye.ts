@@ -1,6 +1,17 @@
 // Natural Earth (kamu malı) 1:10m il sınırları, Lambert konik izdüşüm. scripts/maps/build.mjs üretir, elle düzenlemeyin.
 export const TURKIYE_VIEW = { width: 800, height: 350 }
 
+// Boylam ve enlemi bu haritadaki noktaya çevirir (kent işaretleri için)
+export function turkiyeNokta(lon: number, lat: number): [number, number] {
+  const n = 0.6296083848667433
+  const F = 1.9645268020660618
+  const rho0 = 1.2326404296282536
+  const rad = Math.PI / 180
+  const r = F / Math.tan(Math.PI / 4 + (lat * rad) / 2) ** n
+  const t = n * (lon - 35) * rad
+  return [(r * Math.sin(t) - -0.12423548778976183) * 3077.392828328811, (0.058305396561002976 - (rho0 - r * Math.cos(t))) * 3077.392828328811]
+}
+
 export type BolgeKodu = 'marmara' | 'ege' | 'akdeniz' | 'karadeniz' | 'ic' | 'dogu' | 'guneydogu'
 
 export const TURKIYE_ILLER: { ad: string; bolge: BolgeKodu; d: string }[] = [
