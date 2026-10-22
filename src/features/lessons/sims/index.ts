@@ -81,4 +81,36 @@ export const SIMS: Record<string, Sim> = {
     label: 'Doğru ve ters orantı',
     Component: lazy(() => import('./proportion-sim').then((m) => ({ default: m.ProportionSim }))),
   },
+  ivme: {
+    label: 'Hız-zaman grafiği (ilk hız, ivme ve yer değiştirme)',
+    Component: lazy(() => import('./kinematics-sim').then((m) => ({ default: m.KinematicsSim }))),
+  },
+  enerji: {
+    label: 'Enerji dönüşümü (potansiyel, kinetik, sürtünme)',
+    Component: lazy(() => import('./energy-sim').then((m) => ({ default: m.EnergySim }))),
+  },
+  hal: {
+    label: 'Hal değişimi grafiği (buzdan buhara)',
+    Component: lazy(() => import('./phase-sim').then((m) => ({ default: m.PhaseSim }))),
+  },
+  coulomb: {
+    label: 'Coulomb kuvveti (yükler ve uzaklık)',
+    Component: lazy(() => import('./coulomb-sim').then((m) => ({ default: m.CoulombSim }))),
+  },
+  devre: {
+    label: 'Seri ve paralel devre (akım, gerilim, direnç)',
+    Component: lazy(() => import('./circuit-sim').then((m) => ({ default: m.CircuitSim }))),
+  },
+  kaldirma: {
+    label: 'Kaldırma kuvveti (yüzme ve batma)',
+    Component: lazy(() => import('./buoyancy-sim').then((m) => ({ default: m.BuoyancySim }))),
+  },
+  dalga: {
+    label: 'Dalga özellikleri (genlik, dalga boyu, frekans)',
+    Component: lazy(() => import('./wave-sim').then((m) => ({ default: m.WaveSim }))),
+  },
+  mercek: {
+    label: 'İnce kenarlı mercekte görüntü oluşumu',
+    Component: lazy(() => import('./lens-sim').then((m) => ({ default: m.LensSim }))),
+  },
 }
