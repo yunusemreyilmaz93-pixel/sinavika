@@ -125,4 +125,16 @@ export const SIMS: Record<string, Sim> = {
     label: 'Sınırlayıcı bileşen (tepkime ve artan madde)',
     Component: lazy(() => import('./reaction-sim').then((m) => ({ default: m.ReactionSim }))),
   },
+  punnett: {
+    label: 'Punnett karesi (monohibrit çaprazlama)',
+    Component: lazy(() => import('./punnett-sim').then((m) => ({ default: m.PunnettSim }))),
+  },
+  osmoz: {
+    label: 'Osmoz (hipotonik, izotonik, hipertonik ortam)',
+    Component: lazy(() => import('./osmosis-sim').then((m) => ({ default: m.OsmosisSim }))),
+  },
+  piramit: {
+    label: 'Enerji piramidi (basamaklar arası enerji aktarımı)',
+    Component: lazy(() => import('./energy-pyramid-sim').then((m) => ({ default: m.EnergyPyramidSim }))),
+  },
 }
