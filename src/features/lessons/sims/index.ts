@@ -113,4 +113,16 @@ export const SIMS: Record<string, Sim> = {
     label: 'İnce kenarlı mercekte görüntü oluşumu',
     Component: lazy(() => import('./lens-sim').then((m) => ({ default: m.LensSim }))),
   },
+  atom: {
+    label: 'Atomun elektron dizilimi (katmanlar, periyot ve grup)',
+    Component: lazy(() => import('./atom-sim').then((m) => ({ default: m.AtomSim }))),
+  },
+  mol: {
+    label: 'Mol hesabı (kütle, tanecik sayısı, gaz hacmi)',
+    Component: lazy(() => import('./mole-sim').then((m) => ({ default: m.MoleSim }))),
+  },
+  tepkime: {
+    label: 'Sınırlayıcı bileşen (tepkime ve artan madde)',
+    Component: lazy(() => import('./reaction-sim').then((m) => ({ default: m.ReactionSim }))),
+  },
 }
