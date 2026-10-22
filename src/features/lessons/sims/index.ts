@@ -96,6 +96,14 @@ export const SIMS: Record<string, Sim> = {
     label: 'Orta Çağ düşünürleri (zaman şeridi)',
     Component: lazy(() => import('./philosophy-sims').then((m) => ({ default: m.MedievalPhilosophySim }))),
   },
+  hzmuhammed: {
+    label: 'Hz. Muhammed’in hayatı (zaman şeridi)',
+    Component: lazy(() => import('./religion-sims').then((m) => ({ default: m.ProphetLifeSim }))),
+  },
+  islamdusuncesi: {
+    label: 'İslam düşüncesinde şahsiyetler (zaman şeridi)',
+    Component: lazy(() => import('./religion-sims').then((m) => ({ default: m.IslamicThoughtSim }))),
+  },
   ph: { label: 'pH ölçeği ve indikatörler', Component: lazy(() => import('./ph-sim').then((m) => ({ default: m.PhSim }))) },
   parabol: {
     label: 'Parabol (a, b, c katsayıları, kökler ve tepe noktası)',
