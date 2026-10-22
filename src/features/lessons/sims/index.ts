@@ -28,6 +28,38 @@ export const SIMS: Record<string, Sim> = {
     label: 'Dönüşüm geometrisi (öteleme, yansıma, dönme)',
     Component: lazy(() => import('./transform-sim').then((m) => ({ default: m.TransformSim }))),
   },
+  bolgeler: {
+    label: 'Türkiye’nin yedi coğrafi bölgesi (harita)',
+    Component: lazy(() => import('./regions-sim').then((m) => ({ default: m.RegionsSim }))),
+  },
+  koordinat: {
+    label: 'Enlem, boylam ve yerel saat (dünya haritası)',
+    Component: lazy(() => import('./coordinates-sim').then((m) => ({ default: m.CoordinatesSim }))),
+  },
+  basinc: {
+    label: 'Basınç kuşakları ve sürekli rüzgârlar (enlem şeması)',
+    Component: lazy(() => import('./pressure-sim').then((m) => ({ default: m.PressureSim }))),
+  },
+  olcek: {
+    label: 'Ölçek ve gerçek uzaklık',
+    Component: lazy(() => import('./scale-sim').then((m) => ({ default: m.ScaleSim }))),
+  },
+  demografi: {
+    label: 'Demografik dönüşüm modeli (beş aşama)',
+    Component: lazy(() => import('./demography-sim').then((m) => ({ default: m.DemographySim }))),
+  },
+  nufus: {
+    label: 'Dünya nüfusunun milyar basamakları',
+    Component: lazy(() => import('./population-sim').then((m) => ({ default: m.PopulationSim }))),
+  },
+  sektor: {
+    label: 'Çalışan nüfusun sektörlere dağılımı',
+    Component: lazy(() => import('./sectors-sim').then((m) => ({ default: m.SectorsSim }))),
+  },
+  cografyatarihi: {
+    label: 'Coğrafya biliminin gelişimi (zaman şeridi)',
+    Component: lazy(() => import('./geography-history-sim').then((m) => ({ default: m.GeographyHistorySim }))),
+  },
   ph: { label: 'pH ölçeği ve indikatörler', Component: lazy(() => import('./ph-sim').then((m) => ({ default: m.PhSim }))) },
   parabol: {
     label: 'Parabol (a, b, c katsayıları, kökler ve tepe noktası)',
