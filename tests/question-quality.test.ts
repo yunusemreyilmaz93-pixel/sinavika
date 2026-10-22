@@ -33,6 +33,11 @@ const clearlyLongest = (item: Item) => {
 describe('soru kalitesi', () => {
   it('soru bulundu', () => expect(items.length).toBeGreaterThan(100))
 
+  it('anlatım metninde kesme işaretinin önünde ters eğik çizgi kalmamış', () => {
+    const bad = loadLessons().filter((l) => l.body.includes("\\'")).map((l) => `${l.subject} / ${l.topic}`)
+    expect(bad).toEqual([])
+  })
+
   it('doğru şık A-E arasında dengeli dağılır', () => {
     for (const count of [4, 5]) {
       const group = items.filter((i) => i.options.length === count)
