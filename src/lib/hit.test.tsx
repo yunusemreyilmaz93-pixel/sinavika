@@ -7,12 +7,12 @@ const auth = vi.hoisted(() => ({ value: { ready: true, session: null as unknown 
 vi.mock('@/features/auth/session', () => ({ useAuth: () => auth.value }))
 
 const { useSiteHit, trackEvent } = await import('./hit')
-const beacon = vi.fn(() => true)
+const beacon = vi.fn((_url: string, _body: Blob) => true)
 
 function wrapper(path: string) {
   return ({ children }: { children: ReactNode }) => <MemoryRouter initialEntries={[path]}>{children}</MemoryRouter>
 }
-const sent = () => beacon.mock.calls.map(([, blob]) => blob as Blob)
+const sent = () => beacon.mock.calls.map(([, blob]) => blob)
 
 beforeEach(() => {
   beacon.mockClear()
