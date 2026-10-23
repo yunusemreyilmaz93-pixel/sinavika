@@ -23,6 +23,17 @@ type Props = {
   initialWeek: string
 }
 
+// Birden fazla öğrenci seçiliyse yalnızca hepsinin dersleri, hiç seçilmediyse tüm dersler listelenir
+function commonSubjects(all: Subject[], students: PlannerStudent[], ids: string[]) {
+  const chosen = students.filter((s) => ids.includes(s.id))
+  const lists = (chosen.length ? chosen : students).map((s) => studentSubjects(all, s))
+  const kept = chosen.length ? lists.reduce((a, l) => a.filter((x) => l.some((y) => y.id === x.id))) : lists.flat()
+  const order = ['LGS', 'TYT', 'AYT', 'YDT']
+  return [...new Map(kept.map((s) => [s.id, s])).values()].sort(
+    (a, b) => order.indexOf(a.exam) - order.indexOf(b.exam) || a.sort - b.sort,
+  )
+}
+
 export function BulkTaskModal(props: Props) {
   const session = useOpenSession(props.open)
   return <BulkTaskDialog key={session} {...props} />
@@ -41,16 +52,18 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
   const [busy, setBusy] = useState(false)
   const days = weekDays(week)
 
-  const subjects = useMemo(() => {
-    if (!curriculum.data) return []
-    const chosen = students.filter((s) => studentIds.includes(s.id))
-    const seen = new Map<string, Subject>()
-    for (const s of chosen.length ? chosen : students) {
-      for (const subject of studentSubjects(curriculum.data.subjects, s)) seen.set(subject.id, subject)
+  const subjects = useMemo(
+    () => (curriculum.data ? commonSubjects(curriculum.data.subjects, students, studentIds) : []),
+    [curriculum.data, students, studentIds],
+  )
+
+  const changeStudents = (next: string[]) => {
+    setStudentIds(next)
+    setError(null)
+    if (draft.subjectId && curriculum.data && !commonSubjects(curriculum.data.subjects, students, next).some((s) => s.id === draft.subjectId)) {
+      setDraft((d) => ({ ...d, subjectId: '', topicId: '' }))
     }
-    const order = ['LGS', 'TYT', 'AYT', 'YDT']
-    return [...seen.values()].sort((a, b) => order.indexOf(a.exam) - order.indexOf(b.exam) || a.sort - b.sort)
-  }, [curriculum.data, students, studentIds])
+  }
 
   const toggle = <T,>(list: T[], value: T) => (list.includes(value) ? list.filter((v) => v !== value) : [...list, value])
   const count = studentIds.length * dates.length
@@ -104,10 +117,7 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
             <button
               type="button"
               className="-my-2 h-11 px-1 text-sm font-semibold text-accent"
-              onClick={() => {
-                setStudentIds(studentIds.length === students.length ? [] : students.map((s) => s.id))
-                setError(null)
-              }}
+              onClick={() => changeStudents(studentIds.length === students.length ? [] : students.map((s) => s.id))}
             >
               {studentIds.length === students.length ? 'Hiçbiri' : 'Tümü'}
             </button>
@@ -117,11 +127,11 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
             label="Öğrenciler"
             students={students}
             selected={studentIds}
-            onToggle={(id) => {
-              setStudentIds((list) => toggle(list, id))
-              setError(null)
-            }}
+            onToggle={(id) => changeStudents(toggle(studentIds, id))}
           />
+          {studentIds.length > 1 && !subjects.length && (
+            <p className="mt-2 text-sm text-muted">Seçili öğrencilerin ortak dersi yok. Ders eklemek için aynı sınav türündeki öğrencileri seçin.</p>
+          )}
         </section>
 
         <section className="space-y-3">
