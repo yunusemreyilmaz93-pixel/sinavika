@@ -769,6 +769,40 @@ await test('tercih listesi: öğrenci ve öğretmen yazar, veli okur, en fazla 2
   await service('delete from public.universities where id = 999002')
 })
 
+await test('kullanım takibi: oturum birleşir, 5 dakika sonra yenisi açılır, test hesabı yazılmaz, yalnızca yönetici okur', async () => {
+  await service('delete from public.usage_sessions')
+  await as(s1, `select public.usage_ping('/app/plan')`)
+  await as(s1, `select public.usage_ping('/app/plan')`)
+  assert.equal((await service('select 1 from public.usage_sessions where user_id = $1', [s1])).length, 1)
+  await service(`update public.usage_sessions set last_ping_at = now() - interval '60 seconds' where user_id = $1`, [s1])
+  await as(s1, `select public.usage_ping('/app/konular')`)
+  const [cur] = await service('select seconds, last_path from public.usage_sessions where user_id = $1', [s1])
+  assert.ok(cur.seconds >= 59 && cur.seconds <= 61, `süre ${cur.seconds}`)
+  assert.equal(cur.last_path, '/app/konular')
+  await service(`update public.usage_sessions set last_ping_at = now() - interval '6 minutes' where user_id = $1`, [s1])
+  await as(s1, `select public.usage_ping('/app/plan')`)
+  assert.equal((await service('select 1 from public.usage_sessions where user_id = $1', [s1])).length, 2)
+
+  await service(`update public.profiles set is_test = true where id = $1`, [s2])
+  await as(s2, `select public.usage_ping('/app/plan')`)
+  assert.equal((await service('select 1 from public.usage_sessions where user_id = $1', [s2])).length, 0)
+  await service(`update public.profiles set is_test = false where id = $1`, [s2])
+
+  const usage = (await as(adminId, 'select public.admin_usage(30) as u'))[0].u
+  assert.equal(usage.active.d1, 1)
+  assert.equal(usage.by_role[0].role, 'student')
+  assert.ok(usage.pages.some((p) => p.path === '/app/konular'))
+  const users = await as(adminId, 'select * from public.admin_usage_users(30)')
+  assert.equal(users.length, 1)
+  assert.equal(users[0].sessions, 2)
+  assert.equal((await as(adminId, 'select * from public.admin_usage_sessions($1)', [s1])).length, 2)
+
+  await rejects(as(teacherA, 'select public.admin_usage(30)'), /Yetkin yok/)
+  await rejects(as(s1, 'select * from public.admin_usage_users(30)'), /Yetkin yok/)
+  await rejects(as(s1, 'select * from public.usage_sessions'), /permission denied/)
+  await rejects(as(null, `select public.usage_ping('/')`), /permission denied/)
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

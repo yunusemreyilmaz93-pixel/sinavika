@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useMemo, useState, type FormEvent } from 'react'
+import { useMemo, useRef, useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
@@ -50,6 +50,7 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
   const [error, setError] = useState<string | null>(null)
   const [titleError, setTitleError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const alertRef = useRef<HTMLParagraphElement>(null)
   const days = weekDays(week)
 
   const subjects = useMemo(
@@ -68,13 +69,22 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
   const toggle = <T,>(list: T[], value: T) => (list.includes(value) ? list.filter((v) => v !== value) : [...list, value])
   const count = studentIds.length * dates.length
 
+  const fail = (message: string) => {
+    setError(message)
+    requestAnimationFrame(() => alertRef.current?.scrollIntoView?.({ block: 'nearest' }))
+  }
+
   const submit = async (event: FormEvent) => {
     event.preventDefault()
+    if (!studentIds.length) return fail('En az bir öğrenci seçin')
+    if (!dates.length) return fail('En az bir gün seçin')
     const values = draftValues(draft, curriculum.data)
-    if (!values) return setTitleError('Başlık yazın ya da bir ders seçin')
-    if (videoUrlInvalid(draft)) return void toast.error('YouTube bağlantısı geçersiz. Videonun adresini kopyalayıp yapıştırın')
-    if (!studentIds.length) return setError('En az bir öğrenci seçin')
-    if (!dates.length) return setError('En az bir gün seçin')
+    if (!values) {
+      setTitleError('Başlık yazın ya da bir ders seçin')
+      return fail('Başlık yazın ya da bir ders seçin')
+    }
+    if (videoUrlInvalid(draft)) return fail('YouTube bağlantısı geçersiz. Videonun adresini kopyalayıp yapıştırın')
+    setError(null)
     setBusy(true)
     try {
       const rows = studentIds.flatMap((student_id) => [...dates].sort().map((due_on) => ({ ...values, student_id, due_on })))
@@ -104,7 +114,7 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
           <Button variant="secondary" type="button" onClick={() => onOpenChange(false)}>
             Vazgeç
           </Button>
-          <Button type="submit" form="bulk-task-form" loading={busy} disabled={!curriculum.data || !count}>
+          <Button type="submit" form="bulk-task-form" loading={busy} disabled={!curriculum.data}>
             {count ? `${count} görev ekle` : 'Görev ekle'}
           </Button>
         </>
@@ -190,7 +200,7 @@ function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initia
         </section>
 
         {error && (
-          <p role="alert" className="text-sm font-medium text-danger">
+          <p ref={alertRef} role="alert" className="text-sm font-medium text-danger">
             {error}
           </p>
         )}

@@ -13,10 +13,12 @@ import { ReportsSection, useOpenReportCount } from './reports-section'
 import { useAdminOverview } from './queries'
 import { TeachersSection } from './teachers-section'
 import { TestAccountsSection } from './test-accounts-section'
+import { UsageSection } from './usage-section'
 
 const sections = [
   { value: 'genel', label: 'Genel' },
   { value: 'basvurular', label: 'Başvurular' },
+  { value: 'kullanim', label: 'Kullanım' },
   { value: 'ogretmenler', label: 'Öğretmenler' },
   { value: 'ayarlar', label: 'Ayarlar' },
   { value: 'mufredat', label: 'Müfredat' },
@@ -67,6 +69,7 @@ export default function AdminPage() {
         >
           {section === 'genel' && <OverviewSection onNavigate={go} />}
           {section === 'basvurular' && <ApplicationsSection onNavigate={go} />}
+          {section === 'kullanim' && <UsageSection />}
           {section === 'ogretmenler' && <TeachersSection />}
           {section === 'ayarlar' && <AppSettingsSection />}
           {section === 'mufredat' && <CurriculumSection />}

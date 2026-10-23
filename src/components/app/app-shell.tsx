@@ -10,6 +10,7 @@ import { Modal } from '@/components/ui/modal'
 import { PageSkeleton } from '@/components/ui/skeleton'
 import { useAuth, useProfile, type Profile } from '@/features/auth/session'
 import { NotificationBell } from '@/features/notifications/bell'
+import { useUsagePing } from '@/features/usage/use-usage-ping'
 import { QuickAddSheet } from '@/features/tracking/quick-add'
 import { PendingApproval } from '@/features/auth/pending-approval'
 import { cn } from '@/lib/cn'
@@ -26,6 +27,7 @@ export function AppShell() {
   const location = useLocation()
   const [quickAdd, setQuickAdd] = useState(false)
   const items = navFor(profile)
+  useUsagePing()
   const isStudent = profile.role === 'student'
   const current = items
     .filter((i) => (i.end ? location.pathname === i.to : location.pathname === i.to || location.pathname.startsWith(`${i.to}/`)))

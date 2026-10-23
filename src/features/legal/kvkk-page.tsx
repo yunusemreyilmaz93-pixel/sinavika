@@ -62,7 +62,7 @@ const sections: Section[] = [
           öğretmene görünür.
         </li>
         <li>
-          <strong>Kullanım bilgileri:</strong> Son giriş zamanı, bildirimler, telefona bildirim almayı açtıysanız cihazınızın bildirim adresi ve hizmetin güvenliği için tutulan teknik kayıtlar (IP
+          <strong>Kullanım bilgileri:</strong> Son giriş zamanı, uygulamayı ne zaman ve ne kadar süre kullandığınız ile hangi sayfaları açtığınız (yalnızca sayfa adı, sayfa içeriği değil; hizmeti geliştirmek için yönetici tarafından görülür), bildirimler, telefona bildirim almayı açtıysanız cihazınızın bildirim adresi ve hizmetin güvenliği için tutulan teknik kayıtlar (IP
           adresi ve tarayıcı bilgisi gibi).
         </li>
       </ul>

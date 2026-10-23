@@ -1852,6 +1852,25 @@ export type Database = {
           updated_at: string;
         };
       };
+      admin_usage: { Args: { p_days?: number }; Returns: Json };
+      admin_usage_sessions: {
+        Args: { p_user: string };
+        Returns: { started_at: string; last_ping_at: string; seconds: number; last_path: string | null }[];
+      };
+      admin_usage_users: {
+        Args: { p_days?: number };
+        Returns: {
+          id: string;
+          full_name: string;
+          role: Database["public"]["Enums"]["user_role"];
+          last_seen_at: string;
+          sessions: number;
+          seconds: number;
+          avg_seconds: number;
+          first_seen_at: string;
+        }[];
+      };
+      usage_ping: { Args: { p_path: string }; Returns: undefined };
       admin_overview: {
         Args: Record<PropertyKey, never>;
         Returns: {
