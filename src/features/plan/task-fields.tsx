@@ -72,6 +72,7 @@ export function TaskFields({
   curriculum,
   showDate = true,
   titleError,
+  kinds,
 }: {
   draft: TaskDraft
   onChange: (patch: Partial<TaskDraft>) => void
@@ -79,6 +80,7 @@ export function TaskFields({
   curriculum: Curriculum | undefined
   showDate?: boolean
   titleError?: string | null
+  kinds?: TaskKind[]
 }) {
   const suggestion = draftSuggestion(draft, curriculum)
   const topics = draft.subjectId ? (curriculum?.topicsBySubject.get(draft.subjectId) ?? []) : []
@@ -131,7 +133,7 @@ export function TaskFields({
       <fieldset>
         <legend className="mb-1.5 text-sm font-semibold">Tür</legend>
         <div role="radiogroup" aria-label="Tür" className="grid grid-cols-3 gap-2">
-          {taskKinds.map(({ value, label, icon: Icon }) => {
+          {taskKinds.filter((k) => !kinds || kinds.includes(k.value)).map(({ value, label, icon: Icon }) => {
             const active = draft.kind === value
             return (
               <button

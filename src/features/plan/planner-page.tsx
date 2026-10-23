@@ -12,7 +12,6 @@ import { errorMessage } from '@/lib/supabase'
 import { BulkTaskModal } from './bulk-task'
 import { LoadError } from './load-error'
 import { StudentChips, usePlannerStudents } from './student-picker'
-import { TemplatesModal } from './templates'
 import { WeekPlan } from './week-plan'
 
 export default function PlannerPage() {
@@ -21,7 +20,6 @@ export default function PlannerPage() {
   const [params, setParams] = useSearchParams()
   const [week, setWeek] = useState(() => weekStartISO())
   const [bulkOpen, setBulkOpen] = useState(false)
-  const [templatesOpen, setTemplatesOpen] = useState(false)
 
   const list = students.data ?? []
   const selected = list.find((s) => s.id === params.get('ogrenci')) ?? list[0]
@@ -36,9 +34,11 @@ export default function PlannerPage() {
               <CopyPlus />
               Toplu görev
             </Button>
-            <Button variant="secondary" onClick={() => setTemplatesOpen(true)}>
-              <LayoutTemplate />
-              Şablonlar
+            <Button variant="secondary" asChild>
+              <Link to={`/app/sablonlar?ogrenci=${selected.id}&hafta=${week}`}>
+                <LayoutTemplate />
+                Şablonlar
+              </Link>
             </Button>
           </>
         )
@@ -124,13 +124,6 @@ export default function PlannerPage() {
         students={list}
         initialStudentId={selected.id}
         initialWeek={week}
-      />
-      <TemplatesModal
-        open={templatesOpen}
-        onOpenChange={setTemplatesOpen}
-        students={list}
-        student={selected}
-        week={week}
       />
     </>
   )

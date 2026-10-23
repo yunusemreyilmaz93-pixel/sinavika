@@ -1101,25 +1101,34 @@ export type Database = {
       plan_templates: {
         Row: {
           created_at: string;
+          description: string | null;
           id: number;
           items: NonNullable<Json>;
           name: string;
           teacher_id: string;
+          track: Database["public"]["Enums"]["exam_track"] | null;
+          updated_at: string;
         };
         ComputedFields: never;
         Insert: {
           created_at?: string;
+          description?: string | null;
           id?: never;
           items?: NonNullable<Json>;
           name: string;
           teacher_id?: string;
+          track?: Database["public"]["Enums"]["exam_track"] | null;
+          updated_at?: string;
         };
         Update: {
           created_at?: string;
+          description?: string | null;
           id?: never;
           items?: NonNullable<Json>;
           name?: string;
           teacher_id?: string;
+          track?: Database["public"]["Enums"]["exam_track"] | null;
+          updated_at?: string;
         };
         Relationships: [
           {

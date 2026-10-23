@@ -7,6 +7,7 @@ import {
   ClipboardList,
   House,
   LayoutGrid,
+  LayoutTemplate,
   Library,
   Megaphone,
   MessageCircle,
@@ -61,13 +62,14 @@ export function navFor(profile: Profile): NavItem[] {
   const items: NavItem[] = [
     { to: '/app', label: 'Öğrenciler', icon: LayoutGrid, end: true, mobile: true },
     { to: '/app/planlayici', label: 'Planlayıcı', icon: ClipboardList, mobile: true },
+    { to: '/app/sablonlar', label: 'Şablonlar', icon: LayoutTemplate },
     { to: '/app/mufredat', label: 'Müfredat', icon: Library },
     { to: '/app/mesajlar', label: 'Mesajlar', icon: MessageCircle, mobile: true },
     { to: '/app/duyurular', label: 'Duyurular', icon: Megaphone },
     { to: '/app/davetler', label: 'Davetler', icon: UserPlus, mobile: true },
     { to: '/app/bildirimler', label: 'Bildirimler', icon: Bell },
   ]
-  if (profile.status === 'active') items.splice(5, 0, { to: '/app/asistan', label: 'Asistan', icon: Sparkles })
+  if (profile.status === 'active') items.splice(6, 0, { to: '/app/asistan', label: 'Asistan', icon: Sparkles })
   if (profile.is_admin) items.push({ to: '/app/yonetim', label: 'Yönetim', icon: ShieldCheck })
   items.push({ to: '/app/ayarlar', label: 'Ayarlar', icon: Settings })
   return items

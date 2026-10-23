@@ -803,6 +803,24 @@ await test('kullanım takibi: oturum birleşir, 5 dakika sonra yenisi açılır,
   await rejects(as(null, `select public.usage_ping('/')`), /permission denied/)
 })
 
+await test('şablonlar: çok haftalık görevler, 400 görev sınırı, öğretmen başına 4 şablon, yalnızca sahibi görür', async () => {
+  const item = (week, weekday) => ({ week, weekday, title: 'Soru', kind: 'questions', subject_id: null, topic_id: null, target_questions: 20, target_minutes: null, note: null })
+  const items = Array.from({ length: 400 }, (_, i) => item(Math.floor(i / 50), i % 7))
+  const [t] = await as(teacherA, `insert into public.plan_templates (name, description, track, items) values ('TYT 4 hafta', 'Yaz programı', 'yks', $1::jsonb) returning id, updated_at`, [JSON.stringify(items)])
+  await rejects(as(teacherA, `insert into public.plan_templates (name, items) values ('Büyük', $1::jsonb)`, [JSON.stringify([...items, item(0, 0)])]), /check/)
+  await rejects(as(teacherA, `insert into public.plan_templates (name, description, items) values ('x', repeat('a', 201), '[]')`), /check/)
+  await as(teacherA, `update public.plan_templates set name = 'TYT yaz' where id = $1`, [t.id])
+  const [after] = await as(teacherA, 'select name, updated_at from public.plan_templates where id = $1', [t.id])
+  assert.equal(after.name, 'TYT yaz')
+  assert.ok(after.updated_at >= t.updated_at)
+  assert.equal((await as(teacherB, 'select 1 from public.plan_templates where id = $1', [t.id])).length, 0)
+  assert.equal((await as(s1, 'select 1 from public.plan_templates')).length, 0)
+  for (let i = 0; i < 3; i++) await as(teacherA, `insert into public.plan_templates (name) values ($1)`, [`Ş${i}`])
+  await rejects(as(teacherA, `insert into public.plan_templates (name) values ('Fazla')`), /En fazla 4/)
+  await as(teacherB, `insert into public.plan_templates (name) values ('Başkasının sınırı ayrı')`)
+  await service('delete from public.plan_templates')
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

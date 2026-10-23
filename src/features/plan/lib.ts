@@ -121,6 +121,7 @@ const nullableInt = (min: number, max: number) =>
     .transform((v) => v ?? null)
 
 export const templateItemSchema = z.object({
+  week: z.number().int().min(0).max(11).catch(0),
   weekday: z.number().int().min(0).max(6),
   title: z.string().trim().min(1).max(140),
   kind: z.enum(['study', 'questions', 'reading', 'video', 'review', 'other']).catch('study'),
