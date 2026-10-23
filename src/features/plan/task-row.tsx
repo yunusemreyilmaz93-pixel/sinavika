@@ -1,11 +1,13 @@
 import { CalendarArrowUp, EllipsisVertical, GraduationCap, Pencil, StickyNote, Trash2, UserRound } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { DraggableSyntheticListeners } from '@dnd-kit/core'
-import type { Ref } from 'react'
+import { useState, type Ref } from 'react'
+import { prefersReducedMotion } from './hooks'
 import { Badge } from '@/components/ui/badge'
+import { SubjectIcon } from '@/components/ui/subject-icon'
 import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/components/ui/menu'
 import { cn } from '@/lib/cn'
-import { subjectColor, type Subject } from '@/lib/exam'
+import { type Subject } from '@/lib/exam'
 import { VideoChip } from '@/features/video/video-player'
 import { isTeacherTask, kindLabel, targetsText, type PlanViewer, type Task, type TaskPermissions } from './lib'
 
@@ -22,6 +24,7 @@ export function TaskCheck({
   label: string
   size?: 'sm' | 'md'
 }) {
+  const [burst, setBurst] = useState(0)
   const box = (
     <motion.span
       aria-hidden
@@ -29,7 +32,7 @@ export function TaskCheck({
       animate={done ? { scale: [1, 0.86, 1] } : { scale: 1 }}
       transition={{ duration: 0.22 }}
       className={cn(
-        'grid place-items-center rounded-lg border-2 transition-colors duration-200',
+        'relative grid place-items-center rounded-lg border-2 transition-colors duration-200',
         size === 'sm' ? 'size-5 rounded-md' : 'size-6',
         done ? 'border-primary bg-primary text-primary-fg' : 'border-line-strong bg-surface',
         interactive && !done && 'group-hover/check:border-primary',
@@ -47,6 +50,16 @@ export function TaskCheck({
           transition={{ duration: done ? 0.28 : 0.15, ease: 'easeOut' }}
         />
       </svg>
+      {burst > 0 && (
+        <motion.span
+          key={burst}
+          aria-hidden
+          initial={{ opacity: 0.6, scale: 1 }}
+          animate={{ opacity: 0, scale: 2.2 }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
+          className="pointer-events-none absolute -inset-0.5 rounded-lg border-2 border-primary"
+        />
+      )}
     </motion.span>
   )
   const area = size === 'sm' ? 'size-8 -m-1.5' : 'size-11 -m-2.5'
@@ -63,7 +76,10 @@ export function TaskCheck({
       role="checkbox"
       aria-checked={done}
       aria-label={label}
-      onClick={onToggle}
+      onClick={() => {
+        if (!done && !prefersReducedMotion()) setBurst((n) => n + 1)
+        onToggle?.()
+      }}
       className={cn('group/check grid shrink-0 cursor-pointer place-items-center rounded-xl active:scale-95', area)}
     >
       {box}
@@ -158,7 +174,7 @@ export function TaskRow({
         >
           {subject ? (
             <span className="inline-flex min-w-0 items-center gap-1.5 font-medium">
-              <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: subjectColor(subject) }} aria-hidden />
+              <SubjectIcon subject={subject} size="xs" />
               <span className="truncate">{subject.short}</span>
             </span>
           ) : (

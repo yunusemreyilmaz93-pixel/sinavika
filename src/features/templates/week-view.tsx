@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useCurriculum } from '@/lib/data'
-import { subjectColor } from '@/lib/exam'
+import { SubjectIcon } from '@/components/ui/subject-icon'
 import { kindLabel, targetsText, weekdayLong, type TemplateItem } from '@/features/plan/lib'
 
 export function useSubjectName() {
@@ -15,7 +15,7 @@ export function ItemLine({ item, actions, dimmed }: { item: TemplateItem; action
   const meta = [kindLabel[item.kind], subjectName(item.subject_id), ...targetsText(item)].filter(Boolean).join(' · ')
   return (
     <li className={`flex items-center gap-2 py-2 pr-1 pl-3 ${dimmed ? 'opacity-45' : ''}`}>
-      <span aria-hidden className="h-8 w-1 shrink-0 rounded-full" style={{ backgroundColor: subjectColor(subject) }} />
+      {subject ? <SubjectIcon subject={subject} size="sm" /> : <span aria-hidden className="size-7 shrink-0" />}
       <div className="min-w-0 flex-1">
         <p className="truncate text-[15px] font-semibold">{item.title}</p>
         {meta && <p className="truncate text-sm text-muted">{meta}</p>}

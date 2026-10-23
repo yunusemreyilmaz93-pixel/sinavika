@@ -13,6 +13,7 @@ import { formatDate, greeting, todayISO } from '@/lib/dates'
 import { ExamCountdown } from './exam-countdown'
 import { InboxStrip } from './inbox-strip'
 import { LastExamSummary } from './last-exam-summary'
+import { MilestonesCard, StreakChip } from './milestones-card'
 import { QuickActions, Reveal, TodayProgress } from './today-parts'
 
 export default function TodayPage() {
@@ -47,6 +48,9 @@ export default function TodayPage() {
         <h1 className="mt-0.5 text-2xl font-extrabold sm:text-3xl">
           {greeting()}, {firstName}
         </h1>
+        <div className="mt-2 empty:hidden">
+          <StreakChip studentId={studentId} />
+        </div>
       </header>
 
       <InboxStrip userId={profile.id} className="mb-4" />
@@ -81,6 +85,9 @@ export default function TodayPage() {
                 ),
               }}
             />
+          </Reveal>
+          <Reveal index={5} className="order-6 lg:order-none">
+            <MilestonesCard studentId={studentId} />
           </Reveal>
         </div>
       </div>

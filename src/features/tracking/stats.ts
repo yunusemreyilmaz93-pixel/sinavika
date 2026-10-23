@@ -239,6 +239,7 @@ export function invalidateActivity(queryClient: QueryClient, studentId: string) 
   void queryClient.invalidateQueries({ queryKey: keys.questions(studentId) })
   void queryClient.invalidateQueries({ queryKey: ['activity', studentId] })
   void queryClient.invalidateQueries({ queryKey: keys.overview })
+  void queryClient.invalidateQueries({ queryKey: ['milestones', studentId] })
 }
 
 const numberFormat = new Intl.NumberFormat('tr-TR')

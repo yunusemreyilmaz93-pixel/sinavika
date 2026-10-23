@@ -39,7 +39,7 @@ describe('avatar penceresi', () => {
   it('hazır avatar seçilince kaydeder', async () => {
     const user = userEvent.setup()
     renderDialog()
-    await user.click(screen.getByRole('radio', { name: 'Avatar 7' }))
+    await user.click(screen.getByRole('radio', { name: 'Avatar a07' }))
     await waitFor(() => expect(rpc).toHaveBeenCalledWith('set_avatar_preset', { p_preset: 'a07' }))
     expect(toast.success).toHaveBeenCalledWith('Avatar güncellendi')
   })
@@ -47,7 +47,7 @@ describe('avatar penceresi', () => {
   it('seçili avatarı işaretler ve kaldırma düğmesi sunar', async () => {
     const user = userEvent.setup()
     renderDialog('preset:a03')
-    expect(screen.getByRole('radio', { name: 'Avatar 3' }).getAttribute('aria-checked')).toBe('true')
+    expect(screen.getByRole('radio', { name: 'Avatar a03' }).getAttribute('aria-checked')).toBe('true')
     await user.click(screen.getByRole('button', { name: 'Kaldır' }))
     await waitFor(() => expect(rpc).toHaveBeenCalledWith('set_avatar_preset', { p_preset: null }))
   })
@@ -56,7 +56,7 @@ describe('avatar penceresi', () => {
     const user = userEvent.setup({ applyAccept: false })
     renderDialog(null, true)
     expect(screen.getByText('Yüklediğiniz fotoğraf incelemede')).toBeTruthy()
-    await user.click(screen.getByRole('tab', { name: 'Fotoğraf yükle' }))
+    await user.click(screen.getByRole('tab', { name: 'Fotoğraf' }))
     await user.upload(screen.getByLabelText('Fotoğraf seç'), new File(['x'], 'a.pdf', { type: 'application/pdf' }))
     expect(await screen.findByText(/Yalnızca JPEG, PNG ya da WebP/)).toBeTruthy()
   })

@@ -76,6 +76,78 @@
   color-scheme: dark;
 }
 
+/* Kişisel vurgu rengi. Ayarlar > Görünüm. Her rengin birincil, hover, yumuşak zemin ve yazı değeri kontrast için hesaplanmıştır */
+[data-accent='blue'] {
+  --primary: #1d5fb0;
+  --primary-hover: #195196;
+  --primary-soft: #dfe9f4;
+  --primary-soft-fg: #103461;
+  --brand: #1d5fb0;
+}
+.dark [data-accent='blue'],
+.dark[data-accent='blue'] {
+  --primary: #6aa8ff;
+  --primary-hover: #80b5ff;
+  --primary-soft: #203449;
+  --primary-soft-fg: #adcfff;
+}
+[data-accent='violet'] {
+  --primary: #6540bd;
+  --primary-hover: #5636a1;
+  --primary-soft: #e9e4f6;
+  --primary-soft-fg: #382368;
+  --brand: #6540bd;
+}
+.dark [data-accent='violet'],
+.dark[data-accent='violet'] {
+  --primary: #a98bff;
+  --primary-hover: #b69cff;
+  --primary-soft: #2e2d49;
+  --primary-soft-fg: #d0bfff;
+}
+[data-accent='rose'] {
+  --primary: #b02a5f;
+  --primary-hover: #962451;
+  --primary-soft: #f4e1e9;
+  --primary-soft-fg: #611734;
+  --brand: #b02a5f;
+}
+.dark [data-accent='rose'],
+.dark[data-accent='rose'] {
+  --primary: #f27aa6;
+  --primary-hover: #f48eb3;
+  --primary-soft: #3e2a36;
+  --primary-soft-fg: #f8b6ce;
+}
+[data-accent='orange'] {
+  --primary: #a84e0c;
+  --primary-hover: #8f420a;
+  --primary-soft: #f3e6dd;
+  --primary-soft-fg: #5c2b07;
+  --brand: #a84e0c;
+}
+.dark [data-accent='orange'],
+.dark[data-accent='orange'] {
+  --primary: #f59a52;
+  --primary-hover: #f7a96c;
+  --primary-soft: #3e3123;
+  --primary-soft-fg: #fac7a0;
+}
+[data-accent='teal'] {
+  --primary: #0b6f82;
+  --primary-hover: #095e6f;
+  --primary-soft: #ddebee;
+  --primary-soft-fg: #063d48;
+  --brand: #0b6f82;
+}
+.dark [data-accent='teal'],
+.dark[data-accent='teal'] {
+  --primary: #3cc4dc;
+  --primary-hover: #59cde1;
+  --primary-soft: #163a42;
+  --primary-soft-fg: #94dfec;
+}
+
 @theme inline {
   --font-sans: 'Figtree Variable', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Bricolage Grotesque Variable', 'Figtree Variable', ui-sans-serif, sans-serif;

@@ -824,6 +824,9 @@ await test('şablonlar: çok haftalık görevler, 400 görev sınırı, öğretm
 await test('avatar: hazır avatar seçilir, doğrudan yazılamaz, fotoğraf yönetici onayıyla görünür, başkası göremez', async () => {
   await as(s1, `select public.set_avatar_preset('a07')`)
   assert.equal((await as(s1, 'select avatar from public.profiles where id = $1', [s1]))[0].avatar, 'preset:a07')
+  await as(s1, `select public.set_avatar_preset('l12')`)
+  await as(s1, `select public.set_avatar_preset('s08')`)
+  await as(s1, `select public.set_avatar_preset('a07')`)
   await rejects(as(s1, `select public.set_avatar_preset('x99')`), /Geçersiz avatar/)
   await rejects(as(s1, `select public.set_avatar_preset('a7; drop')`), /Geçersiz avatar/)
   await rejects(as(s1, `update public.profiles set avatar = 'preset:a01' where id = $1`, [s1]), /permission denied/)
@@ -850,6 +853,32 @@ await test('avatar: hazır avatar seçilir, doğrudan yazılamaz, fotoğraf yön
   await rejects(service(`insert into public.avatar_uploads (user_id, path, status, bytes) values ($1, 'x', 'pending', 200000)`, [s1]), /check/)
   await rejects(service(`update public.profiles set avatar = 'https://kotu.example/x.png' where id = $1`, [s1]), /check/)
   await service('delete from public.avatar_uploads')
+})
+
+await test('seri ve rozet sayıları: ardışık günler, dünden süren seri, yalnızca yetkili okur', async () => {
+  await service('delete from public.study_sessions where student_id = $1', [s1])
+  await service('delete from public.question_logs where student_id = $1', [s1])
+  await service('delete from public.tasks where student_id = $1', [s1])
+  const empty = (await as(s1, 'select public.student_milestones() as m'))[0].m
+  assert.equal(empty.streak, 0)
+  assert.equal(empty.best_streak, 0)
+  for (const back of [1, 2, 3, 10, 11]) {
+    await service(`insert into public.study_sessions (student_id, minutes, studied_on) values ($1, 30, private.today() - $2::int)`, [s1, back])
+  }
+  await service(`insert into public.question_logs (student_id, subject_id, correct, wrong, blank, solved_on) values ($1, 'tyt-mat', 8, 1, 1, private.today() - 3)`, [s1])
+  const m = (await as(s1, 'select public.student_milestones() as m'))[0].m
+  assert.equal(m.streak, 3)
+  assert.equal(m.best_streak, 3)
+  assert.equal(m.minutes, 150)
+  assert.equal(m.questions, 10)
+  await service(`insert into public.study_sessions (student_id, minutes, studied_on) values ($1, 20, private.today())`, [s1])
+  assert.equal((await as(s1, 'select public.student_milestones() as m'))[0].m.streak, 4)
+  await service(`delete from public.study_sessions where student_id = $1 and studied_on >= private.today() - 3`, [s1])
+  assert.equal((await as(s1, 'select public.student_milestones() as m'))[0].m.streak, 0)
+  assert.equal((await as(teacherA, 'select public.student_milestones($1) as m', [s1]))[0].m.best_streak, 2)
+  const other = (await as(s2, 'select public.student_milestones($1) as m', [s1]))[0].m
+  assert.equal(other.minutes, 0)
+  await rejects(as(null, 'select public.student_milestones($1)', [s1]), /permission denied/)
 })
 
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {

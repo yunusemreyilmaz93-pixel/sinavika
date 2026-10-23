@@ -7,12 +7,14 @@ import { Toaster } from 'sonner'
 import { AuthProvider } from '@/features/auth/session'
 import { installGlobalErrorLogging, reportError } from '@/lib/error-log'
 import '@/lib/install'
+import { applyAccent } from '@/lib/accent'
 import { applyTheme } from '@/lib/theme'
 import { watchForUpdates } from '@/lib/update'
 import { router } from './router'
 import './index.css'
 
 applyTheme()
+applyAccent()
 installGlobalErrorLogging()
 watchForUpdates()
 

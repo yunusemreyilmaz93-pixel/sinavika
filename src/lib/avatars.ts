@@ -1,7 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase, unwrap } from './supabase'
 
-export const presetIds = Array.from({ length: 22 }, (_, i) => `a${String(i + 1).padStart(2, '0')}`)
+const range = (prefix: string, count: number) => Array.from({ length: count }, (_, i) => `${prefix}${String(i + 1).padStart(2, '0')}`)
+
+export const presetGroups = [
+  { value: 'insan', label: 'İnsan', ids: [...range('a', 22), ...range('l', 12), ...range('p', 12)] },
+  { value: 'karakter', label: 'Karakter', ids: range('t', 12) },
+  { value: 'soyut', label: 'Soyut', ids: range('s', 8) },
+] as const
+
+export const presetIds: string[] = presetGroups.flatMap((g) => g.ids)
 
 export const avatarKeys = { all: ['avatars'] as const }
 

@@ -229,7 +229,7 @@ export function RolesSection({ role, onRoleChange }: { role: Role; onRoleChange:
         <SectionHeading
           center
           eyebrow="Roller"
-          title="Herkes kendi ekranını kullanır"
+          title={<>Herkes <span className="marker">kendi ekranını</span> kullanır</>}
           lead="Öğretmen, öğrenci ve veli aynı programı kendi ekranından görür. Bir öğrencinin kayıtlarını sadece kendisi, öğretmeni ve velisi görebilir."
         />
 

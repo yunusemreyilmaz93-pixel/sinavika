@@ -9,7 +9,8 @@ import { Segmented } from '@/components/ui/segmented'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
-import { examLabel, subjectColor, subjectsFor, type ExamKind } from '@/lib/exam'
+import { SubjectIcon } from '@/components/ui/subject-icon'
+import { examLabel, subjectsFor, type ExamKind } from '@/lib/exam'
 import { fold } from '@/lib/text'
 import { useLessonIndex } from './queries'
 
@@ -70,7 +71,7 @@ export default function CurriculumPage() {
                       onClick={() => toggle(subject.id)}
                       className="flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left hover:bg-surface-2/60 sm:px-5"
                     >
-                      <span aria-hidden className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: subjectColor(subject) }} />
+                      <SubjectIcon subject={subject} size="md" />
                       <span className="min-w-0 flex-1">
                         <span className="block font-display text-[15px] leading-snug font-bold sm:text-base">{subject.name}</span>
                         <span className="tabular text-sm text-muted">

@@ -1916,6 +1916,7 @@ export type Database = {
         }[];
       };
       admin_review_avatar: { Args: { p_id: number; p_approve: boolean }; Returns: undefined };
+      student_milestones: { Args: { p_student?: string }; Returns: Json };
       set_avatar_preset: { Args: { p_preset: string | null }; Returns: undefined };
       admin_overview: {
         Args: Record<PropertyKey, never>;

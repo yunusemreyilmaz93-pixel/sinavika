@@ -5,7 +5,8 @@ import { Segmented } from '@/components/ui/segmented'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
-import { examLabel, subjectColor, type ExamKind } from '@/lib/exam'
+import { SubjectIcon } from '@/components/ui/subject-icon'
+import { examLabel, type ExamKind } from '@/lib/exam'
 import { TopicEditor } from './topic-editor'
 import { LoadError } from './ui'
 
@@ -61,7 +62,7 @@ export function CurriculumSection() {
                       active && 'lg:bg-primary-soft lg:hover:bg-primary-soft',
                     )}
                   >
-                    <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: subjectColor(subject) }} aria-hidden />
+                    <SubjectIcon subject={subject} size="sm" />
                     <span className="min-w-0 flex-1">
                       <span className={cn('block font-semibold', active && 'lg:text-primary-soft-fg')}>{subject.name}</span>
                       <span className="tabular block text-xs text-muted">

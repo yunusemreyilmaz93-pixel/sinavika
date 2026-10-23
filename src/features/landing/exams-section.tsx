@@ -29,7 +29,7 @@ export function ExamsSection() {
       <div className={container}>
         <SectionHeading
           eyebrow="Sınavlar"
-          title="Sınavın gerçek düzeniyle"
+          title={<>Sınavın <span className="marker">gerçek düzeniyle</span></>}
           lead="Dersler, soru sayıları ve net hesabı LGS ve YKS'deki gibidir. Deneme sonucu girilirken soru sayısı aşılamaz, net kendiliğinden hesaplanır."
         />
 

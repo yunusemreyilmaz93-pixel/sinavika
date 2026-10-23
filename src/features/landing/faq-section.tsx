@@ -97,7 +97,7 @@ export function FaqSection() {
       <div className={`${container} grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16`}>
         <SectionHeading
           eyebrow="SSS"
-          title="Sık sorulan sorular"
+          title={<>Sık sorulan <span className="marker">sorular</span></>}
           lead="Ücret, veriler ve hesaplarla ilgili kısa cevaplar."
           className="lg:sticky lg:top-24 lg:self-start"
         />

@@ -51,7 +51,7 @@ export function LearningSection() {
         <SectionHeading
           center
           eyebrow="Çalışma ve takip"
-          title="Anlatım, soru ve tekrar aynı yerde"
+          title={<>Anlatım, soru ve tekrar <span className="marker">aynı yerde</span></>}
           lead="Öğrenci konuyu okur, soruları çözer. Sonuçlar konunun durumuna ve tekrar planına kendiliğinden yansır, kimsenin elle işlemesi gerekmez."
         />
 

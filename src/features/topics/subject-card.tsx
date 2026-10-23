@@ -7,7 +7,8 @@ import { ProgressBar } from '@/components/ui/progress'
 import { useLessonIndex } from '@/features/lessons/queries'
 import type { Completion } from '@/features/lessons/progress'
 import { cn } from '@/lib/cn'
-import { subjectColor, type Subject, type Topic } from '@/lib/exam'
+import { SubjectIcon } from '@/components/ui/subject-icon'
+import type { Subject, Topic } from '@/lib/exam'
 import { formatPercent, nextStatus, statusMeta, type TopicState } from './status'
 import type { Accuracy } from './use-topics'
 
@@ -48,11 +49,7 @@ export function SubjectCard({ subject, topics, visible, statusOf, accuracy, comp
           onClick={onToggle}
           className="flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors hover:bg-surface-2/60 focus-visible:-outline-offset-2 sm:px-5 sm:py-4"
         >
-          <span
-            aria-hidden
-            className="mt-1.5 size-2.5 shrink-0 rounded-full"
-            style={{ backgroundColor: subjectColor(subject) }}
-          />
+          <SubjectIcon subject={subject} size="md" />
           <span className="min-w-0 flex-1">
             <span className="block font-display text-[15px] leading-snug font-bold sm:text-base">{subject.name}</span>
             <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-sm text-muted">

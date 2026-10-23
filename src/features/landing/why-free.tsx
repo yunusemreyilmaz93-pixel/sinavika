@@ -12,7 +12,7 @@ export function WhyFree() {
             <div>
               <Eyebrow>Ücret ve sınırlar</Eyebrow>
               <h2 className="mt-3 text-[1.85rem] leading-[1.12] font-extrabold sm:text-[2.5rem]">
-                Neden ücretsiz, neden <StudentCapacity /> öğrenci?
+                Neden <span className="marker">ücretsiz</span>, neden <StudentCapacity /> öğrenci?
               </h2>
               <p className="mt-4 text-[17px] leading-relaxed text-muted">
                 Bu soruların cevabını en baştan vermek istiyoruz.

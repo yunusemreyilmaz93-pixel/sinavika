@@ -8,7 +8,7 @@ import { Modal } from '@/components/ui/modal'
 import { Segmented } from '@/components/ui/segmented'
 import { useOpenSession } from '@/features/plan/hooks'
 import { uploadAvatar } from '@/lib/api'
-import { avatarKeys, avatarUrl, presetIds } from '@/lib/avatars'
+import { avatarKeys, avatarUrl, presetGroups } from '@/lib/avatars'
 import { cn } from '@/lib/cn'
 import { errorMessage, supabase, unwrap } from '@/lib/supabase'
 import { useAuth } from '@/features/auth/session'
@@ -25,7 +25,7 @@ export function AvatarDialog(props: Props) {
 function Dialog({ open, onOpenChange, name, userId, current, pending }: Props) {
   const qc = useQueryClient()
   const { refresh } = useAuth()
-  const [tab, setTab] = useState<'hazir' | 'foto'>('hazir')
+  const [tab, setTab] = useState<string>(() => presetGroups.find((g) => (g.ids as readonly string[]).some((id) => current === `preset:${id}`))?.value ?? 'insan')
   const [file, setFile] = useState<File | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -99,10 +99,7 @@ function Dialog({ open, onOpenChange, name, userId, current, pending }: Props) {
         {!file && (
           <Segmented
             size="sm"
-            options={[
-              { value: 'hazir' as const, label: 'Hazır avatarlar' },
-              { value: 'foto' as const, label: 'Fotoğraf yükle' },
-            ]}
+            options={[...presetGroups.map((g) => ({ value: g.value as string, label: g.label })), { value: 'foto', label: 'Fotoğraf' }]}
             value={tab}
             onChange={(v) => {
               setTab(v)
@@ -119,9 +116,9 @@ function Dialog({ open, onOpenChange, name, userId, current, pending }: Props) {
 
         {file ? (
           <PhotoCropper file={file} busy={busy} onCancel={() => setFile(null)} onConfirm={(b) => void upload(b)} onError={cropError} />
-        ) : tab === 'hazir' ? (
+        ) : tab !== 'foto' ? (
           <div role="radiogroup" aria-label="Hazır avatarlar" className="grid grid-cols-4 gap-2.5 sm:grid-cols-6">
-            {presetIds.map((id) => {
+            {(presetGroups.find((g) => g.value === tab)?.ids ?? []).map((id) => {
               const active = current === `preset:${id}`
               return (
                 <button
@@ -129,7 +126,7 @@ function Dialog({ open, onOpenChange, name, userId, current, pending }: Props) {
                   type="button"
                   role="radio"
                   aria-checked={active}
-                  aria-label={`Avatar ${Number(id.slice(1))}`}
+                  aria-label={`Avatar ${id}`}
                   disabled={busy}
                   onClick={() => void choosePreset(id)}
                   className={cn(

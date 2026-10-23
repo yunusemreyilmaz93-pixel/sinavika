@@ -12,7 +12,7 @@ export function HowItWorks() {
       <div className={container}>
         <SectionHeading
           eyebrow="Nasıl çalışır"
-          title="Üç adımda başlarsınız"
+          title={<>Üç adımda <span className="marker">başlarsınız</span></>}
           lead="Öğrenci ve veliler kendi başlarına kayıt olmaz, öğretmenin verdiği kodla katılır. Böylece hangi öğrencinin hangi öğretmene bağlı olduğu baştan bellidir."
         />
         <ol className="mt-12 grid gap-4 lg:grid-cols-3 lg:gap-6">
