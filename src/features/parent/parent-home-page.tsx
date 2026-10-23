@@ -51,7 +51,7 @@ export default function ParentHomePage() {
   return (
     <div>
       <header className="mb-5 flex items-center gap-3 sm:mb-7 sm:gap-4">
-        <Avatar name={child.full_name} className="size-12 text-base sm:size-14 sm:text-lg" />
+        <Avatar name={child.full_name} userId={child.id} className="size-12 text-base sm:size-14 sm:text-lg" />
         <div className="min-w-0">
           <p className="text-sm font-semibold text-muted">
             {greeting()}, {firstName}

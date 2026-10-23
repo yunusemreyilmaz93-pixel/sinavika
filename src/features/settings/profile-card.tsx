@@ -1,4 +1,5 @@
-import { UserRound } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { Camera, UserRound } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 import { Avatar } from '@/components/ui/avatar'
@@ -8,6 +9,7 @@ import { Field, Input } from '@/components/ui/field'
 import { useAuth, useProfile } from '@/features/auth/session'
 import { studentLabel } from '@/lib/exam'
 import { AppError, errorMessage, supabase, unwrap } from '@/lib/supabase'
+import { AvatarDialog } from '@/features/avatar/avatar-dialog'
 import { SettingsCard } from './ui'
 
 const roleLabel = { teacher: 'Öğretmen', student: 'Öğrenci', parent: 'Veli' } as const
@@ -18,6 +20,11 @@ export function ProfileCard() {
   const [name, setName] = useState(profile.full_name)
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [avatarOpen, setAvatarOpen] = useState(false)
+  const pending = useQuery({
+    queryKey: ['avatar', 'pending', profile.id],
+    queryFn: async () => unwrap(await supabase.from('avatar_uploads').select('id').eq('user_id', profile.id).eq('status', 'pending').limit(1)).length > 0,
+  })
   const trimmed = name.trim().replace(/\s+/g, ' ')
   const dirty = trimmed !== profile.full_name
 
@@ -47,7 +54,17 @@ export function ProfileCard() {
   return (
     <SettingsCard icon={UserRound} title="Profil">
       <div className="flex items-center gap-3">
-        <Avatar name={profile.full_name} className="size-12 text-base" />
+        <button
+          type="button"
+          onClick={() => setAvatarOpen(true)}
+          aria-label="Avatarı değiştir"
+          className="relative shrink-0 rounded-full outline-none focus-visible:ring-3 focus-visible:ring-accent/30"
+        >
+          <Avatar name={profile.full_name} userId={profile.id} className="size-14 text-lg" />
+          <span className="absolute -right-0.5 -bottom-0.5 grid size-6 place-items-center rounded-full border border-line bg-surface text-muted">
+            <Camera className="size-3.5" aria-hidden />
+          </span>
+        </button>
         <div className="min-w-0">
           <p className="truncate font-semibold">{profile.full_name}</p>
           <p className="flex flex-wrap items-center gap-1.5 text-sm text-muted">
@@ -86,6 +103,14 @@ export function ProfileCard() {
           Giriş yaparken {profile.username ? 'bu kullanıcı adı' : 'bu e-posta'} kullanılır. Değiştirilemez.
         </p>
       </div>
+      <AvatarDialog
+        open={avatarOpen}
+        onOpenChange={setAvatarOpen}
+        name={profile.full_name}
+        userId={profile.id}
+        current={profile.avatar}
+        pending={Boolean(pending.data)}
+      />
     </SettingsCard>
   )
 }

@@ -113,7 +113,7 @@ export function TeacherContact({ studentId, teacherId, className }: { studentId:
 
   return (
     <Card className={cn('flex items-center gap-3 p-4 sm:p-5', className)}>
-      {name ? <Avatar name={name} /> : <Skeleton className="size-10 shrink-0 rounded-full" />}
+      {name ? <Avatar name={name} userId={teacherId} /> : <Skeleton className="size-10 shrink-0 rounded-full" />}
       <div className="min-w-0 flex-1">
         <p className="text-xs font-semibold text-muted">Öğretmen</p>
         {teacher.isPending ? (

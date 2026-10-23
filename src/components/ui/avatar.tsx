@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { cn } from '@/lib/cn'
+import { useAvatars } from '@/lib/avatars'
 
 const palette = [
   'bg-primary-soft text-primary-soft-fg',
@@ -17,19 +19,36 @@ export function initials(name: string) {
     .join('')
 }
 
-export function Avatar({ name, className }: { name: string; className?: string }) {
+type Props = { name: string; userId?: string; src?: string | null; className?: string }
+
+export function Avatar({ userId, src, ...props }: Props) {
+  return userId && src === undefined ? <UserAvatar userId={userId} {...props} /> : <Face src={src} {...props} />
+}
+
+function UserAvatar({ userId, ...props }: Omit<Props, 'src'> & { userId: string }) {
+  const avatars = useAvatars()
+  return <Face src={avatars.data?.get(userId)} {...props} />
+}
+
+function Face({ name, src, className }: Omit<Props, 'userId'>) {
+  const [failed, setFailed] = useState<string | null>(null)
   let hash = 0
   for (const ch of name) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0
+  const showImage = Boolean(src) && failed !== src
   return (
     <span
       aria-hidden
       className={cn(
-        'inline-grid size-10 shrink-0 place-items-center rounded-full font-display text-sm font-bold',
-        palette[hash % palette.length],
+        'inline-grid size-10 shrink-0 place-items-center overflow-hidden rounded-full font-display text-sm font-bold',
+        !showImage && palette[hash % palette.length],
         className,
       )}
     >
-      {initials(name)}
+      {showImage ? (
+        <img src={src!} alt="" loading="lazy" decoding="async" className="size-full object-cover" onError={() => setFailed(src ?? null)} />
+      ) : (
+        initials(name)
+      )}
     </span>
   )
 }

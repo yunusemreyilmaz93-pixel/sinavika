@@ -22,6 +22,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      avatar_uploads: {
+        Row: {
+          bytes: number;
+          cleaned_at: string | null;
+          created_at: string;
+          id: number;
+          path: string;
+          reason: string | null;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+          status: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
       client_errors: {
         Row: {
           created_at: string;
@@ -1143,6 +1161,7 @@ export type Database = {
       profiles: {
         Row: {
           application_note: string | null;
+          avatar: string | null;
           approved_at: string | null;
           branch: string | null;
           consent_at: string | null;
@@ -1160,6 +1179,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          avatar?: string | null;
           application_note?: string | null;
           approved_at?: string | null;
           branch?: string | null;
@@ -1177,6 +1197,7 @@ export type Database = {
           username?: string | null;
         };
         Update: {
+          avatar?: string | null;
           application_note?: string | null;
           approved_at?: string | null;
           branch?: string | null;
@@ -1880,6 +1901,22 @@ export type Database = {
         }[];
       };
       usage_ping: { Args: { p_path: string }; Returns: undefined };
+      admin_avatar_uploads: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: number;
+          user_id: string;
+          full_name: string;
+          role: Database["public"]["Enums"]["user_role"];
+          path: string;
+          status: string;
+          reason: string | null;
+          reviewed_by: string | null;
+          created_at: string;
+        }[];
+      };
+      admin_review_avatar: { Args: { p_id: number; p_approve: boolean }; Returns: undefined };
+      set_avatar_preset: { Args: { p_preset: string | null }; Returns: undefined };
       admin_overview: {
         Args: Record<PropertyKey, never>;
         Returns: {

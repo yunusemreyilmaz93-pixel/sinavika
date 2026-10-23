@@ -31,7 +31,7 @@ export function StudentHeader({
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex min-w-0 items-start gap-3 sm:gap-4">
-          <Avatar name={student.full_name} className={cn('size-14 text-lg', archived && 'grayscale')} />
+          <Avatar name={student.full_name} userId={student.id} className={cn('size-14 text-lg', archived && 'grayscale')} />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <h1 className="min-w-0 text-2xl leading-tight font-extrabold break-words sm:text-3xl">{student.full_name}</h1>

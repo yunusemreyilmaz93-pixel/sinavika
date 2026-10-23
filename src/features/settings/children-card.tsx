@@ -56,7 +56,7 @@ export function ChildrenCard() {
             const teacher = teachers.data?.get(child.teacher_id)
             return (
               <li key={child.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
-                <Avatar name={child.full_name} />
+                <Avatar name={child.full_name} userId={child.id} />
                 <div className="min-w-0 flex-1">
                   <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                     <span className="font-semibold">{child.full_name}</span>

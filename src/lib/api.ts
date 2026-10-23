@@ -38,3 +38,28 @@ export async function callApi<T = { ok: true }>(path: 'ai' | 'auth' | 'account' 
   }
   return json as T
 }
+
+export async function uploadAvatar(blob: Blob): Promise<{ status: 'approved' | 'pending'; avatar: string | null }> {
+  const { data } = await supabase.auth.getSession()
+  const headers: Record<string, string> = { 'content-type': 'image/webp' }
+  if (data.session) headers.authorization = `Bearer ${data.session.access_token}`
+  let response: Response
+  try {
+    response = await fetch('/api/avatar', { method: 'POST', headers, body: blob })
+  } catch {
+    throw new AppError('Bağlantı kurulamadı. İnternet bağlantınızı kontrol edip tekrar deneyin')
+  }
+  const text = await response.text().catch(() => '')
+  let json: { error?: string; status?: 'approved' | 'pending'; avatar?: string | null } | null
+  try {
+    json = text ? JSON.parse(text) : {}
+  } catch {
+    json = null
+  }
+  if (!response.ok || !json) {
+    if (json?.error) throw new AppError(json.error)
+    reportError(new Error(`api/avatar ${response.status}: ${text.slice(0, 200)}`), 'api')
+    throw new AppError(unexpected(response.status, text))
+  }
+  return { status: json.status ?? 'pending', avatar: json.avatar ?? null }
+}

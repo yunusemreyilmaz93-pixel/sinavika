@@ -18,6 +18,17 @@ export const GET = handle(async (request) => {
     .delete()
     .not('read_at', 'is', null)
     .lt('created_at', new Date(now - 90 * day).toISOString())
+  const stale = await db
+    .from('avatar_uploads')
+    .select('id, path')
+    .in('status', ['rejected', 'replaced', 'removed'])
+    .is('cleaned_at', null)
+    .lt('reviewed_at', new Date(now - day).toISOString())
+    .limit(200)
+  if (stale.data?.length) {
+    await db.storage.from('avatars').remove(stale.data.map((r) => r.path))
+    await db.from('avatar_uploads').update({ cleaned_at: new Date().toISOString() }).in('id', stale.data.map((r) => r.id))
+  }
   const { error } = await db.from('app_settings').select('key').limit(1)
   if (error) throw new HttpError(500, error.message)
 

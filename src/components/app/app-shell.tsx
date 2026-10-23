@@ -256,7 +256,7 @@ function UserMenu({ profile, wide }: { profile: Profile; wide?: boolean }) {
       <MenuTrigger asChild>
         {wide ? (
           <button type="button" className="flex w-full items-center gap-3 rounded-xl p-2 text-left hover:bg-surface-2">
-            <Avatar name={profile.full_name} className="size-9" />
+            <Avatar name={profile.full_name} userId={profile.id} className="size-9" />
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm font-semibold">{profile.full_name}</span>
               <span className="block text-xs text-muted">{profile.is_admin ? 'Yönetici' : roleLabel[profile.role]}</span>
@@ -265,7 +265,7 @@ function UserMenu({ profile, wide }: { profile: Profile; wide?: boolean }) {
           </button>
         ) : (
           <button type="button" aria-label="Hesap menüsü" className="rounded-full p-1">
-            <Avatar name={profile.full_name} className="size-8 text-xs" />
+            <Avatar name={profile.full_name} userId={profile.id} className="size-8 text-xs" />
           </button>
         )}
       </MenuTrigger>

@@ -109,7 +109,7 @@ function ApplicationCard({ teacher }: { teacher: AdminTeacher }) {
   return (
     <Card className="p-4 sm:p-5">
       <div className="flex items-start gap-3">
-        <Avatar name={teacher.full_name} />
+        <Avatar name={teacher.full_name} userId={teacher.id} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
             <h3 className="text-base font-bold">{teacher.full_name}</h3>

@@ -168,7 +168,7 @@ export function ParentInviteCard() {
           <ul className="mt-2 space-y-1">
             {parents.data.map((p) => (
               <li key={p.id} className="flex min-h-12 items-center gap-3">
-                <Avatar name={p.name} className="size-9 text-xs" />
+                <Avatar name={p.name} userId={p.id} className="size-9 text-xs" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold">{p.name}</p>
                   <p className="text-xs text-muted">{formatRelative(p.linkedAt)} bağlandı</p>

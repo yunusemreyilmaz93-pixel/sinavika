@@ -85,7 +85,7 @@ export function StudentChips({
                 <Check className="size-4" strokeWidth={3} aria-hidden />
               </span>
             ) : (
-              <Avatar name={s.full_name} className="size-8 text-xs" />
+              <Avatar name={s.full_name} userId={s.id} className="size-8 text-xs" />
             )}
             {multiple ? s.full_name : shortName(s, i)}
           </button>

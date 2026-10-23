@@ -99,7 +99,7 @@ export function ParentsSection({ student }: { student: StudentDetail }) {
                     transition={{ duration: 0.2 }}
                     className="flex min-h-14 items-center gap-3 py-2 first:pt-0"
                   >
-                    <Avatar name={p.full_name} className="size-9 text-xs" />
+                    <Avatar name={p.full_name} userId={p.id} className="size-9 text-xs" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-semibold">{p.full_name}</p>
                       <p className="truncate text-xs text-muted">

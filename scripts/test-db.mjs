@@ -821,6 +821,37 @@ await test('şablonlar: çok haftalık görevler, 400 görev sınırı, öğretm
   await service('delete from public.plan_templates')
 })
 
+await test('avatar: hazır avatar seçilir, doğrudan yazılamaz, fotoğraf yönetici onayıyla görünür, başkası göremez', async () => {
+  await as(s1, `select public.set_avatar_preset('a07')`)
+  assert.equal((await as(s1, 'select avatar from public.profiles where id = $1', [s1]))[0].avatar, 'preset:a07')
+  await rejects(as(s1, `select public.set_avatar_preset('x99')`), /Geçersiz avatar/)
+  await rejects(as(s1, `select public.set_avatar_preset('a7; drop')`), /Geçersiz avatar/)
+  await rejects(as(s1, `update public.profiles set avatar = 'preset:a01' where id = $1`, [s1]), /permission denied/)
+  assert.equal((await as(teacherA, 'select avatar from public.profiles where id = $1', [s1]))[0].avatar, 'preset:a07')
+
+  const path = `${s1}/0123456789abcdef.webp`
+  await rejects(as(s1, `insert into public.avatar_uploads (user_id, path, status, bytes) values ($1, $2, 'approved', 1000)`, [s1, path]), /permission denied/)
+  await service(`insert into public.avatar_uploads (user_id, path, status, bytes) values ($1, $2, 'pending', 4000)`, [s1, path])
+  assert.equal((await as(s1, 'select 1 from public.avatar_uploads')).length, 1)
+  assert.equal((await as(s2, 'select 1 from public.avatar_uploads')).length, 0)
+  const [row] = await as(adminId, 'select * from public.admin_avatar_uploads()')
+  assert.equal(row.status, 'pending')
+  await rejects(as(teacherA, 'select * from public.admin_avatar_uploads()'), /Yetkin yok/)
+  await rejects(as(s1, `select public.admin_review_avatar($1, true)`, [row.id]), /Yetkin yok/)
+
+  await as(adminId, 'select public.admin_review_avatar($1, true)', [row.id])
+  assert.equal((await as(s1, 'select avatar from public.profiles where id = $1', [s1]))[0].avatar, `photo:${path}`)
+  await rejects(as(adminId, 'select public.admin_review_avatar($1, true)', [row.id]), /Yalnızca bekleyen/)
+
+  await as(adminId, 'select public.admin_review_avatar($1, false)', [row.id])
+  assert.equal((await as(s1, 'select avatar from public.profiles where id = $1', [s1]))[0].avatar, null)
+  assert.equal((await service('select status from public.avatar_uploads where id = $1', [row.id]))[0].status, 'removed')
+
+  await rejects(service(`insert into public.avatar_uploads (user_id, path, status, bytes) values ($1, 'x', 'pending', 200000)`, [s1]), /check/)
+  await rejects(service(`update public.profiles set avatar = 'https://kotu.example/x.png' where id = $1`, [s1]), /check/)
+  await service('delete from public.avatar_uploads')
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
   await service('delete from auth.users where id = $1', [s1])

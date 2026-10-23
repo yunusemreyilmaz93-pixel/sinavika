@@ -83,7 +83,7 @@ export function StudentCard({ student }: { student: RankedStudent }) {
       )}
     >
       <div className="flex items-start gap-3">
-        <Avatar name={student.full_name} className={cn(archived && 'grayscale')} />
+        <Avatar name={student.full_name} userId={student.id} className={cn(archived && 'grayscale')} />
         <div className="min-w-0 flex-1">
           <p className="truncate font-bold group-hover:underline group-hover:decoration-line-strong group-hover:underline-offset-4">
             {student.full_name}

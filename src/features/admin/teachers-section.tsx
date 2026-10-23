@@ -132,7 +132,7 @@ function TeacherRow({ teacher, self }: { teacher: AdminTeacher; self: boolean })
   const place = [teacher.school, teacher.branch].filter(Boolean).join(' · ')
   return (
     <div className="flex items-start gap-3 px-4 py-3.5 sm:px-5">
-      <Avatar name={teacher.full_name} className="mt-0.5" />
+      <Avatar name={teacher.full_name} userId={teacher.id} className="mt-0.5" />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span className="min-w-0 font-semibold break-words">{teacher.full_name}</span>

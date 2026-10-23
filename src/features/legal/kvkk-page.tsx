@@ -142,6 +142,13 @@ const sections: Section[] = [
           sonuçları yazılır.
         </p>
         <p>
+          Avatar olarak hazır görsellerden birini seçebilir ya da isteğe bağlı olarak kendi fotoğrafınızı yükleyebilirsiniz.
+          Fotoğraf cihazınızda kırpılıp küçültülür, Yolumnet'in depolamasına kaydedilir ve yalnızca sizi görebilen kişilerin
+          ekranında görünür. Uygunsuz görüntülerin yayınlanmaması için yüklenen fotoğraf, kimlik bilgisi olmadan, otomatik bir
+          içerik denetim hizmetine (OpenAI) gönderilebilir ve yönetici tarafından incelenebilir. Fotoğrafı istediğiniz zaman
+          kaldırabilirsiniz.
+        </p>
+        <p>
           Öğretmeninizin görev olarak eklediği YouTube videoları, YouTube'un çerez kullanmayan oynatıcısıyla (youtube-nocookie.com)
           uygulamanın içinde oynatılır. Video oynatıldığında IP adresiniz ve tarayıcı bilginiz YouTube'a (Google) iletilir. Videonun
           ne kadarının izlendiği ve nerede kalındığı, öğretmenin takip edebilmesi için Yolumnet'in kendi veritabanında

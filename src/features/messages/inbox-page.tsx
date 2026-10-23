@@ -22,6 +22,7 @@ type Row = {
   channel: Channel
   title: string
   avatar: string
+  avatarId: string
   badge?: string
   subtitle?: string
   search: string
@@ -64,6 +65,7 @@ async function teacherRows(userId: string): Promise<Row[]> {
       ...t,
       title: studentName,
       avatar: studentName,
+      avatarId: t.studentId,
       badge: t.channel === 'student' ? 'Öğrenci' : 'Veli',
       subtitle: t.channel === 'parent' ? parents.join(', ') : undefined,
       search: fold([studentName, ...(t.channel === 'parent' ? parents : [])].join(' ')),
@@ -87,6 +89,7 @@ async function parentRows(userId: string, kids: Child[]): Promise<Row[]> {
       channel: 'parent',
       title: teacher,
       avatar: teacher,
+      avatarId: k.teacher_id,
       subtitle: k.full_name,
       search: fold(`${teacher} ${k.full_name}`),
       names,
@@ -222,7 +225,7 @@ function ThreadRow({ row, userId }: { row: Row; userId: string }) {
       to={threadLink(row.studentId, row.channel)}
       className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-surface-2/60 focus-visible:bg-surface-2 focus-visible:outline-none sm:px-5"
     >
-      <Avatar name={row.avatar} className="size-11" />
+      <Avatar name={row.avatar} userId={row.avatarId} className="size-11" />
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2">
           <span className={cn('truncate text-[15px]', unread ? 'font-bold' : 'font-semibold')}>{row.title}</span>

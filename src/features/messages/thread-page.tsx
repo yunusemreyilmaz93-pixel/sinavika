@@ -126,12 +126,14 @@ function Thread({ studentId, channel }: { studentId: string; channel: Channel })
           suffix: channel === 'student' ? 'Öğrenci' : 'Veliler',
           subtitle: channel === 'parent' ? parentNames.join(', ') || 'Bağlı veli yok' : lastSeen(people[studentId]),
           avatar: studentName,
+          avatarId: studentId,
         }
       : {
           title: teacherName,
           suffix: undefined,
           subtitle: role === 'student' ? 'Öğretmenin' : `Öğretmen · ${studentName}`,
           avatar: teacherName,
+          avatarId: meta.data.student.teacher_id,
         }
 
   const privacy =
@@ -155,7 +157,7 @@ function Thread({ studentId, channel }: { studentId: string; channel: Channel })
               <ArrowLeft className="!size-5" />
             </Link>
           </Button>
-          <Avatar name={header.avatar} className="size-9 text-xs" />
+          <Avatar name={header.avatar} userId={header.avatarId} className="size-9 text-xs" />
           <div className="min-w-0 flex-1">
             <h1 className="truncate font-display text-base leading-tight font-bold sm:text-lg">
               {header.title}

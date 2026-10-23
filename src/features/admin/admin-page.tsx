@@ -5,6 +5,7 @@ import { PageHeader } from '@/components/app/page-header'
 import { Segmented } from '@/components/ui/segmented'
 import { AppSettingsSection } from './app-settings-section'
 import { ApplicationsSection } from './applications-section'
+import { AvatarsSection } from './avatars-section'
 import { BookSuggestionsSection } from './book-suggestions-section'
 import { CurriculumSection } from './curriculum-section'
 import { ErrorsSection } from './errors-section'
@@ -19,6 +20,7 @@ const sections = [
   { value: 'genel', label: 'Genel' },
   { value: 'basvurular', label: 'Başvurular' },
   { value: 'kullanim', label: 'Kullanım' },
+  { value: 'avatarlar', label: 'Avatarlar' },
   { value: 'ogretmenler', label: 'Öğretmenler' },
   { value: 'ayarlar', label: 'Ayarlar' },
   { value: 'mufredat', label: 'Müfredat' },
@@ -70,6 +72,7 @@ export default function AdminPage() {
           {section === 'genel' && <OverviewSection onNavigate={go} />}
           {section === 'basvurular' && <ApplicationsSection onNavigate={go} />}
           {section === 'kullanim' && <UsageSection />}
+          {section === 'avatarlar' && <AvatarsSection />}
           {section === 'ogretmenler' && <TeachersSection />}
           {section === 'ayarlar' && <AppSettingsSection />}
           {section === 'mufredat' && <CurriculumSection />}
