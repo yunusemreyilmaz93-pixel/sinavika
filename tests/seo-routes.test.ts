@@ -57,3 +57,13 @@ describe('pageHead', () => {
     expect(html).toContain('<meta name="robots" content="noindex, nofollow" />')
   })
 })
+
+describe('herkese açık anlatım sayfaları', () => {
+  it('vercel.json anlatım adreslerini kendi HTML dosyalarına yönlendiriyor', () => {
+    const rewrites = Object.fromEntries(vercel.rewrites.map((r) => [r.source, r.destination]))
+    expect(rewrites['/konu-anlatimi']).toBe('/konu-anlatimi.html')
+    expect(rewrites['/konu-anlatimi/:exam']).toBe('/konu-anlatimi/:exam.html')
+    expect(rewrites['/konu-anlatimi/:exam/:subject']).toBe('/konu-anlatimi/:exam/:subject.html')
+    expect(rewrites['/konu-anlatimi/:exam/:subject/:topic']).toBe('/konu-anlatimi/:exam/:subject/:topic.html')
+  })
+})

@@ -37,6 +37,22 @@
     {
       "source": "/ogretmen-basvurusu",
       "destination": "/ogretmen-basvurusu.html"
+    },
+    {
+      "source": "/konu-anlatimi",
+      "destination": "/konu-anlatimi.html"
+    },
+    {
+      "source": "/konu-anlatimi/:exam",
+      "destination": "/konu-anlatimi/:exam.html"
+    },
+    {
+      "source": "/konu-anlatimi/:exam/:subject",
+      "destination": "/konu-anlatimi/:exam/:subject.html"
+    },
+    {
+      "source": "/konu-anlatimi/:exam/:subject/:topic",
+      "destination": "/konu-anlatimi/:exam/:subject/:topic.html"
     }
   ],
   "crons": [

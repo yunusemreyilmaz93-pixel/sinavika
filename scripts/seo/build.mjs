@@ -3,6 +3,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { pageHead, siteUrl, withSite } from './html.mjs'
 import { appPages } from './pages.mjs'
+import { buildPublicLessons } from './public/lessons.mjs'
 
 const dist = join(process.cwd(), 'dist')
 const site = siteUrl()
@@ -39,10 +40,14 @@ async function main() {
     if (page.sitemap) urls.push({ path: page.path })
   }
 
+  const cssHref = shell.match(/<link rel="stylesheet"[^>]*href="([^"]+\.css)"/)?.[1]
+  const lessons = await buildPublicLessons({ write, shell, cssHref, site })
+  urls.push(...lessons.urls)
+
   write('404.html', pageHead(shell, { path: '/', title: 'Sayfa bulunamadı · Yolumnet', description: 'Aradığınız sayfa bulunamadı.', noindex: true, site }))
   write('robots.txt', robotsTxt())
   write('sitemap.xml', sitemapXml(urls))
-  console.log(`SEO: ${appPages.length + 1} sayfa, ${urls.length} adres sitemap'te (${site})`)
+  console.log(`SEO: ${appPages.length + 1} uygulama sayfası, ${lessons.urls.length} anlatım sayfası, ${urls.length} adres sitemap'te (${site})`)
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) await main()

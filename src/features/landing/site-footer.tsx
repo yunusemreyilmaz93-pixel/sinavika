@@ -89,6 +89,22 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
             </li>
           </ul>
         </nav>
+        <nav aria-label="Konu anlatımları">
+          <p className="text-sm font-bold">Konu anlatımları</p>
+          <ul className="mt-2">
+            {[
+              ['/konu-anlatimi/lgs', 'LGS'],
+              ['/konu-anlatimi/tyt', 'TYT'],
+              ['/konu-anlatimi/ydt', 'YDT'],
+            ].map(([href, label]) => (
+              <li key={href}>
+                <a href={href} className={linkClass}>
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <nav aria-label="Bilgi">
           <p className="text-sm font-bold">Bilgi</p>
           <ul className="mt-2">

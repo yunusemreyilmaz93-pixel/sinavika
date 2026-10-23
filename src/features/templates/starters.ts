@@ -59,7 +59,7 @@ function daily(days: Day[], saturday: Row, sunday: Row, questions = 25, minutes 
 }
 
 const lgsDeneme = E(5, 'LGS deneme sınavı', 155)
-const tytDeneme = E(5, 'TYT deneme sınavı', 165)
+const tytDeneme = E(5, 'TYT deneme sınavı', 135)
 const aytDeneme = E(5, 'AYT deneme sınavı', 180)
 const analiz = (d = 6, m = 75) => R(d, null, 'Denemedeki yanlışların tekrarı', m)
 
@@ -352,10 +352,10 @@ export const starterTemplates: StarterTemplate[] = [
     items: program([
       [
         Q(0, 'tyt-mat', 'Temel Matematik soru çözümü', 30),
-        E(1, 'TYT deneme sınavı', 165),
+        E(1, 'TYT deneme sınavı', 135),
         R(2, null, 'Denemedeki yanlışların tekrarı', 90),
         Q(3, 'tyt-tr', 'Paragraf soruları', 30),
-        E(4, 'TYT deneme sınavı', 165),
+        E(4, 'TYT deneme sınavı', 135),
         tytDeneme,
         analiz(6, 120),
       ],
@@ -446,7 +446,7 @@ export const starterTemplates: StarterTemplate[] = [
         Q(4, 'ayt-mat', 'AYT Matematik soru çözümü', 40),
         Q(4, 'ayt-fiz', 'AYT Fizik soru çözümü', 30),
         aytDeneme,
-        E(6, 'TYT deneme sınavı', 165),
+        E(6, 'TYT deneme sınavı', 135),
       ],
     ]),
   },
@@ -496,7 +496,7 @@ export const starterTemplates: StarterTemplate[] = [
         Q(0, 'tyt-mat', 'Temel Matematik soru çözümü', 40),
         Q(0, 'tyt-tr', 'Türkçe soru çözümü', 30),
         Q(1, null, 'AYT alan dersleri soru çözümü', 60),
-        E(2, 'TYT deneme sınavı', 165),
+        E(2, 'TYT deneme sınavı', 135),
         R(3, null, 'TYT yanlışlarının tekrarı', 75),
         Q(4, null, 'Eksik konulardan soru çözümü', 60),
         aytDeneme,
