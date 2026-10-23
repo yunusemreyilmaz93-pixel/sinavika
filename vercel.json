@@ -3,12 +3,40 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/app/:path*",
-      "destination": "/"
+      "source": "/app",
+      "destination": "/index.html"
     },
     {
-      "source": "/rapor/:token",
-      "destination": "/"
+      "source": "/app/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/rapor/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/hakkinda",
+      "destination": "/hakkinda.html"
+    },
+    {
+      "source": "/kvkk",
+      "destination": "/kvkk.html"
+    },
+    {
+      "source": "/giris",
+      "destination": "/giris.html"
+    },
+    {
+      "source": "/katil",
+      "destination": "/katil.html"
+    },
+    {
+      "source": "/test-giris",
+      "destination": "/test-giris.html"
+    },
+    {
+      "source": "/ogretmen-basvurusu",
+      "destination": "/ogretmen-basvurusu.html"
     }
   ],
   "crons": [
@@ -75,6 +103,5 @@
         }
       ]
     }
-  ],
-  "cleanUrls": true
+  ]
 }

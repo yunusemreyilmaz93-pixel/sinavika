@@ -21,12 +21,18 @@ describe('rota koruması', () => {
 
   it('her uygulama rotası ya kendi HTML dosyasına ya da rewrite kuralına sahip, yoksa 404 olur', () => {
     const rewritten = vercel.rewrites.map((r) => r.source)
-    const generated = appPages.map((p: { path: string }) => p.path.slice(1))
     const app = router.match(/path: 'app',/) ? ['app'] : []
     for (const path of [...topLevel, ...app]) {
       const root = path.split('/')[0]
-      const covered = generated.includes(path) || rewritten.some((s) => s.startsWith(`/${root}/`) || s === `/${root}`)
+      const covered = rewritten.some((s) => s.startsWith(`/${root}/`) || s === `/${root}`)
       expect(covered, `/${path} yayında 404 verir`).toBe(true)
+    }
+  })
+
+  it('üretilen her uygulama sayfası kendi HTML dosyasına yönlenir', () => {
+    for (const page of appPages as { path: string }[]) {
+      const rule = vercel.rewrites.find((r) => r.source === page.path)
+      expect(rule?.destination, page.path).toBe(`${page.path}.html`)
     }
   })
 
