@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/app/page-header'
 import { Segmented } from '@/components/ui/segmented'
 import { AppSettingsSection } from './app-settings-section'
 import { ApplicationsSection } from './applications-section'
-import { AvatarsSection } from './avatars-section'
+import { AvatarsSection, useAvatarQueueCount } from './avatars-section'
 import { BookSuggestionsSection } from './book-suggestions-section'
 import { CurriculumSection } from './curriculum-section'
 import { ErrorsSection } from './errors-section'
@@ -43,6 +43,7 @@ export default function AdminPage() {
   const overview = useAdminOverview()
   const pending = overview.data?.teachers_pending ?? 0
   const reports = useOpenReportCount().data ?? 0
+  const avatars = useAvatarQueueCount().data ?? 0
   const tabsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function AdminPage() {
       <PageHeader title="Yönetim" />
       <div ref={tabsRef} className="mb-5">
         <Segmented
-          options={sections.map((s) => (s.value === 'basvurular' ? { ...s, badge: pending } : s.value === 'bildirimler' ? { ...s, badge: reports } : { ...s }))}
+          options={sections.map((s) => (s.value === 'basvurular' ? { ...s, badge: pending } : s.value === 'bildirimler' ? { ...s, badge: reports } : s.value === 'avatarlar' ? { ...s, badge: avatars } : { ...s }))}
           value={section}
           onChange={go}
         />

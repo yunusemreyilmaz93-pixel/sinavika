@@ -144,9 +144,8 @@ const sections: Section[] = [
         <p>
           Avatar olarak hazır görsellerden birini seçebilir ya da isteğe bağlı olarak kendi fotoğrafınızı yükleyebilirsiniz.
           Fotoğraf cihazınızda kırpılıp küçültülür, Yolumnet'in depolamasına kaydedilir ve yalnızca sizi görebilen kişilerin
-          ekranında görünür. Uygunsuz görüntülerin yayınlanmaması için yüklenen fotoğraf, kimlik bilgisi olmadan, otomatik bir
-          içerik denetim hizmetine (OpenAI) gönderilebilir ve yönetici tarafından incelenebilir. Fotoğrafı istediğiniz zaman
-          kaldırabilirsiniz.
+          ekranında görünür. Uygunsuz görüntülerin yayınlanmaması için yüklenen fotoğraf yönetici tarafından incelenir ve onaylanınca
+          görünür. Fotoğrafı istediğiniz zaman kaldırabilirsiniz.
         </p>
         <p>
           Öğretmeninizin görev olarak eklediği YouTube videoları, YouTube'un çerez kullanmayan oynatıcısıyla (youtube-nocookie.com)

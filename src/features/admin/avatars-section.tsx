@@ -19,7 +19,16 @@ const statusLabel: Record<string, { label: string; tone: 'warning' | 'primary' |
   removed: { label: 'Kaldırıldı', tone: 'neutral' },
 }
 
-const key = ['admin', 'avatars'] as const
+export const avatarsKey = ['admin', 'avatars'] as const
+const key = avatarsKey
+
+export function useAvatarQueueCount() {
+  return useQuery({
+    queryKey: avatarsKey,
+    queryFn: async () => unwrap(await supabase.rpc('admin_avatar_uploads')),
+    select: (rows) => rows.filter((r) => r.status === 'pending').length,
+  })
+}
 
 export function AvatarsSection() {
   const qc = useQueryClient()
