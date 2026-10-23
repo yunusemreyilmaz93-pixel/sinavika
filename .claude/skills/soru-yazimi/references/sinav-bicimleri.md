@@ -22,8 +22,26 @@ Bu notlar genel bilgidir ve doğrulanmamıştır. ÖSYM'nin madde yazım kılavu
 
 ## YDT (5 şık)
 
-- Boşluk doldurma (dilbilgisi ve sözcük), cümle tamamlama, paragraf tamamlama, anlamca yakın cümle, çeviri, okuma parçası.
+ÖSYM 2018 ve 2025 kitapçıklarının yönergelerinden ve MEB çıkmış soru kitabından (2018-2025) doğrulanmıştır. Sekiz yıl boyunca aynı sırada 80 soru:
+
+| Sorular | Bölüm |
+| --- | --- |
+| 1-5 | Kelime. Her yıl aynı düzen: isim, sıfat, zarf, fiil, edatlı fiil |
+| 6-15 | Dilbilgisi. 3 fiil biçimi, 2 edat çifti, 2 bağlaç, 1 belirleyici ya da nicelik, 1 ikili kalıp (as ... as, either ... or), 1 anlam edatı. Her sorunun iki boşluğu var |
+| 16-20 | Cloze. Parça başına 1 fiil biçimi, 1 sözcük, 3 edat ya da bağlantı |
+| 21-28 | Cümle tamamlama. Hepsinde kökte ya da seçeneklerde bağlaç veya bağlantı sözcüğü var |
+| 29-43 | Okuma, 5 parça × 3 soru |
+| 44-48 | Diyalog tamamlama |
+| 49-53 | Anlamca en yakın cümle |
+| 54-58 | Durum (söylenmiş olabilecek söz) |
+| 59-63 | Paragraf tamamlama |
+| 64-69 | İngilizce-Türkçe çeviri |
+| 70-75 | Türkçe-İngilizce çeviri |
+| 76-80 | Anlam bütünlüğünü bozan cümle |
+
 - Şıklar tek sözcük ya da kısa öbek olabilir. Bu durumda uzunluk ipucu sayılmaz ama biçim ve anlam ipuçları denetlenir.
+- Dilbilgisi soruları iki boşluklu ve şıklar "x / y" biçimindedir. Bir boşluğu doğru, ötekini yanlış çeviren şık güçlü çeldiricidir.
+- ÖSYM soruları telif kapsamındadır. Anlatımlara soru metni kopyalanmaz, yalnızca kalıp ve sayım kullanılır.
 
 ## Matematik ve fen soruları için ek kurallar
 
