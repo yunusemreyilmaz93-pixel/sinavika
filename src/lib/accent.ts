@@ -27,6 +27,24 @@ export function applyAccent(choice: AccentChoice = read()) {
   else document.documentElement.setAttribute('data-accent', choice)
 }
 
+function store(choice: AccentChoice) {
+  try {
+    if (choice === 'green') localStorage.removeItem(KEY)
+    else localStorage.setItem(KEY, choice)
+  } catch {
+    /* depolama kapalı */
+  }
+}
+
+// Hesaptaki renk cihazdaki seçimin önüne geçer. Giriş yapılınca çağrılır
+export function syncAccent(account: string | null) {
+  const choice = accents.some((a) => a.value === account) ? (account as AccentChoice) : 'green'
+  if (choice === read()) return
+  store(choice)
+  applyAccent(choice)
+  listeners.forEach((l) => l())
+}
+
 export function useAccent() {
   const choice = useSyncExternalStore(
     (cb) => {
@@ -37,12 +55,7 @@ export function useAccent() {
     () => 'green' as AccentChoice,
   )
   const setChoice = useCallback((next: AccentChoice) => {
-    try {
-      if (next === 'green') localStorage.removeItem(KEY)
-      else localStorage.setItem(KEY, next)
-    } catch {
-      /* depolama kapalı */
-    }
+    store(next)
     applyAccent(next)
     listeners.forEach((l) => l())
   }, [])

@@ -1160,6 +1160,7 @@ export type Database = {
       };
       profiles: {
         Row: {
+          accent: string | null;
           application_note: string | null;
           avatar: string | null;
           approved_at: string | null;
@@ -1179,6 +1180,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          accent?: string | null;
           avatar?: string | null;
           application_note?: string | null;
           approved_at?: string | null;
@@ -1197,6 +1199,7 @@ export type Database = {
           username?: string | null;
         };
         Update: {
+          accent?: string | null;
           avatar?: string | null;
           application_note?: string | null;
           approved_at?: string | null;

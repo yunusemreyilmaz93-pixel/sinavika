@@ -173,9 +173,9 @@ await test('öğrenci yetki alanlarını değiştiremez', async () => {
 
 let taskId
 await test('öğretmen görev verir, öğrenciye bildirim gider', async () => {
-  const [t] = await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'Türev 40 soru', current_date) returning id`, [s1])
+  const [t] = await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'Türev 40 soru', private.today()) returning id`, [s1])
   taskId = t.id
-  await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'İntegral tekrar', current_date) returning id`, [s1])
+  await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'İntegral tekrar', private.today()) returning id`, [s1])
   const n = await as(s1, `select title from public.notifications where kind = 'task'`)
   assert.equal(n.length, 1)
   assert.equal(n[0].title, '2 yeni görev')
@@ -265,14 +265,14 @@ await test('müfredat tam yüklendi', async () => {
 await test('deneme tek işlemde kaydedilir, hatada hiçbir şey kalmaz', async () => {
   const before = (await service('select count(*)::int as n from public.mock_exams'))[0].n
   await rejects(
-    as(s1, `select public.create_mock_exam($1, 'TYT', 'Bozuk', current_date, '[{"subject_id":"tyt-fiz","correct":9,"wrong":0,"blank":0}]')`, [s1]),
+    as(s1, `select public.create_mock_exam($1, 'TYT', 'Bozuk', private.today(), '[{"subject_id":"tyt-fiz","correct":9,"wrong":0,"blank":0}]')`, [s1]),
     /en fazla 7/,
   )
   assert.equal((await service('select count(*)::int as n from public.mock_exams'))[0].n, before)
-  const [r] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Tam', current_date, '[{"subject_id":"tyt-fiz","correct":5,"wrong":1,"blank":1}]') as id`, [s1])
+  const [r] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Tam', private.today(), '[{"subject_id":"tyt-fiz","correct":5,"wrong":1,"blank":1}]') as id`, [s1])
   await rejects(as(s1, `update public.mock_exams set kind = 'AYT' where id = $1`, [r.id]), /türü değiştirilemez/)
-  await rejects(as(s1, `select public.create_mock_exam($1, 'TYT', 'Gelecek', current_date + 5, '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]')`, [s1]), /not_future/)
-  await rejects(as(s2, `select public.create_mock_exam($1, 'TYT', 'Başkası', current_date, '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]')`, [s1]), /row-level security/)
+  await rejects(as(s1, `select public.create_mock_exam($1, 'TYT', 'Gelecek', private.today() + 5, '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]')`, [s1]), /not_future/)
+  await rejects(as(s2, `select public.create_mock_exam($1, 'TYT', 'Başkası', private.today(), '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]')`, [s1]), /row-level security/)
 })
 
 await test('aynı öğrencinin velileri birbirini görür', async () => {
@@ -367,7 +367,7 @@ await test('tekrar zamanı gelen yanlışlar hatırlatmaya eklenir', async () =>
 })
 
 await test('denemede konu yanlışları dersin yanlış ve boş toplamını aşamaz', async () => {
-  const [e] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Konu analizi', current_date, '[{"subject_id":"tyt-fiz","correct":3,"wrong":2,"blank":2}]') as id`, [s1])
+  const [e] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Konu analizi', private.today(), '[{"subject_id":"tyt-fiz","correct":3,"wrong":2,"blank":2}]') as id`, [s1])
   const [t1, t2] = await service(`select id from public.topics where subject_id = 'tyt-fiz' order by sort limit 2`)
   const [mat] = await service(`select id from public.topics where subject_id = 'tyt-mat' order by sort limit 1`)
   await as(s1, 'insert into public.mock_exam_topic_misses (mock_exam_id, topic_id, misses) values ($1, $2, 3)', [e.id, t1.id])
@@ -728,7 +728,7 @@ await test('kitap önerisi: katalogda olmayan kitap öneri olur, üç öğrenci 
 })
 
 await test('soru bazlı karne: ders sonucu ve konu yanlışları cevaplardan üretilir, başkası yazamaz, veli okur', async () => {
-  const [e] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Soru bazlı', current_date, '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]') as id`, [s1])
+  const [e] = await as(s1, `select public.create_mock_exam($1, 'TYT', 'Soru bazlı', private.today(), '[{"subject_id":"tyt-fiz","correct":1,"wrong":0,"blank":0}]') as id`, [s1])
   const [t1, t2] = await service(`select id from public.topics where subject_id = 'tyt-fiz' order by sort limit 2`)
   const [mat] = await service(`select id from public.topics where subject_id = 'tyt-mat' order by sort limit 1`)
   const rows = JSON.stringify([
@@ -881,8 +881,17 @@ await test('seri ve rozet sayıları: ardışık günler, dünden süren seri, y
   await rejects(as(null, 'select public.student_milestones($1)', [s1]), /permission denied/)
 })
 
+await test('vurgu rengi: kullanıcı kendi rengini yazar, geçersiz renk ve başkasının hesabı olmaz', async () => {
+  await as(s1, `update public.profiles set accent = 'violet' where id = $1`, [s1])
+  assert.equal((await as(s1, 'select accent from public.profiles where id = $1', [s1]))[0].accent, 'violet')
+  await as(s1, `update public.profiles set accent = null where id = $1`, [s1])
+  await rejects(as(s1, `update public.profiles set accent = 'kirmizi' where id = $1`, [s1]), /check/)
+  const rows = await as(s2, `update public.profiles set accent = 'rose' where id = $1 returning id`, [s1])
+  assert.equal(rows.length, 0)
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
-  await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', current_date)`, [s1])
+  await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', private.today())`, [s1])
   await service('delete from auth.users where id = $1', [s1])
   const [r] = await service('select count(*)::int as n from public.tasks where student_id = $1', [s1])
   assert.equal(r.n, 0)
