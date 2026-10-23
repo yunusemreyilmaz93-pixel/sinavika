@@ -24,6 +24,7 @@ export const css = `
 .pub nav.main{display:flex;gap:.25rem 1rem;flex-wrap:wrap;margin-left:auto;align-items:center}
 .pub nav.main a{color:var(--fg-muted);font-weight:600;text-decoration:none;min-height:2.75rem;display:inline-flex;align-items:center;font-size:.95rem}
 .pub nav.main a:hover{color:var(--fg)}
+@media(max-width:40rem){.pub nav.main a:not(.btn):not(:first-child){display:none}}
 .pub .btn{display:inline-flex;align-items:center;justify-content:center;min-height:2.75rem;padding:0 1.1rem;border-radius:.75rem;font-weight:700;text-decoration:none;border:1px solid var(--line-strong);background:var(--surface);color:var(--fg)!important}
 .pub .btn.primary{background:var(--primary);color:var(--primary-fg)!important;border-color:transparent}
 .pub .crumbs{font-size:.875rem;color:var(--fg-muted);padding:1.25rem 0 .5rem}
@@ -148,11 +149,14 @@ ${ld.map(jsonLd).join('\n')}
   void shell
   const nav = [
     ['/konu-anlatimi', 'Konu anlatımları'],
+    ['/calisma-programlari', 'Programlar'],
+    ['/araclar/net-hesaplama', 'Net hesaplama'],
     ...links,
   ]
   const header = `<header class="top"><div class="wide"><a class="brand" href="/">${logo}<span>Yolum<b>net</b></span></a><nav class="main" aria-label="Ana menü">${nav.map(([href, label]) => `<a href="${href}">${escapeHtml(label)}</a>`).join('')}<a class="btn" href="/giris">Giriş yap</a></nav></div></header>`
   const footer = `<footer class="foot"><div class="wide">
 ${examLinks.length ? `<div><h2>Konu anlatımları</h2><ul>${examLinks.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join('')}</ul></div>` : ''}
+<div><h2>Araçlar</h2><ul><li><a href="/araclar/net-hesaplama">Net hesaplama</a></li><li><a href="/calisma-programlari">Çalışma programları</a></li></ul></div>
 <div><h2>Yolumnet</h2><ul><li><a href="/hakkinda">Hakkında</a></li><li><a href="/ogretmen-basvurusu">Öğretmen başvurusu</a></li><li><a href="/katil">Davet koduyla katıl</a></li><li><a href="/kvkk">KVKK aydınlatma metni</a></li></ul></div>
 <p class="editor">Anlatımlar Yolumnet editör ekibi tarafından hazırlanır ve gözden geçirilir. Bir hata ya da eksik görürseniz <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> adresine yazabilirsiniz. Yolumnet ücretsizdir ve reklam içermez.</p>
 </div></footer>`

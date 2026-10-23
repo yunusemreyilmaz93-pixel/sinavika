@@ -53,6 +53,18 @@
     {
       "source": "/konu-anlatimi/:exam/:subject/:topic",
       "destination": "/konu-anlatimi/:exam/:subject/:topic.html"
+    },
+    {
+      "source": "/araclar/:tool",
+      "destination": "/araclar/:tool.html"
+    },
+    {
+      "source": "/calisma-programlari",
+      "destination": "/calisma-programlari.html"
+    },
+    {
+      "source": "/calisma-programlari/:slug",
+      "destination": "/calisma-programlari/:slug.html"
     }
   ],
   "crons": [

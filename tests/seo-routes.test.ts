@@ -67,3 +67,12 @@ describe('herkese açık anlatım sayfaları', () => {
     expect(rewrites['/konu-anlatimi/:exam/:subject/:topic']).toBe('/konu-anlatimi/:exam/:subject/:topic.html')
   })
 })
+
+describe('araçlar ve çalışma programları', () => {
+  it('vercel.json bu adresleri kendi HTML dosyalarına yönlendiriyor', () => {
+    const rewrites = Object.fromEntries(vercel.rewrites.map((r) => [r.source, r.destination]))
+    expect(rewrites['/araclar/:tool']).toBe('/araclar/:tool.html')
+    expect(rewrites['/calisma-programlari']).toBe('/calisma-programlari.html')
+    expect(rewrites['/calisma-programlari/:slug']).toBe('/calisma-programlari/:slug.html')
+  })
+})

@@ -34,11 +34,11 @@ export async function buildPublicLessons({ write, shell, cssHref, site }) {
   const data = await loadCurriculum()
   if (!data) {
     console.warn('SEO: Supabase anahtarı yok, anlatım sayfaları üretilmedi')
-    return { urls: [], exams: [] }
+    return { urls: [], exams: [], subjects: [] }
   }
   if (!data.lessons.length) {
     console.warn('SEO: yayında anlatım okunamadı (lessons_public_read uygulanmamış olabilir), anlatım sayfaları üretilmedi')
-    return { urls: [], exams: [] }
+    return { urls: [], exams: [], subjects: data.subjects }
   }
   const parse = await loadTs(join(process.cwd(), 'shared/lesson-parse.ts'))
   const lessonByTopic = new Map(data.lessons.map((l) => [l.topic_id, l]))
@@ -203,5 +203,5 @@ ${cta}</div></main>`
   }))
   urls.push({ path: BASE })
 
-  return { urls, exams }
+  return { urls, exams, subjects: data.subjects }
 }
