@@ -1,3 +1,4 @@
+import { trackEvent } from '@/lib/hit'
 import { NotebookPen } from 'lucide-react'
 import { useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
@@ -133,6 +134,7 @@ export function JoinForm({ code, invite, flow }: JoinFormProps) {
       return
     }
     toast.success(`Hoş geldiniz, ${fullName.split(' ')[0]}`)
+    trackEvent('davetle-katildi')
     try {
       await flow.signIn(values.username, values.password)
     } catch {

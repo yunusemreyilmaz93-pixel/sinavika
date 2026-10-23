@@ -1885,6 +1885,7 @@ export type Database = {
           updated_at: string;
         };
       };
+      admin_site_stats: { Args: { p_days?: number }; Returns: Json };
       admin_usage: { Args: { p_days?: number }; Returns: Json };
       admin_usage_sessions: {
         Args: { p_user: string };

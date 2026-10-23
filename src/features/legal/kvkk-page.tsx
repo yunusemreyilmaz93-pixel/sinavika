@@ -142,6 +142,12 @@ const sections: Section[] = [
           sonuçları yazılır.
         </p>
         <p>
+          Siteyi hesap açmadan gezen ziyaretçiler için çerez kullanılmaz. Ziyaretiniz yalnızca sayfa adı, yönlendiren site, cihaz
+          türü ve ülke bilgisiyle sayılır. IP adresiniz ve tarayıcı bilginiz kaydedilmez, yalnızca aynı kişiyi gün içinde bir kez
+          saymak için geri döndürülemez ve her gün değişen bir özete çevrilir. Tarayıcınızda "izlemeyi reddet" ayarı açıksa
+          ziyaretiniz hiç sayılmaz.
+        </p>
+        <p>
           Avatar olarak hazır görsellerden birini seçebilir ya da isteğe bağlı olarak kendi fotoğrafınızı yükleyebilirsiniz.
           Fotoğraf cihazınızda kırpılıp küçültülür, Yolumnet'in depolamasına kaydedilir ve yalnızca sizi görebilen kişilerin
           ekranında görünür. Uygunsuz görüntülerin yayınlanmaması için yüklenen fotoğraf yönetici tarafından incelenir ve onaylanınca

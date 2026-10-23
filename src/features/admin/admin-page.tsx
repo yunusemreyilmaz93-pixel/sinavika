@@ -15,10 +15,12 @@ import { useAdminOverview } from './queries'
 import { TeachersSection } from './teachers-section'
 import { TestAccountsSection } from './test-accounts-section'
 import { UsageSection } from './usage-section'
+import { VisitorsSection } from './visitors-section'
 
 const sections = [
   { value: 'genel', label: 'Genel' },
   { value: 'basvurular', label: 'Başvurular' },
+  { value: 'ziyaretciler', label: 'Ziyaretçiler' },
   { value: 'kullanim', label: 'Kullanım' },
   { value: 'avatarlar', label: 'Avatarlar' },
   { value: 'ogretmenler', label: 'Öğretmenler' },
@@ -72,6 +74,7 @@ export default function AdminPage() {
         >
           {section === 'genel' && <OverviewSection onNavigate={go} />}
           {section === 'basvurular' && <ApplicationsSection onNavigate={go} />}
+          {section === 'ziyaretciler' && <VisitorsSection />}
           {section === 'kullanim' && <UsageSection />}
           {section === 'avatarlar' && <AvatarsSection />}
           {section === 'ogretmenler' && <TeachersSection />}

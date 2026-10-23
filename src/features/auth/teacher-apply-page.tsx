@@ -1,3 +1,4 @@
+import { trackEvent } from '@/lib/hit'
 import { useQueryClient } from '@tanstack/react-query'
 import { ClipboardList, LayoutDashboard, MessagesSquare, PauseCircle, Users } from 'lucide-react'
 import { useRef, useState, type FormEvent } from 'react'
@@ -204,6 +205,7 @@ function ApplyForm() {
       return
     }
     toast.success('Başvurunuz alındı')
+    trackEvent('basvuru-gonderildi')
     try {
       await flow.signIn(input.email, input.password)
     } catch {

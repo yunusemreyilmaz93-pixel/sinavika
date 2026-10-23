@@ -6,9 +6,11 @@ import { LogoMark } from '@/components/ui/logo'
 import { Spinner } from '@/components/ui/spinner'
 import { SITE_HOST } from '@/lib/api'
 import { reportError } from '@/lib/error-log'
+import { useSiteHit } from '@/lib/hit'
 
 export function RootLayout() {
   const navigation = useNavigation()
+  useSiteHit()
   return (
     <>
       {navigation.state === 'loading' && (

@@ -57,7 +57,7 @@ export function referrerName(ref: unknown, utm: unknown, ownHost: string | null)
   return host.replace(/^www\./, '').slice(0, 60)
 }
 
-export const EVENTS = new Set(['basvuru-gonderildi', 'davetle-katildi', 'giris-yapildi', 'cta-ogretmen', 'cta-davet'])
+export const EVENTS = new Set(['basvuru-gonderildi', 'davetle-katildi'])
 
 export function visitorHash(secret: string, day: string, ip: string, userAgent: string) {
   return createHash('sha256').update(`${secret}|${day}|${ip}|${userAgent}`).digest('hex').slice(0, 32)

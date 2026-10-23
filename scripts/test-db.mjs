@@ -890,6 +890,32 @@ await test('vurgu rengi: kullanıcı kendi rengini yazar, geçersiz renk ve baş
   assert.equal(rows.length, 0)
 })
 
+await test('ziyaretçi istatistikleri: aynı kişi günde bir kez sayılır, görüntüleme artar, yalnızca sunucu yazar, yalnızca yönetici okur', async () => {
+  await service('delete from public.site_visitors')
+  await service('delete from public.site_daily')
+  await service('delete from public.site_pages')
+  await service('delete from public.site_events')
+  await service(`select public.record_hit('aaaa1', '/', 'google', 'mobil', 'TR')`)
+  await service(`select public.record_hit('aaaa1', '/hakkinda', 'doğrudan', 'mobil', 'TR')`)
+  await service(`select public.record_hit('bbbb2', '/', 'instagram', 'masaüstü', 'DE')`)
+  await service(`select public.record_hit('bbbb2', '/', 'x', 'masaüstü', 'DE', 'basvuru-gonderildi')`)
+  const stats = (await as(adminId, 'select public.admin_site_stats(30) as s'))[0].s
+  assert.equal(stats.today, 2)
+  assert.equal(stats.daily[0].visitors, 2)
+  assert.equal(stats.daily[0].views, 3)
+  assert.deepEqual(stats.sources.map((x) => x.name).sort(), ['google', 'instagram'])
+  assert.equal(stats.devices.find((x) => x.name === 'mobil').visitors, 1)
+  assert.equal(stats.pages[0].name, '/')
+  assert.equal(stats.pages[0].views, 2)
+  assert.equal(stats.events[0].total, 1)
+  assert.equal(typeof stats.members.teacher_applications, 'number')
+  await rejects(as(teacherA, 'select public.admin_site_stats(30)'), /Yetkin yok/)
+  await rejects(as(s1, `select public.record_hit('x', '/', 'a', 'b', 'TR')`), /permission denied/)
+  await rejects(as(null, `select public.record_hit('x', '/', 'a', 'b', 'TR')`), /permission denied/)
+  await rejects(as(adminId, 'select * from public.site_visitors'), /permission denied/)
+  await service('delete from public.site_visitors')
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', private.today())`, [s1])
   await service('delete from auth.users where id = $1', [s1])
