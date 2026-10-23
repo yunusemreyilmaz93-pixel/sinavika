@@ -916,6 +916,19 @@ await test('ziyaretçi istatistikleri: aynı kişi günde bir kez sayılır, gö
   await service('delete from public.site_visitors')
 })
 
+await test('herkese açık anlatım: anonim yalnızca yayındaki anlatımı ve izinli sütunları okur', async () => {
+  const [t] = await service('select id from public.topics limit 1')
+  const [t2] = await service('select id from public.topics where id <> $1 limit 1', [t.id])
+  await service('delete from public.lessons where topic_id in ($1, $2)', [t.id, t2.id])
+  await service(`insert into public.lessons (topic_id, body, published) values ($1, '## Açık', true), ($2, '## Taslak', false)`, [t.id, t2.id])
+  const rows = await as(null, 'select topic_id, body, reading_minutes, updated_at from public.lessons where topic_id in ($1, $2)', [t.id, t2.id])
+  assert.deepEqual(rows.map((r) => r.topic_id), [t.id])
+  await rejects(as(null, 'select updated_by from public.lessons'), /permission denied/)
+  await rejects(as(null, `insert into public.lessons (topic_id, body) values (${t2.id + 9999}, 'x')`), /permission denied/)
+  assert.equal((await as(null, 'select 1 from public.lesson_notes').catch(() => 'denied')), 'denied')
+  await service('delete from public.lessons where topic_id in ($1, $2)', [t.id, t2.id])
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', private.today())`, [s1])
   await service('delete from auth.users where id = $1', [s1])
