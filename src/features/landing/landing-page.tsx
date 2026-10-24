@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { ExamsSection } from './exams-section'
 import { FaqSection } from './faq-section'
 import { Hero } from './hero'
@@ -19,8 +19,33 @@ function roleFromHash(): Role {
   return sectionLinks.find((l) => l.href === window.location.hash)?.role ?? 'teacher'
 }
 
+function useIdleReady() {
+  const [ready, setReady] = useState(() => typeof window !== 'undefined' && window.location.hash !== '')
+
+  useEffect(() => {
+    if (ready) return
+    const win: {
+      requestIdleCallback?: (cb: () => void, options: { timeout: number }) => number
+      cancelIdleCallback?: (id: number) => void
+    } = window
+    if (win.requestIdleCallback) {
+      const id = win.requestIdleCallback(() => setReady(true), { timeout: 2500 })
+      return () => win.cancelIdleCallback?.(id)
+    }
+    const id = setTimeout(() => setReady(true), 1200)
+    return () => clearTimeout(id)
+  }, [ready])
+
+  return [ready, setReady] as const
+}
+
+function Below({ ready, children }: { ready: boolean; children: ReactNode }) {
+  return ready ? <div className="defer-section">{children}</div> : <div aria-hidden className="min-h-[700px]" />
+}
+
 export default function LandingPage() {
   const [role, setRole] = useState<Role>(roleFromHash)
+  const [ready, setReady] = useIdleReady()
 
   useLayoutEffect(() => {
     document.getElementById('pre-landing')?.remove()
@@ -36,8 +61,9 @@ export default function LandingPage() {
 
   const navigate = useCallback((link: SectionLink) => {
     if (link.role) setRole(link.role)
-    requestAnimationFrame(() => scrollToHash(link.href))
-  }, [])
+    setReady(true)
+    window.setTimeout(() => scrollToHash(link.href), 60)
+  }, [setReady])
 
   return (
     <div className="relative min-h-dvh overflow-x-clip">
@@ -58,28 +84,28 @@ export default function LandingPage() {
       <SiteHeader onNavigate={navigate} />
       <main id="icerik" tabIndex={-1} className="relative outline-none">
         <Hero />
-        <div className="defer-section">
+        <Below ready={ready}>
           <ExamsSection />
-        </div>
-        <div className="defer-section">
+        </Below>
+        <Below ready={ready}>
           <RolesSection role={role} onRoleChange={setRole} />
-        </div>
-        <div className="defer-section">
+        </Below>
+        <Below ready={ready}>
           <LearningSection />
-        </div>
-        <div className="defer-section">
+        </Below>
+        <Below ready={ready}>
           <OpenContentSection />
-        </div>
-        <div className="defer-section">
+        </Below>
+        <Below ready={ready}>
           <HowItWorks />
-        </div>
-        <div className="defer-section">
+        </Below>
+        <Below ready={ready}>
           <WhyFree />
-        </div>
-        <div className="defer-section">
+        </Below>
+        <Below ready={ready}>
           <FaqSection />
-        </div>
-        <ClosingCta />
+        </Below>
+        {ready && <ClosingCta />}
       </main>
       <SiteFooter onNavigate={navigate} />
     </div>

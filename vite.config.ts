@@ -34,6 +34,7 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
+        injectRegister: 'script-defer',
         includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
         manifest: {
           name: 'Yolumnet',
@@ -61,6 +62,7 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
+    build: { modulePreload: false },
     test: {
       environment: 'jsdom',
       include: ['src/**/*.test.{ts,tsx}', 'tests/**/*.test.ts'],
