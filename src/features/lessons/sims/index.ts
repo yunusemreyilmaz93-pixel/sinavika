@@ -289,4 +289,44 @@ export const SIMS: Record<string, Sim> = {
     label: 'Edebiyat dönemleri (Tanzimat\'tan Cumhuriyet\'e)',
     Component: lazy(() => import('./literature-sims').then((m) => ({ default: m.PeriodsSim }))),
   },
+  ilkcag: {
+    label: 'İlk Çağ uygarlıkları (zaman şeridi)',
+    Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.AncientSim }))),
+  },
+  ilkturk: {
+    label: 'İlk Türk devletleri (zaman şeridi)',
+    Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.EarlyTurksSim }))),
+  },
+  islamtarihi: {
+    label: 'İslam tarihi, Hz. Muhammed’den Abbasilere (zaman şeridi)',
+    Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.IslamHistorySim }))),
+  },
+  turkislam: {
+    label: 'Türk İslam devletleri (zaman şeridi)',
+    Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.TurkIslamSim }))),
+  },
+  devrimler: {
+    label: 'Tanzimat ve Meşrutiyet (zaman şeridi)',
+    Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.RevolutionsSim }))),
+  },
+  denge1774: {
+    label: 'Osmanlı denge stratejisi 1774 ile 1914 (zaman şeridi)',
+    Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.BalanceSim }))),
+  },
+  dunya1: {
+    label: 'XX. yüzyıl başlarında dünya (zaman şeridi)',
+    Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.WorldWar1Sim }))),
+  },
+  dunya2: {
+    label: 'II. Dünya Savaşı (zaman şeridi)',
+    Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.WorldWar2Sim }))),
+  },
+  soguksavas: {
+    label: 'Soğuk Savaş dönemi (zaman şeridi)',
+    Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.ColdWarSim }))),
+  },
+  kuresel: {
+    label: 'Küreselleşen dünya (zaman şeridi)',
+    Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.GlobalSim }))),
+  },
 }
