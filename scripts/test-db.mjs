@@ -448,8 +448,9 @@ await test('anlatım sorusu: ilk cevap istatistiğe yazılır, tekrar yazılmaz,
   assert.equal((await as(s2, 'select * from public.lesson_answers')).length, 0)
   await rejects(as(teacherA, 'select * from public.answer_lesson_question($1, $2, $3)', [topic, 'x', true]), /Sadece öğrenciler/)
   await rejects(as(s1, 'select * from public.answer_lesson_question($1, $2, $3)', [topic, 'x'.repeat(65), true]), /check constraint/)
-  const [{ id: bare }] = await service('select id from public.topics where id not in (select topic_id from public.lessons) order by id limit 1')
+  const [{ id: bare }] = await service(`insert into public.topics (subject_id, name) select subject_id, 'ANLATIMSIZ DENEME' from public.topics limit 1 returning id`)
   await rejects(as(s1, 'select * from public.answer_lesson_question($1, $2, $3)', [bare, 'x', true]), /yayınlanmış/)
+  await service('delete from public.topics where id = $1', [bare])
   await rejects(as(s1, 'insert into public.lesson_answers (student_id, topic_id, question_key, first_correct, last_correct) values ($1, $2, $3, true, true)', [s1, topic, 'z']), /permission denied/)
 })
 
@@ -535,8 +536,9 @@ await test('anlatım ilerlemesi: sunucu süreyi ve video dilimlerini sınırlar,
   assert.equal((await as(parent, 'select * from public.lesson_progress where student_id = $1', [s1])).length, 1)
   await rejects(as(s1, 'insert into public.lesson_progress (student_id, topic_id) values ($1, $2)', [s1, topic]), /permission denied/)
   await rejects(as(teacherA, 'select public.record_lesson_progress($1, 5, 0, $2::jsonb)', [topic, '{}']), /Sadece öğrenciler/)
-  const [{ id: bare }] = await service('select id from public.topics where id not in (select topic_id from public.lessons) order by id limit 1')
+  const [{ id: bare }] = await service(`insert into public.topics (subject_id, name) select subject_id, 'ANLATIMSIZ DENEME' from public.topics limit 1 returning id`)
   await rejects(as(s1, 'select public.record_lesson_progress($1, 5, 0, $2::jsonb)', [bare, '{}']), /yayınlanmış/)
+  await service('delete from public.topics where id = $1', [bare])
 })
 
 await test('yanlış defteri tekrarı: başarısızlık aralığı sıfırlar, art arda beş başarı öğrenildi yapar, başkası değiştiremez', async () => {
@@ -656,7 +658,8 @@ await test('YÖK Atlas verisi: giriş yapan okur, kimse yazamaz, öğrenci hedef
   await service(`insert into public.programs (code, university_id, name, group_id, group_name, score_type) values (999000001, 999001, 'Bilgisayar Mühendisliği', 1, 'Bilgisayar Mühendisliği', 'SAY')`)
   await service(`insert into public.program_results (program_code, year, min_score, rank, nets) values (999000001, 2026, 500.5, 4000, '{"tyt_mat": 30}')`)
   assert.equal((await as(s1, 'select 1 from public.programs where code = 999000001')).length, 1)
-  assert.equal((await as(null, 'select 1 from public.programs').catch(() => [])).length, 0)
+  assert.ok((await as(null, 'select 1 from public.programs where code = 999000001')).length === 1)
+  await rejects(as(null, `insert into public.programs (code, university_id, name, group_id, group_name, score_type) values (2, 999001, 'x', 1, 'x', 'SAY')`), /permission denied/)
   await rejects(as(s1, `insert into public.programs (code, university_id, name, group_id, group_name, score_type) values (1, 999001, 'x', 1, 'x', 'SAY')`), /permission denied/)
   await rejects(as(teacherA, `update public.program_results set rank = 1`), /permission denied/)
   assert.equal((await as(s1, `update public.students set target_program = 999000001 where id = $1 returning id`, [s1])).length, 1)
