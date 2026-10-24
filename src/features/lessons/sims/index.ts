@@ -265,4 +265,20 @@ export const SIMS: Record<string, Sim> = {
     label: 'Çözünürlük çarpımı ve çökelme koşulu',
     Component: lazy(() => import('./chemistry-sims').then((m) => ({ default: m.SolubilitySim }))),
   },
+  aksiyon: {
+    label: 'Aksiyon potansiyeli (eşik, ya hep ya hiç, miyelin)',
+    Component: lazy(() => import('./biology-sims').then((m) => ({ default: m.ActionPotentialSim }))),
+  },
+  translasyon: {
+    label: 'Transkripsiyon ve translasyon (DNA, mRNA, tRNA, amino asit)',
+    Component: lazy(() => import('./biology-sims').then((m) => ({ default: m.TranslationSim }))),
+  },
+  fotosentez: {
+    label: 'Fotosentez hızı ve sınırlayıcı faktör',
+    Component: lazy(() => import('./biology-sims').then((m) => ({ default: m.PhotosynthesisSim }))),
+  },
+  populasyon: {
+    label: 'Popülasyon büyümesi (üstel ve lojistik)',
+    Component: lazy(() => import('./biology-sims').then((m) => ({ default: m.PopulationSim }))),
+  },
 }
