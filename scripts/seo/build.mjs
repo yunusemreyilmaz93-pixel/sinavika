@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path'
 import { pageHead, siteUrl, withSite } from './html.mjs'
 import { appPages } from './pages.mjs'
 import { buildPublicLessons } from './public/lessons.mjs'
+import { buildDepartments } from './public/departments.mjs'
 import { buildPublicTools } from './public/tools.mjs'
 
 const dist = join(process.cwd(), 'dist')
@@ -46,11 +47,13 @@ async function main() {
   urls.push(...lessons.urls)
   const tools = await buildPublicTools({ write, shell, cssHref, site, subjects: lessons.subjects })
   urls.push(...tools.urls)
+  const departments = await buildDepartments({ write, shell, cssHref, site })
+  urls.push(...departments.urls)
 
   write('404.html', pageHead(shell, { path: '/', title: 'Sayfa bulunamadı · Yolumnet', description: 'Aradığınız sayfa bulunamadı.', noindex: true, site }))
   write('robots.txt', robotsTxt())
   write('sitemap.xml', sitemapXml(urls))
-  console.log(`SEO: ${appPages.length + 1} uygulama sayfası, ${lessons.urls.length} anlatım, ${tools.urls.length} araç ve program sayfası, ${urls.length} adres sitemap'te (${site})`)
+  console.log(`SEO: ${appPages.length + 1} uygulama sayfası, ${lessons.urls.length} anlatım, ${tools.urls.length} araç ve program, ${departments.urls.length} bölüm sayfası, ${urls.length} adres sitemap'te (${site})`)
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) await main()

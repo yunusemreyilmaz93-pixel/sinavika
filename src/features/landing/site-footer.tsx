@@ -98,6 +98,7 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
               ['/konu-anlatimi/ydt', 'YDT'],
               ['/calisma-programlari', 'Çalışma programları'],
               ['/araclar/net-hesaplama', 'Net hesaplama'],
+              ['/yks-bolumleri', 'YKS bölümleri'],
             ].map(([href, label]) => (
               <li key={href}>
                 <a href={href} className={linkClass}>

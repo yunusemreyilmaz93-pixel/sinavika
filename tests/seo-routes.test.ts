@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 // @ts-expect-error saf JavaScript modül
-import { pageHead } from '../scripts/seo/html.mjs'
+import { pageHead, verificationTag } from '../scripts/seo/html.mjs'
 // @ts-expect-error saf JavaScript modül
 import { appPages } from '../scripts/seo/pages.mjs'
 
@@ -74,5 +74,23 @@ describe('araçlar ve çalışma programları', () => {
     expect(rewrites['/araclar/:tool']).toBe('/araclar/:tool.html')
     expect(rewrites['/calisma-programlari']).toBe('/calisma-programlari.html')
     expect(rewrites['/calisma-programlari/:slug']).toBe('/calisma-programlari/:slug.html')
+  })
+})
+
+describe('YKS bölümleri ve Search Console', () => {
+  it('vercel.json bölüm adreslerini kendi HTML dosyalarına yönlendiriyor', () => {
+    const rewrites = Object.fromEntries(vercel.rewrites.map((r) => [r.source, r.destination]))
+    expect(rewrites['/yks-bolumleri']).toBe('/yks-bolumleri.html')
+    expect(rewrites['/yks-bolumleri/:bolum']).toBe('/yks-bolumleri/:bolum.html')
+  })
+
+  it('doğrulama etiketi yalnızca ortam değişkeni varsa eklenir', () => {
+    const before = process.env.GOOGLE_SITE_VERIFICATION
+    delete process.env.GOOGLE_SITE_VERIFICATION
+    expect(verificationTag()).toBe('')
+    process.env.GOOGLE_SITE_VERIFICATION = 'abc"123'
+    expect(verificationTag()).toBe('<meta name="google-site-verification" content="abc&quot;123" />')
+    if (before === undefined) delete process.env.GOOGLE_SITE_VERIFICATION
+    else process.env.GOOGLE_SITE_VERIFICATION = before
   })
 })

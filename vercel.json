@@ -65,6 +65,14 @@
     {
       "source": "/calisma-programlari/:slug",
       "destination": "/calisma-programlari/:slug.html"
+    },
+    {
+      "source": "/yks-bolumleri",
+      "destination": "/yks-bolumleri.html"
+    },
+    {
+      "source": "/yks-bolumleri/:bolum",
+      "destination": "/yks-bolumleri/:bolum.html"
     }
   ],
   "crons": [

@@ -17,6 +17,16 @@ function setTag(html, pattern, replacement) {
   return html.replace(pattern, () => replacement)
 }
 
+export function verificationTag() {
+  const token = (process.env.GOOGLE_SITE_VERIFICATION || '').trim()
+  return token ? `<meta name="google-site-verification" content="${escapeHtml(token)}" />` : ''
+}
+
+export function withVerification(html) {
+  const tag = verificationTag()
+  return tag ? html.replace('</head>', `    ${tag}\n  </head>`) : html
+}
+
 export function pageHead(shell, { path, title, description, noindex = false, site = siteUrl() }) {
   const url = `${site}${path === '/' ? '/' : path}`
   let html = shell
@@ -26,6 +36,7 @@ export function pageHead(shell, { path, title, description, noindex = false, sit
   html = setTag(html, /<meta property="og:title" content=".*?" \/>/s, `<meta property="og:title" content="${escapeHtml(title)}" />`)
   html = setTag(html, /<meta property="og:description" content=".*?" \/>/s, `<meta property="og:description" content="${escapeHtml(description)}" />`)
   html = setTag(html, /<meta property="og:url" content=".*?" \/>/s, `<meta property="og:url" content="${url}" />`)
+  html = withVerification(html)
   if (noindex) html = html.replace('</head>', '    <meta name="robots" content="noindex, nofollow" />\n  </head>')
   return html
 }
