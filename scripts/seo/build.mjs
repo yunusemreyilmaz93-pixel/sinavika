@@ -16,10 +16,11 @@ function write(file, content) {
   writeFileSync(target, content)
 }
 
+// Ana sayfadaki hızlı ilk görünüm yalnızca index.html'de kalır, diğer sayfaların kabuğuna girmez
 export function buildShell() {
-  const shell = withSite(readFileSync(join(dist, 'index.html'), 'utf8'), site)
-  write('index.html', shell)
-  return shell
+  const full = withSite(readFileSync(join(dist, 'index.html'), 'utf8'), site)
+  write('index.html', full)
+  return full.replace(/\s*<!--pre-landing-->[\s\S]*?<!--\/pre-landing-->/, '')
 }
 
 export function sitemapXml(urls) {

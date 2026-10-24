@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { ExamsSection } from './exams-section'
 import { FaqSection } from './faq-section'
 import { Hero } from './hero'
@@ -21,6 +21,10 @@ function roleFromHash(): Role {
 
 export default function LandingPage() {
   const [role, setRole] = useState<Role>(roleFromHash)
+
+  useLayoutEffect(() => {
+    document.getElementById('pre-landing')?.remove()
+  }, [])
 
   useEffect(() => {
     const previous = document.title

@@ -65,6 +65,41 @@
     </script>
   </head>
   <body>
+    <!--pre-landing-->
+    <div id="pre-landing" style="position: absolute; inset: 0 0 auto 0; z-index: 30; min-height: 100dvh; background: var(--bg)"> <!-- copy-ok -->
+      <header class="pt-safe sticky top-0 z-40 border-b border-transparent">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 flex h-16 items-center gap-2">
+          <a aria-label="Yolumnet ana sayfa" class="-ml-1 shrink-0 rounded-lg p-1" href="/">
+            <span class="inline-flex items-center gap-2">
+              <svg viewBox="0 0 32 32" class="size-8 shrink-0" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--brand)"></rect><path d="M16 26.5V17L9 8.5M16 17l6.2-7.4" fill="none" stroke="var(--brand-ink)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="23.4" cy="8.2" r="2.9" fill="var(--marker)"></circle></svg>
+              <span class="font-display text-xl font-extrabold tracking-tight">Yolum<span class="text-primary">net</span></span>
+            </span>
+          </a>
+          <div class="ml-auto flex items-center gap-1 sm:gap-2">
+            <a class="inline-flex shrink-0 items-center justify-center font-semibold whitespace-nowrap select-none text-fg h-11 text-[15px] gap-2 rounded-xl px-3 sm:px-4" href="/giris">Giriş yapın</a>
+          </div>
+        </div>
+      </header>
+      <main class="relative">
+        <section class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 grid gap-12 pt-8 pb-8 sm:pt-14 sm:pb-12 lg:grid-cols-[1.08fr_1fr] lg:gap-8 lg:pt-16 lg:pb-20">
+          <div class="max-w-xl lg:pt-14">
+            <h1 class="text-[2rem] leading-[1.06] font-extrabold min-[400px]:text-[2.35rem] sm:text-[3.25rem] lg:text-[3.5rem] xl:text-[3.85rem]"><span class="block">Koçluğun</span><span class="block"><span class="marker" style="background-size: 0% 100%">bütün adımları</span></span><span class="block">tek platformda.</span></h1>
+            <p class="mt-5 max-w-lg text-[17px] leading-relaxed text-muted sm:text-lg">Haftalık program, konu anlatımı, soru ve deneme takibi, tekrar planı. LGS ve YKS'ye hazırlanan öğrenciler için ücretsiz ve reklamsız.</p>
+            <div class="mt-8 flex flex-col gap-2.5 sm:flex-row">
+              <a class="inline-flex shrink-0 items-center justify-center font-semibold whitespace-nowrap select-none bg-primary text-primary-fg shadow-card h-13 px-6 text-base gap-2 rounded-xl" href="/ogretmen-basvurusu">Öğretmen olarak başlayın</a>
+              <a class="inline-flex shrink-0 items-center justify-center font-semibold whitespace-nowrap select-none bg-surface text-fg border border-line h-13 px-6 text-base gap-2 rounded-xl" href="/katil">Davet kodum var</a>
+            </div>
+            <p class="mt-4 text-sm text-muted">Öğrenci ve veliler, öğretmenlerinden aldıkları kodla katılır.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script>
+      try {
+        if (location.pathname !== '/' || localStorage.getItem('sinavika-auth')) document.getElementById('pre-landing').remove()
+      } catch (e) {}
+    </script>
+    <!--/pre-landing-->
     <div id="root"></div>
     <noscript>
       Yolumnet'i kullanmak için tarayıcında JavaScript'i açman gerekiyor.
