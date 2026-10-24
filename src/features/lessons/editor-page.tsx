@@ -301,7 +301,7 @@ function Editor({
       )}
 
       <div className="mx-auto mt-6 max-w-3xl">
-        <Field label="Öğretmen notu" hint="Sadece öğretmenler görür. Öğrenci ve veli göremez.">
+        <Field label="Yönetici notu" hint="Yalnızca siz görürsünüz">
           {(props) => <Textarea {...props} rows={4} value={meta.note} onChange={(e) => setMeta((m) => ({ ...m, note: e.target.value }))} />}
         </Field>
       </div>
@@ -311,7 +311,7 @@ function Editor({
         open={confirmDelete}
         onOpenChange={setConfirmDelete}
         title="Anlatım silinsin mi?"
-        description="Metin ve öğretmen notu silinir. Geri alınamaz."
+        description="Metin ve yönetici notu silinir. Geri alınamaz."
         confirmLabel="Sil"
         onConfirm={async () => {
           try {

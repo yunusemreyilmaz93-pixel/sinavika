@@ -27,7 +27,8 @@ export default function LessonPage() {
   const topic = curriculum.data?.topicById.get(Number(topicId))
   const subject = topic ? curriculum.data?.subjectById.get(topic.subject_id) : undefined
   const isTeacher = profile.role === 'teacher'
-  const data = useLesson(Number(topicId), isTeacher)
+  const isAdmin = profile.is_admin
+  const data = useLesson(Number(topicId), isAdmin)
   const lesson = data.data?.lesson
   const outline = useMemo(() => (lesson ? outlineOf(lesson.body) : []), [lesson])
   const sectionIds = useMemo(() => outline.map((o) => o.id), [outline])
@@ -93,14 +94,13 @@ export default function LessonPage() {
         }
       />
 
-      {isTeacher && note && (
+      {isAdmin && note && (
         <aside className="mb-8 rounded-2xl border border-warning/30 bg-warning-soft p-4 sm:p-5">
           <p className="flex items-center gap-2 font-display font-bold text-warning">
             <NotebookPen className="size-5" />
-            Öğretmen için not
+            Yönetici notu
           </p>
-          <p className="mt-1 text-sm text-fg/80">Bu not öğrencilere ve velilere görünmez.</p>
-          <p className="mt-3 text-[15px] leading-relaxed whitespace-pre-line">{note}</p>
+                    <p className="mt-3 text-[15px] leading-relaxed whitespace-pre-line">{note}</p>
         </aside>
       )}
 
