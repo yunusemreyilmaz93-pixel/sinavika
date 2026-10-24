@@ -329,4 +329,48 @@ export const SIMS: Record<string, Sim> = {
     label: 'Küreselleşen dünya (zaman şeridi)',
     Component: lazy(() => import('./history-ayt-sims').then((m) => ({ default: m.GlobalSim }))),
   },
+  mantik: {
+    label: 'Doğruluk tablosu (ve, veya, ya da, ise, ancak ve ancak)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.TruthTableSim }))),
+  },
+  mantiktarihi: {
+    label: 'Mantığın gelişimi (zaman şeridi)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.LogicHistorySim }))),
+  },
+  felsefe17: {
+    label: '15. ile 17. yüzyıl düşünürleri (zaman şeridi)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.Philosophy17Sim }))),
+  },
+  felsefe19: {
+    label: '18. ve 19. yüzyıl düşünürleri (zaman şeridi)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.Philosophy19Sim }))),
+  },
+  felsefe20: {
+    label: '20. yüzyıl felsefesi (zaman şeridi)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.Philosophy20Sim }))),
+  },
+  psikoloji: {
+    label: 'Psikolojide ekoller (zaman şeridi)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.PsychologyHistorySim }))),
+  },
+  unutma: {
+    label: 'Unutma eğrisi (tekrarın etkisi)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.ForgettingSim }))),
+  },
+  sosyoloji: {
+    label: 'Sosyolojinin önemli isimleri (zaman şeridi)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.SociologyHistorySim }))),
+  },
+  islambilim: {
+    label: 'İslam dünyasında bilim insanları (zaman şeridi)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.IslamScienceSim }))),
+  },
+  hintcin: {
+    label: 'Hint ve Çin dinleri (zaman şeridi)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.EasternReligionsSim }))),
+  },
+  yahudihristiyan: {
+    label: 'Yahudilik ve Hristiyanlık (zaman şeridi)',
+    Component: lazy(() => import('./humanities-ayt-sims').then((m) => ({ default: m.JewishChristianSim }))),
+  },
 }
