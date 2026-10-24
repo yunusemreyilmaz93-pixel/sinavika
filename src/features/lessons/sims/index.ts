@@ -249,4 +249,20 @@ export const SIMS: Record<string, Sim> = {
     label: 'Fotoelektrik olay (iş fonksiyonu, frekans, şiddet)',
     Component: lazy(() => import('./physics-sims').then((m) => ({ default: m.PhotoelectricSim }))),
   },
+  denge: {
+    label: 'Le Chatelier ilkesi (derişim, hacim, sıcaklık, katalizör)',
+    Component: lazy(() => import('./chemistry-sims').then((m) => ({ default: m.EquilibriumSim }))),
+  },
+  hiz: {
+    label: 'Tepkime hızı (sıcaklık, aktifleşme enerjisi, katalizör)',
+    Component: lazy(() => import('./chemistry-sims').then((m) => ({ default: m.RateSim }))),
+  },
+  pil: {
+    label: 'Galvanik hücre (anot, katot, hücre potansiyeli)',
+    Component: lazy(() => import('./chemistry-sims').then((m) => ({ default: m.CellSim }))),
+  },
+  cozunurluk: {
+    label: 'Çözünürlük çarpımı ve çökelme koşulu',
+    Component: lazy(() => import('./chemistry-sims').then((m) => ({ default: m.SolubilitySim }))),
+  },
 }
