@@ -213,4 +213,16 @@ export const SIMS: Record<string, Sim> = {
     label: 'Enerji piramidi (basamaklar arası enerji aktarımı)',
     Component: lazy(() => import('./energy-pyramid-sim').then((m) => ({ default: m.EnergyPyramidSim }))),
   },
+  birimcember: {
+    label: 'Birim çember (açı, sinüs, kosinüs, tanjant)',
+    Component: lazy(() => import('./calculus-sims').then((m) => ({ default: m.UnitCircleSim }))),
+  },
+  turev: {
+    label: 'Türev ve teğetin eğimi',
+    Component: lazy(() => import('./calculus-sims').then((m) => ({ default: m.DerivativeSim }))),
+  },
+  integral: {
+    label: 'Eğri altındaki alan (Riemann toplamı)',
+    Component: lazy(() => import('./calculus-sims').then((m) => ({ default: m.IntegralSim }))),
+  },
 }
