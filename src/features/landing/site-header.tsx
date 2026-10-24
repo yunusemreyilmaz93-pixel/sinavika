@@ -70,6 +70,14 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
 
         <nav aria-label="Bölümler" className="ml-6 hidden lg:block">
           <ul className="flex items-center gap-0.5">
+            <li>
+              <a
+                href="/konu-anlatimi"
+                className="inline-flex h-10 items-center rounded-lg px-3 text-[15px] font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-fg"
+              >
+                Konu anlatımları
+              </a>
+            </li>
             {sectionLinks.map((link) => (
               <li key={link.href}>
                 <a
@@ -139,6 +147,12 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
                 </div>
                 <nav aria-label="Bölümler" className={container}>
                   <ul className="divide-y divide-line border-y border-line">
+                    <li>
+                      <a href="/konu-anlatimi" className="flex h-13 items-center justify-between text-[17px] font-semibold">
+                        Konu anlatımları
+                        <ChevronRight className="size-5 text-subtle" />
+                      </a>
+                    </li>
                     {sectionLinks.map((link) => (
                       <li key={link.href}>
                         <a

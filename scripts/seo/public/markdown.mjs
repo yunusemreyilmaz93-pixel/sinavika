@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import rehypeKatex from 'rehype-katex'
 import rehypeStringify from 'rehype-stringify'
 import remarkGfm from 'remark-gfm'
@@ -39,7 +41,7 @@ function tidy({ topicUrl, seen }) {
         else if (!href.startsWith('#')) return child.children
       }
       if (tagName === 'img') {
-        child.properties = { ...properties, loading: 'lazy', decoding: 'async' }
+        child.properties = { ...properties, loading: 'lazy', decoding: 'async', ...imageSize(String(properties.src ?? '')) }
       }
       if (tagName === 'p') {
         const kids = child.children.filter((c) => !(c.type === 'text' && !c.value.trim()))
@@ -63,6 +65,24 @@ function tidy({ topicUrl, seen }) {
     return node
   }
   return () => (tree) => walk(tree)
+}
+
+function imageSize(src) {
+  if (!src.startsWith('/') || !/\.(svg|png|webp|jpe?g)$/.test(src)) return {}
+  try {
+    const file = join(process.cwd(), 'public', src)
+    if (src.endsWith('.svg')) {
+      const head = readFileSync(file, 'utf8').slice(0, 600)
+      const w = /<svg[^>]*\swidth="(\d+(?:\.\d+)?)"/.exec(head)?.[1]
+      const h = /<svg[^>]*\sheight="(\d+(?:\.\d+)?)"/.exec(head)?.[1]
+      if (w && h) return { width: Number(w), height: Number(h) }
+      const vb = /viewBox="[\d.\-]+ [\d.\-]+ ([\d.]+) ([\d.]+)"/.exec(head)
+      return vb ? { width: Number(vb[1]), height: Number(vb[2]) } : {}
+    }
+  } catch {
+    return {}
+  }
+  return {}
 }
 
 export function createMarkdown({ topicUrl }) {

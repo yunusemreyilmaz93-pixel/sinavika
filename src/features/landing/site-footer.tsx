@@ -142,7 +142,7 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
         </nav>
       </div>
       <div className="border-t border-line">
-        <div className={cn(container, 'flex flex-col gap-1 py-6 text-sm text-subtle sm:flex-row sm:justify-between')}>
+        <div className={cn(container, 'flex flex-col gap-1 py-6 text-sm text-muted sm:flex-row sm:justify-between')}>
           <p>&copy; {year} Yolumnet</p>
           <p>
             Gönüllü bir proje olarak geliştiriliyor.{' '}

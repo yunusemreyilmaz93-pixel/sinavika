@@ -29,3 +29,8 @@
     height: 0;
   }
 }
+
+.defer-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
+}

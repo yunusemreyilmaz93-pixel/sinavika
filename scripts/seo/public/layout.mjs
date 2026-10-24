@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { escapeHtml, siteUrl, verificationTag } from '../html.mjs'
 
 const CONTACT_EMAIL = 'yunusemreyilmaz93@gmail.com'
@@ -8,6 +10,8 @@ const themeScript = `try{var t=localStorage.getItem('sinavika-theme');if(t==='da
 
 // Giriş yapmış kullanıcı sayılmaz. Çerez yok, yalnızca sayfa adı gider
 const beaconScript = `try{if(!localStorage.getItem('sinavika-auth')&&navigator.sendBeacon){navigator.sendBeacon('/api/hit',new Blob([JSON.stringify({path:location.pathname,ref:document.referrer,utm:new URLSearchParams(location.search).get('utm_source')})],{type:'text/plain'}))}}catch(e){}`
+
+const videoScript = `document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.yt-play');if(!b)return;var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+b.getAttribute('data-yt')+'?autoplay=1';f.title=b.getAttribute('data-title')||'Video';f.allow='autoplay; encrypted-media; picture-in-picture';f.allowFullscreen=true;f.referrerPolicy='strict-origin-when-cross-origin';b.replaceWith(f)})`
 
 export const css = `
 .pub{margin:0;background:var(--bg);color:var(--fg);font-family:'Figtree Variable',ui-sans-serif,system-ui,sans-serif;line-height:1.65;-webkit-text-size-adjust:100%}
@@ -59,6 +63,8 @@ export const css = `
 .pub figure img{max-width:100%;height:auto;border-radius:.75rem;display:block}
 .pub figcaption{font-size:.85rem;color:var(--fg-muted);margin-top:.4rem}
 .pub .video-frame{position:relative;aspect-ratio:16/9;border-radius:.75rem;overflow:hidden;background:var(--surface-2)}
+.pub .yt-play{position:absolute;inset:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;border:0;background:var(--surface-2);color:var(--fg);font:inherit;font-weight:700;cursor:pointer}
+.pub .yt-play svg{width:3.25rem;height:3.25rem;padding:.8rem;border-radius:999px;background:var(--primary);color:var(--primary-fg)}
 .pub .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .pub .box{padding:.9rem 1.1rem;border-radius:1rem;border:1px solid var(--line);background:var(--surface)}
 .pub .box>strong{display:block;margin-bottom:.25rem}
@@ -112,9 +118,28 @@ export const css = `
 .pub footer.foot h2{font-size:.95rem;margin-bottom:.5rem}
 .pub footer.foot ul{list-style:none;margin:0;padding:0}
 .pub footer.foot li a{display:inline-block;padding:.3rem 0;color:var(--fg-muted)}
+.pub footer.foot .editor a{text-decoration:underline}
 .pub footer.foot .editor{grid-column:1/-1;color:var(--fg-muted)}
 @media(prefers-reduced-motion:no-preference){.pub a,.pub .card,.pub .list a{transition:border-color .15s}}
 `
+
+const fontCache = new Map()
+
+// Ana yazı tipi dosyaları CSS'in içinden bulunur, böylece CSS çözülmeden indirilmeye başlar
+function fontPreloads(cssHref) {
+  if (!cssHref) return []
+  if (!fontCache.has(cssHref)) {
+    let urls = []
+    try {
+      const text = readFileSync(join(process.cwd(), 'dist', cssHref), 'utf8')
+      urls = [...text.matchAll(/url\((\/assets\/(?:figtree|bricolage-grotesque)-latin-wght-normal-[^)]+\.woff2)\)/g)].map((m) => m[1])
+    } catch {
+      urls = []
+    }
+    fontCache.set(cssHref, [...new Set(urls)])
+  }
+  return fontCache.get(cssHref)
+}
 
 export function jsonLd(data) {
   return `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`
@@ -142,6 +167,7 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow" />\n' : ''}<meta na
 <meta property="og:site_name" content="Yolumnet" />
 <meta property="og:image" content="${site}/og.png" />
 <meta name="twitter:card" content="summary_large_image" />
+${fontPreloads(cssHref).map((href) => `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin />`).join('\n')}
 ${cssHref ? `<link rel="stylesheet" href="${cssHref}" />` : ''}
 <style>${css}</style>
 <script>${themeScript}</script>
@@ -161,5 +187,5 @@ ${examLinks.length ? `<div><h2>Konu anlatımları</h2><ul>${examLinks.map(([href
 <div><h2>Yolumnet</h2><ul><li><a href="/hakkinda">Hakkında</a></li><li><a href="/ogretmen-basvurusu">Öğretmen başvurusu</a></li><li><a href="/katil">Davet koduyla katıl</a></li><li><a href="/kvkk">KVKK aydınlatma metni</a></li></ul></div>
 <p class="editor">Anlatımlar Yolumnet editör ekibi tarafından hazırlanır ve gözden geçirilir. Bir hata ya da eksik görürseniz <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> adresine yazabilirsiniz. Yolumnet ücretsizdir ve reklam içermez.</p>
 </div></footer>`
-  return `${head}\n<body class="pub">\n${header}\n${body}\n${footer}\n<script>${beaconScript}</script>\n</body>\n</html>\n`
+  return `${head}\n<body class="pub">\n${header}\n${body}\n${footer}\n<script>${videoScript}</script>\n<script>${beaconScript}</script>\n</body>\n</html>\n`
 }

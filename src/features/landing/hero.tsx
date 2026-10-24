@@ -58,7 +58,7 @@ export function Hero() {
             </Link>
           </Button>
         </div>
-        <p className="mt-4 text-sm text-subtle">Öğrenci ve veliler, öğretmenlerinden aldıkları kodla katılır.</p>
+        <p className="mt-4 text-sm text-muted">Öğrenci ve veliler, öğretmenlerinden aldıkları kodla katılır.</p>
       </div>
 
       <HeroPreview />

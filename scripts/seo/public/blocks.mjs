@@ -20,7 +20,7 @@ export function renderBlocks(blocks, { md, parse }) {
         if (!/^[A-Za-z0-9_-]{11}$/.test(id)) continue
         const title = escapeHtml(block.attrs.baslik || 'Video')
         out.push(
-          `<figure class="video"><div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/${id}" title="${title}" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><figcaption>${title}${block.attrs.kanal ? ` · ${escapeHtml(block.attrs.kanal)}` : ''}</figcaption></figure>`,
+          `<figure class="video"><div class="video-frame"><button type="button" class="yt-play" data-yt="${id}" data-title="${title}"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span>Videoyu oynat</span></button></div><noscript><a href="https://www.youtube.com/watch?v=${id}" rel="noopener" target="_blank">Videoyu YouTube'da izleyin</a></noscript><figcaption>${title}${block.attrs.kanal ? ` · ${escapeHtml(block.attrs.kanal)}` : ''}</figcaption></figure>`,
         )
       } else if (block.name === 'sim') {
         out.push(`<aside class="box sim"><strong>Etkileşimli simülasyon</strong><p>Bu bölümde değerleri değiştirerek deneyebileceğiniz bir simülasyon var. Uygulamada açılır.</p><p><a href="/giris">Giriş yapın</a></p></aside>`)

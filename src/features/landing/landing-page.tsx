@@ -4,6 +4,7 @@ import { FaqSection } from './faq-section'
 import { Hero } from './hero'
 import { HowItWorks } from './how-it-works'
 import { LearningSection } from './learning-section'
+import { OpenContentSection } from './open-content-section'
 import { scrollToHash, sectionLinks, type Role, type SectionLink } from './primitives'
 import { RolesSection } from './showcase'
 import { ClosingCta, SiteFooter } from './site-footer'
@@ -53,12 +54,27 @@ export default function LandingPage() {
       <SiteHeader onNavigate={navigate} />
       <main id="icerik" tabIndex={-1} className="relative outline-none">
         <Hero />
-        <ExamsSection />
-        <RolesSection role={role} onRoleChange={setRole} />
-        <LearningSection />
-        <HowItWorks />
-        <WhyFree />
-        <FaqSection />
+        <div className="defer-section">
+          <ExamsSection />
+        </div>
+        <div className="defer-section">
+          <RolesSection role={role} onRoleChange={setRole} />
+        </div>
+        <div className="defer-section">
+          <LearningSection />
+        </div>
+        <div className="defer-section">
+          <OpenContentSection />
+        </div>
+        <div className="defer-section">
+          <HowItWorks />
+        </div>
+        <div className="defer-section">
+          <WhyFree />
+        </div>
+        <div className="defer-section">
+          <FaqSection />
+        </div>
         <ClosingCta />
       </main>
       <SiteFooter onNavigate={navigate} />
