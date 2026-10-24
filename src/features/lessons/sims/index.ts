@@ -281,4 +281,12 @@ export const SIMS: Record<string, Sim> = {
     label: 'Popülasyon büyümesi (üstel ve lojistik)',
     Component: lazy(() => import('./biology-sims').then((m) => ({ default: m.PopulationSim }))),
   },
+  hece: {
+    label: 'Hece sayacı (hece ölçüsü)',
+    Component: lazy(() => import('./literature-sims').then((m) => ({ default: m.SyllableSim }))),
+  },
+  edebiyatzaman: {
+    label: 'Edebiyat dönemleri (Tanzimat\'tan Cumhuriyet\'e)',
+    Component: lazy(() => import('./literature-sims').then((m) => ({ default: m.PeriodsSim }))),
+  },
 }
