@@ -225,4 +225,28 @@ export const SIMS: Record<string, Sim> = {
     label: 'Eğri altındaki alan (Riemann toplamı)',
     Component: lazy(() => import('./calculus-sims').then((m) => ({ default: m.IntegralSim }))),
   },
+  vektor: {
+    label: 'Vektörlerin toplanması (bileşke, büyüklük, açı)',
+    Component: lazy(() => import('./physics-sims').then((m) => ({ default: m.VectorSim }))),
+  },
+  newton: {
+    label: 'Kuvvet, kütle ve ivme (sürtünmeli yüzey)',
+    Component: lazy(() => import('./physics-sims').then((m) => ({ default: m.NewtonSim }))),
+  },
+  atis: {
+    label: 'Eğik atış (ilk hız, açı, menzil)',
+    Component: lazy(() => import('./physics-sims').then((m) => ({ default: m.ProjectileSim }))),
+  },
+  carpisma: {
+    label: 'Çarpışma (momentum ve kinetik enerji)',
+    Component: lazy(() => import('./physics-sims').then((m) => ({ default: m.CollisionSim }))),
+  },
+  harmonik: {
+    label: 'Yay üzerinde basit harmonik hareket',
+    Component: lazy(() => import('./physics-sims').then((m) => ({ default: m.HarmonicSim }))),
+  },
+  fotoelektrik: {
+    label: 'Fotoelektrik olay (iş fonksiyonu, frekans, şiddet)',
+    Component: lazy(() => import('./physics-sims').then((m) => ({ default: m.PhotoelectricSim }))),
+  },
 }
