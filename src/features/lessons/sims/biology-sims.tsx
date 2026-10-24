@@ -47,7 +47,7 @@ export function ActionPotentialSim() {
   return (
     <SimFrame title="Aksiyon potansiyeli" hint="Uyaran şiddetini değiştir. Eşik değerin altında yanıt oluşmaz, eşik ve üstünde yanıt hep aynı büyüklüktedir.">
       <div className="mx-auto mt-4 max-w-md overflow-hidden rounded-xl border border-line bg-surface p-3">
-        <svg viewBox="0 0 300 160" role="img" aria-label="Zar potansiyelinin zamana göre değişimi" className="block w-full">
+        <svg viewBox="0 0 300 160" role="img" aria-label="Zar geriliminin zamana göre değişimi" className="block w-full">
           <line x1={30} y1={y(-90)} x2={30} y2={y(50)} className="stroke-fg" strokeWidth={1.2} />
           <line x1={30} y1={y(-90)} x2={292} y2={y(-90)} className="stroke-fg" strokeWidth={1.2} />
           <line x1={30} y1={y(-55)} x2={292} y2={y(-55)} className="stroke-danger" strokeWidth={1} strokeDasharray="4 3" />
