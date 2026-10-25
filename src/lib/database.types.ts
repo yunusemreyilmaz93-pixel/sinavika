@@ -2078,6 +2078,10 @@ export type Database = {
           video_pct: number;
         }[];
       };
+      test_item_stats: {
+        Args: { p_set: number };
+        Returns: Json;
+      };
       preview_set: {
         Args: { p_set: number };
         Returns: Json;

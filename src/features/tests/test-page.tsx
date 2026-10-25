@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardBody } from '@/components/ui/card'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Segmented } from '@/components/ui/segmented'
+import { Switch } from '@/components/ui/switch'
 import { PageSkeleton } from '@/components/ui/skeleton'
 import { useProfile } from '@/features/auth/session'
 import { Md } from '@/features/lessons/markdown/render'
 import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
 import { formatNet, net } from '@/lib/exam'
-import { usePreviewSet, useSubmitTest, useTestQuestions, useTestSets, type TestQuestion, type TestResult } from './queries'
+import { useItemStats, usePreviewSet, useSubmitTest, useTestQuestions, useTestSets, type TestQuestion, type TestResult } from './queries'
 
 const letters = 'ABCDE'
 
@@ -256,7 +257,11 @@ function ResultView({ title, exam, questions, result, onRestart }: { title: stri
 }
 
 function Preview({ setId }: { setId: number }) {
+  const [showAnswers, setShowAnswers] = useState(false)
+  const isAdmin = useProfile().is_admin
   const preview = usePreviewSet(setId)
+  const stats = useItemStats(setId, isAdmin).data
+  const statOf = new Map((stats?.items ?? []).map((i) => [i.question_id, i]))
   const curriculum = useCurriculum()
   if (preview.isLoading) return <PageSkeleton />
   const data = preview.data
@@ -270,7 +275,20 @@ function Preview({ setId }: { setId: number }) {
   }
   return (
     <>
-      <PageHeader title={data.title} description={`${data.questions.length} soru, doğru cevaplar işaretli`} back={{ to: '/app/testler', label: 'Testler' }} actions={!data.published && <Badge tone="warning">Taslak</Badge>} />
+      <PageHeader title={data.title} description={`${data.questions.length} soru${data.duration ? `, ${data.duration} dakika` : ''}`} back={{ to: '/app/testler', label: 'Testler' }} actions={!data.published && <Badge tone="warning">Taslak</Badge>} />
+      {isAdmin && stats && stats.n > 0 && (
+        <Card className="mb-4">
+          <CardBody className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+            <span>{stats.n} öğrenci</span>
+            <span>Ortalama {stats.mean} doğru</span>
+            <span>Güvenirlik (KR-20) {stats.kr20 == null ? 'için veri az' : String(stats.kr20).replace('.', ',')}</span>
+          </CardBody>
+        </Card>
+      )}
+      <div className="mb-4 flex items-center gap-3">
+        <Switch checked={showAnswers} onCheckedChange={setShowAnswers} label="Cevapları göster" />
+        <span className="text-sm font-semibold">Cevapları ve çözümleri göster</span>
+      </div>
       <ol className="space-y-4">
         {data.questions.map((q) => (
           <li key={q.id}>
@@ -287,22 +305,27 @@ function Preview({ setId }: { setId: number }) {
                 </div>
                 <ul className="mt-3 space-y-2">
                   {q.options.map((option, k) => (
-                    <li key={k} className={cn('flex items-start gap-3 rounded-xl border px-3 py-2 text-sm', k === q.correct ? 'border-primary bg-primary-soft text-primary-soft-fg' : 'border-line')}>
+                    <li key={k} className={cn('flex items-start gap-3 rounded-xl border px-3 py-2 text-sm', showAnswers && k === q.correct ? 'border-primary bg-primary-soft text-primary-soft-fg' : 'border-line')}>
                       <span className="mt-px grid size-6 shrink-0 place-items-center rounded-full border border-current text-xs font-bold">{letters[k]}</span>
                       <span className="min-w-0 flex-1 pt-0.5">
                         <Md text={option} inline />
                       </span>
-                      {k === q.correct && <Check className="mt-0.5 size-4 shrink-0" aria-label="Doğru cevap" />}
+                      {showAnswers && k === q.correct && <Check className="mt-0.5 size-4 shrink-0" aria-label="Doğru cevap" />}
                     </li>
                   ))}
                 </ul>
-                {q.explanation && (
+                {showAnswers && q.explanation && (
                   <div className="bg-surface-2 mt-3 rounded-xl p-3 text-sm">
                     <p className="mb-1 font-bold">Çözüm</p>
                     <Md text={q.explanation} />
                   </div>
                 )}
                 {curriculum.data && q.topic_id && <p className="text-muted mt-2 text-xs">{curriculum.data.topicById.get(q.topic_id)?.name}</p>}
+                {statOf.get(q.id) && (
+                  <p className="text-muted mt-2 text-xs">
+                    Güçlük %{Math.round(statOf.get(q.id)!.p * 100)}, ayırt edicilik {statOf.get(q.id)!.r == null ? '-' : String(statOf.get(q.id)!.r).replace('.', ',')}, {statOf.get(q.id)!.n} kişi
+                  </p>
+                )}
               </CardBody>
             </Card>
           </li>

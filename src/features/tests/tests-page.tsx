@@ -32,6 +32,14 @@ export default function TestsPage() {
   }, [attempts.data])
 
   if (sets.isLoading || curriculum.isLoading) return <Loading />
+  if (sets.isError) {
+    return (
+      <>
+        <PageHeader title="Testler" />
+        <EmptyState icon={ListChecks} title="Testler yüklenemedi" description="Sayfayı yenileyip tekrar deneyin." />
+      </>
+    )
+  }
   if (!exam || !curriculum.data) {
     return (
       <>

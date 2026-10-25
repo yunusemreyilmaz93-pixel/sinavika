@@ -1,7 +1,7 @@
 // Soru setlerini (Markdown) tek bir migration dosyasına çevirir.
 // Kullanım: node scripts/questions/build-sets.mjs <migration-adı> <klasör>
 // Her .md dosyası bir settir. İlk satır: <sınav> | <tür> | <ders> | <konu ya da başlık> | <süre dk, ops.>
-//   lgs | konu | lgs-mat | Çarpanlar ve Katlar
+//   lgs | konu | lgs-mat | Çarpanlar ve Katlar | 32 | (ikinci test için "2")
 //   lgs | brans | lgs-mat | Matematik branş denemesi 1 | 40
 //   lgs | deneme | - | LGS genel deneme 1 | 155
 // Sorular: :::soru{cevap="B" zorluk="2" konu="Konu adı"} ... --- çözüm ... :::
@@ -29,7 +29,8 @@ let total = 0
 for (const file of readdirSync(dir).filter((f) => f.endsWith('.md')).sort()) {
   const raw = readFileSync(join(dir, file), 'utf8').replace(/\r/g, '')
   const nl = raw.indexOf('\n')
-  const [exam, kind, subject, label, duration] = raw.slice(0, nl).split('|').map((s) => s.trim())
+  const [exam, kind, subject, label, duration, suffix] = raw.slice(0, nl).split('|').map((s) => s.trim())
+  const title = kind === 'konu' ? `${label} konu testi${suffix ? ` ${suffix}` : ''}` : label
   const fail = (msg) => errors.push(`${file}: ${msg}`)
   if (!optionCount[exam]) fail(`bilinmeyen sınav ${exam}`)
   if (!kinds.includes(kind)) fail(`bilinmeyen tür ${kind}`)
@@ -84,8 +85,8 @@ for (const file of readdirSync(dir).filter((f) => f.endsWith('.md')).sort()) {
 
   const head =
     kind === 'konu'
-      ? `insert into public.question_sets (exam, kind, subject_id, topic_id, title, published)
-  select '${examSql}', 'konu', '${subject}', t.id, $t$${q(`${label} konu testi`)}$t$, true
+      ? `insert into public.question_sets (exam, kind, subject_id, topic_id, title, duration_min, published)
+  select '${examSql}', 'konu', '${subject}', t.id, $t$${q(title)}$t$, ${duration ? Number(duration) : 'null'}, true
   from public.topics t where t.subject_id = '${subject}' and t.name = $n$${q(label)}$n$
   on conflict do nothing
   returning id, topic_id`
@@ -94,7 +95,7 @@ for (const file of readdirSync(dir).filter((f) => f.endsWith('.md')).sort()) {
   where not exists (select 1 from public.question_sets x where x.exam = '${examSql}' and x.kind = '${kind}' and x.title = $t$${q(label)}$t$)
   returning id, null::integer as topic_id`
 
-  sql += `-- ${exam} | ${kind} | ${subject} | ${label}\nwith s as (\n  ${head}\n)\ninsert into public.questions (set_id, position, subject_id, topic_id, stem, options, correct, explanation, difficulty)\nselect s.id, v.position, v.subject_id, coalesce(s.topic_id, v.topic_id), v.stem, v.options, v.correct, v.explanation, v.difficulty\nfrom s, (values\n${values}\n) as v(position, subject_id, topic_id, stem, options, correct, explanation, difficulty);\n\n`
+  sql += `-- ${exam} | ${kind} | ${subject} | ${title}\nwith s as (\n  ${head}\n)\ninsert into public.questions (set_id, position, subject_id, topic_id, stem, options, correct, explanation, difficulty)\nselect s.id, v.position, v.subject_id, coalesce(s.topic_id, v.topic_id), v.stem, v.options, v.correct, v.explanation, v.difficulty\nfrom s, (values\n${values}\n) as v(position, subject_id, topic_id, stem, options, correct, explanation, difficulty);\n\n`
   sets++
   total += rows.length
 }

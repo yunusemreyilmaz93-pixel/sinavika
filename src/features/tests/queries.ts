@@ -93,12 +93,24 @@ export function useSubmitTest(studentId: string, setId: number) {
 }
 
 export type PreviewQuestion = TestQuestion & { correct: number; explanation: string }
-export type SetPreview = { title: string; exam: ExamKind; kind: TestKind; published: boolean; questions: PreviewQuestion[] }
+export type SetPreview = { title: string; exam: ExamKind; kind: TestKind; published: boolean; duration: number | null; questions: PreviewQuestion[] }
 
 // Yönetici ve öğretmen için doğru cevap ve çözümle birlikte set
 export function usePreviewSet(setId: number) {
   return useQuery({
     queryKey: ['test-preview', setId],
     queryFn: async (): Promise<SetPreview | null> => (unwrap(await supabase.rpc('preview_set', { p_set: setId })) as unknown) as SetPreview | null,
+  })
+}
+
+export type ItemStat = { question_id: number; n: number; p: number; r: number | null; choices: Record<string, number> }
+export type SetStats = { n: number; mean?: number; sd?: number; kr20?: number | null; items: ItemStat[] }
+
+// Yalnızca yönetici: güçlük, ayırt edicilik ve güvenirlik
+export function useItemStats(setId: number, enabled: boolean) {
+  return useQuery({
+    enabled,
+    queryKey: ['test-stats', setId],
+    queryFn: async (): Promise<SetStats> => (unwrap(await supabase.rpc('test_item_stats', { p_set: setId })) as unknown) as SetStats,
   })
 }

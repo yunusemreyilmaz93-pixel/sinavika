@@ -985,6 +985,12 @@ await test('soru bankası: doğru cevap istemciye inmez, sunucu puanlar, ilk den
   await rejects(as(s2, 'select public.test_review($1)', [first.attempt_id]), /erişim yok/)
   await rejects(as(s1, `insert into public.test_attempts (student_id, set_id, correct, wrong, blank) values ($1, $2, 99, 0, 0)`, [s1, set]), /permission denied/)
 
+  const stats = (await as(adminId, 'select public.test_item_stats($1) as r', [set]))[0].r
+  assert.equal(stats.n, 1)
+  assert.equal(stats.items.length, 3)
+  assert.equal(stats.items[0].p, 1)
+  await rejects(as(teacherA, 'select public.test_item_stats($1)', [set]), /yalnızca yöneticiler/)
+  await rejects(as(s1, 'select public.test_item_stats($1)', [set]), /yalnızca yöneticiler/)
   const preview = (await as(teacherA, 'select public.preview_set($1) as r', [set]))[0].r
   assert.deepEqual(preview.questions.map((x) => x.correct), [0, 2, 1])
   assert.equal(preview.questions[0].explanation, 'Çözüm 1')
