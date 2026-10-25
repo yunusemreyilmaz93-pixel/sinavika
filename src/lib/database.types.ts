@@ -2075,6 +2075,10 @@ export type Database = {
           video_pct: number;
         }[];
       };
+      preview_set: {
+        Args: { p_set: number };
+        Returns: Json;
+      };
       submit_test: {
         Args: { p_answers: Json; p_seconds?: number; p_set: number };
         Returns: Json;

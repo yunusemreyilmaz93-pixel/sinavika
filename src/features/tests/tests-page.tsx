@@ -16,9 +16,10 @@ import { useTestAttempts, useTestSets, type Attempt, type TestSet } from './quer
 const kindTitle = { deneme: 'Genel denemeler', brans: 'Branş denemeleri', konu: 'Konu testleri' } as const
 
 export default function TestsPage() {
-  const studentId = useProfile().id
+  const profile = useProfile()
+  const isStudent = profile.role === 'student'
   const sets = useTestSets()
-  const attempts = useTestAttempts(studentId)
+  const attempts = useTestAttempts(profile.id, isStudent)
   const curriculum = useCurriculum()
   const [picked, setPicked] = useState<ExamKind | null>(null)
 
@@ -44,7 +45,7 @@ export default function TestsPage() {
 
   return (
     <>
-      <PageHeader title="Testler" />
+      <PageHeader title="Testler" description={isStudent ? undefined : 'Soruları doğru cevap ve çözümleriyle inceleyebilirsiniz.'} />
       {exams.length > 1 && (
         <Segmented className="mb-5" value={exam} onChange={setPicked} options={exams.map((e) => ({ value: e, label: examLabel[e] }))} />
       )}
@@ -60,7 +61,7 @@ export default function TestsPage() {
               {kind === 'deneme' ? (
                 <Card className="divide-y divide-line">
                   {list.map((s) => (
-                    <SetRow key={s.id} set={s} exam={exam} attempt={last.get(s.id)} />
+                    <SetRow key={s.id} set={s} exam={exam} attempt={isStudent ? last.get(s.id) : undefined} staff={!isStudent} />
                   ))}
                 </Card>
               ) : (
@@ -73,7 +74,7 @@ export default function TestsPage() {
                       </div>
                       <div className="divide-y divide-line">
                         {items.map((s) => (
-                          <SetRow key={s.id} set={s} exam={exam} attempt={last.get(s.id)} topic={s.topic_id ? topicById.get(s.topic_id)?.name : undefined} />
+                          <SetRow key={s.id} set={s} exam={exam} attempt={isStudent ? last.get(s.id) : undefined} staff={!isStudent} topic={s.topic_id ? topicById.get(s.topic_id)?.name : undefined} />
                         ))}
                       </div>
                     </Card>
@@ -88,7 +89,7 @@ export default function TestsPage() {
   )
 }
 
-function SetRow({ set, exam, attempt, topic }: { set: TestSet; exam: ExamKind; attempt?: Attempt; hint?: undefined; topic?: string }) {
+function SetRow({ set, exam, attempt, topic, staff }: { set: TestSet; exam: ExamKind; attempt?: Attempt; topic?: string; staff?: boolean }) {
   return (
     <Link to={`/app/testler/${set.id}`} className="flex min-h-14 items-center gap-3 px-4 py-2.5 hover:bg-surface-2 sm:px-5">
       <div className="min-w-0 flex-1">
@@ -97,7 +98,7 @@ function SetRow({ set, exam, attempt, topic }: { set: TestSet; exam: ExamKind; a
           {set.question_count} soru{set.duration_min ? `, ${set.duration_min} dakika` : ''}
         </p>
       </div>
-      {attempt ? <Badge tone="primary">{formatNet(net(attempt.correct, attempt.wrong, exam))} net</Badge> : <Badge>Çözülmedi</Badge>}
+      {staff ? !set.published && <Badge tone="warning">Taslak</Badge> : attempt ? <Badge tone="primary">{formatNet(net(attempt.correct, attempt.wrong, exam))} net</Badge> : <Badge>Çözülmedi</Badge>}
       <ChevronRight className="size-4 shrink-0 text-subtle" />
     </Link>
   )

@@ -5,7 +5,7 @@ import TestPage from './test-page'
 
 const submit = vi.fn()
 
-vi.mock('@/features/auth/session', () => ({ useProfile: () => ({ id: 'student-1' }) }))
+vi.mock('@/features/auth/session', () => ({ useProfile: () => ({ id: 'student-1', role: 'student' }) }))
 vi.mock('@/lib/data', () => ({ useCurriculum: () => ({ data: { topicById: new Map([[7, { id: 7, name: 'Çarpanlar ve Katlar' }]]) } }) }))
 vi.mock('./queries', () => ({
   useTestSets: () => ({ isLoading: false, data: [{ id: 5, exam: 'LGS', kind: 'konu', title: 'Deneme testi', duration_min: null, question_count: 2 }] }),
@@ -16,6 +16,7 @@ vi.mock('./queries', () => ({
       { id: 2, position: 2, subject_id: 'lgs-mat', topic_id: 7, stem: '$3 \\cdot 3$ kaçtır?', options: ['6', '9', '12', '15'], difficulty: 1 },
     ],
   }),
+  usePreviewSet: () => ({ isLoading: false, data: null }),
   useSubmitTest: () => ({
     isPending: false,
     isSuccess: false,

@@ -15,6 +15,7 @@ export type TestSet = {
   title: string
   duration_min: number | null
   sort: number
+  published: boolean
   question_count: number
 }
 
@@ -45,7 +46,7 @@ export function useTestSets() {
       const rows = unwrap(
         await supabase
           .from('question_sets')
-          .select('id, exam, kind, subject_id, topic_id, title, duration_min, sort, questions(count)')
+          .select('id, exam, kind, subject_id, topic_id, title, duration_min, sort, published, questions(count)')
           .order('sort')
           .order('id'),
       )
@@ -63,8 +64,9 @@ export function useTestQuestions(setId: number) {
   })
 }
 
-export function useTestAttempts(studentId: string) {
+export function useTestAttempts(studentId: string, enabled = true) {
   return useQuery({
+    enabled,
     queryKey: attemptsKey(studentId),
     queryFn: async (): Promise<Attempt[]> =>
       unwrap(
@@ -87,5 +89,16 @@ export function useSubmitTest(studentId: string, setId: number) {
       invalidateActivity(queryClient, studentId)
     },
     onError: (error) => toast.error(errorMessage(error)),
+  })
+}
+
+export type PreviewQuestion = TestQuestion & { correct: number; explanation: string }
+export type SetPreview = { title: string; exam: ExamKind; kind: TestKind; published: boolean; questions: PreviewQuestion[] }
+
+// Yönetici ve öğretmen için doğru cevap ve çözümle birlikte set
+export function usePreviewSet(setId: number) {
+  return useQuery({
+    queryKey: ['test-preview', setId],
+    queryFn: async (): Promise<SetPreview | null> => (unwrap(await supabase.rpc('preview_set', { p_set: setId })) as unknown) as SetPreview | null,
   })
 }

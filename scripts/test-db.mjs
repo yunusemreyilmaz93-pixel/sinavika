@@ -984,6 +984,12 @@ await test('soru bankası: doğru cevap istemciye inmez, sunucu puanlar, ilk den
   await rejects(as(s2, 'select public.test_review($1)', [first.attempt_id]), /erişim yok/)
   await rejects(as(s1, `insert into public.test_attempts (student_id, set_id, correct, wrong, blank) values ($1, $2, 99, 0, 0)`, [s1, set]), /permission denied/)
 
+  const preview = (await as(teacherA, 'select public.preview_set($1) as r', [set]))[0].r
+  assert.deepEqual(preview.questions.map((x) => x.correct), [0, 2, 1])
+  assert.equal(preview.questions[0].explanation, 'Çözüm 1')
+  assert.equal((await as(teacherA, 'select public.preview_set($1) as r', [draft]))[0].r, null)
+  await rejects(as(s1, 'select public.preview_set($1)', [set]), /yalnızca yönetici ve öğretmenler/)
+  await rejects(as(parent, 'select public.preview_set($1)', [set]), /yalnızca yönetici ve öğretmenler/)
   await service('delete from public.question_sets where id in ($1, $2)', [set, draft])
 })
 

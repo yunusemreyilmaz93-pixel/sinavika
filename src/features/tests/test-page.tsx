@@ -13,7 +13,7 @@ import { Md } from '@/features/lessons/markdown/render'
 import { cn } from '@/lib/cn'
 import { useCurriculum } from '@/lib/data'
 import { formatNet, net } from '@/lib/exam'
-import { useSubmitTest, useTestQuestions, useTestSets, type TestQuestion, type TestResult } from './queries'
+import { usePreviewSet, useSubmitTest, useTestQuestions, useTestSets, type TestQuestion, type TestResult } from './queries'
 
 const letters = 'ABCDE'
 
@@ -24,6 +24,11 @@ function clock(totalSeconds: number) {
 
 export default function TestPage() {
   const setId = Number(useParams().setId)
+  if (useProfile().role !== 'student') return <Preview setId={setId} />
+  return <StudentTest setId={setId} />
+}
+
+function StudentTest({ setId }: { setId: number }) {
   const sets = useTestSets()
   const questions = useTestQuestions(setId)
   const set = sets.data?.find((s) => s.id === setId)
@@ -245,6 +250,63 @@ function ResultView({ title, exam, questions, result, onRestart }: { title: stri
             </li>
           )
         })}
+      </ol>
+    </>
+  )
+}
+
+function Preview({ setId }: { setId: number }) {
+  const preview = usePreviewSet(setId)
+  const curriculum = useCurriculum()
+  if (preview.isLoading) return <PageSkeleton />
+  const data = preview.data
+  if (!data || !data.questions.length) {
+    return (
+      <>
+        <PageHeader title="Test" back={{ to: '/app/testler', label: 'Testler' }} />
+        <EmptyState icon={X} title="Test bulunamadı" description="Bu test yok ya da yayında değil." />
+      </>
+    )
+  }
+  return (
+    <>
+      <PageHeader title={data.title} description={`${data.questions.length} soru, doğru cevaplar işaretli`} back={{ to: '/app/testler', label: 'Testler' }} actions={!data.published && <Badge tone="warning">Taslak</Badge>} />
+      <ol className="space-y-4">
+        {data.questions.map((q) => (
+          <li key={q.id}>
+            <Card>
+              <CardBody>
+                <div className="flex gap-3">
+                  <span className="bg-accent-soft text-accent-soft-fg grid size-7 shrink-0 place-items-center rounded-full text-sm font-bold">{q.position}</span>
+                  <div className="min-w-0 flex-1 text-[15px]">
+                    <Md text={q.stem} />
+                  </div>
+                  <Badge className="shrink-0 self-start" tone={q.difficulty === 3 ? 'danger' : q.difficulty === 2 ? 'warning' : 'primary'}>
+                    {['', 'Kolay', 'Orta', 'Zor'][q.difficulty]}
+                  </Badge>
+                </div>
+                <ul className="mt-3 space-y-2">
+                  {q.options.map((option, k) => (
+                    <li key={k} className={cn('flex items-start gap-3 rounded-xl border px-3 py-2 text-sm', k === q.correct ? 'border-primary bg-primary-soft text-primary-soft-fg' : 'border-line')}>
+                      <span className="mt-px grid size-6 shrink-0 place-items-center rounded-full border border-current text-xs font-bold">{letters[k]}</span>
+                      <span className="min-w-0 flex-1 pt-0.5">
+                        <Md text={option} inline />
+                      </span>
+                      {k === q.correct && <Check className="mt-0.5 size-4 shrink-0" aria-label="Doğru cevap" />}
+                    </li>
+                  ))}
+                </ul>
+                {q.explanation && (
+                  <div className="bg-surface-2 mt-3 rounded-xl p-3 text-sm">
+                    <p className="mb-1 font-bold">Çözüm</p>
+                    <Md text={q.explanation} />
+                  </div>
+                )}
+                {curriculum.data && q.topic_id && <p className="text-muted mt-2 text-xs">{curriculum.data.topicById.get(q.topic_id)?.name}</p>}
+              </CardBody>
+            </Card>
+          </li>
+        ))}
       </ol>
     </>
   )
