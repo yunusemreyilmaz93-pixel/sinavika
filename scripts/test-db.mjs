@@ -954,6 +954,7 @@ await test('soru bankası: doğru cevap istemciye inmez, sunucu puanlar, ilk den
   }
   await service(`insert into public.questions (set_id, position, subject_id, stem, options, correct) values ($1, 1, $2, 'Taslak soru', array['a','b'], 0)`, [draft, subject])
 
+  assert.equal((await as(s1, 'select question_count from public.question_sets where id = $1', [set]))[0].question_count, 3)
   assert.equal((await as(s1, 'select id, stem, options from public.questions where set_id = $1', [set])).length, 3)
   await rejects(as(s1, 'select correct from public.questions where set_id = $1', [set]), /permission denied/)
   await rejects(as(s1, 'select explanation from public.questions where set_id = $1', [set]), /permission denied/)

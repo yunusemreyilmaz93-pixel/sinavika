@@ -1349,6 +1349,7 @@ export type Database = {
           duration_min: number | null;
           sort: number;
           published: boolean;
+          question_count: number;
           created_at: string;
         };
         ComputedFields: never;
@@ -1362,6 +1363,7 @@ export type Database = {
           duration_min?: number | null;
           sort?: number;
           published?: boolean;
+          question_count?: number;
           created_at?: string;
         };
         Update: {
@@ -1374,6 +1376,7 @@ export type Database = {
           duration_min?: number | null;
           sort?: number;
           published?: boolean;
+          question_count?: number;
           created_at?: string;
         };
         Relationships: [

@@ -46,11 +46,11 @@ export function useTestSets() {
       const rows = unwrap(
         await supabase
           .from('question_sets')
-          .select('id, exam, kind, subject_id, topic_id, title, duration_min, sort, published, questions(count)')
+          .select('id, exam, kind, subject_id, topic_id, title, duration_min, sort, published, question_count')
           .order('sort')
           .order('id'),
       )
-      return rows.map((r) => ({ ...r, kind: r.kind as TestKind, question_count: r.questions[0]?.count ?? 0 })).filter((r) => r.question_count > 0)
+      return rows.map((r) => ({ ...r, kind: r.kind as TestKind })).filter((r) => r.question_count > 0)
     },
   })
 }
