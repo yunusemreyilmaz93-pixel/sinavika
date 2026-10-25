@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { PageSkeleton } from '@/components/ui/skeleton'
 import { useProfile } from '@/features/auth/session'
+import { TopicTestLink } from '@/features/tests/topic-test-link'
 import { statusMeta } from '@/features/topics/status'
 import { useSetTopicStatus, useTopicProgress } from '@/features/topics/use-topics'
 import { cn } from '@/lib/cn'
@@ -100,7 +101,7 @@ export default function LessonPage() {
             <NotebookPen className="size-5" />
             Yönetici notu
           </p>
-                    <p className="mt-3 text-[15px] leading-relaxed whitespace-pre-line">{note}</p>
+          <p className="mt-3 text-[15px] leading-relaxed whitespace-pre-line">{note}</p>
         </aside>
       )}
 
@@ -112,6 +113,7 @@ export default function LessonPage() {
               <LessonProgressProvider topicId={topic.id} sectionIds={sectionIds}>
                 <LessonBody source={lesson.body} />
                 <LessonSummary />
+                <TopicTestLink topicId={topic.id} />
               </LessonProgressProvider>
             </LessonTrackProvider>
           ) : (
