@@ -933,6 +933,60 @@ await test('herkese açık anlatım: anonim yalnızca yayındaki anlatımı ve i
   await service('delete from public.lessons where topic_id in ($1, $2)', [t.id, t2.id])
 })
 
+await test('soru bankası: doğru cevap istemciye inmez, sunucu puanlar, ilk deneme istatistiğe yazılır', async () => {
+  const [{ id: subject }] = await service(`select id from public.subjects where exam = 'LGS' order by sort limit 1`)
+  const [{ id: topic }] = await service('select id from public.topics where subject_id = $1 order by id limit 1', [subject])
+  const [{ id: set }] = await service(
+    `insert into public.question_sets (exam, kind, subject_id, topic_id, title, published) values ('LGS', 'konu', $1, $2, 'DENEME TESTİ', true) returning id`,
+    [subject, topic],
+  )
+  const [{ id: draft }] = await service(
+    `insert into public.question_sets (exam, kind, subject_id, title, published) values ('LGS', 'brans', $1, 'TASLAK', false) returning id`,
+    [subject],
+  )
+  const ids = []
+  for (const [pos, correct] of [[1, 0], [2, 2], [3, 1]]) {
+    const [{ id }] = await service(
+      `insert into public.questions (set_id, position, subject_id, topic_id, stem, options, correct, explanation) values ($1, $2::smallint, $3, $4, 'Soru ' || $2::text, array['a','b','c','d'], $5, 'Çözüm ' || $2::text) returning id`,
+      [set, pos, subject, topic, correct],
+    )
+    ids.push(id)
+  }
+  await service(`insert into public.questions (set_id, position, subject_id, stem, options, correct) values ($1, 1, $2, 'Taslak soru', array['a','b'], 0)`, [draft, subject])
+
+  assert.equal((await as(s1, 'select id, stem, options from public.questions where set_id = $1', [set])).length, 3)
+  await rejects(as(s1, 'select correct from public.questions where set_id = $1', [set]), /permission denied/)
+  await rejects(as(s1, 'select explanation from public.questions where set_id = $1', [set]), /permission denied/)
+  assert.equal((await as(s1, 'select 1 from public.questions where set_id = $1', [draft])).length, 0)
+  assert.equal((await as(s1, 'select 1 from public.question_sets where id = $1', [draft])).length, 0)
+  await rejects(as(s1, `insert into public.questions (set_id, position, subject_id, stem, options, correct) values ($1, 9, $2, 'x', array['a','b'], 0)`, [set, subject]), /permission denied/)
+  await rejects(as(s1, 'select public.submit_test($1, $2::jsonb)', [draft, '{}']), /yayınlanmamış/)
+  await rejects(as(teacherA, 'select public.submit_test($1, $2::jsonb)', [set, '{}']), /Sadece öğrenciler/)
+
+  const before = (await service('select coalesce(sum(correct + wrong + blank), 0)::int as n from public.question_logs where student_id = $1 and topic_id = $2', [s1, topic]))[0].n
+  const answers = { [ids[0]]: 0, [ids[1]]: 3, [ids[2]]: null }
+  const first = (await as(s1, 'select public.submit_test($1, $2::jsonb, 90) as r', [set, JSON.stringify(answers)]))[0].r
+  assert.deepEqual([first.correct, first.wrong, first.blank, first.first], [1, 1, 1, true])
+  assert.deepEqual(first.review.map((r) => [r.is_correct, r.correct_choice]), [[true, 0], [false, 2], [false, 1]])
+  assert.equal(first.review[2].choice, null)
+  const after = (await service('select coalesce(sum(correct + wrong + blank), 0)::int as n from public.question_logs where student_id = $1 and topic_id = $2', [s1, topic]))[0].n
+  assert.equal(after, before + 3)
+
+  const again = (await as(s1, 'select public.submit_test($1, $2::jsonb) as r', [set, JSON.stringify({ [ids[0]]: 0, [ids[1]]: 2, [ids[2]]: 1 })]))[0].r
+  assert.deepEqual([again.correct, again.wrong, again.blank, again.first], [3, 0, 0, false])
+  assert.equal((await service('select coalesce(sum(correct + wrong + blank), 0)::int as n from public.question_logs where student_id = $1 and topic_id = $2', [s1, topic]))[0].n, after)
+
+  assert.equal((await as(s1, 'select 1 from public.test_attempts where set_id = $1', [set])).length, 2)
+  assert.equal((await as(s2, 'select 1 from public.test_attempts where set_id = $1', [set])).length, 0)
+  assert.equal((await as(s2, 'select 1 from public.test_answers')).length, 0)
+  assert.equal((await as(parent, 'select 1 from public.test_attempts where set_id = $1', [set])).length, 2)
+  assert.equal((await as(s1, 'select public.test_review($1) as r', [first.attempt_id]))[0].r.wrong, 1)
+  await rejects(as(s2, 'select public.test_review($1)', [first.attempt_id]), /erişim yok/)
+  await rejects(as(s1, `insert into public.test_attempts (student_id, set_id, correct, wrong, blank) values ($1, $2, 99, 0, 0)`, [s1, set]), /permission denied/)
+
+  await service('delete from public.question_sets where id in ($1, $2)', [set, draft])
+})
+
 await test('görevi ve kayıtları olan öğrenci silinebilir', async () => {
   await as(s1, `insert into public.tasks (student_id, title, due_on) values ($1, 'kendi görevim', private.today())`, [s1])
   await service('delete from auth.users where id = $1', [s1])

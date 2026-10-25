@@ -59,6 +59,8 @@ export const router = createBrowserRouter([
                 element: <RequireRole roles={['student']} />,
                 children: [
                   { path: 'sayac', ...page(() => import('@/features/tracking/timer-page')) },
+                  { path: 'testler', ...page(() => import('@/features/tests/tests-page')) },
+                  { path: 'testler/:setId', ...page(() => import('@/features/tests/test-page')) },
                   { path: 'deneme-ekle', ...page(() => import('@/features/exams/new-exam-page')) },
                 ],
               },

@@ -1338,6 +1338,123 @@ export type Database = {
           },
         ];
       };
+      question_sets: {
+        Row: {
+          id: number;
+          exam: Database["public"]["Enums"]["exam_kind"];
+          kind: string;
+          subject_id: string | null;
+          topic_id: number | null;
+          title: string;
+          duration_min: number | null;
+          sort: number;
+          published: boolean;
+          created_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: never;
+          exam: Database["public"]["Enums"]["exam_kind"];
+          kind: string;
+          subject_id?: string | null;
+          topic_id?: number | null;
+          title: string;
+          duration_min?: number | null;
+          sort?: number;
+          published?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: never;
+          exam?: Database["public"]["Enums"]["exam_kind"];
+          kind?: string;
+          subject_id?: string | null;
+          topic_id?: number | null;
+          title?: string;
+          duration_min?: number | null;
+          sort?: number;
+          published?: boolean;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "question_sets_subject_id_fkey";
+            columns: ["subject_id"];
+            isOneToOne: false;
+            referencedRelation: "subjects";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "question_sets_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      questions: {
+        Row: {
+          id: number;
+          set_id: number;
+          position: number;
+          subject_id: string;
+          topic_id: number | null;
+          stem: string;
+          options: string[];
+          correct: number;
+          explanation: string;
+          difficulty: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: never;
+          set_id: number;
+          position: number;
+          subject_id: string;
+          topic_id?: number | null;
+          stem: string;
+          options: string[];
+          correct: number;
+          explanation?: string;
+          difficulty?: number;
+        };
+        Update: {
+          id?: never;
+          set_id?: number;
+          position?: number;
+          subject_id?: string;
+          topic_id?: number | null;
+          stem?: string;
+          options?: string[];
+          correct?: number;
+          explanation?: string;
+          difficulty?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "questions_set_id_fkey";
+            columns: ["set_id"];
+            isOneToOne: false;
+            referencedRelation: "question_sets";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "questions_subject_id_fkey";
+            columns: ["subject_id"];
+            isOneToOne: false;
+            referencedRelation: "subjects";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "questions_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       students: {
         Row: {
           archived_at: string | null;
@@ -1613,6 +1730,92 @@ export type Database = {
           },
         ];
       };
+      test_attempts: {
+        Row: {
+          id: number;
+          student_id: string;
+          set_id: number;
+          correct: number;
+          wrong: number;
+          blank: number;
+          seconds: number | null;
+          created_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: never;
+          student_id: string;
+          set_id: number;
+          correct: number;
+          wrong: number;
+          blank: number;
+          seconds?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: never;
+          student_id?: string;
+          set_id?: number;
+          correct?: number;
+          wrong?: number;
+          blank?: number;
+          seconds?: number | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "test_attempts_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "test_attempts_set_id_fkey";
+            columns: ["set_id"];
+            isOneToOne: false;
+            referencedRelation: "question_sets";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      test_answers: {
+        Row: {
+          attempt_id: number;
+          question_id: number;
+          choice: number | null;
+          is_correct: boolean;
+        };
+        ComputedFields: never;
+        Insert: {
+          attempt_id: number;
+          question_id: number;
+          choice?: number | null;
+          is_correct: boolean;
+        };
+        Update: {
+          attempt_id?: number;
+          question_id?: number;
+          choice?: number | null;
+          is_correct?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "test_answers_attempt_id_fkey";
+            columns: ["attempt_id"];
+            isOneToOne: false;
+            referencedRelation: "test_attempts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "test_answers_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       topics: {
         Row: {
           id: number;
@@ -1871,6 +2074,14 @@ export type Database = {
           video_ok: boolean;
           video_pct: number;
         }[];
+      };
+      submit_test: {
+        Args: { p_answers: Json; p_seconds?: number; p_set: number };
+        Returns: Json;
+      };
+      test_review: {
+        Args: { p_attempt: number };
+        Returns: Json;
       };
       answer_lesson_question: {
         Args: { p_correct: boolean; p_key: string; p_topic: number };
