@@ -1,5 +1,6 @@
 // Soru setlerini (Markdown) tek bir migration dosyasına çevirir.
-// Kullanım: node scripts/questions/build-sets.mjs <migration-adı> <klasör>
+// Kullanım: node scripts/questions/build-sets.mjs <migration-adı> <klasör> [--update]
+// --update: yayındaki konu testlerinin sorularını (başlık + sıra numarasıyla) yerinde günceller, yeni set eklemez.
 // Her .md dosyası bir settir. İlk satır: <sınav> | <tür> | <ders> | <konu ya da başlık> | <süre dk, ops.>
 //   lgs | konu | lgs-mat | Çarpanlar ve Katlar | 32 | (ikinci test için "2")
 //   lgs | brans | lgs-mat | Matematik branş denemesi 1 | 40
@@ -9,7 +10,9 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-const [name, dir] = process.argv.slice(2)
+const args = process.argv.slice(2)
+const update = args.includes('--update')
+const [name, dir] = args.filter((a) => a !== '--update')
 if (!name || !dir) {
   console.error('Kullanım: node scripts/questions/build-sets.mjs <migration-adı> <klasör>')
   process.exit(1)
@@ -95,6 +98,13 @@ for (const file of readdirSync(dir).filter((f) => f.endsWith('.md')).sort()) {
   where not exists (select 1 from public.question_sets x where x.exam = '${examSql}' and x.kind = '${kind}' and x.title = $t$${q(label)}$t$)
   returning id, null::integer as topic_id`
 
+  if (update) {
+    if (kind !== 'konu') fail('--update yalnızca konu testleri için')
+    sql += `-- ${exam} | ${kind} | ${subject} | ${title}\nupdate public.questions q\nset stem = v.stem, options = v.options, correct = v.correct, explanation = v.explanation, difficulty = v.difficulty\nfrom public.question_sets s, (values\n${values}\n) as v(position, subject_id, topic_id, stem, options, correct, explanation, difficulty)\nwhere s.exam = '${examSql}' and s.kind = 'konu' and s.subject_id = '${subject}' and s.title = $t$${q(title)}$t$ and q.set_id = s.id and q.position = v.position;\n\n`
+    sets++
+    total += rows.length
+    continue
+  }
   sql += `-- ${exam} | ${kind} | ${subject} | ${title}\nwith s as (\n  ${head}\n)\ninsert into public.questions (set_id, position, subject_id, topic_id, stem, options, correct, explanation, difficulty)\nselect s.id, v.position, v.subject_id, coalesce(s.topic_id, v.topic_id), v.stem, v.options, v.correct, v.explanation, v.difficulty\nfrom s, (values\n${values}\n) as v(position, subject_id, topic_id, stem, options, correct, explanation, difficulty);\n\n`
   sets++
   total += rows.length
