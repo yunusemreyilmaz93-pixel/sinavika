@@ -19,7 +19,7 @@ if (!name || !dir) {
 }
 
 const optionCount = { lgs: 4, tyt: 5, ayt: 5, ydt: 5 }
-const kinds = ['konu', 'brans', 'deneme']
+const kinds = ['konu', 'brans', 'deneme', 'tip']
 const q = (s) => {
   if (/\$(q|o|e|n|t)\$/.test(s)) throw new Error(`Metin ayırıcı içeriyor: ${s.slice(0, 60)}`)
   return s
@@ -37,6 +37,7 @@ for (const file of readdirSync(dir).filter((f) => f.endsWith('.md')).sort()) {
   const fail = (msg) => errors.push(`${file}: ${msg}`)
   if (!optionCount[exam]) fail(`bilinmeyen sınav ${exam}`)
   if (!kinds.includes(kind)) fail(`bilinmeyen tür ${kind}`)
+  if (kind === 'tip' && !/^[a-z0-9-]+$/.test(suffix ?? '')) fail('tip için 6. alan soru tipi anahtarı olmalı')
   const body = raw.slice(nl + 1)
   const blocks = [...body.matchAll(/^:::soru\{([^}]*)\}\n([\s\S]*?)\n:::\s*$/gm)]
   if (!blocks.length) fail('soru yok')
@@ -93,7 +94,12 @@ for (const file of readdirSync(dir).filter((f) => f.endsWith('.md')).sort()) {
   from public.topics t where t.subject_id = '${subject}' and t.name = $n$${q(label)}$n$
   on conflict do nothing
   returning id, topic_id`
-      : `insert into public.question_sets (exam, kind, subject_id, title, duration_min, published)
+      : kind === 'tip'
+        ? `insert into public.question_sets (exam, kind, subject_id, title, duration_min, question_type, published)
+  select '${examSql}', 'tip', '${subject}', $t$${q(label)}$t$, ${duration ? Number(duration) : 'null'}, '${suffix}', true
+  where not exists (select 1 from public.question_sets x where x.exam = '${examSql}' and x.kind = 'tip' and x.title = $t$${q(label)}$t$)
+  returning id, null::integer as topic_id`
+        : `insert into public.question_sets (exam, kind, subject_id, title, duration_min, published)
   select '${examSql}', '${kind}', ${subjectSql}, $t$${q(label)}$t$, ${duration ? Number(duration) : 'null'}, true
   where not exists (select 1 from public.question_sets x where x.exam = '${examSql}' and x.kind = '${kind}' and x.title = $t$${q(label)}$t$)
   returning id, null::integer as topic_id`

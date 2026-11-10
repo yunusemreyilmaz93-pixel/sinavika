@@ -4,7 +4,7 @@ import { invalidateActivity } from '@/features/tracking/stats'
 import type { ExamKind } from '@/lib/exam'
 import { errorMessage, supabase, unwrap } from '@/lib/supabase'
 
-export type TestKind = 'konu' | 'brans' | 'deneme'
+export type TestKind = 'konu' | 'brans' | 'deneme' | 'tip'
 
 export type TestSet = {
   id: number
@@ -12,6 +12,7 @@ export type TestSet = {
   kind: TestKind
   subject_id: string | null
   topic_id: number | null
+  question_type: string | null
   title: string
   duration_min: number | null
   sort: number
@@ -46,7 +47,7 @@ export function useTestSets() {
       const rows = unwrap(
         await supabase
           .from('question_sets')
-          .select('id, exam, kind, subject_id, topic_id, title, duration_min, sort, published, question_count')
+          .select('id, exam, kind, subject_id, topic_id, question_type, title, duration_min, sort, published, question_count')
           .order('sort')
           .order('id'),
       )

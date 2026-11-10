@@ -13,7 +13,7 @@ import { useCurriculum } from '@/lib/data'
 import { examLabel, formatNet, net, type ExamKind } from '@/lib/exam'
 import { useTestAttempts, useTestSets, type Attempt, type TestSet } from './queries'
 
-const kindTitle = { deneme: 'Genel denemeler', brans: 'Branş denemeleri', konu: 'Konu testleri' } as const
+const kindTitle = { deneme: 'Genel denemeler', tip: 'Soru tipleri', brans: 'Branş denemeleri', konu: 'Konu testleri' } as const
 
 export default function TestsPage() {
   const profile = useProfile()
@@ -58,11 +58,13 @@ export default function TestsPage() {
         <Segmented className="mb-5" value={exam} onChange={setPicked} options={exams.map((e) => ({ value: e, label: examLabel[e] }))} />
       )}
       <div className="space-y-6">
-        {(['deneme', 'brans', 'konu'] as const).map((kind) => {
+        {(['deneme', 'tip', 'brans', 'konu'] as const).map((kind) => {
           const list = inExam.filter((s) => s.kind === kind)
           if (!list.length) return null
           const bySubject = new Map<string, TestSet[]>()
-          if (kind !== 'deneme') for (const s of list) bySubject.set(s.subject_id ?? '', [...(bySubject.get(s.subject_id ?? '') ?? []), s])
+          const byType = new Map<string, TestSet[]>()
+          if (kind === 'tip') for (const s of list) byType.set(s.question_type ?? '', [...(byType.get(s.question_type ?? '') ?? []), s])
+          if (kind !== 'deneme' && kind !== 'tip') for (const s of list) bySubject.set(s.subject_id ?? '', [...(bySubject.get(s.subject_id ?? '') ?? []), s])
           return (
             <section key={kind} aria-label={kindTitle[kind]}>
               <h2 className="font-display mb-2 text-lg font-bold">{kindTitle[kind]}</h2>
@@ -72,6 +74,19 @@ export default function TestsPage() {
                     <SetRow key={s.id} set={s} exam={exam} attempt={isStudent ? last.get(s.id) : undefined} staff={!isStudent} />
                   ))}
                 </Card>
+              ) : kind === 'tip' ? (
+                <div className="space-y-3">
+                  {[...byType].map(([type, items]) => (
+                    <Card key={type}>
+                      <h3 className="px-4 pt-3.5 pb-1 text-sm font-bold sm:px-5">{items[0].title.replace(/ Testi \d+$/, '')}</h3>
+                      <div className="divide-y divide-line">
+                        {items.map((s) => (
+                          <SetRow key={s.id} set={s} exam={exam} attempt={isStudent ? last.get(s.id) : undefined} staff={!isStudent} />
+                        ))}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
               ) : (
                 <div className="space-y-3">
                   {[...bySubject].map(([subjectId, items]) => (

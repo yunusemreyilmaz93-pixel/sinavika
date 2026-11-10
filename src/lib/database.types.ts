@@ -1345,6 +1345,7 @@ export type Database = {
           kind: string;
           subject_id: string | null;
           topic_id: number | null;
+          question_type: string | null;
           title: string;
           duration_min: number | null;
           sort: number;
@@ -1359,6 +1360,7 @@ export type Database = {
           kind: string;
           subject_id?: string | null;
           topic_id?: number | null;
+          question_type?: string | null;
           title: string;
           duration_min?: number | null;
           sort?: number;
@@ -1372,6 +1374,7 @@ export type Database = {
           kind?: string;
           subject_id?: string | null;
           topic_id?: number | null;
+          question_type?: string | null;
           title?: string;
           duration_min?: number | null;
           sort?: number;
