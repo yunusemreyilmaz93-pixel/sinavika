@@ -1,5 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "redirects": [{ "source": "/(.*)", "destination": "https://izlek.site/$1", "permanent": true }]
+  "redirects": [{ "source": "/((?!sw\\.js$).*)", "destination": "https://izlek.site/$1", "permanent": true }],
+  "rewrites": [{ "source": "/sw.js", "destination": "/retire-sw.js" }],
+  "headers": [{ "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store" }] }]
 }

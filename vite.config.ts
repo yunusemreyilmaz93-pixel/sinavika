@@ -58,7 +58,7 @@ export default defineConfig(({ mode }) => {
           navigateFallbackDenylist: [/^\/api\//, /^\/(konu-anlatimi|araclar|calisma-programlari|yks-bolumleri)(\/|$)/, /^\/(robots\.txt|sitemap.*\.xml)$/],
           importScripts: ['/push-sw.js'],
           globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-          globIgnores: ['**/KaTeX_*', '**/avatars/**'],
+          globIgnores: ['**/KaTeX_*', '**/avatars/**', 'retire-sw.js'],
         },
       }),
     ],
