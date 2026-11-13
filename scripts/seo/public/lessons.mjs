@@ -102,7 +102,7 @@ export async function buildPublicLessons({ write, shell, cssHref, site }) {
       const body = `<main><div class="wrap">${crumbHtml(trail)}
 <p class="kicker">${exam.name} · ${escapeHtml(info.subject.name)}</p>
 <h1>${escapeHtml(topic.name)}</h1>
-<p class="meta">Yaklaşık ${lesson.reading_minutes} dakikalık okuma · İzlek editör ekibi · Son güncelleme ${dateOf(lesson.updated_at) ?? ''}</p>
+<p class="meta">Yaklaşık ${lesson.reading_minutes} dakikalık okuma · Son güncelleme ${dateOf(lesson.updated_at) ?? ''}</p>
 ${outline.length > 1 ? `<nav class="toc" aria-label="İçindekiler"><h2>İçindekiler</h2><ol>${outline.map((o) => `<li><a href="#${o.id}">${escapeHtml(o.title)}</a></li>`).join('')}</ol></nav>` : ''}
 <article>${html}</article>
 ${cta}
@@ -130,7 +130,7 @@ ${related.length ? `<section class="section"><h2>${escapeHtml(info.subject.name)
             inLanguage: 'tr',
             dateModified: dateOf(lesson.updated_at),
             mainEntityOfPage: `${site}${path}`,
-            author: { '@type': 'Organization', name: 'İzlek editör ekibi', url: `${site}/hakkinda` },
+            author: { '@type': 'Organization', name: 'İzlek', url: `${site}/hakkinda` },
             publisher: { '@type': 'Organization', name: 'İzlek', logo: { '@type': 'ImageObject', url: `${site}/pwa-512.png` } },
             about: `${exam.name} ${info.subject.name}`,
             educationalLevel: exam.name,

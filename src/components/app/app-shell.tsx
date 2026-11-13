@@ -39,6 +39,8 @@ export function AppShell() {
   useEffect(() => {
     document.title = title
   }, [title])
+  // Planlayıcı haftalık tahtayı geniş ekranda tam genişlikte gösterir
+  const wide = location.pathname === '/app/planlayici'
   const pending = profile.role === 'teacher' && profile.status !== 'active' && location.pathname !== '/app/ayarlar'
 
   return (
@@ -70,7 +72,7 @@ export function AppShell() {
 
       <div className="flex min-w-0 flex-col">
         <header className="pt-safe sticky top-0 z-30 border-b border-line bg-bg">
-          <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-4 sm:px-6 lg:h-16">
+          <div className={cn('mx-auto flex h-14 items-center gap-2 px-4 sm:px-6 lg:h-16', wide ? 'max-w-[96rem]' : 'max-w-5xl')}>
             <Link to="/" className="-ml-1.5 grid size-11 place-items-center rounded-xl lg:hidden" aria-label="İzlek ana sayfa">
               <LogoMark />
             </Link>
@@ -84,7 +86,7 @@ export function AppShell() {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pt-5 pb-32 sm:px-6 sm:pt-8 lg:pb-12">
+        <main className={cn('mx-auto w-full flex-1 px-4 pt-5 pb-32 sm:px-6 sm:pt-8 lg:pb-12', wide ? 'max-w-[96rem]' : 'max-w-5xl')}>
           <div key={location.pathname} className="animate-fade-in">
             {pending ? (
               <PendingApproval />

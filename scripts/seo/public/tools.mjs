@@ -165,7 +165,7 @@ ${cta}</div></main>`
       path,
       body,
       ld: [
-        { '@context': 'https://schema.org', '@type': 'Article', headline: t.name, description: t.description, inLanguage: 'tr', mainEntityOfPage: `${site}${path}`, author: { '@type': 'Organization', name: 'İzlek editör ekibi' }, publisher: { '@type': 'Organization', name: 'İzlek' }, isAccessibleForFree: true },
+        { '@context': 'https://schema.org', '@type': 'Article', headline: t.name, description: t.description, inLanguage: 'tr', mainEntityOfPage: `${site}${path}`, author: { '@type': 'Organization', name: 'İzlek' }, publisher: { '@type': 'Organization', name: 'İzlek' }, isAccessibleForFree: true },
         crumbLd(trail),
       ],
     }))

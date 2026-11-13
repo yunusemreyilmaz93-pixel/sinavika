@@ -5,7 +5,7 @@ import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/ui/logo'
 
-const UPDATED = '21 Ekim 2026'
+const UPDATED = '13 Kasım 2026'
 
 type Section = { id: string; title: string; body: ReactNode }
 
@@ -107,7 +107,7 @@ const sections: Section[] = [
     title: '18 yaşından küçük kullanıcılar',
     body: (
       <p>
-        Öğrencilerimizin çoğu 18 yaşından küçüktür. 18 yaşını doldurmamış öğrencilerin hesap açmadan önce velilerinin onayını
+        Öğrencilerin çoğu 18 yaşından küçüktür. 18 yaşını doldurmamış öğrencilerin hesap açmadan önce velilerinin onayını
         almaları gerekir. Kayıt sırasında verilen onay, velinin bilgisi ve izniyle verilmiş kabul edilir. Veliler, çocuklarının
         hesabının silinmesi için öğretmene başvurabilir.
       </p>
@@ -123,8 +123,8 @@ const sections: Section[] = [
           kendisi için tuttuğu özel notları öğrenci ve veli göremez. Veliler kayıtları yalnızca görüntüleyebilir, değiştiremez.
         </p>
         <p>
-          İzlek'in çalışabilmesi için verileriniz barındırma hizmeti aldığımız iki sağlayıcıya aktarılır. Bunlar Supabase
-          (veritabanı ve oturum açma) ve Vercel (web sitesi ve sunucu işlemleri) şirketleridir. Bu sağlayıcılar verileri yurt
+          İzlek'in çalışabilmesi için verileriniz barındırma hizmeti alınan iki sağlayıcıya aktarılır. Bunlar Supabase
+          (veritabanı ve oturum açma) ve Cloudflare (web sitesi ve sunucu işlemleri) şirketleridir. Bu sağlayıcılar verileri yurt
           dışındaki sunucularda saklayabilir. Bu nedenle kayıt sırasında, KVKK'nın 9. maddesi kapsamında yurt dışına aktarım için
           açık rızanız alınır.
         </p>
@@ -259,7 +259,7 @@ const sections: Section[] = [
   {
     id: 'degisiklikler',
     title: 'Değişiklikler',
-    body: <p>Bu metinde bir değişiklik yaptığımızda, sayfanın başındaki son güncelleme tarihini de güncelleriz.</p>,
+    body: <p>Bu metinde değişiklik yapıldığında sayfanın başındaki son güncelleme tarihi de güncellenir.</p>,
   },
 ]
 

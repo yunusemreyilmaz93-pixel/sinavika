@@ -67,7 +67,31 @@ export function invalidateTasks(qc: QueryClient, studentIds: string[]) {
   return Promise.all([
     ...studentIds.map((id) => qc.invalidateQueries({ queryKey: ['tasks', id] })),
     qc.invalidateQueries({ queryKey: keys.overview }),
+    qc.invalidateQueries({ queryKey: ['plan', 'week-summary'] }),
   ])
+}
+
+export type WeekSummary = Map<string, { total: number; done: number }>
+
+// Planlayıcıdaki öğrenci kartları için: seçili haftada her öğrencinin görev sayısı
+export function useWeekSummary(studentIds: string[], from: string, to: string) {
+  return useQuery({
+    queryKey: ['plan', 'week-summary', studentIds.join(','), from, to],
+    enabled: studentIds.length > 0,
+    queryFn: async (): Promise<WeekSummary> => {
+      const rows = unwrap(
+        await supabase.from('tasks').select('student_id, done_at').in('student_id', studentIds).gte('due_on', from).lte('due_on', to),
+      )
+      const map: WeekSummary = new Map(studentIds.map((id) => [id, { total: 0, done: 0 }]))
+      for (const row of rows) {
+        const entry = map.get(row.student_id)
+        if (!entry) continue
+        entry.total++
+        if (row.done_at) entry.done++
+      }
+      return map
+    },
+  })
 }
 
 type Patch = Partial<Pick<Task, 'done_at' | 'due_on'>>

@@ -185,7 +185,7 @@ ${ld.map(jsonLd).join('\n')}
 ${examLinks.length ? `<div><h2>Konu anlatımları</h2><ul>${examLinks.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join('')}</ul></div>` : ''}
 <div><h2>Araçlar</h2><ul><li><a href="/araclar/net-hesaplama">Net hesaplama</a></li><li><a href="/calisma-programlari">Çalışma programları</a></li><li><a href="/yks-bolumleri">YKS bölümleri</a></li></ul></div>
 <div><h2>İzlek</h2><ul><li><a href="/hakkinda">Hakkında</a></li><li><a href="/ogretmen-basvurusu">Öğretmen başvurusu</a></li><li><a href="/katil">Davet koduyla katıl</a></li><li><a href="/kvkk">KVKK aydınlatma metni</a></li></ul></div>
-<p class="editor">Anlatımlar İzlek editör ekibi tarafından hazırlanır ve gözden geçirilir. Bir hata ya da eksik görürseniz <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> adresine yazabilirsiniz. İzlek ücretsizdir ve reklam içermez.</p>
+<p class="editor">Anlatımlar İzlek'in geliştiricisi tarafından hazırlanır ve gözden geçirilir. Bir hata ya da eksik görürseniz <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> adresine yazabilirsiniz. İzlek ücretsizdir ve reklam içermez.</p>
 </div></footer>`
   return `${head}\n<body class="pub">\n${header}\n${body}\n${footer}\n<script>${videoScript}</script>\n<script>${beaconScript}</script>\n</body>\n</html>\n`
 }

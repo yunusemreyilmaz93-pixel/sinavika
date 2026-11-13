@@ -20,7 +20,7 @@ const faqs: { id: string; q: ReactNode; a: ReactNode }[] = [
     ),
     a: (
       <>
-        Sunucu kapasitemiz sınırlı ve bunu öğretmenler arasında adil paylaştırmak istiyoruz. Bu yüzden her öğretmen aynı anda en
+        Sunucu kapasitesi sınırlı ve bunu öğretmenler arasında adil paylaştırmak istiyorum. Bu yüzden her öğretmen aynı anda en
         fazla <StudentCapacity /> aktif öğrenciyle çalışır. Arşivlenen öğrenciler bu sayıya girmez, henüz kullanılmamış davet
         kodları girer.
       </>
@@ -77,7 +77,7 @@ const faqs: { id: string; q: ReactNode; a: ReactNode }[] = [
   {
     id: 'puan',
     q: 'Neden puan tahmini yok?',
-    a: "LGS ve YKS puanı, o yıl sınava girenlerin sonuçlarına göre hesaplanır. Resmi hesaplama sınavdan sonra belli olur. Tahmini bir puan yanıltabilir, bu yüzden doğru ve yanlış sayısından hesaplanan neti gösteriyoruz.",
+    a: "LGS ve YKS puanı, o yıl sınava girenlerin sonuçlarına göre hesaplanır. Resmi hesaplama sınavdan sonra belli olur. Tahmini bir puan yanıltabilir, bu yüzden İzlek doğru ve yanlış sayısından hesaplanan neti gösterir.",
   },
   {
     id: 'sifre',

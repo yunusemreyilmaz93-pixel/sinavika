@@ -1,8 +1,8 @@
-// Yerel geliştirmede api/ fonksiyonlarını Vercel olmadan çalıştırır.
+// Yerel geliştirmede api/ fonksiyonlarını Worker olmadan çalıştırır.
 import { createServer } from 'node:http'
 import { registerHooks } from 'node:module'
 
-// api/ dosyaları Vercel'de derlendiği için .js ile import eder. Yerelde .ts kaynağına yönlendir.
+// api/ dosyaları göreli importları .js ile yazar. Yerelde .ts kaynağına yönlendir.
 registerHooks({
   resolve(specifier, context, next) {
     try {

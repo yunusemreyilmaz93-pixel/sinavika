@@ -15,12 +15,12 @@ export function WhyFree() {
                 Neden <span className="marker">ücretsiz</span>, neden <StudentCapacity /> öğrenci?
               </h2>
               <p className="mt-4 text-[17px] leading-relaxed text-muted">
-                Bu soruların cevabını en baştan vermek istiyoruz.
+                Bu soruların cevabını en baştan vermek istiyorum.
               </p>
             </div>
             <ul className="space-y-6">
               <Point icon={HeartHandshake} title="Gönüllü bir proje">
-                İzlek'i gönüllü olarak geliştiriyoruz. Ücret almıyoruz, reklam göstermiyoruz, verileri satmıyoruz.
+                İzlek'i gönüllü olarak, tek başıma geliştiriyorum. Ücret almıyorum, reklam göstermiyorum, verileri satmıyorum.
               </Point>
               <Point
                 icon={UsersRound}
@@ -30,11 +30,11 @@ export function WhyFree() {
                   </>
                 }
               >
-                Sunucu kapasitemiz sınırlı ve bunu öğretmenler arasında adil paylaştırmak istiyoruz. Bu sayı, her
+                Sunucu kapasitesi sınırlı ve bunu öğretmenler arasında adil paylaştırmak istiyorum. Bu sayı, her
                 öğrenciyle haftalık olarak yakından ilgilenmeye de imkân veriyor.
               </Point>
               <Point icon={ShieldCheck} title="Öğretmen hesapları onaydan sonra açılır">
-                Başvuruları tek tek inceliyoruz. Öğrencilerle çalışacak bir hesabı açmadan önce başvuranın kim olduğunu bilmek istiyoruz.
+                Başvuruları tek tek inceliyorum. Öğrencilerle çalışacak bir hesabı açmadan önce başvuranın kim olduğunu bilmek istiyorum.
               </Point>
             </ul>
           </div>

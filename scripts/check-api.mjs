@@ -1,4 +1,4 @@
-// api/ fonksiyonlarını Vercel'in yaptığı gibi tek tek .js'e derleyip yükler.
+// api/ fonksiyonlarını tek tek .js'e derleyip yükler.
 // Bir import çözülemezse ya da fonksiyon açılışta çökerse build durur.
 import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -47,6 +47,6 @@ for (const entry of entries) {
 
 rmSync(out, { recursive: true, force: true })
 if (failed) {
-  console.error('Sunucu fonksiyonları Vercel ortamında açılamaz. Yayın durduruldu.')
+  console.error('Sunucu fonksiyonları açılamıyor. Yayın durduruldu.')
   process.exit(1)
 }

@@ -22,8 +22,8 @@ const labels: Record<string, string> = {
 }
 
 const fixes: Record<string, string> = {
-  supabase_url: 'Vercel ortam değişkenlerine SUPABASE_URL ekleyin, sonra yeniden yayınlayın.',
-  service_key: 'Vercel ortam değişkenlerine SUPABASE_SERVICE_ROLE_KEY ekleyin, sonra yeniden yayınlayın.',
+  supabase_url: 'wrangler.jsonc içindeki SUPABASE_URL değerini kontrol edin, sonra yeniden yayınlayın.',
+  service_key: 'Cloudflare > izlek > Settings > Variables and Secrets bölümüne SUPABASE_SERVICE_ROLE_KEY gizli değişkenini ekleyin.',
   curriculum: 'Veritabanı şeması kurulmamış olabilir. Supabase migration kayıtlarına bakın.',
   table_push_subscriptions: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bakın.',
   table_wrong_questions: 'Veritabanı güncellemesi uygulanmamış. Supabase panelinde GitHub entegrasyonunun son çalışmasına bakın.',
@@ -74,7 +74,7 @@ export function SystemHealthCard() {
       </div>
       {health.data?.optional?.ai_assistant === false && (
         <p className="mt-3 border-t border-line pt-3 text-sm text-muted">
-          Yapay zekâ asistanı kapalı. Açmak için Vercel ortam değişkenlerine AI_KEY_SECRET ekleyin (en az 32 karakter, rastgele), sonra yeniden yayınlayın.
+          Yapay zekâ asistanı kapalı. Açmak için Cloudflare'de izlek projesinin Variables and Secrets bölümüne AI_KEY_SECRET gizli değişkenini ekleyin (en az 32 karakter, rastgele).
         </p>
       )}
       {failing.length > 0 && (

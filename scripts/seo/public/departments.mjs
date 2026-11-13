@@ -102,7 +102,7 @@ export async function buildDepartments({ write, shell, cssHref, site, examLinks 
       description,
       path,
       body,
-      ld: [{ '@context': 'https://schema.org', '@type': 'Article', headline: `${page.name} bölümü`, description, inLanguage: 'tr', mainEntityOfPage: `${site}${path}`, author: { '@type': 'Organization', name: 'İzlek editör ekibi' }, publisher: { '@type': 'Organization', name: 'İzlek' }, isAccessibleForFree: true }, crumbLd(trail)],
+      ld: [{ '@context': 'https://schema.org', '@type': 'Article', headline: `${page.name} bölümü`, description, inLanguage: 'tr', mainEntityOfPage: `${site}${path}`, author: { '@type': 'Organization', name: 'İzlek' }, publisher: { '@type': 'Organization', name: 'İzlek' }, isAccessibleForFree: true }, crumbLd(trail)],
     }))
     urls.push({ path })
   }

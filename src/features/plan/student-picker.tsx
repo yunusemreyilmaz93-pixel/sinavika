@@ -1,9 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 import { Check } from 'lucide-react'
+import { useEffect, useRef } from 'react'
 import { Avatar } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/cn'
+import { studentLabel } from '@/lib/exam'
 import { supabase, unwrap } from '@/lib/supabase'
-import type { PlanStudent } from './queries'
+import type { PlanStudent, WeekSummary } from './queries'
 
 export type PlannerStudent = PlanStudent & { full_name: string }
 
@@ -92,5 +95,81 @@ export function StudentChips({
         )
       })}
     </div>
+  )
+}
+
+// Planlayıcıda öğrenci seçimi: her kartta öğrencinin o haftaki ilerlemesi görünür, planı olmayan öğrenci hemen fark edilir
+export function StudentRail({
+  students,
+  selected,
+  onSelect,
+  summary,
+}: {
+  students: PlannerStudent[]
+  selected: string
+  onSelect: (id: string) => void
+  summary?: WeekSummary
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  // Telefonda kartlar yana kayar, seçili öğrenci görünür alana gelir
+  useEffect(() => {
+    const rail = ref.current
+    const card = rail?.querySelector<HTMLElement>('[aria-checked="true"]')
+    if (!rail || !card || rail.scrollWidth <= rail.clientWidth) return
+    rail.scrollTo({ left: card.offsetLeft - rail.offsetLeft - 16 })
+  }, [selected])
+
+  return (
+    <div
+      ref={ref}
+      role="radiogroup"
+      aria-label="Öğrenci seç"
+      className="scrollbar-none -mx-4 flex snap-x gap-2 overflow-x-auto px-4 py-1 sm:mx-0 sm:grid sm:grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] sm:overflow-visible sm:px-0"
+    >
+      {students.map((s) => {
+        const active = s.id === selected
+        const week = summary?.get(s.id)
+        return (
+          <button
+            key={s.id}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onSelect(s.id)}
+            className={cn(
+              'flex w-48 shrink-0 snap-start items-center gap-3 rounded-2xl border p-3 text-left transition-colors duration-150 sm:w-auto',
+              active ? 'border-primary bg-primary-soft' : 'border-line bg-surface hover:border-line-strong',
+            )}
+          >
+            <Avatar name={s.full_name} userId={s.id} className="size-10 text-sm" />
+            <span className="min-w-0 flex-1">
+              <span className={cn('block truncate text-sm font-bold', active && 'text-primary-soft-fg')}>{s.full_name}</span>
+              <span className="block truncate text-xs text-muted">{studentLabel(s)}</span>
+              <WeekMeter week={week} />
+            </span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+function WeekMeter({ week }: { week?: { total: number; done: number } }) {
+  if (!week) return <Skeleton className="mt-2 h-1.5 w-full" />
+  if (!week.total) return <span className="mt-1 block text-xs font-semibold text-warning">Bu hafta plan yok</span>
+  const complete = week.done === week.total
+  return (
+    <span className="mt-1.5 flex items-center gap-2" aria-label={`Bu hafta ${week.done}/${week.total} görev tamamlandı`}>
+      <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
+        <span
+          className={cn('block h-full rounded-full transition-[width] duration-300', complete ? 'bg-success' : 'bg-primary')}
+          style={{ width: `${(week.done / week.total) * 100}%` }}
+        />
+      </span>
+      <span className={cn('tabular text-xs font-semibold', complete ? 'text-success' : 'text-muted')}>
+        {week.done}/{week.total}
+      </span>
+    </span>
   )
 }
