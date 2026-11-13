@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { InstallBar } from './install-bar'
 
-const iphone = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'
+const iphone = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1' // copy-ok
 
 function setUA(ua: string) {
   vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(ua)
@@ -20,7 +20,7 @@ afterEach(() => {
 
 describe('InstallBar', () => {
   it('masaüstünde görünmez', () => {
-    setUA('Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0 Safari/537.36')
+    setUA('Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0 Safari/537.36') // copy-ok
     const { container } = render(<InstallBar />)
     expect(container.innerHTML).toBe('')
   })
