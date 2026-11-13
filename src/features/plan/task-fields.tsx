@@ -6,6 +6,7 @@ import { examLabel, type Subject } from '@/lib/exam'
 import { VideoField } from '@/features/video/video-field'
 import { parseYouTubeId, watchUrl } from '@/features/video/youtube'
 import { suggestTitle, taskKinds, type Task, type TaskKind, type TaskValues } from './lib'
+import { RestFields } from './rest-fields'
 
 export type TaskDraft = {
   title: string
@@ -48,12 +49,13 @@ export function draftSuggestion(draft: TaskDraft, curriculum: Curriculum | undef
 export function draftValues(draft: TaskDraft, curriculum: Curriculum | undefined): TaskValues | null {
   const title = (draft.title.trim() || draftSuggestion(draft, curriculum)).slice(0, 140)
   if (!title) return null
+  const rest = draft.kind === 'rest'
   return {
     title,
     kind: draft.kind,
-    subject_id: draft.subjectId || null,
-    topic_id: draft.topicId ? Number(draft.topicId) : null,
-    target_questions: draft.targetQuestions > 0 ? Math.min(draft.targetQuestions, 2000) : null,
+    subject_id: rest ? null : draft.subjectId || null,
+    topic_id: !rest && draft.topicId ? Number(draft.topicId) : null,
+    target_questions: !rest && draft.targetQuestions > 0 ? Math.min(draft.targetQuestions, 2000) : null,
     target_minutes: draft.targetMinutes > 0 ? Math.min(draft.targetMinutes, 600) : null,
     note: draft.note.trim() || null,
     video_id: draft.kind === 'video' ? parseYouTubeId(draft.videoUrl) : null,
@@ -132,7 +134,7 @@ export function TaskFields({
 
       <fieldset>
         <legend className="mb-1.5 text-sm font-semibold">Tür</legend>
-        <div role="radiogroup" aria-label="Tür" className="grid grid-cols-3 gap-2">
+        <div role="radiogroup" aria-label="Tür" className="grid grid-cols-4 gap-2">
           {taskKinds.filter((k) => !kinds || kinds.includes(k.value)).map(({ value, label, icon: Icon }) => {
             const active = draft.kind === value
             return (
@@ -166,51 +168,55 @@ export function TaskFields({
         />
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Ders">
-          {(props) => (
-            <Select
-              {...props}
-              value={draft.subjectId}
-              onChange={(e) => onChange({ subjectId: e.target.value, topicId: '' })}
-            >
-              <option value="">Ders yok</option>
-              {groups.length > 1
-                ? groups.map(([exam, list]) => (
-                    <optgroup key={exam} label={examLabel[exam]}>
-                      {list.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))
-                : options.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
-            </Select>
-          )}
-        </Field>
-        <Field label="Konu" hint={draft.subjectId ? 'İsteğe bağlı' : 'Önce ders seç'}>
-          {(props) => (
-            <Select
-              {...props}
-              value={draft.topicId}
-              disabled={!topics.length}
-              onChange={(e) => onChange({ topicId: e.target.value })}
-            >
-              <option value="">{topics.length ? 'Konu seç' : 'Konu yok'}</option>
-              {topics.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </Select>
-          )}
-        </Field>
-      </div>
+      {draft.kind === 'rest' && <RestFields title={draft.title} onTitle={(title) => onChange({ title })} />}
+
+      {draft.kind !== 'rest' && (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Ders">
+            {(props) => (
+              <Select
+                {...props}
+                value={draft.subjectId}
+                onChange={(e) => onChange({ subjectId: e.target.value, topicId: '' })}
+              >
+                <option value="">Ders yok</option>
+                {groups.length > 1
+                  ? groups.map(([exam, list]) => (
+                      <optgroup key={exam} label={examLabel[exam]}>
+                        {list.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))
+                  : options.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+              </Select>
+            )}
+          </Field>
+          <Field label="Konu" hint={draft.subjectId ? 'İsteğe bağlı' : 'Önce ders seç'}>
+            {(props) => (
+              <Select
+                {...props}
+                value={draft.topicId}
+                disabled={!topics.length}
+                onChange={(e) => onChange({ topicId: e.target.value })}
+              >
+                <option value="">{topics.length ? 'Konu seç' : 'Konu yok'}</option>
+                {topics.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
+              </Select>
+            )}
+          </Field>
+        </div>
+      )}
 
       <div
         className={cn(
@@ -218,7 +224,7 @@ export function TaskFields({
           questionsFirst && 'border-primary/30 bg-primary-soft/40',
         )}
       >
-        {questionsFirst ? [questions, minutes] : [minutes, questions]}
+        {draft.kind === 'rest' ? minutes : questionsFirst ? [questions, minutes] : [minutes, questions]}
       </div>
 
       {showDate && (

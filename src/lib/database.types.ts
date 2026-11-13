@@ -408,6 +408,38 @@ export type Database = {
         };
         Relationships: [];
       };
+      catalog_media: {
+        Row: {
+          id: number;
+          kind: string;
+          min_age: number | null;
+          origin: string;
+          popularity: number;
+          search: string | null;
+          title: string;
+          year: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: number;
+          kind: string;
+          min_age?: number | null;
+          origin: string;
+          popularity?: number;
+          title: string;
+          year?: number | null;
+        };
+        Update: {
+          id?: number;
+          kind?: string;
+          min_age?: number | null;
+          origin?: string;
+          popularity?: number;
+          title?: string;
+          year?: number | null;
+        };
+        Relationships: [];
+      };
       reading_logs: {
         Row: {
           book_id: number;
@@ -2044,6 +2076,10 @@ export type Database = {
         Args: { p_query: string };
         Returns: { author: string; id: number; title: string }[];
       };
+      search_catalog_media: {
+        Args: { p_kind: string; p_query: string };
+        Returns: { id: number; kind: string; min_age: number | null; origin: string; title: string; year: number | null }[];
+      };
       save_exam_answers: {
         Args: { p_exam_id: number; p_rows: Json; p_subject_id: string };
         Returns: undefined;
@@ -2347,7 +2383,7 @@ export type Database = {
       message_channel: "student" | "parent";
       note_kind: "note" | "meeting";
       note_visibility: "private" | "student" | "parent" | "both";
-      task_kind: "study" | "questions" | "reading" | "video" | "review" | "other";
+      task_kind: "study" | "questions" | "reading" | "video" | "review" | "other" | "rest";
       topic_status: "learning" | "done" | "review";
       user_role: "teacher" | "student" | "parent";
       yks_field: "say" | "ea" | "soz" | "dil";
@@ -2473,7 +2509,7 @@ export const Constants = {
       message_channel: ["student", "parent"],
       note_kind: ["note", "meeting"],
       note_visibility: ["private", "student", "parent", "both"],
-      task_kind: ["study", "questions", "reading", "video", "review", "other"],
+      task_kind: ["study", "questions", "reading", "video", "review", "other", "rest"],
       topic_status: ["learning", "done", "review"],
       user_role: ["teacher", "student", "parent"],
       yks_field: ["say", "ea", "soz", "dil"],

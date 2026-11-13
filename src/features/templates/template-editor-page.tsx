@@ -21,7 +21,7 @@ import { MAX_ITEMS, MAX_WEEKS, useSaveTemplate, useTemplate, type TemplateDraft 
 import { templateWeeks } from './starters'
 import { ItemLine } from './week-view'
 
-const kinds: TaskKind[] = ['study', 'questions', 'reading', 'review', 'other']
+const kinds: TaskKind[] = ['study', 'questions', 'reading', 'review', 'rest', 'other']
 
 const blank: TemplateDraft = { name: '', description: '', track: null, items: [] }
 

@@ -1,4 +1,4 @@
-import { BookOpen, BookText, CirclePlay, ListChecks, RotateCcw, Shapes, type LucideIcon } from 'lucide-react'
+import { Armchair, BookOpen, BookText, CirclePlay, ListChecks, RotateCcw, Shapes, type LucideIcon } from 'lucide-react'
 import { z } from 'zod'
 import { daysBetween, formatDate, shiftDays, weekStartISO } from '@/lib/dates'
 import type { Subject, Topic } from '@/lib/exam'
@@ -35,6 +35,7 @@ export const taskKinds: { value: TaskKind; label: string; icon: LucideIcon }[] =
   { value: 'reading', label: 'Okuma', icon: BookText },
   { value: 'video', label: 'Video', icon: CirclePlay },
   { value: 'review', label: 'Tekrar', icon: RotateCcw },
+  { value: 'rest', label: 'Dinlenme', icon: Armchair },
   { value: 'other', label: 'Diğer', icon: Shapes },
 ]
 
@@ -46,6 +47,7 @@ export function suggestTitle(input: {
   topic?: Pick<Topic, 'name'> | null
   targetQuestions?: number | null
 }) {
+  if (input.kind === 'rest') return 'Dinlenme'
   const base = input.topic?.name ?? input.subject?.name
   if (!base) return ''
   if (input.kind === 'questions' && input.targetQuestions) return `${base} · ${input.targetQuestions} soru`
@@ -124,7 +126,7 @@ export const templateItemSchema = z.object({
   week: z.number().int().min(0).max(11).catch(0),
   weekday: z.number().int().min(0).max(6),
   title: z.string().trim().min(1).max(140),
-  kind: z.enum(['study', 'questions', 'reading', 'video', 'review', 'other']).catch('study'),
+  kind: z.enum(['study', 'questions', 'reading', 'video', 'review', 'other', 'rest']).catch('study'),
   subject_id: z.string().nullish().catch(null).transform((v) => v ?? null),
   topic_id: z.number().int().nullish().catch(null).transform((v) => v ?? null),
   target_questions: nullableInt(1, 2000),
