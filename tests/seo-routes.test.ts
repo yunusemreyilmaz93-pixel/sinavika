@@ -7,9 +7,11 @@ import { pageHead, verificationTag } from '../scripts/seo/html.mjs'
 import { appPages } from '../scripts/seo/pages.mjs'
 
 const router = readFileSync(new URL('../src/router.tsx', import.meta.url), 'utf8')
-const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8')) as {
-  rewrites: { source: string; destination: string }[]
+const wrangler = JSON.parse(readFileSync(new URL('../wrangler.jsonc', import.meta.url), 'utf8')) as {
+  assets: { html_handling: string; not_found_handling: string; run_worker_first: string[] }
 }
+// Worker'ın uygulama kabuğuna yönlendirdiği yollar. Geri kalan adresler dist içindeki aynı adlı .html dosyasından sunulur
+const shellRoutes = wrangler.assets.run_worker_first.filter((r) => !r.startsWith('/api'))
 
 // Üst düzey rotalar: hizalama 6 boşlukla başlayan `{ path: '...'` satırları
 const topLevel = [...router.matchAll(/^ {6}(?: {4})?\{ path: '([^*][^']*)'/gm)].map((m) => m[1])
@@ -19,20 +21,18 @@ describe('rota koruması', () => {
     expect(topLevel).toEqual(expect.arrayContaining(['hakkinda', 'kvkk', 'giris', 'katil', 'rapor/:token']))
   })
 
-  it('her uygulama rotası ya kendi HTML dosyasına ya da rewrite kuralına sahip, yoksa 404 olur', () => {
-    const rewritten = vercel.rewrites.map((r) => r.source)
+  it('/hakkinda gibi adresler hakkinda.html dosyasından sunulur, bilinmeyen adres 404 olur', () => {
+    expect(wrangler.assets.html_handling).toBe('auto-trailing-slash')
+    expect(wrangler.assets.not_found_handling).toBe('404-page')
+  })
+
+  it('her uygulama rotası ya kendi HTML dosyasına ya da uygulama kabuğuna sahip, yoksa 404 olur', () => {
+    const pages = (appPages as { path: string }[]).map((p) => p.path)
     const app = router.match(/path: 'app',/) ? ['app'] : []
     for (const path of [...topLevel, ...app]) {
       const root = path.split('/')[0]
-      const covered = rewritten.some((s) => s.startsWith(`/${root}/`) || s === `/${root}`)
+      const covered = pages.includes(`/${root}`) || shellRoutes.some((r) => r === `/${root}` || r.startsWith(`/${root}/`))
       expect(covered, `/${path} yayında 404 verir`).toBe(true)
-    }
-  })
-
-  it('üretilen her uygulama sayfası kendi HTML dosyasına yönlenir', () => {
-    for (const page of appPages as { path: string }[]) {
-      const rule = vercel.rewrites.find((r) => r.source === page.path)
-      expect(rule?.destination, page.path).toBe(`${page.path}.html`)
     }
   })
 
@@ -59,29 +59,20 @@ describe('pageHead', () => {
 })
 
 describe('herkese açık anlatım sayfaları', () => {
-  it('vercel.json anlatım adreslerini kendi HTML dosyalarına yönlendiriyor', () => {
-    const rewrites = Object.fromEntries(vercel.rewrites.map((r) => [r.source, r.destination]))
-    expect(rewrites['/konu-anlatimi']).toBe('/konu-anlatimi.html')
-    expect(rewrites['/konu-anlatimi/:exam']).toBe('/konu-anlatimi/:exam.html')
-    expect(rewrites['/konu-anlatimi/:exam/:subject']).toBe('/konu-anlatimi/:exam/:subject.html')
-    expect(rewrites['/konu-anlatimi/:exam/:subject/:topic']).toBe('/konu-anlatimi/:exam/:subject/:topic.html')
+  it('anlatım adresleri uygulama kabuğuna gitmez, kendi HTML dosyalarından sunulur', () => {
+    expect(shellRoutes.some((r) => r.startsWith('/konu-anlatimi'))).toBe(false)
   })
 })
 
 describe('araçlar ve çalışma programları', () => {
-  it('vercel.json bu adresleri kendi HTML dosyalarına yönlendiriyor', () => {
-    const rewrites = Object.fromEntries(vercel.rewrites.map((r) => [r.source, r.destination]))
-    expect(rewrites['/araclar/:tool']).toBe('/araclar/:tool.html')
-    expect(rewrites['/calisma-programlari']).toBe('/calisma-programlari.html')
-    expect(rewrites['/calisma-programlari/:slug']).toBe('/calisma-programlari/:slug.html')
+  it('bu adresler uygulama kabuğuna gitmez, kendi HTML dosyalarından sunulur', () => {
+    expect(shellRoutes.some((r) => r.startsWith('/araclar') || r.startsWith('/calisma-programlari'))).toBe(false)
   })
 })
 
 describe('YKS bölümleri ve Search Console', () => {
-  it('vercel.json bölüm adreslerini kendi HTML dosyalarına yönlendiriyor', () => {
-    const rewrites = Object.fromEntries(vercel.rewrites.map((r) => [r.source, r.destination]))
-    expect(rewrites['/yks-bolumleri']).toBe('/yks-bolumleri.html')
-    expect(rewrites['/yks-bolumleri/:bolum']).toBe('/yks-bolumleri/:bolum.html')
+  it('bölüm adresleri uygulama kabuğuna gitmez, kendi HTML dosyalarından sunulur', () => {
+    expect(shellRoutes.some((r) => r.startsWith('/yks-bolumleri'))).toBe(false)
   })
 
   it('doğrulama etiketi yalnızca ortam değişkeni varsa eklenir', () => {

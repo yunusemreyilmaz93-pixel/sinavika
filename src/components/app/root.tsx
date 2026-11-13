@@ -26,7 +26,7 @@ export function RootLayout() {
   )
 }
 
-const OLD_HOSTS = ['sinavika-app.vercel.app']
+const OLD_HOSTS = ['sinavika-app.vercel.app', 'yolumnet.vercel.app']
 
 function MovedBanner() {
   if (typeof window === 'undefined' || !OLD_HOSTS.includes(window.location.hostname)) return null
