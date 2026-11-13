@@ -1,7 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "vite",
+  "framework": null,
+  "installCommand": "echo atlandi",
+  "buildCommand": "mkdir -p dist && cp public/retire-sw.js dist/sw.js",
+  "outputDirectory": "dist",
   "redirects": [{ "source": "/((?!sw\\.js$).*)", "destination": "https://izlek.site/$1", "permanent": true }],
-  "rewrites": [{ "source": "/sw.js", "destination": "/retire-sw.js" }],
   "headers": [{ "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store" }] }]
 }
