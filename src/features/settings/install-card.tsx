@@ -1,11 +1,11 @@
-import { Download, EllipsisVertical, Share, Smartphone, SquarePlus } from 'lucide-react'
+import { Download, Ellipsis, EllipsisVertical, Share, Smartphone, SquarePlus } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { takeInstallPrompt, useInstallState } from '@/lib/install'
 import { SettingsCard } from './ui'
 
-function detect() {
+export function detectInstall() {
   const ua = navigator.userAgent
   const standalone =
     window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true
@@ -25,22 +25,52 @@ function Step({ n, children }: { n: number; children: ReactNode }) {
 
 const inlineIcon = 'mx-0.5 inline size-4 -translate-y-px align-middle text-accent'
 
+export function InstallSteps({ ios }: { ios: boolean }) {
+  return ios ? (
+    <ol className="space-y-2.5">
+      <Step n={1}>
+        Safari'de alttaki <Share className={inlineIcon} aria-label="Paylaş" /> <b className="font-semibold">Paylaş</b> düğmesine dokunun. Görünmüyorsa önce{' '}
+        <Ellipsis className={inlineIcon} aria-label="daha fazla" /> düğmesine dokunun.
+      </Step>
+      <Step n={2}>
+        <SquarePlus className={inlineIcon} aria-hidden /> <b className="font-semibold">Ana Ekrana Ekle</b> seçeneğini bulun.
+      </Step>
+      <Step n={3}>
+        Sağ üstteki <b className="font-semibold">Ekle</b> düğmesine dokunun.
+      </Step>
+    </ol>
+  ) : (
+    <ol className="space-y-2.5">
+      <Step n={1}>
+        Tarayıcının sağ üstündeki <EllipsisVertical className={inlineIcon} aria-label="menü" /> menüye dokunun.
+      </Step>
+      <Step n={2}>
+        <b className="font-semibold">Ana ekrana ekle</b> ya da <b className="font-semibold">Uygulamayı yükle</b> seçeneğine dokunun.
+      </Step>
+    </ol>
+  )
+}
+
+export async function runInstallPrompt() {
+  const event = takeInstallPrompt()
+  if (!event) return
+  await event.prompt()
+  const choice = await event.userChoice
+  if (choice.outcome === 'accepted') toast.success('İzlek ana ekrana eklendi')
+}
+
 export function InstallCard() {
   const { prompt, done } = useInstallState()
-  const [env] = useState(detect)
+  const [env] = useState(detectInstall)
   const [busy, setBusy] = useState(false)
 
   if (env.standalone || done) return null
   if (!prompt && !env.mobile) return null
 
   async function install() {
-    const event = takeInstallPrompt()
-    if (!event) return
     setBusy(true)
     try {
-      await event.prompt()
-      const choice = await event.userChoice
-      if (choice.outcome === 'accepted') toast.success('İzlek ana ekrana eklendi')
+      await runInstallPrompt()
     } finally {
       setBusy(false)
     }
@@ -56,27 +86,8 @@ export function InstallCard() {
           {!busy && <Download />}
           {env.mobile ? 'Ana ekrana ekleyin' : 'Yükle'}
         </Button>
-      ) : env.ios ? (
-        <ol className="space-y-2.5">
-          <Step n={1}>
-            Safari'de alttaki <Share className={inlineIcon} aria-label="Paylaş" /> <b className="font-semibold">Paylaş</b> düğmesine dokunun.
-          </Step>
-          <Step n={2}>
-            <SquarePlus className={inlineIcon} aria-hidden /> <b className="font-semibold">Ana Ekrana Ekle</b> seçeneğini bulun.
-          </Step>
-          <Step n={3}>
-            Sağ üstteki <b className="font-semibold">Ekle</b> düğmesine dokunun.
-          </Step>
-        </ol>
       ) : (
-        <ol className="space-y-2.5">
-          <Step n={1}>
-            Tarayıcının sağ üstündeki <EllipsisVertical className={inlineIcon} aria-label="menü" /> menüye dokunun.
-          </Step>
-          <Step n={2}>
-            <b className="font-semibold">Ana ekrana ekle</b> ya da <b className="font-semibold">Uygulamayı yükle</b> seçeneğine dokunun.
-          </Step>
-        </ol>
+        <InstallSteps ios={env.ios} />
       )}
     </SettingsCard>
   )

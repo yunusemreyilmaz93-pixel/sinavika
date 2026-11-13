@@ -20,6 +20,7 @@ import { useTheme, type ThemeChoice } from '@/lib/theme'
 import { navFor, type NavItem } from './nav'
 import { ReportIssueButton } from '@/features/feedback/report-issue'
 import { SupportLink } from './support-link'
+import { InstallBar } from '@/features/settings/install-bar'
 
 const roleLabel: Record<Profile['role'], string> = { teacher: 'Öğretmen', student: 'Öğrenci', parent: 'Veli' }
 
@@ -98,6 +99,7 @@ export function AppShell() {
 
       <BottomNav items={items} onQuickAdd={isStudent ? () => setQuickAdd(true) : undefined} support={!isStudent} />
       {isStudent && <QuickAddSheet open={quickAdd} onOpenChange={setQuickAdd} />}
+      {!isTestTab && <InstallBar />}
     </div>
   )
 }
