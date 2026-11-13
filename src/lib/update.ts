@@ -19,7 +19,7 @@ export function watchForUpdates() {
       window.location.reload()
       return
     }
-    toast('Yolumnet güncellendi', {
+    toast('İzlek güncellendi', {
       description: 'Yeni sürümü kullanmak için sayfayı yenileyin.',
       duration: Infinity,
       action: { label: 'Yenile', onClick: () => window.location.reload() },

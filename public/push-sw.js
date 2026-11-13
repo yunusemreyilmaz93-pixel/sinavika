@@ -3,10 +3,10 @@ self.addEventListener('push', (event) => {
   try {
     data = event.data ? event.data.json() : {}
   } catch {
-    data = { title: 'Yolumnet', body: event.data ? event.data.text() : '' }
+    data = { title: 'İzlek', body: event.data ? event.data.text() : '' }
   }
   event.waitUntil(
-    self.registration.showNotification(data.title || 'Yolumnet', {
+    self.registration.showNotification(data.title || 'İzlek', {
       body: data.body || '',
       icon: '/pwa-192.png',
       badge: '/pwa-192.png',

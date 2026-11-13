@@ -18,7 +18,7 @@ async function call(path, body) {
   for (let attempt = 0; attempt < 3; attempt++) {
     const res = await fetch(`${BASE}${path}`, {
       method: body ? 'POST' : 'GET',
-      headers: { 'content-type': 'application/json', 'user-agent': 'yolumnet-yilda-bir-veri-aktarimi (iletisim: yunusemreyilmaz93@gmail.com)' },
+      headers: { 'content-type': 'application/json', 'user-agent': 'izlek-yilda-bir-veri-aktarimi (iletisim: yunusemreyilmaz93@gmail.com)' },
       body: body ? JSON.stringify(body) : undefined,
     })
     await sleep(DELAY_MS)

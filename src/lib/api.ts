@@ -1,11 +1,11 @@
 import { reportError } from './error-log'
 import { AppError, supabase } from './supabase'
 
-export const SITE_HOST = 'yolumnet.vercel.app'
+export const SITE_HOST = 'izlek.site'
 
 function unexpected(status: number, text: string) {
   if (/DEPLOYMENT_NOT_FOUND|NOT_FOUND/.test(text) || status === 404) {
-    return `Sunucuya bu adresten ulaşılamıyor. Yolumnet'e ${SITE_HOST} adresinden girip tekrar deneyin`
+    return `Sunucuya bu adresten ulaşılamıyor. İzlek'e ${SITE_HOST} adresinden girip tekrar deneyin`
   }
   if (status === 413) return 'Gönderilen bilgi çok büyük. Daha kısa yazıp tekrar deneyin'
   if (status === 429) return 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar deneyin'

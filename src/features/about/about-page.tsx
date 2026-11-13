@@ -18,7 +18,7 @@ const link = 'font-semibold text-accent underline-offset-4 hover:underline'
 export default function AboutPage() {
   useEffect(() => {
     const previous = document.title
-    document.title = 'Hakkında · Yolumnet'
+    document.title = 'Hakkında · İzlek'
     return () => {
       document.title = previous
     }
@@ -28,7 +28,7 @@ export default function AboutPage() {
     <div className="min-h-dvh">
       <header className="pt-safe grid-paper sticky top-0 z-30 border-b border-line bg-bg">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
-          <Link to="/" aria-label="Yolumnet ana sayfa" className="-ml-1 rounded-lg p-1">
+          <Link to="/" aria-label="İzlek ana sayfa" className="-ml-1 rounded-lg p-1">
             <Logo />
           </Link>
           <Button asChild variant="ghost" className="-mr-2 px-3">
@@ -41,10 +41,10 @@ export default function AboutPage() {
       </header>
 
       <main className="mx-auto max-w-2xl px-4 pt-8 pb-20 sm:px-6 sm:pt-14">
-        <h1 className="text-[1.85rem] leading-[1.15] font-extrabold sm:text-[2.5rem]">Yolumnet'i ben yapıyorum</h1>
+        <h1 className="text-[1.85rem] leading-[1.15] font-extrabold sm:text-[2.5rem]">İzlek'i ben yapıyorum</h1>
         <div className="mt-6 space-y-4 text-[17px] leading-relaxed text-muted">
           <p>
-            Yolumnet'i tek başıma geliştiriyorum. Arkasında bir şirket, bir ekip ya da bir yatırımcı yok.
+            İzlek'i tek başıma geliştiriyorum. Arkasında bir şirket, bir ekip ya da bir yatırımcı yok.
           </p>
           <p>
             Hem kendi öğrencilerimin takibini daha rahat yapabilmek, hem de öğretmen olan eşimin LGS'ye hazırlanan öğrencileri
@@ -97,7 +97,7 @@ export default function AboutPage() {
 
         <h2 className="mt-12 text-2xl font-extrabold">Destek olmak isterseniz</h2>
         <p className="mt-4 text-[17px] leading-relaxed text-muted">
-          Yolumnet ücretsiz kalacak. Beğendiyseniz sunucu ve geliştirme masraflarına{' '}
+          İzlek ücretsiz kalacak. Beğendiyseniz sunucu ve geliştirme masraflarına{' '}
           <a href={SUPPORT_URL} target="_blank" rel="noreferrer noopener" className={link}>
             buymeacoffee.com/yunusemreyn
           </a>{' '}

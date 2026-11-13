@@ -34,7 +34,7 @@ function MovedBanner() {
   return (
     <div role="status" className="pt-safe sticky top-0 z-[65] border-b border-accent/30 bg-accent-soft text-accent-soft-fg">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-sm">
-        <span className="font-semibold">Yolumnet'in adresi değişti.</span>
+        <span className="font-semibold">Adresimiz değişti.</span>
         <a href={target} className="inline-flex min-h-9 items-center gap-1 font-bold underline underline-offset-4">
           {SITE_HOST} adresine geç
           <ArrowRight className="size-4" />
@@ -89,7 +89,7 @@ export function RouteError() {
         <LogoMark className="mx-auto size-10" />
         <h1 className="mt-5 text-2xl font-extrabold">{chunk ? 'Yeni sürüm hazır' : 'Bir şeyler ters gitti'}</h1>
         <p className="mt-2 text-muted">
-          {chunk ? 'Yolumnet güncellendi. Sayfayı yenileyince devam edebilirsiniz.' : 'Bu hata bize otomatik olarak bildirildi. Sayfayı yenilemeyi deneyin. Sorun devam ederse yöneticiye haber verin.'}
+          {chunk ? 'İzlek güncellendi. Sayfayı yenileyince devam edebilirsiniz.' : 'Bu hata bize otomatik olarak bildirildi. Sayfayı yenilemeyi deneyin. Sorun devam ederse yöneticiye haber verin.'}
         </p>
         <Button className="mt-6" onClick={() => window.location.reload()}>
           <RotateCw />

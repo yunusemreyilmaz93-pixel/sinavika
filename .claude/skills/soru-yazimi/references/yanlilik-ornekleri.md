@@ -1,6 +1,6 @@
 # Yanlılık düzeltme örnekleri
 
-Yolumnet'in kendi sorularından, düzeltme öncesi ve sonrası.
+İzlek'in kendi sorularından, düzeltme öncesi ve sonrası.
 
 ## En uzun şık doğruydu
 

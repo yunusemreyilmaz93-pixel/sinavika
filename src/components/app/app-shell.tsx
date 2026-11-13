@@ -34,7 +34,7 @@ export function AppShell() {
   const current = items
     .filter((i) => (i.end ? location.pathname === i.to : location.pathname === i.to || location.pathname.startsWith(`${i.to}/`)))
     .sort((a, b) => b.to.length - a.to.length)[0]
-  const title = current ? `${current.label} · Yolumnet` : 'Yolumnet'
+  const title = current ? `${current.label} · İzlek` : 'İzlek'
   useEffect(() => {
     document.title = title
   }, [title])
@@ -44,7 +44,7 @@ export function AppShell() {
     <div className="min-h-dvh lg:grid lg:grid-cols-[248px_1fr]">
       {isTestTab && <TestBanner name={profile.full_name} role={roleLabel[profile.role]} />}
       <aside className="sticky top-0 hidden h-dvh flex-col border-r border-line bg-surface lg:flex">
-        <Link to="/" aria-label="Yolumnet ana sayfa" className="flex h-16 items-center px-5">
+        <Link to="/" aria-label="İzlek ana sayfa" className="flex h-16 items-center px-5">
           <Logo />
         </Link>
         {isStudent && (
@@ -70,7 +70,7 @@ export function AppShell() {
       <div className="flex min-w-0 flex-col">
         <header className="pt-safe sticky top-0 z-30 border-b border-line bg-bg">
           <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-4 sm:px-6 lg:h-16">
-            <Link to="/" className="-ml-1.5 grid size-11 place-items-center rounded-xl lg:hidden" aria-label="Yolumnet ana sayfa">
+            <Link to="/" className="-ml-1.5 grid size-11 place-items-center rounded-xl lg:hidden" aria-label="İzlek ana sayfa">
               <LogoMark />
             </Link>
             <ChildSwitcher />

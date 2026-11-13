@@ -34,7 +34,7 @@ export async function buildDepartments({ write, shell, cssHref, site, examLinks 
       all(config, 'program_results?select=program_code,year,quota,placed,rank&year=gte.2025&order=program_code,year'),
     ])
   } catch (error) {
-    if (process.env.VERCEL) throw error
+    if (process.env.VERCEL || process.env.WORKERS_CI) throw error
     console.warn(`SEO: YÖK Atlas verisi okunamadı, bölüm sayfaları üretilmedi (${error.cause?.code ?? error.message})`)
     return { urls: [] }
   }
@@ -95,14 +95,14 @@ export async function buildDepartments({ write, shell, cssHref, site, examLinks 
 <p class="lead">${escapeHtml(page.name)} bölümü ${cities} şehirde ${rows.length} programla öğrenci alıyor. ${devlet} devlet ve ${vakif} vakıf üniversitesinde toplam ${nf(quota)} kontenjan var. Başarı sırası ne kadar küçükse programa girmek o kadar zordur.</p>
 <p class="meta">Kaynak: YÖK Atlas, ${latest} ve ${previous} yerleştirme sonuçları. Sıralar her yıl değişir, tercih yaparken güncel veriye bakın.</p>
 <section class="section">${table}</section>
-<aside class="cta"><h2>Hedef bölümünüzü Yolumnet'te takip edin</h2><p>Öğrenci hedef bölümünü seçer, öğretmeni netlerini bu hedefe göre izler. Yolumnet ücretsizdir ve reklam içermez.</p><div class="row"><a class="btn" href="/katil">Davet koduyla katıl</a><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a></div></aside>
+<aside class="cta"><h2>Hedef bölümünüzü İzlek'te takip edin</h2><p>Öğrenci hedef bölümünü seçer, öğretmeni netlerini bu hedefe göre izler. İzlek ücretsizdir ve reklam içermez.</p><div class="row"><a class="btn" href="/katil">Davet koduyla katıl</a><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a></div></aside>
 </div></main>`
     write(`${path.slice(1)}.html`, wrap({
-      title: `${page.name} bölümü ${latest} kontenjan ve başarı sıraları · Yolumnet`,
+      title: `${page.name} bölümü ${latest} kontenjan ve başarı sıraları · İzlek`,
       description,
       path,
       body,
-      ld: [{ '@context': 'https://schema.org', '@type': 'Article', headline: `${page.name} bölümü`, description, inLanguage: 'tr', mainEntityOfPage: `${site}${path}`, author: { '@type': 'Organization', name: 'Yolumnet editör ekibi' }, publisher: { '@type': 'Organization', name: 'Yolumnet' }, isAccessibleForFree: true }, crumbLd(trail)],
+      ld: [{ '@context': 'https://schema.org', '@type': 'Article', headline: `${page.name} bölümü`, description, inLanguage: 'tr', mainEntityOfPage: `${site}${path}`, author: { '@type': 'Organization', name: 'İzlek editör ekibi' }, publisher: { '@type': 'Organization', name: 'İzlek' }, isAccessibleForFree: true }, crumbLd(trail)],
     }))
     urls.push({ path })
   }
@@ -118,7 +118,7 @@ export async function buildDepartments({ write, shell, cssHref, site, examLinks 
 <p class="lead">${pages.length} bölümün üniversitelere göre kontenjanı, yerleşen sayısı ve başarı sıraları. Veriler YÖK Atlas kaynaklıdır.</p>
 ${sections}</div></main>`
   write(`${BASE.slice(1)}.html`, wrap({
-    title: 'YKS bölümleri, kontenjan ve başarı sıraları · Yolumnet',
+    title: 'YKS bölümleri, kontenjan ve başarı sıraları · İzlek',
     description: `${pages.length} üniversite bölümünün ${latest} kontenjanı, yerleşen sayısı ve başarı sıraları. Sayısal, eşit ağırlık, sözel ve dil puan türleri.`,
     path: BASE,
     body,

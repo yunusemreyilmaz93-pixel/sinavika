@@ -20,7 +20,7 @@ export function WhyFree() {
             </div>
             <ul className="space-y-6">
               <Point icon={HeartHandshake} title="Gönüllü bir proje">
-                Yolumnet'i gönüllü olarak geliştiriyoruz. Ücret almıyoruz, reklam göstermiyoruz, verileri satmıyoruz.
+                İzlek'i gönüllü olarak geliştiriyoruz. Ücret almıyoruz, reklam göstermiyoruz, verileri satmıyoruz.
               </Point>
               <Point
                 icon={UsersRound}

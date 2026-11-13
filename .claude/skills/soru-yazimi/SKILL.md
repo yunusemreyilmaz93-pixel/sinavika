@@ -1,6 +1,6 @@
 ---
 name: soru-yazimi
-description: Yolumnet konu anlatımlarındaki mini test (`:::soru`) ve "Kendini dene" (`:::dene`) sorularını yazarken kullan. Çoktan seçmeli madde yazım ilkeleri, MEB bağlam temelli soru yazım kılavuzu, bağlam işlevselliği, çeldirici tasarımı, doğru şık yerleşimi, şık uzunluğu dengesi, zorluk ayarı, çözüm yazımı ve denetim komutları. LGS, TYT, AYT ve YDT soruları için geçerlidir.
+description: İzlek konu anlatımlarındaki mini test (`:::soru`) ve "Kendini dene" (`:::dene`) sorularını yazarken kullan. Çoktan seçmeli madde yazım ilkeleri, MEB bağlam temelli soru yazım kılavuzu, bağlam işlevselliği, çeldirici tasarımı, doğru şık yerleşimi, şık uzunluğu dengesi, zorluk ayarı, çözüm yazımı ve denetim komutları. LGS, TYT, AYT ve YDT soruları için geçerlidir.
 ---
 
 # Soru yazımı
@@ -32,7 +32,7 @@ Ayrıntılı kural ve örnekler için MEB'in bağlam temelli soru yazım kılavu
 
 ## Yapay zekânın sık yaptığı hatalar
 
-Bu hatalar ölçülmüştür. Yolumnet'in ilk 216 LGS sorusunda belirgin biçimde en uzun şık olan 52 sorunun 41'inde (%79) doğru cevap o şıktı. Rastgelede bu %25 olurdu. Doğru şık harfleri ise dengeliydi, çünkü harf dağılımı bilinçli yönetilmişti. Yani bir yanlılığı yönetmek diğerini kendiliğinden düzeltmez.
+Bu hatalar ölçülmüştür. İzlek'in ilk 216 LGS sorusunda belirgin biçimde en uzun şık olan 52 sorunun 41'inde (%79) doğru cevap o şıktı. Rastgelede bu %25 olurdu. Doğru şık harfleri ise dengeliydi, çünkü harf dağılımı bilinçli yönetilmişti. Yani bir yanlılığı yönetmek diğerini kendiliğinden düzeltmez.
 
 | Hata | Neden olur | Önlem |
 | --- | --- | --- |
@@ -76,7 +76,7 @@ Zorluğu şıklarla değil bilişsel basamakla ayarla. Daha uzun kök ya da daha
 
 ## Sesli düşünme ile sınama
 
-MEB kılavuzu (3.5) soruların pilot uygulama ve bilişsel görüşmeyle doğrulanmasını ister. Öğrenci soruyu çözerken sesli düşünür, ardından kısa sorular sorulur: bağlamı özetle, cevabı nasıl buldun, şıkları neden eledin, metne bakmadan çözebilir miydin. Soru kökü yanlış anlaşılıyorsa, bağlam okunmadan cevaplanıyorsa ya da doğru şık gerekçesiz seçiliyorsa soru yeniden yazılır. Soru formu ve bulgular `references/meb-baglam-temelli-kilavuz.md` içindedir. Yolumnet'te `lesson_answers` verisi (ilk deneme doğruluğu, hiç seçilmeyen çeldirici) soruyu gözden geçirme işaretidir.
+MEB kılavuzu (3.5) soruların pilot uygulama ve bilişsel görüşmeyle doğrulanmasını ister. Öğrenci soruyu çözerken sesli düşünür, ardından kısa sorular sorulur: bağlamı özetle, cevabı nasıl buldun, şıkları neden eledin, metne bakmadan çözebilir miydin. Soru kökü yanlış anlaşılıyorsa, bağlam okunmadan cevaplanıyorsa ya da doğru şık gerekçesiz seçiliyorsa soru yeniden yazılır. Soru formu ve bulgular `references/meb-baglam-temelli-kilavuz.md` içindedir. İzlek'te `lesson_answers` verisi (ilk deneme doğruluğu, hiç seçilmeyen çeldirici) soruyu gözden geçirme işaretidir.
 
 ## Sınav biçimleri
 

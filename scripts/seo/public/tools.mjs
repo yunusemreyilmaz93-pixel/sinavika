@@ -84,7 +84,7 @@ export async function buildPublicTools({ write, shell, cssHref, site, subjects =
     '@type': 'BreadcrumbList',
     itemListElement: items.map(([name, path], i) => ({ '@type': 'ListItem', position: i + 1, name, item: `${site}${path}` })),
   })
-  const cta = `<aside class="cta"><h2>Programı öğrencinize tek tıkla uygulayın</h2><p>Yolumnet'te öğretmen şablonu seçer, öğrencilere haftalara dağıtır ve tamamlanma durumunu izler. Uygulama ücretsizdir ve reklam içermez.</p><div class="row"><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a><a class="btn" href="/katil">Davet koduyla katıl</a></div></aside>`
+  const cta = `<aside class="cta"><h2>Programı öğrencinize tek tıkla uygulayın</h2><p>İzlek'te öğretmen şablonu seçer, öğrencilere haftalara dağıtır ve tamamlanma durumunu izler. Uygulama ücretsizdir ve reklam içermez.</p><div class="row"><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a><a class="btn" href="/katil">Davet koduyla katıl</a></div></aside>`
 
   // Net hesaplama
   {
@@ -113,11 +113,11 @@ ${table}
 <h2>Sık sorulanlar</h2>
 ${faq.map(([q, a]) => `<h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p>`).join('')}
 </article>
-<aside class="cta"><h2>Netlerinizi zamanla izleyin</h2><p>Yolumnet'te denemelerinizi ekleyerek ders ve konu bazında net gelişiminizi görebilirsiniz. Öğretmeniniz bu verilere bakarak çalışma planınızı günceller.</p><div class="row"><a class="btn" href="/katil">Davet koduyla katıl</a><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a></div></aside>
+<aside class="cta"><h2>Netlerinizi zamanla izleyin</h2><p>İzlek'te denemelerinizi ekleyerek ders ve konu bazında net gelişiminizi görebilirsiniz. Öğretmeniniz bu verilere bakarak çalışma planınızı günceller.</p><div class="row"><a class="btn" href="/katil">Davet koduyla katıl</a><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a></div></aside>
 </div></main>
 <script>${calcScript(data)}</script>`
     write(`${NET.slice(1)}.html`, wrap({
-      title: 'LGS, TYT, AYT, YDT net hesaplama · Yolumnet',
+      title: 'LGS, TYT, AYT, YDT net hesaplama · İzlek',
       description: 'LGS, TYT, AYT ve YDT için doğru ve yanlış sayısından net hesaplayın. LGS\'de yanlış 3\'te 1, YKS\'de 4\'te 1 oranında doğruyu götürür.',
       path: NET,
       body,
@@ -160,12 +160,12 @@ ${faq.map(([q, a]) => `<h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p>`).join('
 ${weekHtml}
 ${cta}</div></main>`
     write(`${path.slice(1)}.html`, wrap({
-      title: `${t.name}, ücretsiz çalışma programı · Yolumnet`,
+      title: `${t.name}, ücretsiz çalışma programı · İzlek`,
       description: cut(`${t.name}: ${t.description}. ${t.weeks} haftalık, ${t.items.length} görevlik program, gün gün ders ve görev listesiyle.`, 158),
       path,
       body,
       ld: [
-        { '@context': 'https://schema.org', '@type': 'Article', headline: t.name, description: t.description, inLanguage: 'tr', mainEntityOfPage: `${site}${path}`, author: { '@type': 'Organization', name: 'Yolumnet editör ekibi' }, publisher: { '@type': 'Organization', name: 'Yolumnet' }, isAccessibleForFree: true },
+        { '@context': 'https://schema.org', '@type': 'Article', headline: t.name, description: t.description, inLanguage: 'tr', mainEntityOfPage: `${site}${path}`, author: { '@type': 'Organization', name: 'İzlek editör ekibi' }, publisher: { '@type': 'Organization', name: 'İzlek' }, isAccessibleForFree: true },
         crumbLd(trail),
       ],
     }))
@@ -181,7 +181,7 @@ ${cta}</div></main>`
 ${groups.map((g) => `<section class="section"><h2>${g}</h2><div class="cards">${programs.filter((p) => p.group === g).map((p) => `<a class="card" href="${PROGRAMS}/${p.slug}"><h3>${escapeHtml(p.name)}</h3><p>${escapeHtml(p.description)}</p><p>${p.weeks} hafta · ${p.items.length} görev</p></a>`).join('')}</div></section>`).join('')}
 ${cta}</div></main>`
     write(`${PROGRAMS.slice(1)}.html`, wrap({
-      title: 'LGS, TYT, AYT, YDT çalışma programları · Yolumnet',
+      title: 'LGS, TYT, AYT, YDT çalışma programları · İzlek',
       description: `LGS, TYT, AYT ve YDT için ${programs.length} hazır haftalık çalışma programı. Gün gün ders, soru ve süre hedefleri, ücretsiz.`,
       path: PROGRAMS,
       body,

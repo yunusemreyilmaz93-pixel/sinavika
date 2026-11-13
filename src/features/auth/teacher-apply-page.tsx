@@ -235,7 +235,7 @@ function ApplyForm() {
     <>
       <AuthHeading
         title="Öğretmen başvurusu"
-        description="Yolumnet öğretmenler için ücretsiz. Başvurunuzu inceledikten sonra hesabınız açılır."
+        description="İzlek öğretmenler için ücretsiz. Başvurunuzu inceledikten sonra hesabınız açılır."
       />
 
       <form ref={formRef} onSubmit={submit} noValidate className="flex flex-col gap-4">

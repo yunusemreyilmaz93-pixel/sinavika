@@ -7,7 +7,7 @@ function secret() {
   return value
 }
 
-const derive = (label: string) => Buffer.from(hkdfSync('sha256', secret(), 'yolumnet', label, 32))
+const derive = (label: string) => Buffer.from(hkdfSync('sha256', secret(), 'izlek', label, 32))
 
 export function isConfigured() {
   return Boolean(process.env.AI_KEY_SECRET && process.env.AI_KEY_SECRET.length >= 24)

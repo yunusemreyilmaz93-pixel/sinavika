@@ -2,23 +2,23 @@
 export const appPages = [
   {
     path: '/hakkinda',
-    title: 'Hakkında · Yolumnet',
-    description: 'Yolumnet kimin için, nasıl çalışır ve verilerinize ne olur. LGS ve YKS öğrencileri, veliler ve öğretmenler için ücretsiz ve reklamsız koçluk uygulaması.',
+    title: 'Hakkında · İzlek',
+    description: 'İzlek kimin için, nasıl çalışır ve verilerinize ne olur. LGS ve YKS öğrencileri, veliler ve öğretmenler için ücretsiz ve reklamsız koçluk uygulaması.',
     sitemap: true,
   },
   {
     path: '/kvkk',
-    title: 'KVKK Aydınlatma Metni · Yolumnet',
-    description: 'Yolumnet kişisel veri aydınlatma metni. Hangi verilerin neden işlendiği, nerede saklandığı ve haklarınız.',
+    title: 'KVKK Aydınlatma Metni · İzlek',
+    description: 'İzlek kişisel veri aydınlatma metni. Hangi verilerin neden işlendiği, nerede saklandığı ve haklarınız.',
     sitemap: true,
   },
   {
     path: '/ogretmen-basvurusu',
-    title: 'Öğretmen başvurusu · Yolumnet',
+    title: 'Öğretmen başvurusu · İzlek',
     description: 'LGS ve YKS öğrencilerinizin haftalık planını, soru ve deneme takibini ücretsiz yönetmek için öğretmen olarak başvurun.',
     sitemap: true,
   },
-  { path: '/giris', title: 'Giriş yap · Yolumnet', description: 'Yolumnet hesabınıza giriş yapın.', noindex: true },
-  { path: '/katil', title: 'Davet koduyla katıl · Yolumnet', description: 'Öğretmeninizden aldığınız kodla Yolumnet\'e katılın.', noindex: true },
-  { path: '/test-giris', title: 'Test girişi · Yolumnet', description: 'Yolumnet test girişi.', noindex: true },
+  { path: '/giris', title: 'Giriş yap · İzlek', description: 'İzlek hesabınıza giriş yapın.', noindex: true },
+  { path: '/katil', title: 'Davet koduyla katıl · İzlek', description: 'Öğretmeninizden aldığınız kodla İzlek\'e katılın.', noindex: true },
+  { path: '/test-giris', title: 'Test girişi · İzlek', description: 'İzlek test girişi.', noindex: true },
 ]

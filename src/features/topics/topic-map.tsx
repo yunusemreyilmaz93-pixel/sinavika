@@ -72,7 +72,7 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
   const [kindChoice, setKindChoice] = useState<ExamKind>(kinds[0])
   const kind = kinds.includes(kindChoice) ? kindChoice : kinds[0]
   const [filter, setFilter] = useState<TopicFilter>('all')
-  const [opened, setOpened] = useRememberedSet(`yolumnet-konular-acik:${studentId}`)
+  const [opened, setOpened] = useRememberedSet(`izlek-konular-acik:${studentId}`)
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(() => new Set())
   const [touched, setTouched] = useState<ReadonlySet<number>>(() => new Set())
   const [announcement, setAnnouncement] = useState('')

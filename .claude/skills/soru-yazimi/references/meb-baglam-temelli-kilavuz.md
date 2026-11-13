@@ -40,7 +40,7 @@ Sorgulama (KB2.8):
 | SB4 | Bilginin doğruluğunu değerlendirme | "Hangi kaynak daha güvenilirdir?" "Hangisi iddiayı desteklemek için kanıt olmaz?" |
 | SB5 | Çıkarım yapma | "Eldeki kanıtlar hangi sonuca ulaştırır?" |
 
-Yolumnet'te kullanım: mini testin dört sorusu farklı süreç bileşenlerini ölçsün. Dördü de SB1 olmasın. Kılavuzdaki örnekler 5 şıklıdır (ortaöğretim) ve 4 şıklıdır (temel eğitim). Bu LGS 4, TYT ve AYT 5 şık kuralımızla uyumludur.
+İzlek'te kullanım: mini testin dört sorusu farklı süreç bileşenlerini ölçsün. Dördü de SB1 olmasın. Kılavuzdaki örnekler 5 şıklıdır (ortaöğretim) ve 4 şıklıdır (temel eğitim). Bu LGS 4, TYT ve AYT 5 şık kuralımızla uyumludur.
 
 ## Bağlam yazımı
 
@@ -82,7 +82,7 @@ Yolumnet'te kullanım: mini testin dört sorusu farklı süreç bileşenlerini �
 - Soru okuma anlamayı değil hedef beceriyi ölçsün. Karmaşık cümle yapıları sadeleştirilir.
 - Görsel metni tekrar etmesin. Elma sayısını yazıp üç elma resmi koymak yerine metinde olmayan yeni veri (çürüme oranı gibi) göster.
 - Grafik: iki boyutlu, sade, etiketleri okunur, yalnızca gereken veri. Küçük rakam, iç içe çizgi, gereksiz üç boyut yok.
-- Bağlam ve ona ait sorular aynı görsel alanda olsun. Metin bir sayfada, soru başka sayfada olmasın. Yolumnet'te: kök ile görsel/tablo aynı blokta, arada başka içerik olmasın.
+- Bağlam ve ona ait sorular aynı görsel alanda olsun. Metin bir sayfada, soru başka sayfada olmasın. İzlek'te: kök ile görsel/tablo aynı blokta, arada başka içerik olmasın.
 - Metin ile görsel arasında bütünlük olsun (dikkat bölünmesi etkisi).
 
 ## Kontrol listesi (kılavuz, madde yazarı için)
@@ -117,7 +117,7 @@ Dil: noktalama ve yazım kurallarına uyulmuş mu, anlatım bozukluğu yok mu?
 
 ## Soru yazım formu (kayıt için)
 
-Her bağlam için kaydedilecek alanlar: ders, sınıf düzeyi, beceri, süreç bileşenleri ve gerekçesi/kanıtı, bağlam adı, yararlanılan kaynak, güçlük tahmini (zor, orta, kolay), her sorunun süreç bileşeni ve doğru cevabı. Yolumnet'te bunlar anlatımın öğretmen notuna (`lesson_notes`) ve kaynaklar listesine yazılır.
+Her bağlam için kaydedilecek alanlar: ders, sınıf düzeyi, beceri, süreç bileşenleri ve gerekçesi/kanıtı, bağlam adı, yararlanılan kaynak, güçlük tahmini (zor, orta, kolay), her sorunun süreç bileşeni ve doğru cevabı. İzlek'te bunlar anlatımın öğretmen notuna (`lesson_notes`) ve kaynaklar listesine yazılır.
 
 ## Kılavuzdaki örneklerden çıkan kalıplar
 
@@ -175,7 +175,7 @@ Kılavuzun pilot bulguları (soru yazarken kullan):
 - Çok uzun metin ya da yoğun görsel, okunmadan "zor" diye etiketlendi ve motivasyonu düşürdü.
 - İlgi çekici, güncel, öğrencinin yaşamına bağlanabilen bağlamlar motivasyonu artırdı. İlgisiz bağlam yalnızca zorunlu veri kaynağı olarak görüldü. Yapay kurgu yerine güncel, gerçek, hayatın içinden senaryo seç.
 
-Yolumnet'te bunun karşılığı: öğretmen birkaç öğrenciyle yukarıdaki soruları kullanabilir. Uygulama içi karşılığı `lesson_answers` verisidir (ilk deneme doğruluğu, seçilmeyen çeldirici).
+İzlek'te bunun karşılığı: öğretmen birkaç öğrenciyle yukarıdaki soruları kullanabilir. Uygulama içi karşılığı `lesson_answers` verisidir (ilk deneme doğruluğu, seçilmeyen çeldirici).
 
 ## Kılavuzun atıf listesi
 

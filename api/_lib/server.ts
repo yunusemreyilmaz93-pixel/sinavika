@@ -63,7 +63,7 @@ export function dbMessage(error: { message?: string; hint?: string } | null) {
 }
 
 export async function syncSiteUrl() {
-  const host = process.env.VERCEL_ENV === 'production' ? process.env.VERCEL_PROJECT_PRODUCTION_URL : undefined
-  if (!host) return
-  await admin().from('app_settings').upsert({ key: 'site_url', value: `https://${host}` }, { onConflict: 'key' })
+  const site = process.env.SITE_URL
+  if (!site) return
+  await admin().from('app_settings').upsert({ key: 'site_url', value: site.replace(/\/$/, '') }, { onConflict: 'key' })
 }

@@ -8,8 +8,8 @@ import { container, Reveal, SectionHeading } from './primitives'
 const faqs: { id: string; q: ReactNode; a: ReactNode }[] = [
   {
     id: 'ucret',
-    q: 'Yolumnet ücretli mi?',
-    a: 'Hayır. Öğretmen, öğrenci ve veli için tamamen ücretsiz. Reklam da yok. Yolumnet gönüllü bir proje olarak yürütülüyor.',
+    q: 'İzlek ücretli mi?',
+    a: 'Hayır. Öğretmen, öğrenci ve veli için tamamen ücretsiz. Reklam da yok. İzlek gönüllü bir proje olarak yürütülüyor.',
   },
   {
     id: 'sinir',
@@ -87,7 +87,7 @@ const faqs: { id: string; q: ReactNode; a: ReactNode }[] = [
   {
     id: 'uygulama',
     q: 'Telefona uygulama gibi eklenebilir mi?',
-    a: "Evet. Yolumnet'i telefonunuzun tarayıcısında açın, Paylaş ya da menü düğmesinden Ana Ekrana Ekle'yi seçin. Uygulama mağazasından bir şey indirmeniz gerekmez.",
+    a: "Evet. İzlek'i telefonunuzun tarayıcısında açın, Paylaş ya da menü düğmesinden Ana Ekrana Ekle'yi seçin. Uygulama mağazasından bir şey indirmeniz gerekmez.",
   },
 ]
 

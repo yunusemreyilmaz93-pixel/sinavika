@@ -30,7 +30,7 @@ export function TestAccountsSection() {
   })
 
   async function openAs(account: Account) {
-    const win = window.open('about:blank', 'yolumnet-test')
+    const win = window.open('about:blank', 'izlek-test')
     if (!win) {
       toast.error('Yeni pencere engellendi. Tarayıcıda bu site için açılır pencerelere izin verin')
       return

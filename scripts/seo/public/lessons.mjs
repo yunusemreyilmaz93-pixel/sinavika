@@ -80,7 +80,7 @@ export async function buildPublicLessons({ write, shell, cssHref, site }) {
       .map(([name, path], i) => (i < items.length - 1 ? `<a href="${path}">${escapeHtml(name)}</a><span>/</span>` : escapeHtml(name)))
       .join('')}</nav>`
 
-  const cta = `<aside class="cta"><h2>Çalışmanızı Yolumnet'te takip edin</h2><p>Yolumnet, LGS ve YKS öğrencileri için ücretsiz ve reklamsız bir koçluk uygulamasıdır. Öğretmeniniz size haftalık görev verir, soru çözümünüzü ve denemelerinizi takip eder. Mini testler ve ilerleme kaydı uygulamada çalışır.</p><div class="row"><a class="btn" href="/katil">Davet koduyla katıl</a><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a></div></aside>`
+  const cta = `<aside class="cta"><h2>Çalışmanızı İzlek'te takip edin</h2><p>İzlek, LGS ve YKS öğrencileri için ücretsiz ve reklamsız bir koçluk uygulamasıdır. Öğretmeniniz size haftalık görev verir, soru çözümünüzü ve denemelerinizi takip eder. Mini testler ve ilerleme kaydı uygulamada çalışır.</p><div class="row"><a class="btn" href="/katil">Davet koduyla katıl</a><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a></div></aside>`
 
   // Konu sayfaları
   for (const info of subjectInfo) {
@@ -96,13 +96,13 @@ export async function buildPublicLessons({ write, shell, cssHref, site }) {
       const prev = info.topics[index - 1]
       const next = info.topics[index + 1]
       const related = info.topics.filter((t) => t.id !== topic.id).slice(Math.max(0, index - 3), Math.max(0, index - 3) + 6).slice(0, 5)
-      const full = `${topic.name} konu anlatımı · ${exam.name} ${info.subject.name} · Yolumnet`
+      const full = `${topic.name} konu anlatımı · ${exam.name} ${info.subject.name} · İzlek`
       const title = full.length <= 70 ? full : `${topic.name} konu anlatımı · ${exam.name} ${info.subject.name}`
       const trail = [['Ana sayfa', '/'], ['Konu anlatımları', BASE], [exam.name, `${BASE}/${info.key}`], [info.subject.name, `${BASE}/${info.key}/${info.slug}`], [topic.name, path]]
       const body = `<main><div class="wrap">${crumbHtml(trail)}
 <p class="kicker">${exam.name} · ${escapeHtml(info.subject.name)}</p>
 <h1>${escapeHtml(topic.name)}</h1>
-<p class="meta">Yaklaşık ${lesson.reading_minutes} dakikalık okuma · Yolumnet editör ekibi · Son güncelleme ${dateOf(lesson.updated_at) ?? ''}</p>
+<p class="meta">Yaklaşık ${lesson.reading_minutes} dakikalık okuma · İzlek editör ekibi · Son güncelleme ${dateOf(lesson.updated_at) ?? ''}</p>
 ${outline.length > 1 ? `<nav class="toc" aria-label="İçindekiler"><h2>İçindekiler</h2><ol>${outline.map((o) => `<li><a href="#${o.id}">${escapeHtml(o.title)}</a></li>`).join('')}</ol></nav>` : ''}
 <article>${html}</article>
 ${cta}
@@ -130,8 +130,8 @@ ${related.length ? `<section class="section"><h2>${escapeHtml(info.subject.name)
             inLanguage: 'tr',
             dateModified: dateOf(lesson.updated_at),
             mainEntityOfPage: `${site}${path}`,
-            author: { '@type': 'Organization', name: 'Yolumnet editör ekibi', url: `${site}/hakkinda` },
-            publisher: { '@type': 'Organization', name: 'Yolumnet', logo: { '@type': 'ImageObject', url: `${site}/pwa-512.png` } },
+            author: { '@type': 'Organization', name: 'İzlek editör ekibi', url: `${site}/hakkinda` },
+            publisher: { '@type': 'Organization', name: 'İzlek', logo: { '@type': 'ImageObject', url: `${site}/pwa-512.png` } },
             about: `${exam.name} ${info.subject.name}`,
             educationalLevel: exam.name,
             isAccessibleForFree: true,
@@ -155,7 +155,7 @@ ${related.length ? `<section class="section"><h2>${escapeHtml(info.subject.name)
 <ol class="list">${info.topics.map((t) => `<li><a href="${path}/${t.slug}"><b>${escapeHtml(t.name)}</b><span>${lessonByTopic.get(t.id).reading_minutes} dakikalık okuma</span></a></li>`).join('')}</ol>
 ${cta}</div></main>`
     write(`${path.slice(1)}.html`, wrap({
-      title: `${exam.name} ${info.subject.name} konu anlatımları · Yolumnet`,
+      title: `${exam.name} ${info.subject.name} konu anlatımları · İzlek`,
       description: cut(`${exam.name} ${info.subject.name} dersinin ${info.topics.length} konusu: ${info.topics.slice(0, 5).map((t) => t.name).join(', ')} ve daha fazlası. Anlatım, örnek ve çözümlü sorular.`, 158),
       path,
       body,
@@ -181,7 +181,7 @@ ${cta}</div></main>`
 <div class="cards">${subjects.map((s) => `<a class="card" href="${path}/${s.slug}"><h2>${escapeHtml(s.subject.name)}</h2><p>${s.topics.length} konu</p></a>`).join('')}</div>
 ${cta}</div></main>`
     write(`${path.slice(1)}.html`, wrap({
-      title: `${exam.name} konu anlatımları, ders ders · Yolumnet`,
+      title: `${exam.name} konu anlatımları, ders ders · İzlek`,
       description: cut(`${exam.long} (${exam.name}) için ${subjects.map((s) => s.subject.name).join(', ')} derslerinin konu anlatımları. Ücretsiz, reklamsız, çözümlü sorularla.`, 158),
       path,
       body,
@@ -202,7 +202,7 @@ ${cta}</div></main>`
 <div class="cards">${exams.map((k) => `<a class="card" href="${BASE}/${k}"><h2>${examLabels[k].name}</h2><p>${examLabels[k].long}</p></a>`).join('')}</div>
 ${cta}</div></main>`
   write(`${BASE.slice(1)}.html`, wrap({
-    title: 'LGS, TYT ve YDT konu anlatımları · Yolumnet',
+    title: 'LGS, TYT ve YDT konu anlatımları · İzlek',
     description: `LGS, TYT ve YDT için ${total} konu anlatımı. Ücretsiz, reklamsız, örnekli ve çözümlü sorularla.`,
     path: BASE,
     body,

@@ -28,7 +28,7 @@ const sections: Section[] = [
     title: 'Veri sorumlusu',
     body: (
       <p>
-        Kişisel verileriniz, veri sorumlusu sıfatıyla Yolumnet tarafından işlenmektedir. Yolumnet, LGS ve YKS'ye hazırlanan
+        Kişisel verileriniz, veri sorumlusu sıfatıyla İzlek tarafından işlenmektedir. İzlek, LGS ve YKS'ye hazırlanan
         öğrenciler için gönüllü olarak geliştirilen, ücretsiz ve reklamsız bir koçluk uygulamasıdır. İletişim:{' '}
         <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline-offset-4 hover:underline">
           {CONTACT_EMAIL}
@@ -123,7 +123,7 @@ const sections: Section[] = [
           kendisi için tuttuğu özel notları öğrenci ve veli göremez. Veliler kayıtları yalnızca görüntüleyebilir, değiştiremez.
         </p>
         <p>
-          Yolumnet'in çalışabilmesi için verileriniz barındırma hizmeti aldığımız iki sağlayıcıya aktarılır. Bunlar Supabase
+          İzlek'in çalışabilmesi için verileriniz barındırma hizmeti aldığımız iki sağlayıcıya aktarılır. Bunlar Supabase
           (veritabanı ve oturum açma) ve Vercel (web sitesi ve sunucu işlemleri) şirketleridir. Bu sağlayıcılar verileri yurt
           dışındaki sunucularda saklayabilir. Bu nedenle kayıt sırasında, KVKK'nın 9. maddesi kapsamında yurt dışına aktarım için
           açık rızanız alınır.
@@ -135,10 +135,10 @@ const sections: Section[] = [
         </p>
         <p>
           Hedef bölüm seçiminde gösterilen taban puan, başarı sırası ve net bilgileri YÖK Atlas'ta herkese açık yayımlanan verilerdir.
-          Bu veriler Yolumnet'in veritabanına alınmıştır, öğrenciye ait hiçbir bilgi YÖK Atlas'a gönderilmez.
+          Bu veriler İzlek'in veritabanına alınmıştır, öğrenciye ait hiçbir bilgi YÖK Atlas'a gönderilmez.
         </p>
         <p>
-          Deneme girişinde seçilen karne PDF'i cihazınızda okunur, dosya Yolumnet'e yüklenmez. Forma yalnızca onayladığınız ders
+          Deneme girişinde seçilen karne PDF'i cihazınızda okunur, dosya İzlek'e yüklenmez. Forma yalnızca onayladığınız ders
           sonuçları yazılır.
         </p>
         <p>
@@ -149,14 +149,14 @@ const sections: Section[] = [
         </p>
         <p>
           Avatar olarak hazır görsellerden birini seçebilir ya da isteğe bağlı olarak kendi fotoğrafınızı yükleyebilirsiniz.
-          Fotoğraf cihazınızda kırpılıp küçültülür, Yolumnet'in depolamasına kaydedilir ve yalnızca sizi görebilen kişilerin
+          Fotoğraf cihazınızda kırpılıp küçültülür, İzlek'in depolamasına kaydedilir ve yalnızca sizi görebilen kişilerin
           ekranında görünür. Uygunsuz görüntülerin yayınlanmaması için yüklenen fotoğraf yönetici tarafından incelenir ve onaylanınca
           görünür. Fotoğrafı istediğiniz zaman kaldırabilirsiniz.
         </p>
         <p>
           Öğretmeninizin görev olarak eklediği YouTube videoları, YouTube'un çerez kullanmayan oynatıcısıyla (youtube-nocookie.com)
           uygulamanın içinde oynatılır. Video oynatıldığında IP adresiniz ve tarayıcı bilginiz YouTube'a (Google) iletilir. Videonun
-          ne kadarının izlendiği ve nerede kalındığı, öğretmenin takip edebilmesi için Yolumnet'in kendi veritabanında
+          ne kadarının izlendiği ve nerede kalındığı, öğretmenin takip edebilmesi için İzlek'in kendi veritabanında
           saklanır ve YouTube ile paylaşılmaz.
         </p>
         <p>
@@ -189,11 +189,11 @@ const sections: Section[] = [
         </p>
         <p>
           Seçilen servis yurt dışında olabilir. Bu aktarım öğretmenin kendi hesabı ve kendi seçimiyle yapılır, servisin gizlilik
-          koşullarından öğretmen sorumludur. Yolumnet bu servislerle bir sözleşme yapmaz ve kullanım bedeli ödemez ya da almaz.
+          koşullarından öğretmen sorumludur. İzlek bu servislerle bir sözleşme yapmaz ve kullanım bedeli ödemez ya da almaz.
         </p>
         <p>
           Anahtar sunucuda şifrelenerek saklanır ve kimse tarafından görüntülenemez. Öğretmen anahtarını istediği zaman silebilir.
-          Sohbet geçmişi Yolumnet'te saklanmaz. Asistan hiçbir kayıt eklemez, değiştirmez ya da silmez, hazırladığı görev taslağını
+          Sohbet geçmişi İzlek'te saklanmaz. Asistan hiçbir kayıt eklemez, değiştirmez ya da silmez, hazırladığı görev taslağını
           öğretmen onaylar.
         </p>
       </>
@@ -250,7 +250,7 @@ const sections: Section[] = [
     title: 'Çerezler ve yerel depolama',
     body: (
       <p>
-        Yolumnet reklam veya izleme amaçlı çerez kullanmaz. Oturumunuzu açık tutmak, tema tercihinizi ve veli hesabında seçili
+        İzlek reklam veya izleme amaçlı çerez kullanmaz. Oturumunuzu açık tutmak, tema tercihinizi ve veli hesabında seçili
         çocuğu hatırlamak için tarayıcınızın yerel depolama alanından yararlanır. Uygulamanın hızlı açılması için bazı dosyalar
         cihazınızda önbelleğe alınır.
       </p>
@@ -284,7 +284,7 @@ export default function KvkkPage() {
 
   useEffect(() => {
     const previous = document.title
-    document.title = 'KVKK Aydınlatma Metni · Yolumnet'
+    document.title = 'KVKK Aydınlatma Metni · İzlek'
     return () => {
       document.title = previous
     }
@@ -294,7 +294,7 @@ export default function KvkkPage() {
     <div className="min-h-dvh">
       <header className="pt-safe grid-paper sticky top-0 z-30 border-b border-line bg-bg">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
-          <Link to="/" aria-label="Yolumnet ana sayfa" className="-ml-1 rounded-lg p-1">
+          <Link to="/" aria-label="İzlek ana sayfa" className="-ml-1 rounded-lg p-1">
             <Logo />
           </Link>
           <Button asChild variant="ghost" className="-mr-2 px-3">
@@ -332,7 +332,7 @@ export default function KvkkPage() {
             <h1 className="mt-2 text-[1.85rem] leading-[1.15] font-extrabold sm:text-[2.5rem]">Kişisel verilerin korunması aydınlatma metni</h1>
             <p className="mt-3 text-sm text-subtle">Son güncelleme: {UPDATED}</p>
             <p className="mt-6 text-[17px] leading-relaxed text-muted">
-              Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında Yolumnet'i kullanan öğretmen, öğrenci
+              Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında İzlek'i kullanan öğretmen, öğrenci
               ve velileri, kişisel verilerinin nasıl işlendiği konusunda bilgilendirmek amacıyla hazırlanmıştır.
             </p>
 
@@ -391,8 +391,8 @@ export default function KvkkPage() {
 
       <footer className="border-t border-line bg-surface">
         <div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 py-6 text-sm text-subtle sm:flex-row sm:justify-between sm:px-6">
-          <p>&copy; {new Date().getFullYear()} Yolumnet</p>
-          <p>Yolumnet ücretsiz ve reklamsızdır.</p>
+          <p>&copy; {new Date().getFullYear()} İzlek</p>
+          <p>İzlek ücretsiz ve reklamsızdır.</p>
         </div>
       </footer>
     </div>

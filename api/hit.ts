@@ -19,16 +19,16 @@ export const POST = handle(async (request) => {
   const path = normalizePath(body.path)
   if (!event && !path) return noContent
 
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'bilinmiyor'
+  const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'bilinmiyor'
   const day = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' }).format(new Date())
-  const secret = process.env.STATS_SALT || process.env.SUPABASE_SERVICE_ROLE_KEY || 'yolumnet'
+  const secret = process.env.STATS_SALT || process.env.SUPABASE_SERVICE_ROLE_KEY || 'izlek'
 
   const { error } = await admin().rpc('record_hit', {
     p_hash: visitorHash(secret, day, ip, userAgent ?? ''),
     p_path: path ?? '/',
     p_ref: referrerName(body.ref, body.utm, ownHost),
     p_device: deviceOf(userAgent ?? ''),
-    p_country: request.headers.get('x-vercel-ip-country') ?? '',
+    p_country: request.headers.get('cf-ipcountry') ?? request.headers.get('x-vercel-ip-country') ?? '',
     p_event: event,
   })
   if (error) console.error('Ziyaret kaydedilemedi', error.message)

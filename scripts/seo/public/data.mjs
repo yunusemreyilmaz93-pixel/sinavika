@@ -28,7 +28,7 @@ export async function loadCurriculum() {
     ])
     return { subjects, topics, lessons }
   } catch (error) {
-    if (process.env.VERCEL) throw error
+    if (process.env.VERCEL || process.env.WORKERS_CI) throw error
     console.warn(`SEO: veritabanına ulaşılamadı, anlatım sayfaları üretilmedi (${error.cause?.code ?? error.message})`)
     return null
   }

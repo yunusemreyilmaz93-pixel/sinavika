@@ -164,7 +164,7 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow" />\n' : ''}<meta na
 <meta property="og:title" content="${escapeHtml(title)}" />
 <meta property="og:description" content="${escapeHtml(description)}" />
 <meta property="og:url" content="${url}" />
-<meta property="og:site_name" content="Yolumnet" />
+<meta property="og:site_name" content="İzlek" />
 <meta property="og:image" content="${site}/og.png" />
 <meta name="twitter:card" content="summary_large_image" />
 ${fontPreloads(cssHref).map((href) => `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin />`).join('\n')}
@@ -184,8 +184,8 @@ ${ld.map(jsonLd).join('\n')}
   const footer = `<footer class="foot"><div class="wide">
 ${examLinks.length ? `<div><h2>Konu anlatımları</h2><ul>${examLinks.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join('')}</ul></div>` : ''}
 <div><h2>Araçlar</h2><ul><li><a href="/araclar/net-hesaplama">Net hesaplama</a></li><li><a href="/calisma-programlari">Çalışma programları</a></li><li><a href="/yks-bolumleri">YKS bölümleri</a></li></ul></div>
-<div><h2>Yolumnet</h2><ul><li><a href="/hakkinda">Hakkında</a></li><li><a href="/ogretmen-basvurusu">Öğretmen başvurusu</a></li><li><a href="/katil">Davet koduyla katıl</a></li><li><a href="/kvkk">KVKK aydınlatma metni</a></li></ul></div>
-<p class="editor">Anlatımlar Yolumnet editör ekibi tarafından hazırlanır ve gözden geçirilir. Bir hata ya da eksik görürseniz <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> adresine yazabilirsiniz. Yolumnet ücretsizdir ve reklam içermez.</p>
+<div><h2>İzlek</h2><ul><li><a href="/hakkinda">Hakkında</a></li><li><a href="/ogretmen-basvurusu">Öğretmen başvurusu</a></li><li><a href="/katil">Davet koduyla katıl</a></li><li><a href="/kvkk">KVKK aydınlatma metni</a></li></ul></div>
+<p class="editor">Anlatımlar İzlek editör ekibi tarafından hazırlanır ve gözden geçirilir. Bir hata ya da eksik görürseniz <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> adresine yazabilirsiniz. İzlek ücretsizdir ve reklam içermez.</p>
 </div></footer>`
   return `${head}\n<body class="pub">\n${header}\n${body}\n${footer}\n<script>${videoScript}</script>\n<script>${beaconScript}</script>\n</body>\n</html>\n`
 }

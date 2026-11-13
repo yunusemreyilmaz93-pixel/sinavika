@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     ''
 
-  if (process.env.VERCEL && (!supabaseUrl || !supabaseKey)) {
+  if ((process.env.VERCEL || process.env.WORKERS_CI) && (!supabaseUrl || !supabaseKey)) {
     throw new Error('Supabase adresi ya da herkese açık anahtar eksik. Vercel ortam değişkenlerini kontrol et.')
   }
 
@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
     define: {
       'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(supabaseUrl),
       'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(supabaseKey),
-      'import.meta.env.VITE_COMMIT': JSON.stringify((env.VERCEL_GIT_COMMIT_SHA ?? 'local').slice(0, 7)),
+      'import.meta.env.VITE_COMMIT': JSON.stringify((env.WORKERS_CI_COMMIT_SHA ?? env.VERCEL_GIT_COMMIT_SHA ?? 'local').slice(0, 7)),
     },
     server: { proxy: { '/api': 'http://localhost:3001' } },
     plugins: [
@@ -37,8 +37,8 @@ export default defineConfig(({ mode }) => {
         injectRegister: 'script-defer',
         includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
         manifest: {
-          name: 'Yolumnet',
-          short_name: 'Yolumnet',
+          name: 'İzlek',
+          short_name: 'İzlek',
           description: 'LGS ve YKS için ücretsiz koçluk uygulaması',
           lang: 'tr',
           start_url: '/app',

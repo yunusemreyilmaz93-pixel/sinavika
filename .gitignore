@@ -4,6 +4,7 @@ dev-dist
 .env
 .env.*
 !.env.example
+!.env.production
 .vercel
 *.log
 .DS_Store
@@ -12,3 +13,5 @@ supabase/.temp
 supabase/.branches
 
 .claude/settings.local.json
+.wrangler
+.dev.vars

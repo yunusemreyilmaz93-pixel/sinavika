@@ -6,6 +6,10 @@ import { appPages } from './pages.mjs'
 import { buildPublicLessons } from './public/lessons.mjs'
 import { buildDepartments } from './public/departments.mjs'
 import { buildPublicTools } from './public/tools.mjs'
+import { loadEnv } from 'vite'
+
+// .env.production (herkese açık değerler) ve ortam değişkenleri, vite build ile aynı öncelikte
+for (const [k, v] of Object.entries(loadEnv('production', process.cwd(), ''))) process.env[k] ??= v
 
 const dist = join(process.cwd(), 'dist')
 const site = siteUrl()
@@ -51,7 +55,7 @@ async function main() {
   const departments = await buildDepartments({ write, shell, cssHref, site })
   urls.push(...departments.urls)
 
-  write('404.html', pageHead(shell, { path: '/', title: 'Sayfa bulunamadı · Yolumnet', description: 'Aradığınız sayfa bulunamadı.', noindex: true, site }))
+  write('404.html', pageHead(shell, { path: '/', title: 'Sayfa bulunamadı · İzlek', description: 'Aradığınız sayfa bulunamadı.', noindex: true, site }))
   write('robots.txt', robotsTxt())
   write('sitemap.xml', sitemapXml(urls))
   console.log(`SEO: ${appPages.length + 1} uygulama sayfası, ${lessons.urls.length} anlatım, ${tools.urls.length} araç ve program, ${departments.urls.length} bölüm sayfası, ${urls.length} adres sitemap'te (${site})`)

@@ -40,7 +40,7 @@ export function InstallCard() {
     try {
       await event.prompt()
       const choice = await event.userChoice
-      if (choice.outcome === 'accepted') toast.success('Yolumnet ana ekrana eklendi')
+      if (choice.outcome === 'accepted') toast.success('İzlek ana ekrana eklendi')
     } finally {
       setBusy(false)
     }

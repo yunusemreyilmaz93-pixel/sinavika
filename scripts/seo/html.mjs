@@ -1,5 +1,5 @@
 // index.html kabuğundan sayfa başına başlık, açıklama ve canonical üreten yardımcılar
-export const DEFAULT_SITE = 'https://yolumnet.vercel.app'
+export const DEFAULT_SITE = 'https://izlek.site'
 
 export function siteUrl() {
   return (process.env.SITE_URL || DEFAULT_SITE).trim().replace(/\/+$/, '')

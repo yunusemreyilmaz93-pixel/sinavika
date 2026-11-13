@@ -33,7 +33,7 @@ export default function ReportPage() {
     referrer.content = 'no-referrer'
     document.head.append(robots, referrer)
     const previous = document.title
-    document.title = 'Haftalık rapor · Yolumnet'
+    document.title = 'Haftalık rapor · İzlek'
     return () => {
       robots.remove()
       referrer.remove()

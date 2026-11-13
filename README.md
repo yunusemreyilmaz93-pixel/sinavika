@@ -1,4 +1,4 @@
-# Yolumnet
+# İzlek
 
 LGS ve YKS'ye hazırlanan öğrenciler için ücretsiz koçluk uygulaması. Koçluğun bütün adımları tek platformda.
 

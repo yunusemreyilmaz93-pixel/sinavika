@@ -24,7 +24,7 @@ export const GET = handle(async () => {
       ok,
       checks,
       optional: { ai_assistant: isConfigured() },
-      version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? 'local',
+      version: (process.env.COMMIT_SHA || process.env.VERCEL_GIT_COMMIT_SHA)?.slice(0, 7) ?? 'local',
     },
     ok ? 200 : 503,
   )

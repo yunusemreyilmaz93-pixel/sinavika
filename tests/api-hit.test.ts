@@ -26,12 +26,12 @@ describe('ziyaret yardımcıları', () => {
   })
 
   it('kaynağı arama motoru, sosyal ağ ya da site adı olarak sınıflar', () => {
-    expect(referrerName('https://www.google.com.tr/', null, 'yolumnet.vercel.app')).toBe('google')
-    expect(referrerName('https://l.instagram.com/?u=x', null, 'yolumnet.vercel.app')).toBe('instagram')
-    expect(referrerName('https://t.co/abc', null, 'yolumnet.vercel.app')).toBe('x')
-    expect(referrerName('https://www.ornek-blog.com/yazi', null, 'yolumnet.vercel.app')).toBe('ornek-blog.com')
-    expect(referrerName('', null, 'yolumnet.vercel.app')).toBe('doğrudan')
-    expect(referrerName('https://yolumnet.vercel.app/hakkinda', null, 'yolumnet.vercel.app')).toBe('doğrudan')
+    expect(referrerName('https://www.google.com.tr/', null, 'izlek.site')).toBe('google')
+    expect(referrerName('https://l.instagram.com/?u=x', null, 'izlek.site')).toBe('instagram')
+    expect(referrerName('https://t.co/abc', null, 'izlek.site')).toBe('x')
+    expect(referrerName('https://www.ornek-blog.com/yazi', null, 'izlek.site')).toBe('ornek-blog.com')
+    expect(referrerName('', null, 'izlek.site')).toBe('doğrudan')
+    expect(referrerName('https://izlek.site/hakkinda', null, 'izlek.site')).toBe('doğrudan')
     expect(referrerName('https://google.com', 'Newsletter', 'x.com')).toBe('newsletter')
     expect(referrerName('https://google.com', '<script>', 'x.com')).toBe('google')
   })

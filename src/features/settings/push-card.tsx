@@ -96,8 +96,8 @@ export function PushCard() {
   if (state === 'loading' || state === 'unsupported') return null
 
   const description = {
-    'ios-install': "iPhone ve iPad'de bildirim almak için önce Yolumnet'i ana ekrana ekleyin, sonra buradan açın.",
-    blocked: 'Bildirimlere bu tarayıcıda izin verilmemiş. Tarayıcının site ayarlarından Yolumnet için bildirimlere izin verin.',
+    'ios-install': "iPhone ve iPad'de bildirim almak için önce İzlek'i ana ekrana ekleyin, sonra buradan açın.",
+    blocked: 'Bildirimlere bu tarayıcıda izin verilmemiş. Tarayıcının site ayarlarından İzlek için bildirimlere izin verin.',
     off: 'Yeni görev, mesaj, hatırlatma ve haftalık rapor geldiğinde telefona bildirim gelsin.',
     on: 'Bu cihaza bildirim gönderiliyor.',
   }[state]

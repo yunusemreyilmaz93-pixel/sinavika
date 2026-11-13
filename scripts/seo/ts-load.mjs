@@ -10,7 +10,7 @@ export async function loadTs(file) {
     compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
     fileName: file,
   })
-  const dir = mkdtempSync(join(tmpdir(), 'yolumnet-seo-'))
+  const dir = mkdtempSync(join(tmpdir(), 'izlek-seo-'))
   const target = join(dir, 'module.mjs')
   writeFileSync(target, outputText)
   return import(pathToFileURL(target).href)
