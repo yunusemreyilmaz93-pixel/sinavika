@@ -1,7 +1,8 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { Check, Pause, Square, X } from 'lucide-react'
+import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { ProgressRing } from '@/components/ui/progress'
+import { ProgressBar, ProgressRing } from '@/components/ui/progress'
 import { cn } from '@/lib/cn'
 import { ease } from '../primitives'
 import { Panel, Pop, useSteps } from './kit'
@@ -216,6 +217,112 @@ export function TopicMap() {
           </Pop>
         ))}
       </ul>
+    </Panel>
+  )
+}
+
+export function Pace() {
+  const step = useSteps([900, 1900])
+  const subjects = [
+    ['Matematik', 6],
+    ['Fen Bilimleri', 5],
+    ['Türkçe', 3],
+  ] as const
+  return (
+    <Panel title="Sınava kalan" aside={step >= 2 ? <Pop y={0}><Badge tone="primary">Yetişiyor</Badge></Pop> : undefined}>
+      <p className="font-display text-5xl font-extrabold tabular">
+        210 <span className="text-lg font-bold text-muted">gün</span>
+      </p>
+      <div className="mt-3 flex items-baseline justify-between text-sm">
+        <span className="text-muted">Konular</span>
+        <span className="tabular font-semibold">{step >= 1 ? '38' : '0'} / 55</span>
+      </div>
+      <ProgressBar value={step >= 1 ? 38 / 55 : 0} className="mt-1.5" />
+      <ul className="mt-3 space-y-1.5">
+        {subjects.map(([name, left]) => (
+          <li key={name} className="flex justify-between rounded-xl bg-surface-2 px-3 py-2 text-[15px]">
+            <span>{name}</span>
+            <span className="tabular text-muted">{left} konu kaldı</span>
+          </li>
+        ))}
+      </ul>
+      {step >= 2 && (
+        <Pop>
+          <p className="mt-3 text-sm text-muted">Bu hızla konular sınavdan önce biter.</p>
+        </Pop>
+      )}
+    </Panel>
+  )
+}
+
+export function TargetGap() {
+  const step = useSteps([700, 1300, 1900, 2500, 3200])
+  const rows = [
+    ['TYT Türkçe', 31, 27],
+    ['TYT Matematik', 33, 26],
+    ['AYT Matematik', 30, 21],
+    ['AYT Fizik', 10, 8],
+  ] as const
+  return (
+    <Panel title="Hedef" aside={<Badge>SAY</Badge>}>
+      <p className="text-[15px] font-semibold">Bilgisayar Mühendisliği</p>
+      <p className="text-[13px] text-muted">Geçen yıl yerleşenlerin ortalama neti</p>
+      <div className="mt-3 grid grid-cols-[minmax(0,1fr)_2.5rem_2.5rem_2.5rem] gap-x-2 text-right text-[13px] font-semibold text-muted">
+        <span className="text-left">Ders</span>
+        <span>Hedef</span>
+        <span>Sen</span>
+        <span>Fark</span>
+      </div>
+      <ul className="mt-1 divide-y divide-line">
+        {rows.map(([name, target, mine], i) => (
+          <li key={name} className="grid grid-cols-[minmax(0,1fr)_2.5rem_2.5rem_2.5rem] items-center gap-x-2 py-2 text-right text-[15px] tabular">
+            <span className="truncate text-left">{name}</span>
+            <span className="text-muted">{target}</span>
+            <span>{mine}</span>
+            <span className={cn('font-bold transition-opacity', step > i ? 'opacity-100' : 'opacity-0', target - mine >= 7 ? 'text-danger' : 'text-warning')}>
+              -{target - mine}
+            </span>
+          </li>
+        ))}
+      </ul>
+      {step >= 5 && (
+        <Pop className="mt-2 rounded-xl bg-warning-soft px-3 py-2 text-sm">
+          En büyük açık: <span className="font-semibold">AYT Matematik, 9 net</span>
+        </Pop>
+      )}
+    </Panel>
+  )
+}
+
+export function StudyRoom() {
+  const step = useSteps([800, 1500, 2200])
+  const peers = [
+    ['Elif', 'Matematik', '42 dk'],
+    ['Can', 'Fizik', '1 sa 5 dk'],
+    ['Ece', 'Paragraf', '18 dk'],
+  ]
+  return (
+    <Panel title="Sanal etüt">
+      <p className="text-sm text-muted">
+        Şu an <span className="tabular font-semibold text-fg">{step}</span> arkadaşın çalışıyor.
+      </p>
+      <ul className="mt-3 flex flex-wrap gap-2">
+        {peers.slice(0, step).map(([name, subject, time]) => (
+          <Pop key={name} y={6}>
+            <li className="flex items-center gap-2 rounded-full border border-line bg-surface py-1 pr-3 pl-1 text-sm">
+              <Avatar name={name} className="size-7 text-[11px]" />
+              <span className="font-semibold">{name}</span>
+              <span className="text-muted">
+                {subject} · {time}
+              </span>
+            </li>
+          </Pop>
+        ))}
+      </ul>
+      <div className="mt-4 flex items-center gap-2 border-t border-line pt-3 text-sm text-muted">
+        <span className="size-2.5 rounded-full bg-success motion-safe:animate-pulse" aria-hidden />
+        Sayaç çalışırken sen de etütte görünürsün.
+      </div>
     </Panel>
   )
 }

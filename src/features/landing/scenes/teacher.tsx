@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react'
+import { Fragment } from 'react'
 import { Bell, CalendarCheck, Check, Clock3, GripVertical, Lock, Send, TrendingDown } from 'lucide-react'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -244,6 +245,63 @@ export function Digest() {
           </ul>
         </div>
       </Pop>
+    </Panel>
+  )
+}
+
+const mapTopics = ['Üslü', 'Köklü', 'Olasılık', 'Üçgen']
+const mapRows: { name: string; levels: number[] }[] = [
+  { name: 'Elif K.', levels: [4, 3, 1, 3] },
+  { name: 'Can Y.', levels: [3, 4, 1, 2] },
+  { name: 'Ece D.', levels: [4, 2, 1, 4] },
+  { name: 'Ali S.', levels: [2, 3, 1, 3] },
+]
+const mapSwatch = ['bg-line-strong/60', 'bg-warning', 'bg-accent', 'bg-primary/55', 'bg-primary']
+
+export function ClassMap() {
+  const step = useSteps([1600, 2600])
+  return (
+    <Panel title="Sınıf haritası" aside={<Badge>Matematik</Badge>}>
+      <div className="grid grid-cols-[4rem_repeat(4,minmax(0,1fr))] items-center gap-1.5">
+        <span />
+        {mapTopics.map((t, i) => (
+          <span key={t} className={cn('truncate text-center text-[11px] font-semibold text-muted', step >= 1 && i === 2 && 'text-warning')}>
+            {t}
+          </span>
+        ))}
+        {mapRows.map((row, r) => (
+          <Fragment key={row.name}>
+            <span className="truncate text-[13px] font-semibold">{row.name}</span>
+            {row.levels.map((level, c) => (
+              <Pop key={c} delay={0.05 + (r * 4 + c) * 0.04} y={0}>
+                <span
+                  className={cn(
+                    'block h-7 rounded-md transition-shadow',
+                    mapSwatch[level],
+                    step >= 1 && c === 2 && 'ring-2 ring-warning ring-offset-1 ring-offset-surface',
+                  )}
+                />
+              </Pop>
+            ))}
+          </Fragment>
+        ))}
+      </div>
+      {step >= 1 && (
+        <Pop className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-warning-soft px-3 py-2.5">
+          <span className="text-sm">
+            <span className="font-semibold">Olasılık</span> 4 öğrencide tekrar gerekiyor
+          </span>
+          <span
+            className={cn(
+              'inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold transition-colors',
+              step >= 2 ? 'bg-primary text-primary-fg' : 'bg-surface',
+            )}
+          >
+            {step >= 2 ? <Check className="size-3.5" /> : <Send className="size-3.5" />}
+            {step >= 2 ? '4 öğrenciye verildi' : 'Görev ver'}
+          </span>
+        </Pop>
+      )}
     </Panel>
   )
 }

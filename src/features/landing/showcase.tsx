@@ -6,12 +6,15 @@ import {
   ChartLine,
   Eye,
   FlaskConical,
+  Grid3x3,
+  Hourglass,
   ListChecks,
   Map as MapIcon,
   MessagesSquare,
   NotebookPen,
   RotateCcw,
   Sparkles,
+  Target,
   Timer,
   TrendingDown,
   TrendingUp,
@@ -27,8 +30,8 @@ import { cn } from '@/lib/cn'
 import { StudentCapacity } from './live-settings'
 import { container, Reveal, SectionHeading, type Role } from './primitives'
 import { ChatParent, Children, ExamResults, ReadOnly, WeekSummary } from './scenes/parent'
-import { ExamNets, LessonQuiz, Simulation, TimerAndLog, TodayTasks, TopicMap, WrongReview } from './scenes/student'
-import { Assistant, Attention, ChatTeacher, Digest, NetLoss, Notes, Planner, Roster } from './scenes/teacher'
+import { ExamNets, LessonQuiz, Pace, Simulation, StudyRoom, TargetGap, TimerAndLog, TodayTasks, TopicMap, WrongReview } from './scenes/student'
+import { Assistant, Attention, ChatTeacher, ClassMap, Digest, NetLoss, Notes, Planner, Roster } from './scenes/teacher'
 
 type Feature = { icon: LucideIcon; title: ReactNode; text: string; scene: () => ReactNode }
 
@@ -53,8 +56,14 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
       {
         icon: TriangleAlert,
         title: 'Geride kalan öne çıkar',
-        text: 'Birkaç gündür kayıt girmeyen, görevini aksatan ya da neti düşen öğrenciyi hemen fark edersiniz.',
+        text: 'Birkaç gündür kayıt girmeyen, görevini aksatan, neti düşen ya da dinlenmeden fazla yüklenen öğrenciyi hemen fark edersiniz.',
         scene: () => <Attention />,
+      },
+      {
+        icon: Grid3x3,
+        title: 'Sınıf haritası',
+        text: 'Bütün öğrencilerin konu hakimiyetini tek tabloda görürsünüz. Birden fazla öğrencide tekrar gereken konuya hepsine birden görev verirsiniz.',
+        scene: () => <ClassMap />,
       },
       {
         icon: BellRing,
@@ -71,7 +80,7 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
       {
         icon: ChartLine,
         title: 'Deneme analizi',
-        text: 'Denemede kaybedilen netin yanlıştan mı boştan mı geldiğini görürsünüz. En çok takılınan konular için tek dokunuşla görev verirsiniz.',
+        text: 'Denemede kaybedilen netin yanlıştan mı boştan mı geldiğini görürsünüz. En çok net kaybettiren konulardan haftalık plan taslağı tek dokunuşla hazırlanır.',
         scene: () => <NetLoss />,
       },
       {
@@ -102,7 +111,7 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
       {
         icon: ListChecks,
         title: 'Günün görevleri hazır',
-        text: 'Öğretmenin verdiği görevleri gün gün görür, bitirdiğini işaretler.',
+        text: 'Öğretmenin verdiği görevleri gün gün görür, bitirdiğini işaretler. Kitap okuma ve film, belgesel gibi dinlenme görevleri de buradadır.',
         scene: () => <TodayTasks />,
       },
       {
@@ -110,6 +119,12 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
         title: 'Odak sayacı ve soru kaydı',
         text: 'Sayacı başlatır, çalıştığı süre dersi ve konusuyla kaydedilir. Soruları üç dokunuşta girer, neti hemen hesaplanır.',
         scene: () => <TimerAndLog />,
+      },
+      {
+        icon: Users,
+        title: 'Sanal etüt',
+        text: 'Sayaç çalışırken aynı öğretmenin öğrencileri kimin şu an çalıştığını görür. Yalnızca ilk ad ve ders paylaşılır, istenirse kapatılır.',
+        scene: () => <StudyRoom />,
       },
       {
         icon: BookOpenText,
@@ -132,14 +147,26 @@ const roles: Record<Role, { label: string; title: string; lead: string; features
       {
         icon: TrendingUp,
         title: 'Deneme netleri',
-        text: 'Her denemeyi ders ders girer, netlerinin nasıl değiştiğini grafikte görür.',
+        text: 'Her denemeyi ders ders girer, netini ve puanını görür. Netlerinin nasıl değiştiğini grafikte izler.',
         scene: () => <ExamNets />,
+      },
+      {
+        icon: Target,
+        title: 'Hedefe kalan net',
+        text: 'Hedef bölümüne geçen yıl yerleşenlerin netleriyle kendi netini ders ders karşılaştırır, en büyük açığı görür.',
+        scene: () => <TargetGap />,
       },
       {
         icon: MapIcon,
         title: 'Konu haritası',
         text: 'Hangi konuyu bitirdiğini, hangisini tekrar etmesi gerektiğini ve önce nelere bakacağını bir bakışta görür.',
         scene: () => <TopicMap />,
+      },
+      {
+        icon: Hourglass,
+        title: 'Sınava kalan gün ve tempo',
+        text: 'Kaç gün kaldığını ve bu hızla konuların sınavdan önce bitip bitmeyeceğini görür.',
+        scene: () => <Pace />,
       },
     ],
   },
