@@ -200,19 +200,24 @@ function partNet(scores: Score[] | undefined, subjects: Subject[] | undefined, e
 
 function PartTable({ ref_, last, scores, subjects }: { ref_: RefTarget; last?: ExamResult; scores?: Score[]; subjects?: Subject[] }) {
   const showLast = last && scores
+  const rows = ref_.parts.map((part) => {
+    const mine = showLast ? partNet(scores, subjects, last.id, ref_.kind, part.subjects) : null
+    return { part, mine, gap: mine === null ? null : round2(part.value - mine) }
+  })
+  const gaps = rows.filter((r): r is typeof r & { gap: number } => r.gap !== null && r.gap > 0).sort((a, b) => b.gap - a.gap)
   return (
-    <table className="tabular w-full text-sm">
-      <thead>
-        <tr className="text-xs text-muted">
-          <th className="py-1 text-left font-semibold">Ders</th>
-          <th className="py-1 text-right font-semibold">Hedef</th>
-          {showLast && <th className="py-1 text-right font-semibold">Son deneme</th>}
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-line">
-        {ref_.parts.map((part) => {
-          const mine = showLast ? partNet(scores, subjects, last.id, ref_.kind, part.subjects) : null
-          return (
+    <>
+      <table className="tabular w-full text-sm">
+        <thead>
+          <tr className="text-xs text-muted">
+            <th className="py-1 text-left font-semibold">Ders</th>
+            <th className="py-1 text-right font-semibold">Hedef</th>
+            {showLast && <th className="py-1 text-right font-semibold">Son deneme</th>}
+            {showLast && <th className="py-1 text-right font-semibold">Fark</th>}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-line">
+          {rows.map(({ part, mine, gap }) => (
             <tr key={part.label}>
               <td className="py-1.5">{part.label}</td>
               <td className="py-1.5 text-right font-semibold">{formatNet(part.value)}</td>
@@ -221,11 +226,25 @@ function PartTable({ ref_, last, scores, subjects }: { ref_: RefTarget; last?: E
                   {mine === null ? '-' : formatNet(mine)}
                 </td>
               )}
+              {showLast && (
+                <td className={`py-1.5 text-right ${gap !== null && gap > 0 ? 'font-semibold text-warning' : 'text-success'}`}>
+                  {gap === null ? '-' : gap > 0 ? `-${formatNet(gap)}` : 'Tamam'}
+                </td>
+              )}
             </tr>
-          )
-        })}
-      </tbody>
-    </table>
+          ))}
+        </tbody>
+      </table>
+      {gaps.length > 0 && (
+        <p className="rounded-lg bg-warning-soft px-3 py-2 text-sm">
+          <span className="font-semibold">En büyük açık:</span>{' '}
+          {gaps
+            .slice(0, 2)
+            .map((g) => `${g.part.label} ${formatNet(g.gap)} net`)
+            .join(', ')}
+        </p>
+      )}
+    </>
   )
 }
 
