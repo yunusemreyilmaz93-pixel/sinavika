@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import { BarChart3, CalendarCheck, CheckCircle2, Clock, ListChecks, Plus, RotateCw, type LucideIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { IconChip, type Hue } from '@/components/ui/stat'
 import { Card, CardBody, CardHeader } from '@/components/ui/card'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Segmented } from '@/components/ui/segmented'
@@ -84,15 +85,16 @@ export function ProgressStats({ studentId }: { studentId: string }) {
         transition={{ duration: 0.2 }}
         className="grid grid-cols-2 gap-3 lg:grid-cols-4"
       >
-        <Tile icon={Clock} label="Toplam süre" value={formatMinutes(summary.minutes)} sub={`Günde ort. ${formatMinutes(Math.round(summary.minutes / days))}`} />
-        <Tile icon={ListChecks} label="Çözülen soru" value={formatCount(summary.questions)} sub={`Günde ort. ${formatCount(Math.round(summary.questions / days))}`} />
+        <Tile icon={Clock} hue="pine" label="Toplam süre" value={formatMinutes(summary.minutes)} sub={`Günde ort. ${formatMinutes(Math.round(summary.minutes / days))}`} />
+        <Tile icon={ListChecks} hue="sea" label="Çözülen soru" value={formatCount(summary.questions)} sub={`Günde ort. ${formatCount(Math.round(summary.questions / days))}`} />
         <Tile
           icon={CheckCircle2}
+          hue="violet"
           label="Doğruluk"
           value={formatPercent(summary.accuracy)}
           sub={summary.questions ? `${formatCount(summary.correct)} D · ${formatCount(summary.wrong)} Y · ${formatCount(summary.blank)} B` : 'Soru kaydı yok'}
         />
-        <Tile icon={CalendarCheck} label="Aktif gün" value={`${summary.activeDays} gün`} sub={`Son ${days} günde kayıt girilen gün`} />
+        <Tile icon={CalendarCheck} hue="coral" label="Aktif gün" value={`${summary.activeDays} gün`} sub={`Son ${days} günde kayıt girilen gün`} />
       </motion.div>
 
       <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
@@ -119,26 +121,14 @@ export function ProgressStats({ studentId }: { studentId: string }) {
   )
 }
 
-function Tile({
-  icon: Icon,
-  label,
-  value,
-  sub,
-}: {
-  icon: LucideIcon
-  label: string
-  value: string
-  sub: string
-}) {
+function Tile({ icon: Icon, hue, label, value, sub }: { icon: LucideIcon; hue: Hue; label: string; value: string; sub: string }) {
   return (
     <Card className="p-4">
-      <p className="flex items-center gap-1.5 text-[13px] font-semibold text-muted">
-        <Icon className="size-4 shrink-0" />
-        {label}
-      </p>
-      <p className="tabular mt-2 font-display text-2xl leading-tight font-extrabold sm:text-[28px]">
-        {value}
-      </p>
+      <IconChip hue={hue}>
+        <Icon />
+      </IconChip>
+      <p className="mt-3 text-[13px] text-muted">{label}</p>
+      <p className="tabular font-display text-2xl leading-tight font-extrabold sm:text-[28px]">{value}</p>
       <p className="mt-1 text-xs leading-snug text-muted">{sub}</p>
     </Card>
   )

@@ -1,14 +1,15 @@
-import { ArrowLeft, Clock3, MessageCircle, Target, UsersRound } from 'lucide-react'
+import { ArrowLeft, Check, Clock3, ListChecks, MessageCircle, Target, Timer, TrendingUp, UsersRound } from 'lucide-react'
 import { Link } from 'react-router'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { StatTile, Trend } from '@/components/ui/stat'
 import { threadLink } from '@/features/messages/lib'
 import { WeeklyReportButton } from '@/features/report/weekly-report-button'
 import { cn } from '@/lib/cn'
-import { formatRelative } from '@/lib/dates'
-import { studentLabel } from '@/lib/exam'
-import type { RiskSignals } from '../overview'
+import { formatMinutes, formatRelative } from '@/lib/dates'
+import { formatNet, studentLabel } from '@/lib/exam'
+import type { OverviewRow, RiskSignals } from '../overview'
 import { RiskBadge } from '../student-card'
 import type { StudentDetail } from './queries'
 
@@ -16,10 +17,12 @@ export function StudentHeader({
   student,
   signals,
   parentCount,
+  row,
 }: {
   student: StudentDetail
   signals: RiskSignals | null
   parentCount: number
+  row?: OverviewRow
 }) {
   const archived = Boolean(student.archived_at)
 
@@ -30,9 +33,10 @@ export function StudentHeader({
         Öğrenciler
       </Link>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <section className="rounded-3xl border border-line bg-surface p-4 sm:p-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex min-w-0 items-start gap-3 sm:gap-4">
-          <Avatar name={student.full_name} userId={student.id} className={cn('size-14 text-lg', archived && 'grayscale')} />
+          <Avatar name={student.full_name} userId={student.id} className={cn('size-14 text-lg sm:size-16', archived && 'grayscale')} />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <h1 className="min-w-0 text-2xl leading-tight font-extrabold break-words sm:text-3xl">{student.full_name}</h1>
@@ -75,6 +79,8 @@ export function StudentHeader({
           )}
         </div>
       </div>
+      {row && !archived && <DetailStats row={row} />}
+      </section>
 
       {!archived && signals && signals.reasons.length > 0 && (
         <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Dikkat sebepleri">
@@ -92,5 +98,31 @@ export function StudentHeader({
         </ul>
       )}
     </header>
+  )
+}
+
+function DetailStats({ row }: { row: OverviewRow }) {
+  const prev = row.minutes_prev_7d ?? 0
+  const delta = prev ? Math.round(((row.minutes_7d - prev) / prev) * 100) : null
+  const netDelta = row.last_net != null && row.prev_net != null ? Math.round((row.last_net - row.prev_net) * 100) / 100 : null
+  return (
+    <div className="mt-5 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+      <StatTile icon={<Timer />} hue="pine" label="Çalışma, 7 gün" value={formatMinutes(row.minutes_7d)} aside={delta != null ? <Trend up={delta >= 0}>%{Math.abs(delta)}</Trend> : undefined} />
+      <StatTile icon={<ListChecks />} hue="sea" label="Soru, 7 gün" value={row.questions_7d.toLocaleString('tr-TR')} />
+      <StatTile
+        icon={<Check />}
+        hue="amber"
+        label="Haftanın görevleri"
+        value={`${row.tasks_week_done}/${row.tasks_week}`}
+        aside={row.tasks_overdue ? <span className="font-semibold text-warning">{row.tasks_overdue} gecikmiş</span> : undefined}
+      />
+      <StatTile
+        icon={<TrendingUp />}
+        hue="violet"
+        label={row.last_exam_kind ? `Son ${row.last_exam_kind} neti` : 'Son deneme'}
+        value={row.last_net != null ? formatNet(row.last_net) : '-'}
+        aside={netDelta ? <Trend up={netDelta > 0}>{formatNet(Math.abs(netDelta))}</Trend> : undefined}
+      />
+    </div>
   )
 }
