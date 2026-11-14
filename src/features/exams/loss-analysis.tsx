@@ -1,24 +1,23 @@
-import { ListPlus } from 'lucide-react'
-import { useMemo } from 'react'
-import { toast } from 'sonner'
+import { CalendarPlus } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardBody, CardHeader } from '@/components/ui/card'
 import { ProgressBar } from '@/components/ui/progress'
-import { useTaskActions } from '@/features/plan/queries'
+import { useProfile } from '@/features/auth/session'
 import { useCurriculum } from '@/lib/data'
 import { shiftDays, todayISO } from '@/lib/dates'
 import { formatNet, subjectColor, type ExamKind } from '@/lib/exam'
-import { errorMessage } from '@/lib/supabase'
+import { planFromExam } from './exam-plan'
+import { ExamPlanDialog } from './exam-plan-dialog'
 import { lossOf } from './loss'
 import type { Score } from './queries'
 import { useExamMisses } from './topic-misses'
 
-const QUESTIONS_PER_TASK = 20
-
 export function LossAnalysis({ examId, studentId, kind, scores, canAssign, assignLabel }: { examId: number; studentId: string; kind: ExamKind; scores: Score[]; canAssign: boolean; assignLabel: string }) {
   const curriculum = useCurriculum()
   const misses = useExamMisses(examId)
-  const { save } = useTaskActions(studentId)
+  const forTeacher = useProfile().role === 'teacher'
+  const [planning, setPlanning] = useState(false)
   const subjectById = curriculum.data?.subjectById
   const topicById = curriculum.data?.topicById
 
@@ -38,30 +37,14 @@ export function LossAnalysis({ examId, studentId, kind, scores, canAssign, assig
   if (!subjectById || loss.total <= 0) return null
   const top = loss.rows[0]?.total || 1
 
-  const assign = async () => {
-    try {
-      const today = todayISO()
-      for (const [i, { topic }] of suggestions.entries()) {
-        await save.mutateAsync({
-          values: {
-            title: `${topic.name} ${QUESTIONS_PER_TASK} soru`,
-            kind: 'questions',
-            subject_id: topic.subject_id,
-            topic_id: topic.id,
-            target_questions: QUESTIONS_PER_TASK,
-            target_minutes: null,
-            note: null,
-            video_id: null,
-            video_title: null,
-            due_on: shiftDays(today, i + 1),
-          },
-        })
-      }
-      toast.success(`${suggestions.length} görev eklendi`)
-    } catch (err) {
-      toast.error(errorMessage(err))
-    }
-  }
+  const drafts = planFromExam({
+    topics: (misses.data ?? []).flatMap((m) => {
+      const topic = topicById?.get(m.topic_id)
+      return topic ? [{ id: topic.id, name: topic.name, subjectId: topic.subject_id, misses: m.misses }] : []
+    }),
+    subjects: loss.rows.map((r) => ({ id: r.subject_id, name: subjectById.get(r.subject_id)?.name ?? r.subject_id, loss: r.total })),
+    start: shiftDays(todayISO(), 1),
+  })
 
   return (
     <Card>
@@ -96,30 +79,31 @@ export function LossAnalysis({ examId, studentId, kind, scores, canAssign, assig
             })}
         </ul>
 
-        {suggestions.length > 0 ? (
-          <div className="border-t border-line pt-4">
-            <p className="text-sm font-semibold">En çok takılınan konular için öneri</p>
-            <ul className="mt-2 space-y-1.5 text-[15px]">
-              {suggestions.map(({ topic, misses: count }) => (
-                <li key={topic.id} className="flex justify-between gap-3">
-                  <span className="min-w-0 break-words">
-                    {topic.name} {QUESTIONS_PER_TASK} soru
-                  </span>
-                  <span className="tabular shrink-0 text-muted">{count} kaçırma</span>
-                </li>
-              ))}
-            </ul>
-            {canAssign && (
-              <Button className="mt-3 min-h-11" onClick={assign} loading={save.isPending}>
-                <ListPlus />
-                {assignLabel}
-              </Button>
-            )}
-          </div>
-        ) : (
-          <p className="border-t border-line pt-4 text-sm text-muted">Aşağıdan takılınan konular işaretlenince çalışma önerisi burada çıkar.</p>
-        )}
+        <div className="border-t border-line pt-4">
+          {suggestions.length > 0 ? (
+            <>
+              <p className="text-sm font-semibold">En çok takılınan konular</p>
+              <ul className="mt-2 space-y-1.5 text-[15px]">
+                {suggestions.map(({ topic, misses: count }) => (
+                  <li key={topic.id} className="flex justify-between gap-3">
+                    <span className="min-w-0 break-words">{topic.name}</span>
+                    <span className="tabular shrink-0 text-muted">{count} kaçırma</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p className="text-sm text-muted">Aşağıdan takılınan konular işaretlenirse plan konu konu çıkar, işaretlenmezse en çok net kaybedilen derslerden çıkar.</p>
+          )}
+          {canAssign && drafts.length > 0 && (
+            <Button className="mt-3 min-h-11" onClick={() => setPlanning(true)}>
+              <CalendarPlus />
+              {assignLabel}
+            </Button>
+          )}
+        </div>
       </CardBody>
+      {planning && <ExamPlanDialog open onOpenChange={setPlanning} studentId={studentId} drafts={drafts} forTeacher={forTeacher} />}
     </Card>
   )
 }
