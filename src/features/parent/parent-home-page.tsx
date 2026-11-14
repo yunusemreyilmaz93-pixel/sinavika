@@ -1,17 +1,17 @@
 import { UserPlus } from 'lucide-react'
 import { Link } from 'react-router'
-import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { EmptyState } from '@/components/ui/empty-state'
 import { useAuth } from '@/features/auth/session'
 import { TodayTasks } from '@/features/plan/today-tasks'
-import { ExamCountdown } from '@/features/student/exam-countdown'
+import { WeeklyReportButton } from '@/features/report/weekly-report-button'
 import { InboxStrip } from '@/features/student/inbox-strip'
 import { LastExamSummary } from '@/features/student/last-exam-summary'
+import { StudentHero, WeekCard } from '@/features/student/today-hero'
 import { Reveal } from '@/features/student/today-parts'
 import { formatDate, greeting, todayISO } from '@/lib/dates'
-import { studentLabel } from '@/lib/exam'
-import { SharedNote, TeacherContact, WeekSummary } from './parent-parts'
+import { SharedNote, TeacherContact } from './parent-parts'
 
 export default function ParentHomePage() {
   const { profile, activeChild } = useAuth()
@@ -49,46 +49,44 @@ export default function ParentHomePage() {
   const child = activeChild
 
   return (
-    <div>
-      <header className="mb-5 flex items-center gap-3 sm:mb-7 sm:gap-4">
-        <Avatar name={child.full_name} userId={child.id} className="size-12 text-base sm:size-14 sm:text-lg" />
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-muted">
-            {greeting()}, {firstName}
-          </p>
-          <h1 className="truncate text-2xl font-extrabold sm:text-3xl">{child.full_name}</h1>
-          <p className="truncate text-sm text-muted">
-            {studentLabel(child)}
-            {child.target ? ` · Hedef: ${child.target}` : ''}
-          </p>
+    <div key={child.id} className="space-y-4 sm:space-y-5">
+      <InboxStrip userId={profile.id} />
+      <Reveal index={0}>
+        <StudentHero student={child} name={child.full_name} mode="parent" />
+      </Reveal>
+      <div className="grid gap-4 sm:gap-5 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
+        <div className="space-y-4 sm:space-y-5">
+          <Reveal index={1}>
+            <WeekCard studentId={child.id} goalMinutes={child.daily_minutes_goal} />
+          </Reveal>
+          <div className="grid gap-4 sm:gap-5 2xl:grid-cols-2 2xl:items-start">
+            <Reveal index={2}>
+              <TodayTasks studentId={child.id} canEdit={false} />
+            </Reveal>
+            <Reveal index={3}>
+              <LastExamSummary
+                studentId={child.id}
+                more={{ label: 'Tüm denemeler', href: '/app/denemeler' }}
+                empty={{ description: 'Deneme eklendiğinde net ve değişim burada görünür.' }}
+              />
+            </Reveal>
+          </div>
         </div>
-      </header>
-
-      <InboxStrip userId={profile.id} className="mb-4" />
-
-      <div key={child.id} className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-5">
-        <Reveal index={0}>
-          <ExamCountdown track={child.track} />
-        </Reveal>
-        <Reveal index={1}>
-          <TeacherContact studentId={child.id} teacherId={child.teacher_id} />
-        </Reveal>
-        <Reveal index={2} className="lg:col-span-2">
-          <WeekSummary studentId={child.id} />
-        </Reveal>
-        <Reveal index={3}>
-          <TodayTasks studentId={child.id} canEdit={false} />
-        </Reveal>
-        <Reveal index={4}>
-          <LastExamSummary
-            studentId={child.id}
-            more={{ label: 'Tüm denemeler', href: '/app/denemeler' }}
-            empty={{ description: 'Deneme eklendiğinde net ve değişim burada görünür.' }}
-          />
-        </Reveal>
-        <Reveal index={5} className="lg:col-span-2">
-          <SharedNote studentId={child.id} />
-        </Reveal>
+        <aside className="space-y-4 sm:space-y-5">
+          <Reveal index={4}>
+            <SharedNote studentId={child.id} />
+          </Reveal>
+          <Reveal index={5}>
+            <TeacherContact studentId={child.id} teacherId={child.teacher_id} />
+          </Reveal>
+          <Reveal index={6}>
+            <Card className="p-4 sm:p-5">
+              <h2 className="text-[17px] font-bold">Haftalık rapor</h2>
+              <p className="mt-1 text-sm text-muted">Çalışma, görevler, denemeler ve koçun yorumu tek PDF'te.</p>
+              <WeeklyReportButton student={{ ...child, name: child.full_name }} viewer="parent" className="mt-3 w-full" />
+            </Card>
+          </Reveal>
+        </aside>
       </div>
     </div>
   )
