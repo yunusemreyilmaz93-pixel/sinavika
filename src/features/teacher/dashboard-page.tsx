@@ -1,21 +1,21 @@
-import { Archive, ArrowRight, ClipboardList, Clock3, ListChecks, TriangleAlert, UserPlus } from 'lucide-react'
+import { Archive, ClipboardList, Clock3, ListChecks, TriangleAlert, UserPlus, UsersRound } from 'lucide-react'
 import { motion } from 'motion/react'
-import { useMemo, type ReactNode } from 'react'
+import { useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { ProgressRing } from '@/components/ui/progress'
+import { StatTile, Trend } from '@/components/ui/stat'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Segmented } from '@/components/ui/segmented'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useProfile } from '@/features/auth/session'
-import { cn } from '@/lib/cn'
-import { formatDate, greeting, todayISO } from '@/lib/dates'
+import { formatDate, formatMinutes, greeting, todayISO } from '@/lib/dates'
 import { errorMessage } from '@/lib/supabase'
-import { CapacityMeter } from './capacity-meter'
+import { ClassWeakTopics, TopStudents } from './dashboard-rail'
 import { useCapacity } from './invites'
 import { rankByAttention, useTeacherOverview } from './overview'
 import { StartChecklist, useStartChecklist } from './start-checklist'
-import { Duration, StudentCard } from './student-card'
+import { StudentCard } from './student-card'
 import { StudyRoomCard } from '@/features/tracking/study-room-provider'
 
 type Filter = 'aktif' | 'arsiv'
@@ -44,6 +44,11 @@ export default function DashboardPage() {
       minutes: active.reduce((sum, s) => sum + s.minutes_7d, 0),
       questions: active.reduce((sum, s) => sum + s.questions_7d, 0),
       attention: active.filter((s) => s.signals.level !== 'ok').length,
+      minutesDelta: (() => {
+        const prev = active.reduce((sum, s) => sum + (s.minutes_prev_7d ?? 0), 0)
+        const now = active.reduce((sum, s) => sum + s.minutes_7d, 0)
+        return prev ? Math.round(((now - prev) / prev) * 100) : null
+      })(),
     }),
     [active],
   )
@@ -57,72 +62,73 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <header className="mb-6 flex flex-wrap items-end justify-between gap-4 sm:mb-8">
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-muted">{formatDate(today, 'd MMMM EEEE')}</p>
-          <h1 className="mt-0.5 text-2xl font-extrabold sm:text-3xl">
-            {greeting()}, {firstName}
-          </h1>
+      <section className="mb-4 rounded-3xl border border-line bg-surface p-4 sm:mb-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <p className="text-sm text-muted">{formatDate(today, 'd MMMM EEEE')}</p>
+            <h1 className="text-[1.65rem] leading-tight font-extrabold sm:text-3xl">
+              {greeting()}, {firstName}
+            </h1>
+            {!noStudents && overview.isSuccess && (
+              <p className="mt-1 text-[15px] text-muted">
+                {totals.attention ? `Bu hafta ${totals.attention} öğrencinize bakmanız gerekiyor.` : 'Bu hafta herkes yolunda görünüyor.'}
+              </p>
+            )}
+          </div>
+          <div className="flex w-full gap-2 sm:w-auto">
+            <Button variant="secondary" className="flex-1 sm:flex-none" asChild>
+              <Link to="/app/davetler?yeni=1">
+                <UserPlus />
+                Davet edin
+              </Link>
+            </Button>
+            <Button className="flex-1 sm:flex-none" asChild>
+              <Link to="/app/planlayici">
+                <ClipboardList />
+                Planlayıcı
+              </Link>
+            </Button>
+          </div>
         </div>
-        <div className="flex w-full gap-2 sm:w-auto">
-          <Button variant="secondary" className="flex-1 sm:flex-none" asChild>
-            <Link to="/app/davetler?yeni=1">
-              <UserPlus />
-              Öğrenci davet edin
-            </Link>
-          </Button>
-          <Button className="flex-1 sm:flex-none" asChild>
-            <Link to="/app/planlayici">
-              <ClipboardList />
-              Planlayıcı
-            </Link>
-          </Button>
-        </div>
-      </header>
+        {!noStudents && (
+          <div className="mt-5 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+            {overview.isPending || !capacity.ready ? (
+              [0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-28 rounded-2xl" />)
+            ) : (
+              <>
+                <Link to="/app/davetler" className="rounded-2xl transition-colors hover:bg-surface-2">
+                  <StatTile
+                    icon={<UsersRound />}
+                    hue="pine"
+                    label="Aktif öğrenci"
+                    value={
+                      <>
+                        {capacity.used}
+                        <span className="text-base text-muted">/{capacity.capacity}</span>
+                      </>
+                    }
+                    aside={<ProgressRing value={capacity.capacity ? capacity.used / capacity.capacity : 0} size={30} stroke={4} />}
+                  />
+                </Link>
+                <StatTile
+                  icon={<Clock3 />}
+                  hue="sea"
+                  label="Çalışma, 7 gün"
+                  value={formatMinutes(totals.minutes)}
+                  aside={totals.minutesDelta != null ? <Trend up={totals.minutesDelta >= 0}>%{Math.abs(totals.minutesDelta)}</Trend> : undefined}
+                />
+                <StatTile icon={<ListChecks />} hue="violet" label="Soru, 7 gün" value={totals.questions.toLocaleString('tr-TR')} />
+                <StatTile icon={<TriangleAlert />} hue="orange" label="Dikkat isteyen" value={totals.attention} aside={totals.attention ? 'öğrenci' : 'herkes yolunda'} />
+              </>
+            )}
+          </div>
+        )}
+      </section>
 
       {start.visible && <StartChecklist steps={start.steps} onDismiss={start.dismiss} />}
 
-      <StudyRoomCard forTeacher className="mb-6" />
-
-      <div className={cn('mb-8 grid gap-3 sm:gap-4', !noStudents && 'lg:grid-cols-[minmax(0,1fr)_300px]')}>
-        {!noStudents && (
-          <Card className="grid grid-cols-3 divide-x divide-line">
-            <Stat icon={<Clock3 />} label="Çalışma" note="son 7 gün" loading={overview.isPending}>
-              <Duration minutes={totals.minutes} unitClass="text-[0.55em] font-semibold text-muted" />
-            </Stat>
-            <Stat icon={<ListChecks />} label="Soru" note="son 7 gün" loading={overview.isPending}>
-              <span className="tabular">{totals.questions.toLocaleString('tr-TR')}</span>
-            </Stat>
-            <Stat
-              icon={<TriangleAlert />}
-              label="Dikkat"
-              note={totals.attention ? 'öğrenci izlemede' : 'herkes yolunda'}
-              loading={overview.isPending}
-              tone={totals.attention ? 'warning' : 'default'}
-            >
-              <span className="tabular">{totals.attention}</span>
-            </Stat>
-          </Card>
-        )}
-        <Card className="flex flex-col justify-center gap-3 p-4 sm:p-5">
-          {capacity.ready ? (
-            <CapacityMeter used={capacity.used} capacity={capacity.capacity} pending={capacity.pending} />
-          ) : (
-            <div className="space-y-2.5" aria-hidden>
-              <Skeleton className="h-7 w-32" />
-              <Skeleton className="h-2.5 w-full" />
-            </div>
-          )}
-          <Link
-            to="/app/davetler"
-            className="inline-flex min-h-11 items-center gap-1 self-start text-sm font-semibold text-accent hover:underline sm:min-h-0"
-          >
-            Davetleri yönetin
-            <ArrowRight className="size-4" />
-          </Link>
-        </Card>
-      </div>
-
+      <div className="grid gap-4 sm:gap-5 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
+      <div className="min-w-0">
       {overview.isPending ? (
         <CardsSkeleton />
       ) : overview.isError ? (
@@ -175,7 +181,7 @@ export default function DashboardPage() {
               variants={list}
               initial="hidden"
               animate="show"
-              className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3"
+              className="grid gap-3 sm:grid-cols-2 sm:gap-4 2xl:grid-cols-3"
             >
               {shown.map((student) => (
                 <motion.li key={student.id} variants={card} className="min-w-0">
@@ -211,44 +217,22 @@ export default function DashboardPage() {
           )}
         </section>
       )}
-    </div>
-  )
-}
-
-function Stat({
-  icon,
-  label,
-  note,
-  loading,
-  tone = 'default',
-  children,
-}: {
-  icon: ReactNode
-  label: string
-  note: string
-  loading: boolean
-  tone?: 'default' | 'warning'
-  children: ReactNode
-}) {
-  return (
-    <div className="flex min-w-0 flex-col justify-center px-3 py-3.5 sm:px-5 sm:py-4">
-      <p className={cn('flex items-center gap-1.5 text-xs font-semibold [&_svg]:size-3.5', tone === 'warning' ? 'text-warning' : 'text-muted')}>
-        {icon}
-        {label}
-      </p>
-      {loading ? (
-        <Skeleton className="mt-1.5 h-7 w-16" />
-      ) : (
-        <p className={cn('mt-1 font-display text-xl leading-tight font-bold sm:text-2xl', tone === 'warning' && 'text-warning')}>{children}</p>
+      </div>
+      {!noStudents && (
+        <aside className="space-y-4 sm:space-y-5">
+          <StudyRoomCard forTeacher />
+          <ClassWeakTopics students={active} />
+          <TopStudents students={active} />
+        </aside>
       )}
-      <p className="mt-0.5 truncate text-[11px] text-muted sm:text-xs">{note}</p>
+      </div>
     </div>
   )
 }
 
 function CardsSkeleton() {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3" aria-busy="true" aria-label="Yükleniyor">
+    <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 2xl:grid-cols-3" aria-busy="true" aria-label="Yükleniyor">
       {Array.from({ length: 6 }, (_, i) => (
         <Skeleton key={i} className="h-[248px] rounded-2xl" />
       ))}
