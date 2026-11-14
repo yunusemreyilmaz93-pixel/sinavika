@@ -2283,6 +2283,7 @@ export type Database = {
         };
         Returns: undefined;
       };
+      invite_state: { Args: { p_code: string }; Returns: string };
       preview_invite: {
         Args: { p_code: string };
         Returns: {

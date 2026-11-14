@@ -51,6 +51,13 @@ export default function JoinPage() {
       return rows[0] ?? null
     },
   })
+  const inviteState = useQuery({
+    queryKey: ['invite-state', submitted],
+    enabled: submitted !== null && preview.data === null,
+    retry: false,
+    staleTime: Infinity,
+    queryFn: async () => unwrap(await supabase.rpc('invite_state', { p_code: submitted ?? '' })),
+  })
 
   if (flow.done) return <Navigate to="/app" replace />
 
@@ -80,8 +87,12 @@ export default function JoinPage() {
     codeError ??
     (sameCode && preview.isError
       ? errorMessage(preview.error)
-      : sameCode && preview.data === null
-        ? 'Bu kod geçersiz ya da süresi dolmuş. Öğretmenden yeni bir kod isteyin.'
+      : sameCode && preview.data === null && !inviteState.isPending
+        ? inviteState.data === 'used'
+          ? 'Bu kodla daha önce hesap açılmış. Giriş sayfasından kullanıcı adınız ve şifrenizle girin. Şifrenizi hatırlamıyorsanız öğretmeniniz yenileyebilir.'
+          : inviteState.data === 'expired'
+            ? 'Bu kodun süresi dolmuş. Öğretmeninizden yeni bir kod isteyin.'
+            : 'Bu kod geçersiz. Kodu kontrol edin ya da öğretmeninizden yeni bir kod isteyin.'
         : null)
 
   let content
