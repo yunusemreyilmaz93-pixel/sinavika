@@ -2362,9 +2362,11 @@ export type Database = {
           last_net: number;
           last_seen_at: string;
           minutes_7d: number;
+          minutes_prev_7d: number;
           parent_count: number;
           prev_net: number;
           questions_7d: number;
+          rest_7d: number;
           target: string;
           tasks_overdue: number;
           tasks_week: number;

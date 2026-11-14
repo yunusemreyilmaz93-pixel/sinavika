@@ -24,9 +24,15 @@ export type OverviewRow = {
   last_net: number | null
   prev_net: number | null
   parent_count: number
+  minutes_prev_7d?: number
+  rest_7d?: number
 }
 
 export type RiskLevel = 'ok' | 'watch' | 'risk'
+
+// Haftada 42 saat: günde ortalama 6 saatin üstü
+const HEAVY_WEEK = 42 * 60
+const hours = new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 1 })
 export type RiskSignals = { level: RiskLevel; reasons: string[] }
 
 const toNumber = (value: unknown) => (value == null ? null : Number(value))
@@ -49,7 +55,8 @@ export function riskSignals(
   row: Pick<
     OverviewRow,
     'archived_at' | 'last_activity_on' | 'tasks_overdue' | 'tasks_week' | 'tasks_week_done' | 'last_net' | 'prev_net'
-  >,
+  > &
+    Partial<Pick<OverviewRow, 'minutes_7d' | 'minutes_prev_7d' | 'rest_7d'>>,
   today = todayISO(),
 ): RiskSignals {
   if (row.archived_at) return { level: 'ok', reasons: [] }
@@ -74,6 +81,12 @@ export function riskSignals(
     const drop = Math.round((Number(row.prev_net) - Number(row.last_net)) * 100) / 100
     if (drop >= 3) reasons.push(`Net ${formatNet(drop)} düştü`)
   }
+
+  // Tükenmişlik işaretleri: çalışma süresi bir haftada yarıdan fazla düştüyse ya da dinlenmeden çok yüklendiyse
+  const minutes = row.minutes_7d ?? 0
+  const prev = row.minutes_prev_7d ?? 0
+  if (prev >= 300 && minutes < prev / 2) reasons.push(`Çalışma süresi geçen haftaya göre %${Math.round((1 - minutes / prev) * 100)} düştü`)
+  if (minutes >= HEAVY_WEEK && row.rest_7d === 0) reasons.push(`Günde ortalama ${hours.format(minutes / 7 / 60)} saat, 7 gündür dinlenme yok`)
 
   const level: RiskLevel = severe || reasons.length >= 2 ? 'risk' : reasons.length ? 'watch' : 'ok'
   return { level, reasons }

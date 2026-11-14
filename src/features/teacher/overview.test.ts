@@ -30,6 +30,16 @@ function row(patch: Partial<OverviewRow> = {}): OverviewRow {
 }
 
 describe('riskSignals', () => {
+  it('çalışma süresi bir haftada yarıdan fazla düşünce uyarır', () => {
+    expect(riskSignals(row({ minutes_7d: 200, minutes_prev_7d: 900 }), tuesday).reasons).toEqual(['Çalışma süresi geçen haftaya göre %78 düştü'])
+    expect(riskSignals(row({ minutes_7d: 100, minutes_prev_7d: 200 }), tuesday).reasons).toEqual([])
+  })
+
+  it('dinlenmeden çok yüklenen öğrenciyi işaretler', () => {
+    expect(riskSignals(row({ minutes_7d: 3000, rest_7d: 0 }), tuesday).reasons).toEqual(['Günde ortalama 7,1 saat, 7 gündür dinlenme yok'])
+    expect(riskSignals(row({ minutes_7d: 3000, rest_7d: 1 }), tuesday).reasons).toEqual([])
+  })
+
   it('düzenli çalışan öğrenci için sinyal vermez', () => {
     expect(riskSignals(row(), tuesday)).toEqual({ level: 'ok', reasons: [] })
   })
