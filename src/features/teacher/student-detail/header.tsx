@@ -4,6 +4,7 @@ import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { threadLink } from '@/features/messages/lib'
+import { WeeklyReportButton } from '@/features/report/weekly-report-button'
 import { cn } from '@/lib/cn'
 import { formatRelative } from '@/lib/dates'
 import { studentLabel } from '@/lib/exam'
@@ -56,7 +57,8 @@ export function StudentHeader({
           </div>
         </div>
 
-        <div className="flex gap-2 sm:shrink-0">
+        <div className="flex flex-wrap gap-2 sm:shrink-0">
+          <WeeklyReportButton student={{ ...student, name: student.full_name }} viewer="teacher" className="flex-1 sm:flex-none" />
           <Button variant="secondary" className="flex-1 sm:flex-none" asChild>
             <Link to={threadLink(student.id, 'student')}>
               <MessageCircle />

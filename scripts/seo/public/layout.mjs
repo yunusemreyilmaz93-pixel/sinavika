@@ -4,10 +4,10 @@ import { escapeHtml, siteUrl, verificationTag } from '../html.mjs'
 
 const CONTACT_EMAIL = 'yunusemreyilmaz93@gmail.com'
 
-// Uygulamadaki wordmark ile aynı (src/components/ui/logo.tsx)
-const logoSrc = readFileSync(join(process.cwd(), 'src/components/ui/logo.tsx'), 'utf8')
+// Uygulamadaki wordmark ile aynı (src/components/ui/logo-paths.ts)
+const logoSrc = readFileSync(join(process.cwd(), 'src/components/ui/logo-paths.ts'), 'utf8')
 const WORD = logoSrc.match(/const WORD = '([^']+)'/)?.[1]
-if (!WORD) throw new Error('logo.tsx içinde WORD bulunamadı')
+if (!WORD) throw new Error('logo-paths.ts içinde WORD bulunamadı')
 const logo = `<svg viewBox="0 0 301.6 100" height="28" role="img" aria-label="İzlek"><path d="${WORD}" fill="currentColor"/><circle cx="14.0" cy="14.8" r="14.0" fill="var(--marker)"/></svg>`
 
 const themeScript = `try{var t=localStorage.getItem('sinavika-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');var a=localStorage.getItem('sinavika-accent');if(a)document.documentElement.setAttribute('data-accent',a)}catch(e){}`
