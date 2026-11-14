@@ -63,7 +63,7 @@ export function ScoreEstimate({ studentId, kind, examId, scores }: { studentId: 
       </dl>
       <p className="mt-3 text-sm text-muted">
         {kind !== 'LGS' && 'Diploma notu katkısı dahil değildir. '}
-        <a href="/araclar/puan-hesaplama" className="font-semibold text-accent hover:underline">
+        <a href={kind === 'LGS' ? '/araclar/lgs-puan-hesaplama' : '/araclar/yks-puan-hesaplama'} className="font-semibold text-accent hover:underline">
           Puan hesaplama aracı
         </a>
       </p>

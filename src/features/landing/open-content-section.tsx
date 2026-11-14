@@ -5,7 +5,8 @@ export const openLinks: { href: string; title: string; text: string; icon: Lucid
   { href: '/konu-anlatimi', title: 'Konu anlatımları', text: 'LGS, TYT ve YDT konularını üye olmadan okuyabilirsiniz.', icon: BookOpenText },
   { href: '/calisma-programlari', title: 'Çalışma programları', text: 'Hazır haftalık programları gün gün inceleyin.', icon: CalendarDays },
   { href: '/araclar/net-hesaplama', title: 'Net hesaplama', text: 'Doğru ve yanlış sayınızdan netinizi hesaplayın.', icon: Calculator },
-  { href: '/araclar/puan-hesaplama', title: 'Puan hesaplama', text: 'LGS, TYT, SAY, EA, SÖZ ve DİL puanınızı hesaplayın.', icon: Gauge },
+  { href: '/araclar/lgs-puan-hesaplama', title: 'LGS puan hesaplama', text: 'Netlerinizden LGS puanınızı hesaplayın.', icon: Gauge },
+  { href: '/araclar/yks-puan-hesaplama', title: 'YKS puan hesaplama', text: 'TYT, SAY, EA, SÖZ ve DİL puanınızı hesaplayın.', icon: Gauge },
   { href: '/yks-bolumleri', title: 'YKS bölümleri', text: 'Bölümlerin kontenjanını ve başarı sıralarını görün.', icon: GraduationCap },
 ]
 
@@ -19,7 +20,7 @@ export function OpenContentSection() {
           title={<>Giriş yapmadan <span className="marker">okuyabilirsiniz</span></>}
           lead="Anlatımlar, programlar ve araçlar herkese açıktır. İlerleme kaydı ve mini testler hesapla çalışır."
         />
-        <Reveal className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <Reveal className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {openLinks.map(({ href, title, text, icon: Icon }) => (
             <a
               key={href}

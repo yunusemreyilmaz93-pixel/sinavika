@@ -182,13 +182,14 @@ ${ld.map(jsonLd).join('\n')}
     ['/konu-anlatimi', 'Konu anlatımları'],
     ['/calisma-programlari', 'Programlar'],
     ['/araclar/net-hesaplama', 'Net hesaplama'],
-    ['/araclar/puan-hesaplama', 'Puan hesaplama'],
+    ['/araclar/lgs-puan-hesaplama', 'LGS puanı'],
+    ['/araclar/yks-puan-hesaplama', 'YKS puanı'],
     ...links,
   ]
   const header = `<header class="top"><div class="wide"><a class="brand" href="/">${logo}</a><nav class="main" aria-label="Ana menü">${nav.map(([href, label]) => `<a href="${href}">${escapeHtml(label)}</a>`).join('')}<a class="btn" href="/giris">Giriş yap</a></nav></div></header>`
   const footer = `<footer class="foot"><div class="wide">
 ${examLinks.length ? `<div><h2>Konu anlatımları</h2><ul>${examLinks.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join('')}</ul></div>` : ''}
-<div><h2>Araçlar</h2><ul><li><a href="/araclar/net-hesaplama">Net hesaplama</a></li><li><a href="/araclar/puan-hesaplama">Puan hesaplama</a></li><li><a href="/calisma-programlari">Çalışma programları</a></li><li><a href="/yks-bolumleri">YKS bölümleri</a></li></ul></div>
+<div><h2>Araçlar</h2><ul><li><a href="/araclar/net-hesaplama">Net hesaplama</a></li><li><a href="/araclar/lgs-puan-hesaplama">LGS puan hesaplama</a></li><li><a href="/araclar/yks-puan-hesaplama">YKS puan hesaplama</a></li><li><a href="/calisma-programlari">Çalışma programları</a></li><li><a href="/yks-bolumleri">YKS bölümleri</a></li></ul></div>
 <div><h2>İzlek</h2><ul><li><a href="/hakkinda">Hakkında</a></li><li><a href="/ogretmen-basvurusu">Öğretmen başvurusu</a></li><li><a href="/katil">Davet koduyla katıl</a></li><li><a href="/kvkk">KVKK aydınlatma metni</a></li></ul></div>
 <p class="editor">Anlatımlar İzlek'in geliştiricisi tarafından hazırlanır ve gözden geçirilir. Bir hata ya da eksik görürseniz <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> adresine yazabilirsiniz. İzlek ücretsizdir ve reklam içermez.</p>
 </div></footer>`

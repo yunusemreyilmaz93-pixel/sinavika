@@ -98,7 +98,8 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
               ['/konu-anlatimi/ydt', 'YDT'],
               ['/calisma-programlari', 'Çalışma programları'],
               ['/araclar/net-hesaplama', 'Net hesaplama'],
-              ['/araclar/puan-hesaplama', 'Puan hesaplama'],
+              ['/araclar/lgs-puan-hesaplama', 'LGS puan hesaplama'],
+              ['/araclar/yks-puan-hesaplama', 'YKS puan hesaplama'],
               ['/yks-bolumleri', 'YKS bölümleri'],
             ].map(([href, label]) => (
               <li key={href}>

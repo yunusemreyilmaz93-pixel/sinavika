@@ -28,7 +28,7 @@ LGS ve YKS koçluğu için ücretsiz web uygulaması. Öğretmen, öğrenci ve v
 - Emoji kullanma. İkon gerekiyorsa `lucide-react`
 - Abartılı pazarlama dili yok: "yolculuk", "seviyeyi atla", "sorunsuz", "kusursuz", "devrim", "benzersiz", "keşfedin", "potansiyelini açığa çıkar" gibi
 - Uydurma istatistik, sahte kullanıcı yorumu, "binlerce öğretmen kullanıyor" gibi iddialar yok
-- Net ana bilgidir (LGS: D - Y/3, YKS: D - Y/4). Puan, "bilgi amaçlıdır, her yıl değişir" uyarısıyla ve yalnızca `src/lib/score.ts` katsayılarıyla gösterilir (YKS katsayıları MEB OGM Materyal puan hesaplama motorundan). Herkese açık `/araclar/puan-hesaplama` aynı dosyayı okur, net hesaplama aracındaki LGS ve TYT kopyası `scripts/seo/public/tools.mjs` içindedir
+- Net ana bilgidir (LGS: D - Y/3, YKS: D - Y/4). Puan, "bilgi amaçlıdır, her yıl değişir" uyarısıyla ve yalnızca `src/lib/score.ts` katsayılarıyla gösterilir (YKS katsayıları MEB OGM Materyal puan hesaplama motorundan). Herkese açık `/araclar/lgs-puan-hesaplama` ve `/araclar/yks-puan-hesaplama` aynı dosyayı okur (`scripts/seo/public/score-tool.mjs`), net hesaplama aracındaki LGS ve TYT kopyası `scripts/seo/public/tools.mjs` içindedir
 - Türkçe karakterleri doğru yaz (ı, İ, ş, ğ, ç, ö, ü)
 
 `npm run lint` bu kuralların bir kısmını `scripts/check-copy.mjs` ile denetler. Build de aynı kontrolü çalıştırır, kural ihlali varsa yayın almaz. Bir satırın bilerek istisna olması gerekiyorsa sonuna `copy-ok` yorumu ekle.

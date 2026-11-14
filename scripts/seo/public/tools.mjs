@@ -3,7 +3,7 @@ import { escapeHtml } from '../html.mjs'
 import { loadTs } from '../ts-load.mjs'
 import { layout } from './layout.mjs'
 import { slug } from './slugs.mjs'
-import { SCORE, scoreBody, scoreCss, scoreScript } from './score-tool.mjs'
+import { LGS_SCORE, lgsBody, scoreCss, scoreScript, YKS_SCORE, yksBody } from './score-tool.mjs'
 
 const kindLabel = { study: 'Konu çalışma', questions: 'Soru çözme', reading: 'Okuma', video: 'Video', review: 'Tekrar', other: 'Diğer' }
 const weekdays = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar']
@@ -98,7 +98,7 @@ export async function buildPublicTools({ write, shell, cssHref, site, subjects =
     const faq = [
       ['LGS netinde yanlışlar nasıl hesaplanır?', 'LGS\'de 3 yanlış 1 doğruyu götürür. Net = Doğru - Yanlış / 3 formülüyle hesaplanır.'],
       ['TYT ve AYT netinde yanlışlar nasıl hesaplanır?', 'YKS\'de 4 yanlış 1 doğruyu götürür. Net = Doğru - Yanlış / 4 formülüyle hesaplanır.'],
-      ['Bu araç puan hesaplar mı?', 'LGS ve TYT puanını da gösterir, yerleştirme puanları için puan hesaplama aracı vardır. Resmi puan o yıl sınava girenlerin sonuçlarına göre hesaplandığı için gerçek puan farklı çıkabilir. TYT için MEB OGM Materyal puan hesaplama motorunun katsayıları, LGS için önceki yılların ortalaması kullanılır.'],
+      ['Bu araç puan hesaplar mı?', 'LGS ve TYT puanını da gösterir, SAY, EA, SÖZ ve DİL puanı için YKS puan hesaplama aracı vardır. Resmi puan o yıl sınava girenlerin sonuçlarına göre hesaplandığı için gerçek puan farklı çıkabilir. TYT için MEB OGM Materyal puan hesaplama motorunun katsayıları, LGS için önceki yılların ortalaması kullanılır.'],
     ]
     const table = `<div class="tw"><table><thead><tr><th>Sınav</th><th>Bölüm</th><th>Soru</th></tr></thead><tbody>${exams
       .flatMap((e) => e.sections.map(([name, count]) => `<tr><td>${e.name}</td><td>${escapeHtml(name)}</td><td>${count}</td></tr>`))
@@ -107,7 +107,7 @@ export async function buildPublicTools({ write, shell, cssHref, site, subjects =
 <h1>LGS, TYT, AYT ve YDT net hesaplama</h1>
 <p class="lead">Doğru ve yanlış sayılarını girin, bölüm bölüm ve toplam netiniz anında görünsün. Kayıt ya da üyelik gerekmez.</p>
 <section class="calc" id="calc" aria-label="Net hesaplama aracı"><label class="muted" for="calc-exam">Sınav</label><select id="calc-exam" data-exam>${exams.map((e) => `<option value="${e.key}">${e.name}</option>`).join('')}</select><div data-body></div><div class="calc-total"><span>Toplam net</span><strong data-total>0</strong></div><div class="calc-total" data-score-row><span>Puan</span><strong data-score>0</strong></div><p class="calc-note" data-note></p></section>
-<p class="calc-note">SAY, EA, SÖZ ve DİL puanı için <a href="${SCORE}">puan hesaplama</a> aracını kullanın.</p>
+<p class="calc-note">Puanınız için <a href="${LGS_SCORE}">LGS puan hesaplama</a> ya da <a href="${YKS_SCORE}">YKS puan hesaplama</a> aracını kullanın.</p>
 <noscript><p class="box">Hesaplama için JavaScript gerekir. Formül LGS'de Doğru - Yanlış / 3, YKS'de Doğru - Yanlış / 4 şeklindedir.</p></noscript>
 <article>
 <h2>Net nasıl hesaplanır?</h2>
@@ -136,43 +136,76 @@ ${faq.map(([q, a]) => `<h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p>`).join('
     urls.push({ path: NET })
   }
 
-  // Puan hesaplama
+  // Puan hesaplama: LGS ve YKS ayrı sayfa
   {
     const formulas = (await loadTs(join(process.cwd(), 'src/lib/score.ts'))).scoreFormulas
-    const trail = [['Ana sayfa', '/'], ['Puan hesaplama', SCORE]]
-    const faq = [
-      ['Hesaplanan puan kesin midir?', 'Hayır, bilgi amaçlıdır. Resmi LGS ve YKS puanı o yıl sınava girenlerin sonuçlarına göre hesaplanır ve her yıl değişir.'],
-      ['Katsayılar nereden alındı?', 'YKS katsayıları MEB OGM Materyal YKS puan hesaplama motorundan alınmıştır. LGS hesabı önceki yılların ortalamasına dayanır.'],
-      ['Diploma notu puanı nasıl etkiler?', 'Diploma notu 0,6 ile çarpılarak yerleştirme puanına eklenir. Örneğin 85 diploma notu yaklaşık 51 puan katkı sağlar.'],
-      ['TYT neti olmadan AYT puanı hesaplanır mı?', 'Yerleştirme puanının bir kısmı TYT netlerinden gelir. TYT sekmesinde Türkçe ya da Temel Matematikten en az 0,5 net yoksa ham puan 100 kabul edilir.'],
+    const cta = `<aside class="cta"><h2>Denemelerinizi zamanla izleyin</h2><p>İzlek'te her denemenin neti ve puanı kaydedilir, ders ders gelişiminiz görünür. Öğretmeniniz bu verilere bakarak çalışma planınızı günceller.</p><div class="row"><a class="btn" href="/katil">Davet koduyla katıl</a><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a></div></aside>`
+    const pages = [
+      {
+        path: LGS_SCORE,
+        name: 'LGS puan hesaplama',
+        title: 'LGS puan hesaplama · İzlek',
+        description: 'LGS puanınızı doğru ve yanlış sayılarınızdan hesaplayın. 3 yanlış 1 doğruyu götürür, Türkçe, Matematik ve Fen netleri 4 katsayıyla sayılır.',
+        lead: 'Doğru ve yanlış sayılarınızı girin, LGS puanınız anında hesaplansın. Kayıt ya da üyelik gerekmez.',
+        notice: 'Gerçek puan o yıl sınava girenlerin sonuçlarına göre hesaplanır ve her yıl değişir. Hesap önceki yılların ortalamasına dayanır.',
+        body: lgsBody(),
+        article: `<h2>LGS puanı nasıl hesaplanır?</h2>
+<p>Önce her dersin neti bulunur, 3 yanlış 1 doğruyu götürür. Türkçe, Matematik ve Fen Bilimleri netleri 4, İnkılap Tarihi, Din Kültürü ve Yabancı Dil netleri 1 katsayıyla çarpılır. Bu ağırlıklı net taban puana eklenir ve sonuç 500 üzerinden gösterilir.</p>
+<p>Netlerinizi tek tek görmek için <a href="${NET}">net hesaplama</a> aracını kullanabilirsiniz.</p>`,
+        faq: [
+          ['Hesaplanan LGS puanı kesin midir?', 'Hayır, bilgi amaçlıdır. Resmi LGS puanı o yıl sınava girenlerin sonuçlarına göre hesaplanır ve her yıl değişir.'],
+          ['LGS\'de hangi dersler daha çok etkiler?', 'Türkçe, Matematik ve Fen Bilimleri netleri 4 katsayıyla, İnkılap Tarihi, Din Kültürü ve Yabancı Dil netleri 1 katsayıyla sayılır.'],
+          ['Bütün soruları doğru yapan kaç puan alır?', 'Tüm soruları doğru yanıtlayan öğrenci 500 puan alır.'],
+        ],
+      },
+      {
+        path: YKS_SCORE,
+        name: 'YKS puan hesaplama',
+        title: 'YKS puan hesaplama: TYT, SAY, EA, SÖZ, DİL · İzlek',
+        description: 'TYT, AYT ve YDT netlerinizden TYT, SAY, EA, SÖZ ve DİL puanınızı hesaplayın. Katsayılar MEB OGM Materyal puan hesaplama motorundan alınmıştır.',
+        lead: 'TYT, AYT ve YDT doğru ve yanlış sayılarınızı girin, TYT, SAY, EA, SÖZ ve DİL puanınız anında hesaplansın. Kayıt ya da üyelik gerekmez.',
+        notice: 'Gerçek puan o yıl sınava girenlerin sonuçlarına göre hesaplanır ve her yıl değişir. Katsayılar MEB OGM Materyal puan hesaplama motorundan alınmıştır.',
+        body: yksBody(),
+        article: `<h2>YKS puanı nasıl hesaplanır?</h2>
+<p>Önce her testin neti bulunur, 4 yanlış 1 doğruyu götürür. TYT puanı yalnızca TYT netleriyle, SAY, EA, SÖZ ve DİL puanları TYT ve AYT ya da YDT netleriyle birlikte hesaplanır. Netler katsayılarla çarpılıp taban puana eklenir. Yerleştirme puanına diploma notunun 0,6 katı (OBP katkısı) eklenir.</p>
+<p>Netlerinizi tek tek görmek için <a href="${NET}">net hesaplama</a> aracını, puanınızın hangi bölümlere yaklaştığını görmek için <a href="/yks-bolumleri">YKS bölümleri</a> sayfasını kullanabilirsiniz.</p>`,
+        faq: [
+          ['Hesaplanan YKS puanı kesin midir?', 'Hayır, bilgi amaçlıdır. Resmi puan o yıl sınava girenlerin sonuçlarına göre hesaplanır ve her yıl değişir.'],
+          ['Katsayılar nereden alındı?', 'MEB OGM Materyal YKS puan hesaplama motorundan alınmıştır.'],
+          ['Diploma notu puanı nasıl etkiler?', 'Diploma notu 0,6 ile çarpılarak yerleştirme puanına eklenir. Örneğin 85 diploma notu 51 puan katkı sağlar.'],
+          ['TYT neti olmadan AYT puanı hesaplanır mı?', 'SAY, EA, SÖZ ve DİL puanının bir kısmı TYT netlerinden gelir. Türkçe ya da Temel Matematikten en az 0,5 net yoksa TYT puanı hesaplanmaz ve alan puanı 100 kabul edilir.'],
+        ],
+      },
     ]
-    const body = `<main><div class="wrap">${crumbHtml(trail)}
-<h1>LGS ve YKS puan hesaplama</h1>
-<p class="lead">Doğru ve yanlış sayılarınızı girin, LGS, TYT, SAY, EA, SÖZ ve DİL puanınız anında hesaplansın. Kayıt ya da üyelik gerekmez.</p>
-<div class="notice"><b>Bilgi amaçlıdır</b>Gerçek puan o yıl sınava girenlerin sonuçlarına göre hesaplanır ve her yıl değişir. YKS katsayıları MEB OGM Materyal puan hesaplama motorundan alınmıştır.</div>
-${scoreBody()}
+    for (const page of pages) {
+      const trail = [['Ana sayfa', '/'], [page.name, page.path]]
+      const body = `<main><div class="wrap">${crumbHtml(trail)}
+<h1>${page.name}</h1>
+<p class="lead">${page.lead}</p>
+<div class="notice"><b>Bilgi amaçlıdır</b>${page.notice}</div>
+${page.body}
 <noscript><p class="box">Hesaplama için JavaScript gerekir.</p></noscript>
 <article>
-<h2>Puan nasıl hesaplanır?</h2>
-<p>Önce her dersin neti bulunur. LGS'de 3 yanlış, YKS'de 4 yanlış bir doğruyu götürür. Netler derslerin katsayılarıyla çarpılıp sabit bir taban puana eklenir. YKS yerleştirme puanına diploma notunun 0,6 katı eklenir.</p>
-<p>Netlerinizi tek tek hesaplamak için <a href="${NET}">net hesaplama</a> aracını, puanınızın hangi bölümlere yaklaştığını görmek için <a href="/yks-bolumleri">YKS bölümleri</a> sayfasını kullanabilirsiniz.</p>
+${page.article}
 <h2>Sık sorulanlar</h2>
-${faq.map(([q, a]) => `<h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p>`).join('')}
+${page.faq.map(([q, a]) => `<h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p>`).join('')}
 </article>
-<aside class="cta"><h2>Denemelerinizi zamanla izleyin</h2><p>İzlek'te her denemenin neti ve puanı kaydedilir, ders ders gelişiminiz görünür. Öğretmeniniz bu verilere bakarak çalışma planınızı günceller.</p><div class="row"><a class="btn" href="/katil">Davet koduyla katıl</a><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a></div></aside>
+${cta}
 </div></main>
 <script>${scoreScript(formulas)}</script>`
-    write(`${SCORE.slice(1)}.html`, wrap({
-      title: 'LGS ve YKS puan hesaplama · İzlek',
-      description: 'LGS, TYT, SAY, EA, SÖZ ve DİL puanınızı netlerinizden hesaplayın. YKS katsayıları MEB OGM Materyal puan hesaplama motorundan alınmıştır.',
-      path: SCORE,
-      body,
-      ld: [
-        { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Puan hesaplama', applicationCategory: 'EducationalApplication', operatingSystem: 'Web', inLanguage: 'tr', isAccessibleForFree: true, url: `${site}${SCORE}` },
-        crumbLd(trail),
-      ],
-    }).replace('</head>', `${scoreCss}\n</head>`))
-    urls.push({ path: SCORE })
+      write(`${page.path.slice(1)}.html`, wrap({
+        title: page.title,
+        description: page.description,
+        path: page.path,
+        body,
+        ld: [
+          { '@context': 'https://schema.org', '@type': 'WebApplication', name: page.name, applicationCategory: 'EducationalApplication', operatingSystem: 'Web', inLanguage: 'tr', isAccessibleForFree: true, url: `${site}${page.path}` },
+          { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: page.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+          crumbLd(trail),
+        ],
+      }).replace('</head>', `${scoreCss}\n</head>`))
+      urls.push({ path: page.path })
+    }
   }
 
   // Çalışma programları
