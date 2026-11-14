@@ -21,6 +21,7 @@ import { navFor, type NavItem } from './nav'
 import { ReportIssueButton } from '@/features/feedback/report-issue'
 import { SupportLink } from './support-link'
 import { InstallBar } from '@/features/settings/install-bar'
+import { StudyRoomProvider } from '@/features/tracking/study-room-provider'
 
 const roleLabel: Record<Profile['role'], string> = { teacher: 'Öğretmen', student: 'Öğrenci', parent: 'Veli' }
 
@@ -44,6 +45,7 @@ export function AppShell() {
   const pending = profile.role === 'teacher' && profile.status !== 'active' && location.pathname !== '/app/ayarlar'
 
   return (
+    <StudyRoomProvider>
     <div className="min-h-dvh lg:grid lg:grid-cols-[248px_1fr]">
       {isTestTab && <TestBanner name={profile.full_name} role={roleLabel[profile.role]} />}
       <aside className="sticky top-0 hidden h-dvh flex-col border-r border-line bg-surface lg:flex">
@@ -103,6 +105,7 @@ export function AppShell() {
       {isStudent && <QuickAddSheet open={quickAdd} onOpenChange={setQuickAdd} />}
       {!isTestTab && <InstallBar />}
     </div>
+    </StudyRoomProvider>
   )
 }
 

@@ -123,6 +123,11 @@ const sections: Section[] = [
           kendisi için tuttuğu özel notları öğrenci ve veli göremez. Veliler kayıtları yalnızca görüntüleyebilir, değiştiremez.
         </p>
         <p>
+          Sanal etüt: Öğrenci sayaçla çalışırken ilk adı, çalıştığı ders ve başlama saati aynı öğretmenin diğer öğrencilerine ve
+          öğretmenine anlık olarak görünür. Bu bilgi kaydedilmez, sayaç durunca kaybolur. Öğrenci sayaç ekranındaki Etütte görün
+          ayarını kapatarak bunu durdurabilir.
+        </p>
+        <p>
           İzlek'in çalışabilmesi için verileriniz barındırma hizmeti alınan iki sağlayıcıya aktarılır. Bunlar Supabase
           (veritabanı ve oturum açma) ve Cloudflare (web sitesi ve sunucu işlemleri) şirketleridir. Bu sağlayıcılar verileri yurt
           dışındaki sunucularda saklayabilir. Bu nedenle kayıt sırasında, KVKK'nın 9. maddesi kapsamında yurt dışına aktarım için

@@ -16,6 +16,7 @@ import { useCapacity } from './invites'
 import { rankByAttention, useTeacherOverview } from './overview'
 import { StartChecklist, useStartChecklist } from './start-checklist'
 import { Duration, StudentCard } from './student-card'
+import { StudyRoomCard } from '@/features/tracking/study-room-provider'
 
 type Filter = 'aktif' | 'arsiv'
 
@@ -80,6 +81,8 @@ export default function DashboardPage() {
       </header>
 
       {start.visible && <StartChecklist steps={start.steps} onDismiss={start.dismiss} />}
+
+      <StudyRoomCard forTeacher className="mb-6" />
 
       <div className={cn('mb-8 grid gap-3 sm:gap-4', !noStudents && 'lg:grid-cols-[minmax(0,1fr)_300px]')}>
         {!noStudents && (

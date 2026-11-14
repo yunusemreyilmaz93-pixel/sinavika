@@ -1,3 +1,4 @@
+import { StudyRoomCard } from './study-room-provider'
 import { useQueryClient } from '@tanstack/react-query'
 import confetti from 'canvas-confetti'
 import { motion } from 'motion/react'
@@ -225,6 +226,7 @@ function FocusTimer({ studentId, dailyGoal }: { studentId: string; dailyGoal: nu
             </Button>
           </div>
           <p className="mt-4 text-center text-sm text-muted">Sayfayı kapatsan da süre işlemeye devam eder.</p>
+          <StudyRoomCard showToggle className="mt-6 w-full" />
         </div>
 
         <Modal
@@ -358,6 +360,7 @@ function FocusTimer({ studentId, dailyGoal }: { studentId: string; dailyGoal: nu
     <>
       <PageHeader title="Sayaç" description="Süreyi seç ve başlat. Bitince çalışman kendiliğinden kaydedilir." />
       <TimerSetup studentId={studentId} dailyGoal={dailyGoal} onStart={start} />
+      <StudyRoomCard showToggle className="mt-5" />
     </>
   )
 }
