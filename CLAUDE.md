@@ -28,7 +28,7 @@ LGS ve YKS koçluğu için ücretsiz web uygulaması. Öğretmen, öğrenci ve v
 - Emoji kullanma. İkon gerekiyorsa `lucide-react`
 - Abartılı pazarlama dili yok: "yolculuk", "seviyeyi atla", "sorunsuz", "kusursuz", "devrim", "benzersiz", "keşfedin", "potansiyelini açığa çıkar" gibi
 - Uydurma istatistik, sahte kullanıcı yorumu, "binlerce öğretmen kullanıyor" gibi iddialar yok
-- Tahmini LGS/YKS puanı gösterme. Net göster (LGS: D - Y/3, YKS: D - Y/4)
+- Net ana bilgidir (LGS: D - Y/3, YKS: D - Y/4). Puan yalnızca "yaklaşık" etiketiyle ve `src/lib/score.ts` katsayılarıyla gösterilir (net hesaplama aracındaki kopya `scripts/seo/public/tools.mjs`), resmi puan gibi sunulmaz
 - Türkçe karakterleri doğru yaz (ı, İ, ş, ğ, ç, ö, ü)
 
 `npm run lint` bu kuralların bir kısmını `scripts/check-copy.mjs` ile denetler. Build de aynı kontrolü çalıştırır, kural ihlali varsa yayın almaz. Bir satırın bilerek istisna olması gerekiyorsa sonuna `copy-ok` yorumu ekle.

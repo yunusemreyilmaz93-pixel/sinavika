@@ -16,12 +16,16 @@ export const exams = [
     name: 'LGS',
     divisor: 3,
     sections: [['Türkçe', 20], ['Matematik', 20], ['Fen Bilimleri', 20], ['T.C. İnkılap Tarihi ve Atatürkçülük', 10], ['Din Kültürü ve Ahlak Bilgisi', 10], ['Yabancı Dil', 10]],
+    // Yaklaşık puan: taban + ağırlıklı net x çarpan (src/lib/score.ts ile aynı katsayılar)
+    score: { base: 194.752, factor: (500 - 194.752) / 270, weights: [4, 4, 4, 1, 1, 1] },
   },
   {
     key: 'tyt',
     name: 'TYT',
     divisor: 4,
     sections: [['Türkçe', 40], ['Sosyal Bilimler', 20], ['Temel Matematik', 40], ['Fen Bilimleri', 20]],
+    // MEB OGM Materyal YKS puan hesaplama motorunun TYT katsayıları. Türkçe ya da matematikten 0,5 net gerekir
+    score: { base: 144.79811555479816, factor: 1, weights: [2.93041546699554, 3.0192159356054, 2.93041546699554, 3.0192159356054], need: [0, 2] },
   },
   {
     key: 'ayt',
@@ -32,10 +36,10 @@ export const exams = [
   { key: 'ydt', name: 'YDT', divisor: 4, sections: [['Yabancı Dil', 80]] },
 ]
 
-export const calcScript = (data) => `(function(){var D=${JSON.stringify(data).replace(/</g, '\\u003c')};var root=document.getElementById('calc');if(!root)return;var sel=root.querySelector('[data-exam]');var body=root.querySelector('[data-body]');var out=root.querySelector('[data-total]');var note=root.querySelector('[data-note]');
+export const calcScript = (data) => `(function(){var D=${JSON.stringify(data).replace(/</g, '\\u003c')};var root=document.getElementById('calc');if(!root)return;var sel=root.querySelector('[data-exam]');var body=root.querySelector('[data-body]');var out=root.querySelector('[data-total]');var note=root.querySelector('[data-note]');var srow=root.querySelector('[data-score-row]');var sout=root.querySelector('[data-score]');
 function fmt(n){return (Math.round(n*100)/100).toString().replace('.',',')}
 function draw(){var e=D[sel.value];body.innerHTML='';e.sections.forEach(function(s,i){var row=document.createElement('div');row.className='calc-row';row.innerHTML='<div class="calc-name"><b></b><span></span></div><label>Doğru<input inputmode="numeric" pattern="[0-9]*" maxlength="3" data-k="d" data-i="'+i+'" autocomplete="off"></label><label>Yanlış<input inputmode="numeric" pattern="[0-9]*" maxlength="3" data-k="y" data-i="'+i+'" autocomplete="off"></label><output data-net="'+i+'">0</output>';row.querySelector('b').textContent=s[0];row.querySelector('span').textContent=s[1]+' soru';body.appendChild(row)});calc()}
-function calc(){var e=D[sel.value];var total=0,bad=false;e.sections.forEach(function(s,i){var d=parseInt(body.querySelector('[data-k=d][data-i="'+i+'"]').value,10)||0;var y=parseInt(body.querySelector('[data-k=y][data-i="'+i+'"]').value,10)||0;var over=d+y>s[1];if(over)bad=true;var net=d-y/e.divisor;if(!over)total+=net;var o=body.querySelector('[data-net="'+i+'"]');o.textContent=over?'-':fmt(net);o.classList.toggle('bad',over)});out.textContent=fmt(total);note.textContent=bad?'Doğru ve yanlış toplamı soru sayısını aşmamalı':'Net = Doğru - Yanlış / '+e.divisor}
+function calc(){var e=D[sel.value];var total=0,bad=false,w=0;e.sections.forEach(function(s,i){var d=parseInt(body.querySelector('[data-k=d][data-i="'+i+'"]').value,10)||0;var y=parseInt(body.querySelector('[data-k=y][data-i="'+i+'"]').value,10)||0;var over=d+y>s[1];if(over)bad=true;var net=d-y/e.divisor;if(!over){total+=net;if(e.score)w+=Math.max(0,net)*e.score.weights[i]}var o=body.querySelector('[data-net="'+i+'"]');o.textContent=over?'-':fmt(net);o.classList.toggle('bad',over)});out.textContent=fmt(total);if(srow)srow.style.display=e.score?'':'none';if(e.score&&sout){var ok=!e.score.need||e.score.need.some(function(i){var d=parseInt(body.querySelector('[data-k=d][data-i="'+i+'"]').value,10)||0,y=parseInt(body.querySelector('[data-k=y][data-i="'+i+'"]').value,10)||0;return d-y/e.divisor>=0.5});sout.textContent=ok?'≈ '+Math.round(e.score.base+w*e.score.factor):'-'}note.textContent=bad?'Doğru ve yanlış toplamı soru sayısını aşmamalı':'Net = Doğru - Yanlış / '+e.divisor+(e.score?'. Puan yaklaşıktır, resmi puan o yıl sınava girenlerin sonuçlarına göre değişir.':'. Yerleştirme puanı için TYT netleri de gerekir.')}
 sel.addEventListener('change',draw);root.addEventListener('input',function(ev){var t=ev.target;if(t.tagName==='INPUT'){t.value=t.value.replace(/[^0-9]/g,'');calc()}});draw()})()`
 
 const toolCss = `<style>
@@ -88,12 +92,12 @@ export async function buildPublicTools({ write, shell, cssHref, site, subjects =
 
   // Net hesaplama
   {
-    const data = Object.fromEntries(exams.map((e) => [e.key, { divisor: e.divisor, sections: e.sections }]))
+    const data = Object.fromEntries(exams.map((e) => [e.key, { divisor: e.divisor, sections: e.sections, score: e.score }]))
     const trail = [['Ana sayfa', '/'], ['Net hesaplama', NET]]
     const faq = [
       ['LGS netinde yanlışlar nasıl hesaplanır?', 'LGS\'de 3 yanlış 1 doğruyu götürür. Net = Doğru - Yanlış / 3 formülüyle hesaplanır.'],
       ['TYT ve AYT netinde yanlışlar nasıl hesaplanır?', 'YKS\'de 4 yanlış 1 doğruyu götürür. Net = Doğru - Yanlış / 4 formülüyle hesaplanır.'],
-      ['Bu araç puan hesaplar mı?', 'Hayır. Araç yalnızca netinizi hesaplar. Puan, her yıl sınavın genel sonuçlarına göre değiştiği için önceden hesaplanamaz.'],
+      ['Bu araç puan hesaplar mı?', 'LGS ve TYT için yaklaşık puan gösterir. Resmi puan o yıl sınava girenlerin sonuçlarına göre hesaplandığı için gerçek puan farklı çıkabilir. TYT için MEB OGM Materyal puan hesaplama motorunun katsayıları, LGS için önceki yılların ortalaması kullanılır.'],
     ]
     const table = `<div class="tw"><table><thead><tr><th>Sınav</th><th>Bölüm</th><th>Soru</th></tr></thead><tbody>${exams
       .flatMap((e) => e.sections.map(([name, count]) => `<tr><td>${e.name}</td><td>${escapeHtml(name)}</td><td>${count}</td></tr>`))
@@ -101,7 +105,7 @@ export async function buildPublicTools({ write, shell, cssHref, site, subjects =
     const body = `<main><div class="wrap">${crumbHtml(trail)}
 <h1>LGS, TYT, AYT ve YDT net hesaplama</h1>
 <p class="lead">Doğru ve yanlış sayılarını girin, bölüm bölüm ve toplam netiniz anında görünsün. Kayıt ya da üyelik gerekmez.</p>
-<section class="calc" id="calc" aria-label="Net hesaplama aracı"><label class="muted" for="calc-exam">Sınav</label><select id="calc-exam" data-exam>${exams.map((e) => `<option value="${e.key}">${e.name}</option>`).join('')}</select><div data-body></div><div class="calc-total"><span>Toplam net</span><strong data-total>0</strong></div><p class="calc-note" data-note></p></section>
+<section class="calc" id="calc" aria-label="Net hesaplama aracı"><label class="muted" for="calc-exam">Sınav</label><select id="calc-exam" data-exam>${exams.map((e) => `<option value="${e.key}">${e.name}</option>`).join('')}</select><div data-body></div><div class="calc-total"><span>Toplam net</span><strong data-total>0</strong></div><div class="calc-total" data-score-row><span>Yaklaşık puan</span><strong data-score>0</strong></div><p class="calc-note" data-note></p></section>
 <noscript><p class="box">Hesaplama için JavaScript gerekir. Formül LGS'de Doğru - Yanlış / 3, YKS'de Doğru - Yanlış / 4 şeklindedir.</p></noscript>
 <article>
 <h2>Net nasıl hesaplanır?</h2>

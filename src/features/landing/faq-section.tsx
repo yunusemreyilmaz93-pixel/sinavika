@@ -76,8 +76,8 @@ const faqs: { id: string; q: ReactNode; a: ReactNode }[] = [
   },
   {
     id: 'puan',
-    q: 'Neden puan tahmini yok?',
-    a: "LGS ve YKS puanı, o yıl sınava girenlerin sonuçlarına göre hesaplanır. Resmi hesaplama sınavdan sonra belli olur. Tahmini bir puan yanıltabilir, bu yüzden İzlek doğru ve yanlış sayısından hesaplanan neti gösterir.",
+    q: 'Puan hesaplanıyor mu?',
+    a: "Deneme sonuçlarında önceki yılların katsayılarıyla yaklaşık puan gösterilir. Resmi LGS ve YKS puanı o yıl sınava girenlerin sonuçlarına göre hesaplandığı için gerçek puan farklı çıkabilir. Asıl takip edilen ve ders ders karşılaştırılan değer nettir.",
   },
   {
     id: 'sifre',

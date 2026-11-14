@@ -20,6 +20,7 @@ import { useDeleteExam, useExamDetail, type ExamDetailData, type Score } from '.
 import { accuracy, bySubjectOrder, round2 } from './stats'
 import { SubjectNetChart } from './subject-net-chart'
 import { ExamTopicMisses } from './topic-misses'
+import { ScoreEstimate } from './score-estimate'
 
 type Row = Score & { subject?: Subject; net: number; accuracy: number | null; diff: number | null }
 
@@ -191,6 +192,8 @@ export function ExamDetail({ examId, canEdit, onDeleted }: { examId: number; can
           </table>
         </Card>
       )}
+
+      <ScoreEstimate studentId={exam.student_id} kind={kind} examId={exam.id} scores={data.scores} />
 
       <LossAnalysis
         examId={exam.id}

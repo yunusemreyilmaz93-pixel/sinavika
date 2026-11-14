@@ -4,8 +4,10 @@ import { calcScript, exams } from '../../scripts/seo/public/tools.mjs'
 
 function mount(exam: string) {
   document.body.innerHTML =
-    '<section id="calc"><select data-exam><option value="lgs">LGS</option><option value="tyt">TYT</option></select><div data-body></div><strong data-total></strong><p data-note></p></section>'
-  const data = Object.fromEntries((exams as { key: string; divisor: number; sections: unknown[] }[]).map((e) => [e.key, { divisor: e.divisor, sections: e.sections }]))
+    '<section id="calc"><select data-exam><option value="lgs">LGS</option><option value="tyt">TYT</option></select><div data-body></div><strong data-total></strong><div data-score-row><strong data-score></strong></div><p data-note></p></section>'
+  const data = Object.fromEntries(
+    (exams as { key: string; divisor: number; sections: unknown[]; score?: unknown }[]).map((e) => [e.key, { divisor: e.divisor, sections: e.sections, score: e.score }]),
+  )
   new Function(calcScript(data))()
   const select = document.querySelector<HTMLSelectElement>('[data-exam]')!
   select.value = exam
@@ -39,6 +41,21 @@ describe('net hesaplama aracı', () => {
     type('y', 3, '3')
     expect(document.querySelector('[data-total]')!.textContent).toBe('0')
     expect(document.querySelector('[data-note]')!.textContent).toContain('aşmamalı')
+  })
+
+  it('LGS ve TYT için tam netle yaklaşık 500 puan gösterir', () => {
+    mount('lgs')
+    ;[20, 20, 20, 10, 10, 10].forEach((n, i) => type('d', i, String(n)))
+    expect(document.querySelector('[data-score]')!.textContent).toBe('≈ 500')
+    mount('tyt')
+    ;[40, 20, 40, 20].forEach((n, i) => type('d', i, String(n)))
+    expect(document.querySelector('[data-score]')!.textContent).toBe('≈ 500')
+  })
+
+  it('TYT puanı için Türkçe ya da matematikten net gerekir', () => {
+    mount('tyt')
+    type('d', 1, '15')
+    expect(document.querySelector('[data-score]')!.textContent).toBe('-')
   })
 
   it('sınav soru sayıları toplamı doğru', () => {
