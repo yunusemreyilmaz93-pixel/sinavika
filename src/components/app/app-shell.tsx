@@ -39,8 +39,8 @@ export function AppShell() {
   useEffect(() => {
     document.title = title
   }, [title])
-  // Planlayıcı haftalık tahtayı geniş ekranda tam genişlikte gösterir
-  const wide = location.pathname === '/app/planlayici'
+  // Planlayıcı ve sınıf haritası geniş ekranı tam genişlikte kullanır
+  const wide = location.pathname === '/app/planlayici' || location.pathname === '/app/sinif'
   const pending = profile.role === 'teacher' && profile.status !== 'active' && location.pathname !== '/app/ayarlar'
 
   return (

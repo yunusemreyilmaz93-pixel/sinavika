@@ -5,6 +5,7 @@ import {
   BookOpenCheck,
   CalendarRange,
   ClipboardList,
+  Grid3x3,
   House,
   LayoutGrid,
   LayoutTemplate,
@@ -64,6 +65,7 @@ export function navFor(profile: Profile): NavItem[] {
   const items: NavItem[] = [
     { to: '/app', label: 'Öğrenciler', icon: LayoutGrid, end: true, mobile: true },
     { to: '/app/planlayici', label: 'Planlayıcı', icon: ClipboardList, mobile: true },
+    { to: '/app/sinif', label: 'Sınıf haritası', icon: Grid3x3 },
     { to: '/app/sablonlar', label: 'Şablonlar', icon: LayoutTemplate },
     { to: '/app/mufredat', label: 'Müfredat', icon: Library },
     { to: '/app/testler', label: 'Testler', icon: ListChecks },
@@ -72,7 +74,7 @@ export function navFor(profile: Profile): NavItem[] {
     { to: '/app/davetler', label: 'Davetler', icon: UserPlus, mobile: true },
     { to: '/app/bildirimler', label: 'Bildirimler', icon: Bell },
   ]
-  if (profile.status === 'active') items.splice(7, 0, { to: '/app/asistan', label: 'Asistan', icon: Sparkles })
+  if (profile.status === 'active') items.splice(8, 0, { to: '/app/asistan', label: 'Asistan', icon: Sparkles })
   if (profile.is_admin) items.push({ to: '/app/yonetim', label: 'Yönetim', icon: ShieldCheck })
   items.push({ to: '/app/ayarlar', label: 'Ayarlar', icon: Settings })
   return items

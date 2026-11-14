@@ -20,6 +20,8 @@ type Props = {
   onOpenChange: (open: boolean) => void
   students: PlannerStudent[]
   initialStudentId?: string
+  initialStudentIds?: string[]
+  initialDraft?: Partial<TaskDraft>
   initialWeek: string
 }
 
@@ -39,14 +41,14 @@ export function BulkTaskModal(props: Props) {
   return <BulkTaskDialog key={session} {...props} />
 }
 
-function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initialWeek }: Props) {
+function BulkTaskDialog({ open, onOpenChange, students, initialStudentId, initialStudentIds, initialDraft, initialWeek }: Props) {
   const qc = useQueryClient()
   const curriculum = useCurriculum()
   const today = todayISO()
-  const [studentIds, setStudentIds] = useState<string[]>(() => (initialStudentId ? [initialStudentId] : []))
+  const [studentIds, setStudentIds] = useState<string[]>(() => initialStudentIds ?? (initialStudentId ? [initialStudentId] : []))
   const [week, setWeek] = useState(initialWeek)
   const [dates, setDates] = useState<string[]>(() => (weekDays(initialWeek).includes(today) ? [today] : []))
-  const [draft, setDraft] = useState<TaskDraft>(() => draftFromTask(null, today))
+  const [draft, setDraft] = useState<TaskDraft>(() => ({ ...draftFromTask(null, today), ...initialDraft }))
   const [error, setError] = useState<string | null>(null)
   const [titleError, setTitleError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)

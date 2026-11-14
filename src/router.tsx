@@ -76,6 +76,7 @@ export const router = createBrowserRouter([
                   { path: 'ogrenciler/:studentId/deneme-ekle', ...page(() => import('@/features/exams/new-exam-page')) },
                   { path: 'asistan', ...page(() => import('@/features/assistant/assistant-page')) },
                   { path: 'planlayici', ...page(() => import('@/features/plan/planner-page')) },
+                  { path: 'sinif', ...page(() => import('@/features/teacher/class-map-page')) },
                   { path: 'sablonlar', ...page(() => import('@/features/templates/templates-page')) },
                   { path: 'sablonlar/yeni', ...page(() => import('@/features/templates/template-editor-page')) },
                   { path: 'sablonlar/:key', ...page(() => import('@/features/templates/template-page')) },
