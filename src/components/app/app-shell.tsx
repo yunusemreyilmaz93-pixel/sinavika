@@ -41,7 +41,7 @@ export function AppShell() {
     document.title = title
   }, [title])
   // Planlayıcı ve sınıf haritası geniş ekranı tam genişlikte kullanır
-  const wide = location.pathname === '/app/planlayici' || location.pathname === '/app/sinif'
+  const wide = ['/app/planlayici', '/app/sinif', '/app/plan'].includes(location.pathname)
   const pending = profile.role === 'teacher' && profile.status !== 'active' && location.pathname !== '/app/ayarlar'
 
   return (

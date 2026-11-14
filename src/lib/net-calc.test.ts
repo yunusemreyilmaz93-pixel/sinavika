@@ -43,13 +43,13 @@ describe('net hesaplama aracı', () => {
     expect(document.querySelector('[data-note]')!.textContent).toContain('aşmamalı')
   })
 
-  it('LGS ve TYT için tam netle yaklaşık 500 puan gösterir', () => {
+  it('LGS ve TYT için tam netle 500 puan gösterir', () => {
     mount('lgs')
     ;[20, 20, 20, 10, 10, 10].forEach((n, i) => type('d', i, String(n)))
-    expect(document.querySelector('[data-score]')!.textContent).toBe('≈ 500')
+    expect(document.querySelector('[data-score]')!.textContent).toBe('500')
     mount('tyt')
     ;[40, 20, 40, 20].forEach((n, i) => type('d', i, String(n)))
-    expect(document.querySelector('[data-score]')!.textContent).toBe('≈ 500')
+    expect(document.querySelector('[data-score]')!.textContent).toBe('500')
   })
 
   it('TYT puanı için Türkçe ya da matematikten net gerekir', () => {

@@ -43,11 +43,12 @@ export function ScoreEstimate({ studentId, kind, examId, scores }: { studentId: 
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-base font-bold">Yaklaşık puan</h3>
-            <Badge>tahmini</Badge>
+            <h3 className="text-base font-bold">Puan</h3>
+            <Badge>bilgi amaçlı</Badge>
           </div>
           <p className="mt-0.5 text-sm text-muted">
-            {kind === 'LGS' ? 'Önceki yılların katsayılarıyla' : 'MEB OGM Materyal puan hesaplama motorunun katsayılarıyla'} hesaplanır, resmi puan o yıl sınava girenlerin sonuçlarına göre değişir.
+            Gerçek puan o yıl sınava girenlerin sonuçlarına göre hesaplanır ve her yıl değişir.{' '}
+            {kind === 'LGS' ? 'Önceki yılların ortalamasına dayanır.' : 'Katsayılar MEB OGM Materyal puan hesaplama motorundan alınmıştır.'}
           </p>
         </div>
       </div>
@@ -55,12 +56,17 @@ export function ScoreEstimate({ studentId, kind, examId, scores }: { studentId: 
         {items.map((item) => (
           <div key={item.label} className="rounded-xl bg-surface-2 px-3 py-2.5">
             <dt className="text-xs text-muted">{item.label}</dt>
-            <dd className="tabular font-display text-2xl font-extrabold">≈ {scoreFormat.format(item.value)}</dd>
+            <dd className="tabular font-display text-2xl font-extrabold">{scoreFormat.format(item.value)}</dd>
             {item.note && <dd className="mt-0.5 truncate text-xs text-muted">{item.note}</dd>}
           </div>
         ))}
       </dl>
-      {kind !== 'LGS' && <p className="mt-3 text-xs text-muted">Diploma notu (OBP) katkısı dahil değildir.</p>}
+      <p className="mt-3 text-sm text-muted">
+        {kind !== 'LGS' && 'Diploma notu katkısı dahil değildir. '}
+        <a href="/araclar/puan-hesaplama" className="font-semibold text-accent hover:underline">
+          Puan hesaplama aracı
+        </a>
+      </p>
     </Card>
   )
 }

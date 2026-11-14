@@ -3,6 +3,7 @@ import { escapeHtml } from '../html.mjs'
 import { loadTs } from '../ts-load.mjs'
 import { layout } from './layout.mjs'
 import { slug } from './slugs.mjs'
+import { SCORE, scoreBody, scoreCss, scoreScript } from './score-tool.mjs'
 
 const kindLabel = { study: 'Konu çalışma', questions: 'Soru çözme', reading: 'Okuma', video: 'Video', review: 'Tekrar', other: 'Diğer' }
 const weekdays = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar']
@@ -39,7 +40,7 @@ export const exams = [
 export const calcScript = (data) => `(function(){var D=${JSON.stringify(data).replace(/</g, '\\u003c')};var root=document.getElementById('calc');if(!root)return;var sel=root.querySelector('[data-exam]');var body=root.querySelector('[data-body]');var out=root.querySelector('[data-total]');var note=root.querySelector('[data-note]');var srow=root.querySelector('[data-score-row]');var sout=root.querySelector('[data-score]');
 function fmt(n){return (Math.round(n*100)/100).toString().replace('.',',')}
 function draw(){var e=D[sel.value];body.innerHTML='';e.sections.forEach(function(s,i){var row=document.createElement('div');row.className='calc-row';row.innerHTML='<div class="calc-name"><b></b><span></span></div><label>Doğru<input inputmode="numeric" pattern="[0-9]*" maxlength="3" data-k="d" data-i="'+i+'" autocomplete="off"></label><label>Yanlış<input inputmode="numeric" pattern="[0-9]*" maxlength="3" data-k="y" data-i="'+i+'" autocomplete="off"></label><output data-net="'+i+'">0</output>';row.querySelector('b').textContent=s[0];row.querySelector('span').textContent=s[1]+' soru';body.appendChild(row)});calc()}
-function calc(){var e=D[sel.value];var total=0,bad=false,w=0;e.sections.forEach(function(s,i){var d=parseInt(body.querySelector('[data-k=d][data-i="'+i+'"]').value,10)||0;var y=parseInt(body.querySelector('[data-k=y][data-i="'+i+'"]').value,10)||0;var over=d+y>s[1];if(over)bad=true;var net=d-y/e.divisor;if(!over){total+=net;if(e.score)w+=Math.max(0,net)*e.score.weights[i]}var o=body.querySelector('[data-net="'+i+'"]');o.textContent=over?'-':fmt(net);o.classList.toggle('bad',over)});out.textContent=fmt(total);if(srow)srow.style.display=e.score?'':'none';if(e.score&&sout){var ok=!e.score.need||e.score.need.some(function(i){var d=parseInt(body.querySelector('[data-k=d][data-i="'+i+'"]').value,10)||0,y=parseInt(body.querySelector('[data-k=y][data-i="'+i+'"]').value,10)||0;return d-y/e.divisor>=0.5});sout.textContent=ok?'≈ '+Math.round(e.score.base+w*e.score.factor):'-'}note.textContent=bad?'Doğru ve yanlış toplamı soru sayısını aşmamalı':'Net = Doğru - Yanlış / '+e.divisor+(e.score?'. Puan yaklaşıktır, resmi puan o yıl sınava girenlerin sonuçlarına göre değişir.':'. Yerleştirme puanı için TYT netleri de gerekir.')}
+function calc(){var e=D[sel.value];var total=0,bad=false,w=0;e.sections.forEach(function(s,i){var d=parseInt(body.querySelector('[data-k=d][data-i="'+i+'"]').value,10)||0;var y=parseInt(body.querySelector('[data-k=y][data-i="'+i+'"]').value,10)||0;var over=d+y>s[1];if(over)bad=true;var net=d-y/e.divisor;if(!over){total+=net;if(e.score)w+=Math.max(0,net)*e.score.weights[i]}var o=body.querySelector('[data-net="'+i+'"]');o.textContent=over?'-':fmt(net);o.classList.toggle('bad',over)});out.textContent=fmt(total);if(srow)srow.style.display=e.score?'':'none';if(e.score&&sout){var ok=!e.score.need||e.score.need.some(function(i){var d=parseInt(body.querySelector('[data-k=d][data-i="'+i+'"]').value,10)||0,y=parseInt(body.querySelector('[data-k=y][data-i="'+i+'"]').value,10)||0;return d-y/e.divisor>=0.5});sout.textContent=ok?String(Math.round(e.score.base+w*e.score.factor)):'-'}note.textContent=bad?'Doğru ve yanlış toplamı soru sayısını aşmamalı':'Net = Doğru - Yanlış / '+e.divisor+(e.score?'. Puan bilgi amaçlıdır, her yıl değişir.':'. Yerleştirme puanı için TYT netleri de gerekir.')}
 sel.addEventListener('change',draw);root.addEventListener('input',function(ev){var t=ev.target;if(t.tagName==='INPUT'){t.value=t.value.replace(/[^0-9]/g,'');calc()}});draw()})()`
 
 const toolCss = `<style>
@@ -97,7 +98,7 @@ export async function buildPublicTools({ write, shell, cssHref, site, subjects =
     const faq = [
       ['LGS netinde yanlışlar nasıl hesaplanır?', 'LGS\'de 3 yanlış 1 doğruyu götürür. Net = Doğru - Yanlış / 3 formülüyle hesaplanır.'],
       ['TYT ve AYT netinde yanlışlar nasıl hesaplanır?', 'YKS\'de 4 yanlış 1 doğruyu götürür. Net = Doğru - Yanlış / 4 formülüyle hesaplanır.'],
-      ['Bu araç puan hesaplar mı?', 'LGS ve TYT için yaklaşık puan gösterir. Resmi puan o yıl sınava girenlerin sonuçlarına göre hesaplandığı için gerçek puan farklı çıkabilir. TYT için MEB OGM Materyal puan hesaplama motorunun katsayıları, LGS için önceki yılların ortalaması kullanılır.'],
+      ['Bu araç puan hesaplar mı?', 'LGS ve TYT puanını da gösterir, yerleştirme puanları için puan hesaplama aracı vardır. Resmi puan o yıl sınava girenlerin sonuçlarına göre hesaplandığı için gerçek puan farklı çıkabilir. TYT için MEB OGM Materyal puan hesaplama motorunun katsayıları, LGS için önceki yılların ortalaması kullanılır.'],
     ]
     const table = `<div class="tw"><table><thead><tr><th>Sınav</th><th>Bölüm</th><th>Soru</th></tr></thead><tbody>${exams
       .flatMap((e) => e.sections.map(([name, count]) => `<tr><td>${e.name}</td><td>${escapeHtml(name)}</td><td>${count}</td></tr>`))
@@ -105,7 +106,8 @@ export async function buildPublicTools({ write, shell, cssHref, site, subjects =
     const body = `<main><div class="wrap">${crumbHtml(trail)}
 <h1>LGS, TYT, AYT ve YDT net hesaplama</h1>
 <p class="lead">Doğru ve yanlış sayılarını girin, bölüm bölüm ve toplam netiniz anında görünsün. Kayıt ya da üyelik gerekmez.</p>
-<section class="calc" id="calc" aria-label="Net hesaplama aracı"><label class="muted" for="calc-exam">Sınav</label><select id="calc-exam" data-exam>${exams.map((e) => `<option value="${e.key}">${e.name}</option>`).join('')}</select><div data-body></div><div class="calc-total"><span>Toplam net</span><strong data-total>0</strong></div><div class="calc-total" data-score-row><span>Yaklaşık puan</span><strong data-score>0</strong></div><p class="calc-note" data-note></p></section>
+<section class="calc" id="calc" aria-label="Net hesaplama aracı"><label class="muted" for="calc-exam">Sınav</label><select id="calc-exam" data-exam>${exams.map((e) => `<option value="${e.key}">${e.name}</option>`).join('')}</select><div data-body></div><div class="calc-total"><span>Toplam net</span><strong data-total>0</strong></div><div class="calc-total" data-score-row><span>Puan</span><strong data-score>0</strong></div><p class="calc-note" data-note></p></section>
+<p class="calc-note">SAY, EA, SÖZ ve DİL puanı için <a href="${SCORE}">puan hesaplama</a> aracını kullanın.</p>
 <noscript><p class="box">Hesaplama için JavaScript gerekir. Formül LGS'de Doğru - Yanlış / 3, YKS'de Doğru - Yanlış / 4 şeklindedir.</p></noscript>
 <article>
 <h2>Net nasıl hesaplanır?</h2>
@@ -132,6 +134,45 @@ ${faq.map(([q, a]) => `<h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p>`).join('
       ],
     }))
     urls.push({ path: NET })
+  }
+
+  // Puan hesaplama
+  {
+    const formulas = (await loadTs(join(process.cwd(), 'src/lib/score.ts'))).scoreFormulas
+    const trail = [['Ana sayfa', '/'], ['Puan hesaplama', SCORE]]
+    const faq = [
+      ['Hesaplanan puan kesin midir?', 'Hayır, bilgi amaçlıdır. Resmi LGS ve YKS puanı o yıl sınava girenlerin sonuçlarına göre hesaplanır ve her yıl değişir.'],
+      ['Katsayılar nereden alındı?', 'YKS katsayıları MEB OGM Materyal YKS puan hesaplama motorundan alınmıştır. LGS hesabı önceki yılların ortalamasına dayanır.'],
+      ['Diploma notu puanı nasıl etkiler?', 'Diploma notu 0,6 ile çarpılarak yerleştirme puanına eklenir. Örneğin 85 diploma notu yaklaşık 51 puan katkı sağlar.'],
+      ['TYT neti olmadan AYT puanı hesaplanır mı?', 'Yerleştirme puanının bir kısmı TYT netlerinden gelir. TYT sekmesinde Türkçe ya da Temel Matematikten en az 0,5 net yoksa ham puan 100 kabul edilir.'],
+    ]
+    const body = `<main><div class="wrap">${crumbHtml(trail)}
+<h1>LGS ve YKS puan hesaplama</h1>
+<p class="lead">Doğru ve yanlış sayılarınızı girin, LGS, TYT, SAY, EA, SÖZ ve DİL puanınız anında hesaplansın. Kayıt ya da üyelik gerekmez.</p>
+<div class="notice"><b>Bilgi amaçlıdır</b>Gerçek puan o yıl sınava girenlerin sonuçlarına göre hesaplanır ve her yıl değişir. YKS katsayıları MEB OGM Materyal puan hesaplama motorundan alınmıştır.</div>
+${scoreBody()}
+<noscript><p class="box">Hesaplama için JavaScript gerekir.</p></noscript>
+<article>
+<h2>Puan nasıl hesaplanır?</h2>
+<p>Önce her dersin neti bulunur. LGS'de 3 yanlış, YKS'de 4 yanlış bir doğruyu götürür. Netler derslerin katsayılarıyla çarpılıp sabit bir taban puana eklenir. YKS yerleştirme puanına diploma notunun 0,6 katı eklenir.</p>
+<p>Netlerinizi tek tek hesaplamak için <a href="${NET}">net hesaplama</a> aracını, puanınızın hangi bölümlere yaklaştığını görmek için <a href="/yks-bolumleri">YKS bölümleri</a> sayfasını kullanabilirsiniz.</p>
+<h2>Sık sorulanlar</h2>
+${faq.map(([q, a]) => `<h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p>`).join('')}
+</article>
+<aside class="cta"><h2>Denemelerinizi zamanla izleyin</h2><p>İzlek'te her denemenin neti ve puanı kaydedilir, ders ders gelişiminiz görünür. Öğretmeniniz bu verilere bakarak çalışma planınızı günceller.</p><div class="row"><a class="btn" href="/katil">Davet koduyla katıl</a><a class="btn" href="/ogretmen-basvurusu">Öğretmen başvurusu</a></div></aside>
+</div></main>
+<script>${scoreScript(formulas)}</script>`
+    write(`${SCORE.slice(1)}.html`, wrap({
+      title: 'LGS ve YKS puan hesaplama · İzlek',
+      description: 'LGS, TYT, SAY, EA, SÖZ ve DİL puanınızı netlerinizden hesaplayın. YKS katsayıları MEB OGM Materyal puan hesaplama motorundan alınmıştır.',
+      path: SCORE,
+      body,
+      ld: [
+        { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Puan hesaplama', applicationCategory: 'EducationalApplication', operatingSystem: 'Web', inLanguage: 'tr', isAccessibleForFree: true, url: `${site}${SCORE}` },
+        crumbLd(trail),
+      ],
+    }).replace('</head>', `${scoreCss}\n</head>`))
+    urls.push({ path: SCORE })
   }
 
   // Çalışma programları

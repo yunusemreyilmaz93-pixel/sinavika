@@ -4,7 +4,11 @@ import { escapeHtml, siteUrl, verificationTag } from '../html.mjs'
 
 const CONTACT_EMAIL = 'yunusemreyilmaz93@gmail.com'
 
-const logo = `<svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--brand)"/><path d="M16 26.5V17L9 8.5M16 17l6.2-7.4" fill="none" stroke="var(--brand-ink)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23.4" cy="8.2" r="2.9" fill="var(--marker)"/></svg>`
+// Uygulamadaki wordmark ile aynı (src/components/ui/logo.tsx)
+const logoSrc = readFileSync(join(process.cwd(), 'src/components/ui/logo.tsx'), 'utf8')
+const WORD = logoSrc.match(/const WORD = '([^']+)'/)?.[1]
+if (!WORD) throw new Error('logo.tsx içinde WORD bulunamadı')
+const logo = `<svg viewBox="0 0 301.6 100" height="28" role="img" aria-label="İzlek"><path d="${WORD}" fill="currentColor"/><circle cx="14.0" cy="14.8" r="14.0" fill="var(--marker)"/></svg>`
 
 const themeScript = `try{var t=localStorage.getItem('sinavika-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');var a=localStorage.getItem('sinavika-accent');if(a)document.documentElement.setAttribute('data-accent',a)}catch(e){}`
 
@@ -23,8 +27,8 @@ export const css = `
 .pub .wide{max-width:64rem;margin:0 auto;padding:0 1rem}
 .pub header.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
 .pub header.top .wide{display:flex;align-items:center;gap:1rem;min-height:3.75rem;flex-wrap:wrap}
-.pub .brand{display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;color:var(--fg);font-family:'Bricolage Grotesque Variable',sans-serif;font-weight:800;font-size:1.25rem}
-.pub .brand b{color:var(--primary)}
+.pub .brand{display:inline-flex;align-items:center;min-height:2.75rem;color:var(--primary)}
+.pub .brand svg{height:1.75rem;width:auto}
 .pub nav.main{display:flex;gap:.25rem 1rem;flex-wrap:wrap;margin-left:auto;align-items:center}
 .pub nav.main a{color:var(--fg-muted);font-weight:600;text-decoration:none;min-height:2.75rem;display:inline-flex;align-items:center;font-size:.95rem}
 .pub nav.main a:hover{color:var(--fg)}
@@ -178,12 +182,13 @@ ${ld.map(jsonLd).join('\n')}
     ['/konu-anlatimi', 'Konu anlatımları'],
     ['/calisma-programlari', 'Programlar'],
     ['/araclar/net-hesaplama', 'Net hesaplama'],
+    ['/araclar/puan-hesaplama', 'Puan hesaplama'],
     ...links,
   ]
-  const header = `<header class="top"><div class="wide"><a class="brand" href="/">${logo}<span>Yolum<b>net</b></span></a><nav class="main" aria-label="Ana menü">${nav.map(([href, label]) => `<a href="${href}">${escapeHtml(label)}</a>`).join('')}<a class="btn" href="/giris">Giriş yap</a></nav></div></header>`
+  const header = `<header class="top"><div class="wide"><a class="brand" href="/">${logo}</a><nav class="main" aria-label="Ana menü">${nav.map(([href, label]) => `<a href="${href}">${escapeHtml(label)}</a>`).join('')}<a class="btn" href="/giris">Giriş yap</a></nav></div></header>`
   const footer = `<footer class="foot"><div class="wide">
 ${examLinks.length ? `<div><h2>Konu anlatımları</h2><ul>${examLinks.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join('')}</ul></div>` : ''}
-<div><h2>Araçlar</h2><ul><li><a href="/araclar/net-hesaplama">Net hesaplama</a></li><li><a href="/calisma-programlari">Çalışma programları</a></li><li><a href="/yks-bolumleri">YKS bölümleri</a></li></ul></div>
+<div><h2>Araçlar</h2><ul><li><a href="/araclar/net-hesaplama">Net hesaplama</a></li><li><a href="/araclar/puan-hesaplama">Puan hesaplama</a></li><li><a href="/calisma-programlari">Çalışma programları</a></li><li><a href="/yks-bolumleri">YKS bölümleri</a></li></ul></div>
 <div><h2>İzlek</h2><ul><li><a href="/hakkinda">Hakkında</a></li><li><a href="/ogretmen-basvurusu">Öğretmen başvurusu</a></li><li><a href="/katil">Davet koduyla katıl</a></li><li><a href="/kvkk">KVKK aydınlatma metni</a></li></ul></div>
 <p class="editor">Anlatımlar İzlek'in geliştiricisi tarafından hazırlanır ve gözden geçirilir. Bir hata ya da eksik görürseniz <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> adresine yazabilirsiniz. İzlek ücretsizdir ve reklam içermez.</p>
 </div></footer>`

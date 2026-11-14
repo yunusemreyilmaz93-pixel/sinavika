@@ -105,3 +105,10 @@ function round(n: number) {
 }
 
 export const scoreFormat = new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+
+// Herkese açık puan hesaplama sayfası (scripts/seo/public/tools.mjs) aynı katsayıları buradan okur
+export const scoreFormulas = {
+  lgs: { base: LGS_BASE, factor: LGS_FACTOR, weights: LGS_WEIGHT },
+  tyt: TYT,
+  yks: YKS,
+}

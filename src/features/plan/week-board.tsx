@@ -140,7 +140,7 @@ function DayColumn({
       ref={setNodeRef}
       aria-label={`${weekdayLong[index]}, ${formatDate(day, 'd MMMM')}`}
       className={cn(
-        'flex min-h-72 min-w-0 flex-col rounded-2xl border transition-colors duration-150',
+        'flex min-h-56 min-w-0 flex-col rounded-2xl border transition-colors duration-150',
         isToday ? 'border-primary/50 bg-primary-soft/40' : 'border-line bg-surface-2/50',
         isOver && 'border-accent bg-accent-soft/60',
       )}

@@ -1,10 +1,11 @@
-import { ArrowRight, BookOpenText, Calculator, CalendarDays, GraduationCap, type LucideIcon } from 'lucide-react'
+import { ArrowRight, BookOpenText, Calculator, CalendarDays, Gauge, GraduationCap, type LucideIcon } from 'lucide-react'
 import { container, Reveal, SectionHeading } from './primitives'
 
 export const openLinks: { href: string; title: string; text: string; icon: LucideIcon }[] = [
   { href: '/konu-anlatimi', title: 'Konu anlatımları', text: 'LGS, TYT ve YDT konularını üye olmadan okuyabilirsiniz.', icon: BookOpenText },
   { href: '/calisma-programlari', title: 'Çalışma programları', text: 'Hazır haftalık programları gün gün inceleyin.', icon: CalendarDays },
   { href: '/araclar/net-hesaplama', title: 'Net hesaplama', text: 'Doğru ve yanlış sayınızdan netinizi hesaplayın.', icon: Calculator },
+  { href: '/araclar/puan-hesaplama', title: 'Puan hesaplama', text: 'LGS, TYT, SAY, EA, SÖZ ve DİL puanınızı hesaplayın.', icon: Gauge },
   { href: '/yks-bolumleri', title: 'YKS bölümleri', text: 'Bölümlerin kontenjanını ve başarı sıralarını görün.', icon: GraduationCap },
 ]
 
@@ -18,7 +19,7 @@ export function OpenContentSection() {
           title={<>Giriş yapmadan <span className="marker">okuyabilirsiniz</span></>}
           lead="Anlatımlar, programlar ve araçlar herkese açıktır. İlerleme kaydı ve mini testler hesapla çalışır."
         />
-        <Reveal className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <Reveal className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {openLinks.map(({ href, title, text, icon: Icon }) => (
             <a
               key={href}

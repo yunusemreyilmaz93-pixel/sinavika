@@ -64,6 +64,7 @@ export default function AdminPage() {
           options={sections.map((s) => (s.value === 'basvurular' ? { ...s, badge: pending } : s.value === 'bildirimler' ? { ...s, badge: reports } : s.value === 'avatarlar' ? { ...s, badge: avatars } : { ...s }))}
           value={section}
           onChange={go}
+          className="flex-wrap overflow-visible [&>button]:min-w-fit"
         />
       </div>
         <motion.div
