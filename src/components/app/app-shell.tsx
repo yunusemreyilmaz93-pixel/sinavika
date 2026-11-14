@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { Check, ChevronsUpDown, LogOut, Menu as MenuIcon, Monitor, Moon, Plus, Settings, Sun } from 'lucide-react'
+import { Check, ChevronsUpDown, LogOut, Menu as MenuIcon, Monitor, Moon, Plus, Search, Settings, Sun } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { Avatar } from '@/components/ui/avatar'
@@ -17,7 +17,8 @@ import { PendingApproval } from '@/features/auth/pending-approval'
 import { cn } from '@/lib/cn'
 import { isTestTab } from '@/lib/supabase'
 import { useTheme, type ThemeChoice } from '@/lib/theme'
-import { navFor, type NavItem } from './nav'
+import { groupOrder, navFor, type NavItem } from './nav'
+import { SearchPalette, useSearchShortcut } from './search-palette'
 import { ReportIssueButton } from '@/features/feedback/report-issue'
 import { SupportLink } from './support-link'
 import { InstallBar } from '@/features/settings/install-bar'
@@ -29,7 +30,11 @@ export function AppShell() {
   const profile = useProfile()
   const location = useLocation()
   const [quickAdd, setQuickAdd] = useState(false)
+  const [search, setSearch] = useState(false)
+  useSearchShortcut(setSearch)
   const items = navFor(profile)
+  const groups = groupOrder.map((g) => ({ title: g, items: items.filter((i) => i.group === g) })).filter((g) => g.items.length)
+  const account = items.filter((i) => i.group === 'Hesap')
   useUsagePing()
   useEffect(() => syncAccent(profile.accent), [profile.accent])
   const isStudent = profile.role === 'student'
@@ -40,13 +45,13 @@ export function AppShell() {
   useEffect(() => {
     document.title = title
   }, [title])
-  // Planlayıcı ve sınıf haritası geniş ekranı tam genişlikte kullanır
-  const wide = ['/app/planlayici', '/app/sinif', '/app/plan'].includes(location.pathname)
+  // Planlayıcı ve sınıf haritası geniş ekranı tam genişlikte kullanır, diğer sayfalar 84rem'e kadar açılır
+  const wide = ['/app/planlayici', '/app/sinif'].includes(location.pathname)
   const pending = profile.role === 'teacher' && profile.status !== 'active' && location.pathname !== '/app/ayarlar'
 
   return (
     <StudyRoomProvider>
-    <div className="min-h-dvh lg:grid lg:grid-cols-[248px_1fr]">
+    <div className="min-h-dvh lg:grid lg:grid-cols-[256px_1fr]">
       {isTestTab && <TestBanner name={profile.full_name} role={roleLabel[profile.role]} />}
       <aside className="sticky top-0 hidden h-dvh flex-col border-r border-line bg-surface lg:flex">
         <Link to="/" aria-label="İzlek ana sayfa" className="flex h-16 items-center px-5">
@@ -60,12 +65,22 @@ export function AppShell() {
             </Button>
           </div>
         )}
-        <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-2" aria-label="Ana menü">
-          {items.map((item) => (
-            <SideLink key={item.to} item={item} />
+        <nav className="flex-1 space-y-5 overflow-y-auto px-3 py-3" aria-label="Ana menü">
+          {groups.map((g) => (
+            <div key={g.title}>
+              <p className="px-3 pb-1.5 text-[11px] font-bold tracking-wider text-subtle uppercase">{g.title}</p>
+              <div className="space-y-0.5">
+                {g.items.map((item) => (
+                  <SideLink key={item.to} item={item} />
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
         <div className="space-y-1 border-t border-line p-3">
+          {account.map((item) => (
+            <SideLink key={item.to} item={item} />
+          ))}
           <ReportIssueButton />
           {!isStudent && <SupportLink />}
           <UserMenu profile={profile} wide />
@@ -74,12 +89,24 @@ export function AppShell() {
 
       <div className="flex min-w-0 flex-col">
         <header className="pt-safe sticky top-0 z-30 border-b border-line bg-bg">
-          <div className={cn('mx-auto flex h-14 items-center gap-2 px-4 sm:px-6 lg:h-16', wide ? 'max-w-[96rem]' : 'max-w-5xl')}>
+          <div className={cn('mx-auto flex h-14 items-center gap-2 px-4 sm:px-6 lg:h-16 lg:px-8', wide ? 'max-w-[96rem]' : 'max-w-[84rem]')}>
             <Link to="/" className="-ml-1.5 grid size-11 place-items-center rounded-xl lg:hidden" aria-label="İzlek ana sayfa">
               <LogoMark />
             </Link>
+            <button
+              type="button"
+              onClick={() => setSearch(true)}
+              className="hidden h-10 w-full max-w-md items-center gap-2 rounded-xl border border-line bg-surface px-3 text-[15px] text-subtle transition-colors hover:border-line-strong sm:flex"
+            >
+              <Search className="size-4" />
+              <span className="flex-1 text-left">{profile.role === 'teacher' ? 'Öğrenci, konu ya da sayfa ara' : 'Konu ya da sayfa ara'}</span>
+              <kbd className="rounded-md border border-line px-1.5 text-[11px] font-semibold">Ctrl K</kbd>
+            </button>
             <ChildSwitcher />
             <div className="ml-auto flex items-center gap-1">
+              <button type="button" onClick={() => setSearch(true)} aria-label="Ara" className="grid size-11 place-items-center rounded-xl text-muted hover:bg-surface-2 sm:hidden">
+                <Search className="size-5" />
+              </button>
               <NotificationBell />
               <div className="lg:hidden">
                 <UserMenu profile={profile} />
@@ -88,7 +115,7 @@ export function AppShell() {
           </div>
         </header>
 
-        <main className={cn('mx-auto w-full flex-1 px-4 pt-5 pb-32 sm:px-6 sm:pt-8 lg:pb-12', wide ? 'max-w-[96rem]' : 'max-w-5xl')}>
+        <main className={cn('mx-auto w-full flex-1 px-4 pt-5 pb-32 sm:px-6 sm:pt-7 lg:px-8 lg:pb-12', wide ? 'max-w-[96rem]' : 'max-w-[84rem]')}>
           <div key={location.pathname} className="animate-fade-in">
             {pending ? (
               <PendingApproval />
@@ -103,6 +130,7 @@ export function AppShell() {
 
       <BottomNav items={items} onQuickAdd={isStudent ? () => setQuickAdd(true) : undefined} support={!isStudent} />
       {isStudent && <QuickAddSheet open={quickAdd} onOpenChange={setQuickAdd} />}
+      <SearchPalette open={search} onOpenChange={setSearch} />
       {!isTestTab && <InstallBar />}
     </div>
     </StudyRoomProvider>

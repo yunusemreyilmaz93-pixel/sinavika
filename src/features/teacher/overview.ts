@@ -37,9 +37,10 @@ export type RiskSignals = { level: RiskLevel; reasons: string[] }
 
 const toNumber = (value: unknown) => (value == null ? null : Number(value))
 
-export function useTeacherOverview() {
+export function useTeacherOverview(enabled = true) {
   return useQuery({
     queryKey: keys.overview,
+    enabled,
     queryFn: async (): Promise<OverviewRow[]> => {
       const rows = unwrap(await supabase.rpc('teacher_overview')) as unknown as OverviewRow[]
       return rows.map((r) => ({ ...r, last_net: toNumber(r.last_net), prev_net: toNumber(r.prev_net) }))

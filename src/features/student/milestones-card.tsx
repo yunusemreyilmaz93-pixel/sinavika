@@ -46,11 +46,53 @@ export function StreakChip({ studentId }: { studentId: string }) {
   )
 }
 
-export function MilestonesCard({ studentId, className }: { studentId: string; className?: string }) {
+export function MilestonesCard({ studentId, className, compact }: { studentId: string; className?: string; compact?: boolean }) {
   const { data } = useMilestones(studentId)
   useNewBadgeToast(studentId, data)
   if (!data) return null
   const earned = earnedIds(data).length
+  if (compact) {
+    const states = badges.map((b) => ({ b, ...badgeState(b, data) }))
+    const won = states.filter((x) => x.earned)
+    const next = states.filter((x) => !x.earned).sort((a, b) => b.value / b.b.goal - a.value / a.b.goal)[0]
+    return (
+      <Card className={className}>
+        <CardHeader title="Rozetler" action={<span className="tabular text-sm text-muted">{earned} / {badges.length}</span>} />
+        <div className="space-y-4 p-4 sm:p-5">
+          {won.length > 0 && (
+            <ul className="flex flex-wrap gap-2" aria-label="Kazanılan rozetler">
+              {won.map(({ b }) => (
+                <li key={b.id} title={b.title} className="grid size-11 place-items-center rounded-xl bg-primary-soft text-primary-soft-fg">
+                  <b.icon aria-hidden className="size-5" />
+                  <span className="sr-only">{b.title}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {next && (
+            <div className="rounded-2xl bg-bg p-3">
+              <div className="flex items-center gap-3">
+                <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-xl bg-surface text-subtle">
+                  <next.b.icon className="size-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs text-muted">Sıradaki rozet</p>
+                  <p className="truncate font-semibold">{next.b.title}</p>
+                </div>
+                <span className="tabular text-sm font-semibold">
+                  {next.value}/{next.b.goal}
+                </span>
+              </div>
+              <div className="mt-2.5 h-1.5 rounded-full bg-surface-2">
+                <div className="h-1.5 rounded-full bg-primary" style={{ width: `${(next.value / next.b.goal) * 100}%` }} />
+              </div>
+              <p className="mt-2 text-xs text-muted">{next.b.hint}</p>
+            </div>
+          )}
+        </div>
+      </Card>
+    )
+  }
   return (
     <Card className={className}>
       <CardHeader title="Rozetler" description={`${earned} / ${badges.length} kazanıldı`} />

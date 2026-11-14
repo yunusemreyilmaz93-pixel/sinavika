@@ -14,11 +14,12 @@ const variants = {
 }
 
 const sizes = {
-  sm: 'h-9 px-3 text-sm gap-1.5 rounded-lg',
+  // Küçük düğmeler 36px görünür, görünmez pay ile dokunma alanı 44px olur
+  sm: "relative h-9 px-3 text-sm gap-1.5 rounded-xl after:absolute after:-inset-1 after:content-['']",
   md: 'h-11 px-4 text-[15px] gap-2 rounded-xl',
   lg: 'h-13 px-6 text-base gap-2 rounded-xl',
   icon: 'size-11 rounded-xl',
-  'icon-sm': 'size-9 rounded-lg',
+  'icon-sm': "relative size-9 rounded-xl after:absolute after:-inset-1 after:content-['']",
 }
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

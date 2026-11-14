@@ -8,19 +8,17 @@ import { useAuth, useViewedStudent } from '@/features/auth/session'
 import { NextLesson } from '@/features/lessons/next-lesson'
 import { TodayTasks } from '@/features/plan/today-tasks'
 import { QuestionLogForm } from '@/features/tracking/question-log-form'
-import { useTimerState } from '@/features/tracking/timer-store'
-import { formatDate, greeting, todayISO } from '@/lib/dates'
-import { ExamCountdown } from './exam-countdown'
+import { StudyRoomCard } from '@/features/tracking/study-room-provider'
 import { PaceCard } from '@/features/topics/pace-card'
 import { InboxStrip } from './inbox-strip'
 import { LastExamSummary } from './last-exam-summary'
-import { MilestonesCard, StreakChip } from './milestones-card'
-import { QuickActions, Reveal, TodayProgress } from './today-parts'
+import { MilestonesCard } from './milestones-card'
+import { StudentHero, WeekCard } from './today-hero'
+import { Reveal } from './today-parts'
 
 export default function TodayPage() {
   const viewed = useViewedStudent()
   const { profile } = useAuth()
-  const timer = useTimerState()
   const [addingQuestions, setAddingQuestions] = useState(false)
 
   if (!viewed || !profile) {
@@ -39,44 +37,28 @@ export default function TodayPage() {
   }
 
   const { studentId, student, name } = viewed
-  const today = todayISO()
-  const firstName = name.trim().split(/\s+/)[0]
 
   return (
-    <div>
-      <header className="mb-5 sm:mb-7">
-        <p className="text-sm font-semibold text-muted">{formatDate(today, 'd MMMM EEEE')}</p>
-        <h1 className="mt-0.5 text-2xl font-extrabold sm:text-3xl">
-          {greeting()}, {firstName}
-        </h1>
-        <div className="mt-2 empty:hidden">
-          <StreakChip studentId={studentId} />
-        </div>
-      </header>
+    <div className="space-y-4 sm:space-y-5">
+      <InboxStrip userId={profile.id} />
+      <Reveal index={0}>
+        <StudentHero student={student} name={name} mode="student" onAddQuestions={() => setAddingQuestions(true)} />
+      </Reveal>
 
-      <InboxStrip userId={profile.id} className="mb-4" />
-      <NextLesson studentId={studentId} student={student} className="mb-4" />
-
-      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start lg:gap-5">
-        <div className="contents lg:flex lg:flex-col lg:gap-5">
-          <Reveal index={1} className="order-2 lg:order-none">
-            <TodayProgress studentId={studentId} goals={student} />
+      <div className="grid gap-4 sm:gap-5 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
+        <div className="space-y-4 sm:space-y-5">
+          <Reveal index={1} className="xl:hidden">
+            <NextLesson studentId={studentId} student={student} />
           </Reveal>
-          <Reveal index={3} className="order-4 lg:order-none">
-            <TodayTasks studentId={studentId} canEdit />
-          </Reveal>
-        </div>
-        <div className="contents lg:flex lg:flex-col lg:gap-5">
-          <Reveal index={0} className="order-1 lg:order-none">
-            <ExamCountdown track={student.track} />
-          </Reveal>
-          <Reveal index={5} className="order-6 lg:order-none">
-            <PaceCard studentId={studentId} student={student} compact topicsHref="/app/konular" />
-          </Reveal>
-          <Reveal index={2} className="order-3 lg:order-none">
-            <QuickActions timerRunning={timer.focus?.studentId === studentId} onAddQuestions={() => setAddingQuestions(true)} />
-          </Reveal>
-          <Reveal index={4} className="order-5 lg:order-none">
+          <div className="grid gap-4 sm:gap-5 2xl:grid-cols-2 2xl:items-start">
+            <Reveal index={2}>
+              <TodayTasks studentId={studentId} canEdit />
+            </Reveal>
+            <Reveal index={3}>
+              <WeekCard studentId={studentId} goalMinutes={student.daily_minutes_goal} />
+            </Reveal>
+          </div>
+          <Reveal index={4}>
             <LastExamSummary
               studentId={studentId}
               more={{ label: 'Tüm denemeler', href: '/app/denemeler' }}
@@ -90,8 +72,19 @@ export default function TodayPage() {
               }}
             />
           </Reveal>
-          <Reveal index={6} className="order-7 lg:order-none">
-            <MilestonesCard studentId={studentId} />
+        </div>
+        <div className="space-y-4 sm:space-y-5">
+          <Reveal index={1} className="hidden xl:block">
+            <NextLesson studentId={studentId} student={student} />
+          </Reveal>
+          <Reveal index={5}>
+            <PaceCard studentId={studentId} student={student} compact topicsHref="/app/konular" />
+          </Reveal>
+          <Reveal index={6}>
+            <StudyRoomCard />
+          </Reveal>
+          <Reveal index={7}>
+            <MilestonesCard studentId={studentId} compact />
           </Reveal>
         </div>
       </div>
