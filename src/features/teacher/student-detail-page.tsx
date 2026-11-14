@@ -130,7 +130,7 @@ export default function StudentDetailPage() {
           role="tabpanel"
           aria-label={tabs.find((t) => t.value === tab)?.label}
         >
-          {tab === 'ozet' && <OverviewTab studentId={student.id} onOpenExams={() => setTab('denemeler')} />}
+          {tab === 'ozet' && <OverviewTab studentId={student.id} student={student} onOpenExams={() => setTab('denemeler')} />}
           {tab === 'plan' && <WeekPlan studentId={student.id} viewer="teacher" />}
           {tab === 'yanlislar' && <WrongList studentId={student.id} viewer="teacher" />}
           {tab === 'okuma' && <ReadingTracker studentId={student.id} canEdit />}

@@ -4,6 +4,7 @@ import { PageHeader } from '@/components/app/page-header'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { useViewedStudent } from '@/features/auth/session'
+import { PaceCard } from './pace-card'
 import { TopicMap } from './topic-map'
 
 export default function TopicsPage() {
@@ -33,6 +34,7 @@ export default function TopicsPage() {
         title="Konular"
         description={viewed.canEdit ? 'Soldaki simgeye dokununca konunun durumu değişir.' : `${viewed.name} için konu durumları.`}
       />
+      <PaceCard studentId={viewed.studentId} student={viewed.student} className="mb-5" />
       <TopicMap key={viewed.studentId} studentId={viewed.studentId} student={viewed.student} canEdit={viewed.canEdit} />
     </>
   )

@@ -11,6 +11,7 @@ import { QuestionLogForm } from '@/features/tracking/question-log-form'
 import { useTimerState } from '@/features/tracking/timer-store'
 import { formatDate, greeting, todayISO } from '@/lib/dates'
 import { ExamCountdown } from './exam-countdown'
+import { PaceCard } from '@/features/topics/pace-card'
 import { InboxStrip } from './inbox-strip'
 import { LastExamSummary } from './last-exam-summary'
 import { MilestonesCard, StreakChip } from './milestones-card'
@@ -69,6 +70,9 @@ export default function TodayPage() {
           <Reveal index={0} className="order-1 lg:order-none">
             <ExamCountdown track={student.track} />
           </Reveal>
+          <Reveal index={5} className="order-6 lg:order-none">
+            <PaceCard studentId={studentId} student={student} compact topicsHref="/app/konular" />
+          </Reveal>
           <Reveal index={2} className="order-3 lg:order-none">
             <QuickActions timerRunning={timer.focus?.studentId === studentId} onAddQuestions={() => setAddingQuestions(true)} />
           </Reveal>
@@ -86,7 +90,7 @@ export default function TodayPage() {
               }}
             />
           </Reveal>
-          <Reveal index={5} className="order-6 lg:order-none">
+          <Reveal index={6} className="order-7 lg:order-none">
             <MilestonesCard studentId={studentId} />
           </Reveal>
         </div>

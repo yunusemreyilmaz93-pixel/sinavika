@@ -5,8 +5,18 @@ import { TodayTasks } from '@/features/plan/today-tasks'
 import { LastExamSummary } from '@/features/student/last-exam-summary'
 import { ProgressStats } from '@/features/tracking/progress-stats'
 import { RecentActivity } from '@/features/tracking/recent-activity'
+import { PaceCard } from '@/features/topics/pace-card'
+import type { Field, Track } from '@/lib/exam'
 
-export function OverviewTab({ studentId, onOpenExams }: { studentId: string; onOpenExams: () => void }) {
+export function OverviewTab({
+  studentId,
+  student,
+  onOpenExams,
+}: {
+  studentId: string
+  student: { track: Track; field: Field | null }
+  onOpenExams: () => void
+}) {
   return (
     <div className="space-y-4 sm:space-y-5">
       <div className="grid gap-4 sm:gap-5 lg:grid-cols-2 lg:items-start">
@@ -27,6 +37,7 @@ export function OverviewTab({ studentId, onOpenExams }: { studentId: string; onO
           }}
         />
       </div>
+      <PaceCard studentId={studentId} student={student} />
       <ProgressStats studentId={studentId} />
       <RecentActivity studentId={studentId} canEdit={false} />
     </div>
