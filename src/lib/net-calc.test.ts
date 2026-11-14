@@ -26,6 +26,7 @@ describe('net hesaplama aracı', () => {
     type('d', 0, '17')
     type('y', 0, '3')
     expect(document.querySelector('[data-total]')!.textContent).toBe('16')
+    expect(document.querySelector('[data-b="0"]')!.textContent).toBe('0')
   })
 
   it('TYT netini doğru - yanlış / 4 ile hesaplar', () => {

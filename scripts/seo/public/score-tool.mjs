@@ -52,7 +52,7 @@ const section = (id, rows) =>
   rows
     .map(
       ([key, name, count]) =>
-        `<div class="calc-row" data-row="${id}:${key}" data-max="${count}"><div class="calc-name"><b>${name}</b><span>${count} soru</span></div><label>Doğru<input inputmode="numeric" pattern="[0-9]*" maxlength="3" data-k="d" autocomplete="off"></label><label>Yanlış<input inputmode="numeric" pattern="[0-9]*" maxlength="3" data-k="y" autocomplete="off"></label><output>0</output></div>`,
+        `<div class="calc-row" data-row="${id}:${key}" data-max="${count}"><div class="calc-name"><b>${name}</b><span>${count} soru</span></div><label>Doğru<input inputmode="numeric" pattern="[0-9]*" maxlength="3" data-k="d" autocomplete="off"></label><label>Yanlış<input inputmode="numeric" pattern="[0-9]*" maxlength="3" data-k="y" autocomplete="off"></label><div class="calc-cell"><span>Boş</span><output class="blank" data-b>${count}</output></div><div class="calc-cell"><span>Net</span><output data-net>0</output></div></div>`,
     )
     .join('')
 
@@ -80,7 +80,7 @@ export function yksBody() {
 // İki sayfa da aynı betiği kullanır, sayfada olmayan alanlar atlanır
 export const scoreScript = (formulas) => `(function(){var F=${JSON.stringify(formulas).replace(/</g, '\\u003c')};var root=document.getElementById('puan');if(!root)return;var note=root.querySelector('[data-note]'),dipEl=root.querySelector('[data-diploma]');
 function fmt(n){return n.toFixed(2).replace('.',',')}
-function nets(){var out={},bad=false;root.querySelectorAll('[data-row]').forEach(function(r){var d=parseInt(r.querySelector('[data-k=d]').value,10)||0,y=parseInt(r.querySelector('[data-k=y]').value,10)||0,max=+r.dataset.max,key=r.dataset.row,div=key.indexOf('lgs:')===0?3:4,o=r.querySelector('output');if(d+y>max){bad=true;o.textContent='-';o.classList.add('bad');return}o.classList.remove('bad');var n=d-y/div;o.textContent=fmt(n).replace(',00','');out[key.split(':')[1]]=n});return{n:out,bad:bad}}
+function nets(){var out={},bad=false;root.querySelectorAll('[data-row]').forEach(function(r){var d=parseInt(r.querySelector('[data-k=d]').value,10)||0,y=parseInt(r.querySelector('[data-k=y]').value,10)||0,max=+r.dataset.max,key=r.dataset.row,div=key.indexOf('lgs:')===0?3:4,o=r.querySelector('[data-net]'),b=r.querySelector('[data-b]');if(d+y>max){bad=true;o.textContent='-';b.textContent='-';o.classList.add('bad');return}o.classList.remove('bad');b.textContent=String(max-d-y);var n=d-y/div;o.textContent=fmt(n).replace(',00','');out[key.split(':')[1]]=n});return{n:out,bad:bad}}
 function set(k,v,place){var o=root.querySelector('[data-out="'+k+'"]');if(!o)return;o.textContent=v==null?'-':fmt(v);var p=root.querySelector('[data-place="'+k+'"]');if(p)p.textContent=v==null?'':place||''}
 function calc(){var r=nets(),n=r.n;
 var w=0;Object.keys(F.lgs.weights).forEach(function(k){w+=Math.max(0,n[k]||0)*F.lgs.weights[k]});var anyL=Object.keys(F.lgs.weights).some(function(k){return n[k]});set('lgs',anyL?F.lgs.base+w*F.lgs.factor:null);

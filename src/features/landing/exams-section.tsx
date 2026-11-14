@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 import { Card } from '@/components/ui/card'
@@ -40,6 +41,7 @@ export function ExamsSection() {
               who="8. sınıf"
               countdown={<ExamCountdown exam="LGS" />}
               rule={{ divisor: 3, text: '3 yanlış 1 doğruyu götürür.' }}
+              scoreHref="/araclar/lgs-puan-hesaplama"
             >
               <PartsHeader title="Dersler" total={90} />
               <QuestionBar parts={lgs} />
@@ -57,6 +59,7 @@ export function ExamsSection() {
               who="11, 12. sınıf ve mezun"
               countdown={<ExamCountdown exam="YKS" />}
               rule={{ divisor: 4, text: '4 yanlış 1 doğruyu götürür.' }}
+              scoreHref="/araclar/yks-puan-hesaplama"
             >
               <PartsHeader title="TYT" total={120} />
               <QuestionBar parts={tyt} />
@@ -78,12 +81,14 @@ function ExamCard({
   who,
   countdown,
   rule,
+  scoreHref,
   children,
 }: {
   name: string
   who: string
   countdown: ReactNode
   rule: { divisor: number; text: string }
+  scoreHref: string
   children: ReactNode
 }) {
   return (
@@ -97,11 +102,18 @@ function ExamCard({
       </div>
       <div className="mt-7">{children}</div>
       <div className="mt-auto pt-6">
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-xl border border-dashed border-line-strong px-3.5 py-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-dashed border-line-strong py-1 pr-2 pl-3.5">
           <span className="font-display text-[15px] font-bold whitespace-nowrap tabular">
             Net = D - Y/{rule.divisor}
           </span>
           <span className="text-sm text-muted">{rule.text}</span>
+          <a
+            href={scoreHref}
+            className="group ml-auto inline-flex min-h-11 items-center gap-1 rounded-lg px-1.5 text-sm font-semibold whitespace-nowrap text-accent hover:underline"
+          >
+            {name} puan hesaplama
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
+          </a>
         </div>
       </div>
     </Card>

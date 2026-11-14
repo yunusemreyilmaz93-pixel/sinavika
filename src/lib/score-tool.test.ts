@@ -46,4 +46,19 @@ describe('puan hesaplama aracı', () => {
     expect(out('tyt')).toBe('-')
     expect(out('SAY')).toBe('100,00')
   })
+  it('boşu soru sayısından doğru ve yanlışı çıkararak gösterir', () => {
+    mount(lgsBody())
+    const row = document.querySelector<HTMLElement>('[data-row="lgs:lgs-tr"]')!
+    const blank = row.querySelector('[data-b]')!
+    expect(blank.textContent).toBe('20')
+    const [d, y] = row.querySelectorAll('input')
+    d.value = '14'
+    d.dispatchEvent(new Event('input', { bubbles: true }))
+    y.value = '3'
+    y.dispatchEvent(new Event('input', { bubbles: true }))
+    expect(blank.textContent).toBe('3')
+    y.value = '9'
+    y.dispatchEvent(new Event('input', { bubbles: true }))
+    expect(blank.textContent).toBe('-')
+  })
 })
