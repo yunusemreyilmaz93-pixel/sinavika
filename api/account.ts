@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import { z } from 'zod'
 import { PASSWORD_MAX, passwordIssueMessage, passwordProblem, USERNAME_EMAIL_DOMAIN, usernameToEmail } from '../shared/accounts.js'
-import { admin, callerId, dbMessage, handle, HttpError, json, readJson } from './_lib/server.js'
+import { admin, adminElevated, callerId, dbMessage, handle, HttpError, json, readJson } from './_lib/server.js'
 
 const schema = z.discriminatedUnion('action', [
   z.object({ action: z.literal('reset-password'), userId: z.uuid(), password: z.string().max(PASSWORD_MAX) }),
@@ -133,6 +133,7 @@ export const POST = handle(async (request) => {
   const input = parsed.data
   const caller = await profile(await callerId(request))
   if (!caller) throw new HttpError(403, 'Hesap bulunamadı')
+  if (caller.is_admin && !(await adminElevated(request, caller.id))) caller.is_admin = false
 
   if (input.action === 'delete-self') {
     if (caller.role === 'teacher' && (await hasStudents(caller.id))) {

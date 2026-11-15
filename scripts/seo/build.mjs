@@ -8,6 +8,7 @@ import { buildBlog } from './public/blog.mjs'
 import { buildDepartments } from './public/departments.mjs'
 import { buildPublicTools, buildResourcesPage } from './public/tools.mjs'
 import { loadEnv } from 'vite'
+import { writeCsp } from './csp.mjs'
 
 // .env.production (herkese açık değerler) ve ortam değişkenleri, vite build ile aynı öncelikte
 for (const [k, v] of Object.entries(loadEnv('production', process.cwd(), ''))) process.env[k] ??= v
@@ -64,7 +65,8 @@ async function main() {
   write('404.html', pageHead(shell, { path: '/', title: 'Sayfa bulunamadı · İzlek', description: 'Aradığınız sayfa bulunamadı.', noindex: true, site }))
   write('robots.txt', robotsTxt())
   write('sitemap.xml', sitemapXml(urls))
-  console.log(`SEO: ${appPages.length + 1} uygulama sayfası, ${lessons.urls.length} anlatım, ${tools.urls.length} araç ve program, ${departments.urls.length} bölüm sayfası, ${blog.count} blog yazısı, ${urls.length} adres sitemap'te (${site})`)
+  const scripts = writeCsp(dist, process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL)
+  console.log(`SEO: ${appPages.length + 1} uygulama sayfası, ${lessons.urls.length} anlatım, ${tools.urls.length} araç ve program, ${departments.urls.length} bölüm sayfası, ${blog.count} blog yazısı, ${urls.length} adres sitemap'te, CSP'de ${scripts} satır içi betik (${site})`)
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) await main()

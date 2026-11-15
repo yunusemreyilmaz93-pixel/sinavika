@@ -7,6 +7,7 @@ import { AppearanceCard } from './appearance-card'
 import { ChildrenCard } from './children-card'
 import { GoalsCard } from './goals-card'
 import { InstallCard } from './install-card'
+import { MfaCard } from './mfa-card'
 import { NotificationPrefsCard } from './notification-prefs-card'
 import { ParentInviteCard } from './parent-invite-card'
 import { ProfileCard } from './profile-card'
@@ -32,6 +33,7 @@ export default function SettingsPage() {
         {profile.role === 'teacher' && <TeacherCard />}
         {profile.role === 'teacher' && profile.status === 'active' && <AiKeyCard />}
         <SecurityCard />
+        {profile.role === 'teacher' && <MfaCard />}
         <PushCard />
         <NotificationPrefsCard />
         <AppearanceCard />

@@ -1,8 +1,12 @@
+import { useQuery } from '@tanstack/react-query'
+import { ShieldAlert } from 'lucide-react'
 import { motion } from 'motion/react'
 import { BlogSection } from '@/features/blog/blog-section'
 import { useEffect, useRef } from 'react'
-import { useSearchParams } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import { PageHeader } from '@/components/app/page-header'
+import { mfaKey } from '@/features/auth/mfa'
+import { supabase } from '@/lib/supabase'
 import { Segmented } from '@/components/ui/segmented'
 import { AppSettingsSection } from './app-settings-section'
 import { ApplicationsSection } from './applications-section'
@@ -61,6 +65,7 @@ export default function AdminPage() {
   return (
     <div>
       <PageHeader title="Yönetim" />
+      <MfaWarning />
       <div ref={tabsRef} className="mb-5">
         <Segmented
           options={sections.map((s) =>
@@ -98,5 +103,25 @@ export default function AdminPage() {
         {section === 'hatalar' && <ErrorsSection />}
       </motion.div>
     </div>
+  )
+}
+
+function MfaWarning() {
+  const factors = useQuery({
+    queryKey: [...mfaKey, 'factors'],
+    queryFn: async () => (await supabase.auth.mfa.listFactors()).data?.all ?? [],
+  })
+  if (factors.isPending || factors.data?.some((f) => f.status === 'verified')) return null
+  return (
+    <Link
+      to="/app/ayarlar"
+      className="mb-5 flex min-h-14 items-center gap-3 rounded-2xl border border-warning/40 bg-warning-soft px-4 py-3 text-sm hover:border-warning"
+    >
+      <ShieldAlert className="size-5 shrink-0 text-warning" />
+      <span>
+        <b className="block">İki adımlı doğrulama kapalı</b>
+        Şifreniz ele geçirilirse yönetim paneline girilebilir. Ayarlar sayfasından açın.
+      </span>
+    </Link>
   )
 }

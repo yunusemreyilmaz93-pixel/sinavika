@@ -414,5 +414,5 @@ ${examLinks.length ? `<div><h2>Konu anlatımları</h2><ul>${examLinks.map(([href
 <div><h2>İzlek</h2><ul><li><a href="/hakkinda">Hakkında</a></li><li><a href="/ogretmen-basvurusu">Öğretmen başvurusu</a></li><li><a href="/katil">Davet koduyla katıl</a></li><li><a href="/kvkk">KVKK aydınlatma metni</a></li><li><a href="/durum">Sistem durumu</a></li></ul></div>
 <p class="editor">Anlatımlar İzlek'in geliştiricisi tarafından hazırlanır ve gözden geçirilir. Bir hata ya da eksik görürseniz <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> adresine yazabilirsiniz. İzlek ücretsizdir ve reklam içermez.</p>
 </div></footer>`
-  return `${head}\n<body class="pub">\n${header}\n${body}\n${footer}\n<script>${navScript}${videoScript}</script>\n<script>${beaconScript}</script>\n</body>\n</html>\n`
+  return `${head}\n<body class="pub">\n${header}\n${body}\n${footer}\n<script>${navScript};${videoScript}</script>\n<script>${beaconScript}</script>\n</body>\n</html>\n`
 }

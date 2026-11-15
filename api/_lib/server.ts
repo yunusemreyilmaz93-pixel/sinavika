@@ -31,6 +31,20 @@ export async function callerId(request: Request) {
   return data.user.id
 }
 
+// Yönetici iki adımlı doğrulamayı açtıysa yönetici işlemleri yalnızca iki adımla açılmış oturumda (aal2) yapılır.
+// Belirteç callerId içinde doğrulandığı için burada yalnızca içindeki aal okunur
+export async function adminElevated(request: Request, userId: string) {
+  const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? ''
+  try {
+    const claims = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))) as { aal?: string }
+    if (claims.aal === 'aal2') return true
+  } catch {
+    return false
+  }
+  const { data } = await admin().auth.admin.mfa.listFactors({ userId })
+  return !(data?.factors ?? []).some((f) => f.status === 'verified')
+}
+
 export async function readJson(request: Request) {
   try {
     return await request.json()

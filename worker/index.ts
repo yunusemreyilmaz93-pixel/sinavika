@@ -13,7 +13,13 @@ import * as video from '../api/video.js'
 import { runBackup, type R2Bucket } from './backup.js'
 
 type Handler = (request: Request) => Promise<Response>
-type Env = { ASSETS: { fetch: (request: Request) => Promise<Response> }; BACKUPS?: R2Bucket }
+type Env = {
+  ASSETS: { fetch: (request: Request) => Promise<Response> }
+  BACKUPS?: R2Bucket
+  AUTH_LIMIT?: { limit: (options: { key: string }) => Promise<{ success: boolean }> }
+}
+// Giriş gerektirmeyen uçlar (katılım, başvuru, şifre isteği) her IP için dakikada 10 istekle sınırlı
+const LIMITED = new Set(['/api/auth'])
 // Günlük işler (hatırlatma, rapor, temizlik) bu zamanlamada, diğer zamanlamalar yalnızca yedek alır
 const DAILY_CRON = '17 6 * * *'
 type Ctx = { waitUntil: (promise: Promise<unknown>) => void }
@@ -37,6 +43,17 @@ export default {
   async fetch(request: Request, env: Env) {
     const url = new URL(request.url)
     if (OLD_HOSTS.has(url.hostname)) return Response.redirect(`https://izlek.site${url.pathname}${url.search}`, 301)
+
+    if (request.method === 'POST' && LIMITED.has(url.pathname) && env.AUTH_LIMIT) {
+      const ip = request.headers.get('cf-connecting-ip') ?? 'unknown'
+      const { success } = await env.AUTH_LIMIT.limit({ key: `${ip}:${url.pathname}` })
+      if (!success) {
+        return new Response(JSON.stringify({ error: 'Çok fazla deneme yapıldı. Bir dakika sonra tekrar deneyin' }), {
+          status: 429,
+          headers: { 'content-type': 'application/json; charset=utf-8', 'retry-after': '60' },
+        })
+      }
+    }
 
     if (url.pathname.startsWith('/api/')) {
       const route: Record<string, Handler | undefined> | undefined = url.pathname.startsWith('/api/partytracks/')

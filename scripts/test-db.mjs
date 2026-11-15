@@ -20,6 +20,10 @@ create schema auth;
 create table auth.users (id uuid primary key, email text, encrypted_password text, email_confirmed_at timestamptz, raw_app_meta_data jsonb, raw_user_meta_data jsonb, created_at timestamptz default now(), updated_at timestamptz default now(), last_sign_in_at timestamptz);
 create function auth.uid() returns uuid language sql stable as $$
   select (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')::uuid $$;
+create function auth.jwt() returns jsonb language sql stable as $$
+  select coalesce(nullif(current_setting('request.jwt.claims', true), '')::jsonb, '{}'::jsonb) $$;
+create table auth.mfa_factors (id uuid primary key default gen_random_uuid(), user_id uuid not null, status text not null);
+grant execute on function auth.jwt() to anon, authenticated, service_role;
 grant usage on schema auth to anon, authenticated, service_role;
 grant execute on function auth.uid() to anon, authenticated, service_role;
 grant usage on schema extensions to anon, authenticated, service_role;
@@ -343,6 +347,46 @@ await test('hata kaydı yöneticiye saatte bir bildirim olarak düşer', async (
   assert.match(rows[0].body, /^2 hata/)
   assert.equal((await as(teacherA, `select id from public.notifications where kind = 'error'`)).length, 0)
   await service('delete from public.client_errors')
+})
+
+await test('şema denetimi: her tabloda RLS açık, anonim hiçbir tabloya yazamaz, okuyabildikleri bilinen listede', async () => {
+  const noRls = await service(`select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
+    where n.nspname = 'public' and c.relkind = 'r' and not c.relrowsecurity`)
+  assert.deepEqual(noRls.map((r) => r.relname), [])
+  const writes = await service(`select table_name, privilege_type from information_schema.role_table_grants
+    where table_schema = 'public' and grantee = 'anon' and privilege_type in ('INSERT', 'UPDATE', 'DELETE', 'TRUNCATE')`)
+  assert.deepEqual(writes, [])
+  const reads = (await service(`select distinct table_name from information_schema.role_table_grants
+    where table_schema = 'public' and grantee = 'anon' and privilege_type = 'SELECT' order by 1`)).map((r) => r.table_name)
+  console.log('      anonim okuyabilir:', reads.join(', '))
+  const allowed = new Set(['app_settings', 'posts', 'program_results', 'programs', 'subjects', 'topics', 'universities'])
+  assert.deepEqual(reads.filter((t) => !allowed.has(t)), [])
+  const perRow = await service(`select tablename, policyname from pg_policies where schemaname = 'public'
+    and (qual ~ '(?<!SELECT )auth\\.uid\\(\\)' or with_check ~ '(?<!SELECT )auth\\.uid\\(\\)')`)
+  assert.deepEqual(perRow, [])
+})
+
+await test('iki adımlı doğrulama: faktör ekleyen yönetici yalnızca aal2 oturumda yönetici sayılır', async () => {
+  const asAal = async (aal, sql) => {
+    await db.query('begin')
+    try {
+      await db.query('set local role authenticated')
+      await db.query(`select set_config('request.jwt.claims', $1, true)`, [JSON.stringify({ sub: adminId, role: 'authenticated', aal })])
+      const res = await db.query(sql)
+      await db.query('commit')
+      return res.rows
+    } catch (err) {
+      await db.query('rollback')
+      throw err
+    }
+  }
+  assert.equal((await asAal('aal1', 'select private.is_admin() as a'))[0].a, true)
+  await service(`insert into auth.mfa_factors (user_id, status) values ($1, 'unverified')`, [adminId])
+  assert.equal((await asAal('aal1', 'select private.is_admin() as a'))[0].a, true)
+  await service(`update auth.mfa_factors set status = 'verified' where user_id = $1`, [adminId])
+  assert.equal((await asAal('aal1', 'select private.is_admin() as a'))[0].a, false)
+  assert.equal((await asAal('aal2', 'select private.is_admin() as a'))[0].a, true)
+  await service('delete from auth.mfa_factors')
 })
 
 await test('öğretmen özeti doğru döner', async () => {
