@@ -27,13 +27,13 @@ export function NoteForm({
   studentId: string
   note: Note | null
   parentCount: number
-  defaults?: { kind: NoteKind; metOn: string }
+  defaults?: { kind: NoteKind; metOn: string; body?: string }
 }) {
   const formId = useId()
   const queryClient = useQueryClient()
   const [kind, setKind] = useState<NoteKind>(note?.kind ?? defaults?.kind ?? 'note')
   const [metOn, setMetOn] = useState(note?.met_on ?? defaults?.metOn ?? todayISO())
-  const [body, setBody] = useState(note?.body ?? '')
+  const [body, setBody] = useState(note?.body ?? defaults?.body ?? '')
   const [visibility, setVisibility] = useState<NoteVisibility>(note?.visibility ?? 'private')
   const [error, setError] = useState<string | null>(null)
 
@@ -90,9 +90,7 @@ export function NoteForm({
 
         {kind === 'meeting' && (
           <Field label="Görüşme tarihi">
-            {(p) => (
-              <Input {...p} type="date" required max={todayISO()} value={metOn} onChange={(e) => setMetOn(e.target.value)} />
-            )}
+            {(p) => <Input {...p} type="date" required max={todayISO()} value={metOn} onChange={(e) => setMetOn(e.target.value)} />}
           </Field>
         )}
 
@@ -111,7 +109,9 @@ export function NoteForm({
                 setBody(e.target.value)
                 if (error) setError(null)
               }}
-              placeholder={kind === 'meeting' ? 'Konuşulanlar, kararlar, bir sonraki adım' : 'Öğrenciyle ilgili aklınızda tutmak istediğiniz şey'}
+              placeholder={
+                kind === 'meeting' ? 'Konuşulanlar, kararlar, bir sonraki adım' : 'Öğrenciyle ilgili aklınızda tutmak istediğiniz şey'
+              }
             />
           )}
         </Field>

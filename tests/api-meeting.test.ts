@@ -7,7 +7,11 @@ const at = (iso: string) => Date.parse(iso)
 const base = { starts_at: '2026-11-20T16:00:00Z', started_at: null, ended_at: null, cancelled_at: null }
 
 function post(body: unknown) {
-  return new Request('http://localhost/api/meeting', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+  return new Request('http://localhost/api/meeting', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })
 }
 
 afterEach(() => {
@@ -36,13 +40,21 @@ describe('görüşme zaman kuralları', () => {
 
   it('iptal edilen ya da biten görüşmeye girilmez', () => {
     expect(joinWindow({ ...base, cancelled_at: '2026-11-19T10:00:00Z' }, at('2026-11-20T16:00:00Z')).ok).toBe(false)
-    expect(joinWindow({ ...base, started_at: '2026-11-20T16:00:00Z', ended_at: '2026-11-20T16:20:00Z' }, at('2026-11-20T16:21:00Z')).ok).toBe(false)
+    expect(
+      joinWindow({ ...base, started_at: '2026-11-20T16:00:00Z', ended_at: '2026-11-20T16:20:00Z' }, at('2026-11-20T16:21:00Z')).ok,
+    ).toBe(false)
   })
+})
 
+describe('ICE sunucuları', () => {
   it('tarayıcının engellediği 53 numaralı port çıkarılır', () => {
     const servers = browserIceServers([
       { urls: ['stun:stun.cloudflare.com:3478', 'stun:stun.cloudflare.com:53'] },
-      { urls: ['turn:turn.cloudflare.com:53?transport=udp', 'turns:turn.cloudflare.com:443?transport=tcp'], username: 'u', credential: 'c' },
+      {
+        urls: ['turn:turn.cloudflare.com:53?transport=udp', 'turns:turn.cloudflare.com:443?transport=tcp'],
+        username: 'u',
+        credential: 'c',
+      },
     ])
     expect(servers.flatMap((s) => s.urls)).toEqual(['stun:stun.cloudflare.com:3478', 'turns:turn.cloudflare.com:443?transport=tcp'])
   })
@@ -69,6 +81,31 @@ describe('api/meeting', () => {
     vi.stubEnv('CALLS_APP_SECRET', 'secret')
     const { POST } = await import('../api/meeting.ts')
     const res = await POST(post({ action: 'state', meetingId: '7f3c2a8e-1d4b-4c6a-9e2f-0a1b2c3d4e5f' }))
+    expect(res.status).toBe(401)
+  })
+})
+
+describe('api/partytracks', () => {
+  const sfu = (path: string, headers: Record<string, string> = {}) =>
+    new Request(`http://localhost/api/partytracks${path}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...headers },
+      body: '{}',
+    })
+
+  it('görüşme kimliği olmadan Realtime isteğini geçirmez', async () => {
+    vi.stubEnv('CALLS_APP_ID', 'app')
+    vi.stubEnv('CALLS_APP_SECRET', 'secret')
+    const { POST } = await import('../api/partytracks.ts')
+    const res = await POST(sfu('/sessions/new'))
+    expect(res.status).toBe(400)
+  })
+
+  it('oturum olmadan Realtime isteğini geçirmez', async () => {
+    vi.stubEnv('CALLS_APP_ID', 'app')
+    vi.stubEnv('CALLS_APP_SECRET', 'secret')
+    const { POST } = await import('../api/partytracks.ts')
+    const res = await POST(sfu('/sessions/new', { 'x-meeting-id': '7f3c2a8e-1d4b-4c6a-9e2f-0a1b2c3d4e5f' }))
     expect(res.status).toBe(401)
   })
 })
