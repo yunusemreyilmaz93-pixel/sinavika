@@ -60,7 +60,7 @@ export const toolRowCss = `
 .pub .trow input{width:100%;min-height:2.75rem;padding:0 .4rem;border:1px solid var(--line-strong);border-radius:.75rem;background:var(--bg);color:var(--fg);font:inherit;font-weight:700;font-size:1.05rem;text-align:center;font-variant-numeric:tabular-nums}
 .pub .trow input:focus{outline:2px solid var(--primary);outline-offset:-1px;border-color:transparent}
 .pub .trow .tb output{min-height:2.75rem;display:grid;place-items:center;font-weight:700;font-size:1.05rem;color:var(--fg-muted)}
-.pub .tnet{display:grid;place-items:center;align-content:center;min-height:3.4rem;border-radius:.9rem;background:color-mix(in srgb,var(--c) 12%,transparent);color:var(--c)}
+.pub .tnet{display:grid;place-items:center;align-content:center;min-height:3.4rem;border-radius:.9rem;background:color-mix(in srgb,var(--c) 12%,transparent);color:color-mix(in srgb,var(--c) 50%,var(--fg))}
 .pub .tnet span{font-size:.72rem;font-weight:700}
 .pub .tnet output{font-family:'Bricolage Grotesque Variable',sans-serif;font-weight:800;font-size:1.2rem;line-height:1.1;font-variant-numeric:tabular-nums}
 .pub output.bad{color:var(--danger)}

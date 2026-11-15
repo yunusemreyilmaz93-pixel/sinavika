@@ -86,6 +86,7 @@ export function ExamList({
                 opener={opener}
                 className="flex min-h-16 items-center gap-3 rounded-xl px-2.5 py-2.5 transition-colors hover:bg-surface-2 focus-visible:bg-surface-2"
               >
+                <span className="sr-only">{`${exam.title}, ${formatDate(exam.taken_on, 'd MMMM yyyy')}, ${formatNet(exam.net)} net`}</span>
                 <span className="flex w-10 shrink-0 flex-col items-center leading-none" aria-hidden>
                   <span className="tabular font-display text-lg font-bold">{formatDate(exam.taken_on, 'd')}</span>
                   <span className="mt-1 text-[11px] font-semibold text-muted uppercase">{formatDate(exam.taken_on, 'MMM')}</span>
