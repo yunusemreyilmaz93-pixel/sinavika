@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/cn'
 
-type Health = { ok: boolean; checks: Record<string, boolean>; optional?: Record<string, boolean>; version: string }
+type Health = { ok: boolean; checks: Record<string, boolean>; optional?: Record<string, boolean>; last_backup?: string | null; version: string }
 
 const labels: Record<string, string> = {
   supabase_url: 'Supabase adresi tanımlı',
@@ -75,6 +75,13 @@ export function SystemHealthCard() {
       {health.data?.optional?.ai_assistant === false && (
         <p className="mt-3 border-t border-line pt-3 text-sm text-muted">
           Yapay zekâ asistanı kapalı. Açmak için Cloudflare'de izlek projesinin Variables and Secrets bölümüne AI_KEY_SECRET gizli değişkenini ekleyin (en az 32 karakter, rastgele).
+        </p>
+      )}
+      {health.data?.optional?.backup === false && (
+        <p className="mt-3 border-t border-line pt-3 text-sm text-warning">
+          {health.data.last_backup
+            ? `Son yedek ${new Date(health.data.last_backup).toLocaleString('tr-TR')} tarihinde alındı. Günlük yedek çalışmıyor, Hatalar bölümüne bakın.`
+            : 'Henüz yedek alınmadı. İlk yedek gece 04.47 civarında alınır.'}
         </p>
       )}
       {failing.length > 0 && (

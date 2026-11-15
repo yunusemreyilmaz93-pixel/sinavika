@@ -20,11 +20,18 @@ export const GET = handle(async () => {
   }
 
   const ok = Object.values(checks).every(Boolean)
+  const lastBackup = checks.service_key ? await admin().from('app_settings').select('value').eq('key', 'last_backup').maybeSingle() : null
+  const backupAt = (lastBackup?.data?.value as { at?: string } | undefined)?.at ?? null
   return json(
     {
       ok,
       checks,
-      optional: { ai_assistant: isConfigured(), meetings: realtimeConfig() !== null },
+      optional: {
+        ai_assistant: isConfigured(),
+        meetings: realtimeConfig() !== null,
+        backup: backupAt !== null && Date.now() - Date.parse(backupAt) < 36 * 60 * 60 * 1000,
+      },
+      last_backup: backupAt,
       version: (process.env.COMMIT_SHA || process.env.VERCEL_GIT_COMMIT_SHA)?.slice(0, 7) ?? 'local',
     },
     ok ? 200 : 503,

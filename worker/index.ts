@@ -10,9 +10,12 @@ import * as meeting from '../api/meeting.js'
 import * as partytracks from '../api/partytracks.js'
 import * as push from '../api/push.js'
 import * as video from '../api/video.js'
+import { runBackup, type R2Bucket } from './backup.js'
 
 type Handler = (request: Request) => Promise<Response>
-type Env = { ASSETS: { fetch: (request: Request) => Promise<Response> } }
+type Env = { ASSETS: { fetch: (request: Request) => Promise<Response> }; BACKUPS?: R2Bucket }
+// Günlük işler (hatırlatma, rapor, temizlik) bu zamanlamada, diğer zamanlamalar yalnızca yedek alır
+const DAILY_CRON = '17 6 * * *'
 type Ctx = { waitUntil: (promise: Promise<unknown>) => void }
 
 const routes: Record<string, Record<string, Handler | undefined> | undefined> = {
@@ -53,7 +56,11 @@ export default {
     return response
   },
 
-  async scheduled(_event: unknown, _env: Env, ctx: Ctx) {
+  async scheduled(event: { cron: string }, env: Env, ctx: Ctx) {
+    if (event.cron !== DAILY_CRON) {
+      ctx.waitUntil(runBackup(env.BACKUPS).then((r) => console.log('backup', JSON.stringify(r))))
+      return
+    }
     const headers = process.env.CRON_SECRET ? { authorization: `Bearer ${process.env.CRON_SECRET}` } : undefined
     ctx.waitUntil(
       cron.GET(new Request('https://izlek.site/api/cron', { headers })).then(async (r) => console.log('cron', r.status, await r.text())),

@@ -15,7 +15,10 @@
     { "pattern": "izlek.site", "custom_domain": true },
     { "pattern": "www.izlek.site", "custom_domain": true }
   ],
-  "triggers": { "crons": ["17 6 * * *"] },
+  "workers_dev": false,
+  "preview_urls": true,
+  "r2_buckets": [{ "binding": "BACKUPS", "bucket_name": "izlek-backups" }],
+  "triggers": { "crons": ["17 6 * * *", "47 1 * * *"] },
   "vars": { "SITE_URL": "https://izlek.site", "SUPABASE_URL": "https://obrpascjokzoalfmwhjf.supabase.co" },
   "observability": { "enabled": true }
 }

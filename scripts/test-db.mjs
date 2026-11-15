@@ -4,6 +4,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { randomUUID } from 'node:crypto'
 import assert from 'node:assert/strict'
 import pg from 'pg'
+import { restoreSql } from './backup/restore.mjs'
 
 const baseUrl = process.env.TEST_DATABASE_URL ?? 'postgresql://postgres@localhost:54329/postgres'
 const dbName = 'sinavika_test'
@@ -16,7 +17,7 @@ do $$ begin
   create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
 exception when duplicate_object then null; end $$;
 create schema auth;
-create table auth.users (id uuid primary key, email text);
+create table auth.users (id uuid primary key, email text, encrypted_password text, email_confirmed_at timestamptz, raw_app_meta_data jsonb, raw_user_meta_data jsonb, created_at timestamptz default now(), updated_at timestamptz default now(), last_sign_in_at timestamptz);
 create function auth.uid() returns uuid language sql stable as $$
   select (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')::uuid $$;
 grant usage on schema auth to anon, authenticated, service_role;
@@ -311,6 +312,37 @@ await test('şifre sıfırlama isteği öğretmene bir kez düşer, anonim çağ
   await service('select public.request_password_reset($1)', [teacherA])
   assert.equal((await as(adminId, `select id from public.notifications where kind = 'account'`)).length, 1)
   await rejects(as(null, 'select public.request_password_reset($1)', [s1]), /permission denied/)
+})
+
+await test('yedek: tüm kişisel tablolar girer, katalog tabloları girmez, yalnızca sunucu çağırır', async () => {
+  const [{ dump }] = await service('select public.backup_dump() as dump')
+  assert.ok(dump.public.profiles.length >= 3)
+  assert.ok(Array.isArray(dump.public.messages) && Array.isArray(dump.public.notification_prefs))
+  assert.equal(dump.public.programs, undefined)
+  assert.equal(dump.public.catalog_books, undefined)
+  assert.ok(dump.auth_users.some((u) => u.id === s1))
+  await rejects(as(teacherA, 'select public.backup_dump()'), /permission denied/)
+  await rejects(as(null, 'select public.backup_dump()'), /permission denied/)
+
+  const count = async (t) => (await service(`select count(*)::int as n from public.${t}`))[0].n
+  const logs = await count('question_logs')
+  const messages = await count('messages')
+  assert.ok(logs > 0 && messages > 0)
+  await service('delete from public.question_logs')
+  await service('delete from public.messages')
+  await db.query(restoreSql(dump, { auth: false }))
+  assert.equal(await count('question_logs'), logs)
+  assert.equal(await count('messages'), messages)
+})
+
+await test('hata kaydı yöneticiye saatte bir bildirim olarak düşer', async () => {
+  await service(`insert into public.client_errors (message) values ('TypeError: x is undefined')`)
+  await service(`insert into public.client_errors (message) values ('TypeError: y is undefined')`)
+  const rows = await as(adminId, `select body from public.notifications where kind = 'error'`)
+  assert.equal(rows.length, 1)
+  assert.match(rows[0].body, /^2 hata/)
+  assert.equal((await as(teacherA, `select id from public.notifications where kind = 'error'`)).length, 0)
+  await service('delete from public.client_errors')
 })
 
 await test('öğretmen özeti doğru döner', async () => {

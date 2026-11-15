@@ -51,10 +51,24 @@ export function handle(fn: (request: Request) => Promise<Response>) {
     try {
       return await fn(request)
     } catch (err) {
-      if (err instanceof HttpError) return json({ error: err.message }, err.status)
+      if (err instanceof HttpError && err.status < 500) return json({ error: err.message }, err.status)
       console.error(err)
+      await logServerError(request, err)
+      if (err instanceof HttpError) return json({ error: err.message }, err.status)
       return json({ error: 'Beklenmeyen bir hata oluştu, tekrar deneyin' }, 500)
     }
+  }
+}
+
+// Beklenmeyen sunucu hataları yönetici paneline ve yöneticiye bildirim olarak düşer (client_errors_notify)
+async function logServerError(request: Request, err: unknown) {
+  try {
+    const message = err instanceof Error ? err.message : String(err)
+    await admin()
+      .from('client_errors')
+      .insert({ message: `Sunucu: ${message}`.slice(0, 500), path: new URL(request.url).pathname.slice(0, 300), detail: err instanceof Error ? err.stack?.slice(0, 2000) : null })
+  } catch {
+    // Kayıt da başarısız olursa yalnızca Worker günlüğünde kalır
   }
 }
 

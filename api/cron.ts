@@ -42,6 +42,8 @@ export const GET = handle(async (request) => {
   if (reports.error) console.error('Veli raporları gönderilemedi', reports.error.message)
   if (digests.error) console.error('Öğretmen özetleri gönderilemedi', digests.error.message)
   if (unread.error) console.error('Mesaj hatırlatmaları gönderilemedi', unread.error.message)
+  const failed = [reminders, reports, digests, unread].map((r) => r.error?.message).filter(Boolean)
+  if (failed.length) await db.from('client_errors').insert({ message: `Sunucu: Günlük iş başarısız. ${failed.join(' | ')}`.slice(0, 500), path: '/api/cron' })
 
   const origin = new URL(request.url).origin
   await fetch(`${origin}/api/push`, {
