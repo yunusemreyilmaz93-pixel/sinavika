@@ -22,7 +22,7 @@ export async function loadCurriculum() {
   if (!config.url || !config.key) return null
   try {
     const [subjects, topics, lessons] = await Promise.all([
-      get(config, 'subjects?select=id,exam,name,short,question_count,sort&order=sort'),
+      get(config, 'subjects?select=id,exam,name,short,color,question_count,sort&order=sort'),
       get(config, 'topics?select=id,subject_id,name,sort&order=sort&limit=2000'),
       get(config, 'lessons?select=topic_id,body,reading_minutes,updated_at&published=eq.true&limit=2000'),
     ])

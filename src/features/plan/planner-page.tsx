@@ -107,7 +107,7 @@ export default function PlannerPage() {
           summary={summary.data}
         />
 
-        <section aria-label={`${selected.full_name} haftalık planı`} className="sm:rounded-3xl sm:border sm:border-line sm:bg-surface sm:p-5 sm:shadow-card">
+        <section aria-label={`${selected.full_name} haftalık planı`} className="sm:rounded-3xl sm:border sm:border-line sm:bg-surface sm:p-5">
           <div className="mb-4 flex items-center gap-3 border-b border-line pb-4">
             <Avatar name={selected.full_name} userId={selected.id} className="size-11 text-sm" />
             <div className="min-w-0 flex-1">

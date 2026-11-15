@@ -10,7 +10,7 @@ export function slug(text) {
 
 export const examLabels = {
   lgs: { name: 'LGS', long: 'Liseye Geçiş Sınavı', intro: '8. sınıf öğrencileri için 90 soruluk merkezî sınav' },
-  tyt: { name: 'TYT', long: 'Temel Yeterlilik Testi', intro: 'YKS\'nin ilk oturumu, 120 soru ve 135 dakika' },
+  tyt: { name: 'TYT', long: 'Temel Yeterlilik Testi', intro: 'YKS\'nin ilk oturumu, 120 soru ve 165 dakika' },
   ayt: { name: 'AYT', long: 'Alan Yeterlilik Testi', intro: 'YKS\'nin alan oturumu, 160 soru ve 180 dakika' },
   ydt: { name: 'YDT', long: 'Yabancı Dil Testi', intro: 'YKS\'nin dil oturumu, 80 soru ve 120 dakika' },
 }

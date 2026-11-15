@@ -5,7 +5,7 @@ import { pageHead, siteUrl, withSite } from './html.mjs'
 import { appPages } from './pages.mjs'
 import { buildPublicLessons } from './public/lessons.mjs'
 import { buildDepartments } from './public/departments.mjs'
-import { buildPublicTools } from './public/tools.mjs'
+import { buildPublicTools, buildResourcesPage } from './public/tools.mjs'
 import { loadEnv } from 'vite'
 
 // .env.production (herkese açık değerler) ve ortam değişkenleri, vite build ile aynı öncelikte
@@ -50,10 +50,13 @@ async function main() {
   const cssHref = shell.match(/<link rel="stylesheet"[^>]*href="([^"]+\.css)"/)?.[1]
   const lessons = await buildPublicLessons({ write, shell, cssHref, site })
   urls.push(...lessons.urls)
-  const tools = await buildPublicTools({ write, shell, cssHref, site, subjects: lessons.subjects })
+  const examLinks = lessons.exams.map((k) => [`/konu-anlatimi/${k}`, k.toUpperCase()])
+  const tools = await buildPublicTools({ write, shell, cssHref, site, examLinks, subjects: lessons.subjects })
   urls.push(...tools.urls)
-  const departments = await buildDepartments({ write, shell, cssHref, site })
+  const departments = await buildDepartments({ write, shell, cssHref, site, examLinks })
   urls.push(...departments.urls)
+  const resources = buildResourcesPage({ write, shell, cssHref, site, examLinks, subjects: lessons.subjects, stats: { ...lessons.stats, ...departments.stats, plans: tools.plans } })
+  urls.push(...resources.urls)
 
   write('404.html', pageHead(shell, { path: '/', title: 'Sayfa bulunamadı · İzlek', description: 'Aradığınız sayfa bulunamadı.', noindex: true, site }))
   write('robots.txt', robotsTxt())
