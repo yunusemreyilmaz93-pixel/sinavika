@@ -252,6 +252,11 @@ const sections: Section[] = [
           hesaplarını silmeden önce öğrencilerinin hesaplarını silmeleri gerekir.
         </p>
         <p>
+          İşlenen verilerinizin bir kopyasını <strong>Ayarlar</strong> sayfasındaki <strong>Verilerimi indir</strong> ile JSON dosyası olarak
+          indirebilirsiniz. Öğretmen bir öğrenciyi arşive aldığında öğrenci ve veliye bildirim gider. Kullanılmış bir öğrenci
+          hesabı, öğretmen tarafından ancak 7 gün arşivde kaldıktan sonra silinebilir.
+        </p>
+        <p>
           Diğer talepleriniz için öğretmeninize başvurabilir ya da {CONTACT_EMAIL} adresine yazabilirsiniz. Başvurularınız en geç
           30 gün içinde ücretsiz olarak sonuçlandırılır.
         </p>

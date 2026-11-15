@@ -1061,6 +1061,30 @@ export type Database = {
           },
         ];
       };
+      notification_prefs: {
+        Row: {
+          muted: string[];
+          push_muted: string[];
+          quiet_night: boolean;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          muted?: string[];
+          push_muted?: string[];
+          quiet_night?: boolean;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          muted?: string[];
+          push_muted?: string[];
+          quiet_night?: boolean;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       notes: {
         Row: {
           body: string;

@@ -1,4 +1,4 @@
-import { ChevronRight, FileText, LogOut, ShieldCheck, Trash2 } from 'lucide-react'
+import { ChevronRight, Download, FileText, LogOut, ShieldCheck, Trash2 } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { toast } from 'sonner'
@@ -8,6 +8,7 @@ import { useAuth, useProfile } from '@/features/auth/session'
 import { callApi } from '@/lib/api'
 import { cn } from '@/lib/cn'
 import { errorMessage } from '@/lib/supabase'
+import { exportMyData } from './export-data'
 import { SettingsCard } from './ui'
 
 const rowClass = 'flex min-h-12 w-full items-center gap-3 rounded-xl px-3 text-left text-[15px] font-semibold transition-colors hover:bg-surface-2'
@@ -34,6 +35,19 @@ export function AccountCard() {
   const [open, setOpen] = useState(false)
   const [typed, setTyped] = useState('')
   const [leaving, setLeaving] = useState(false)
+  const [exporting, setExporting] = useState(false)
+
+  async function download() {
+    setExporting(true)
+    try {
+      await exportMyData(profile)
+      toast.success('Veriler indirildi')
+    } catch (err) {
+      toast.error(errorMessage(err))
+    } finally {
+      setExporting(false)
+    }
+  }
   const confirmed = typed.trim().toLocaleUpperCase('tr').replace('İ', 'I') === 'SIL'
 
   async function remove() {
@@ -55,6 +69,9 @@ export function AccountCard() {
           <RowContent icon={<FileText className="text-muted" />}>KVKK aydınlatma metni</RowContent>
           <ChevronRight className="size-4 text-subtle" />
         </Link>
+        <button type="button" className={cn(rowClass, exporting && 'opacity-60')} disabled={exporting} onClick={() => void download()}>
+          <RowContent icon={<Download className="text-muted" />}>{exporting ? 'Hazırlanıyor' : 'Verilerimi indir'}</RowContent>
+        </button>
         <button
           type="button"
           className={cn(rowClass, leaving && 'opacity-60')}

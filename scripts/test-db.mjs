@@ -280,6 +280,39 @@ await test('mesaj kanalları ayrıdır', async () => {
   assert.equal(n.length, 2)
 })
 
+await test('bildirim tercihi: kapatılan tür gelmez, kapatılamayan tür reddedilir', async () => {
+  await as(s1, `insert into public.notification_prefs (muted) values ('{note}')`)
+  await rejects(as(s1, `update public.notification_prefs set muted = '{account}'`), /check constraint/)
+  await rejects(as(s1, `insert into public.notification_prefs (user_id, muted) values ($1, '{}')`, [s2]), /permission denied|row-level security/)
+  await as(teacherA, `insert into public.notes (student_id, body, visibility) values ($1, 'Paylaşılan not', 'student')`, [s1])
+  assert.equal((await as(s1, `select id from public.notifications where kind = 'note' and body = 'Paylaşılan not'`)).length, 0)
+  assert.equal((await as(teacherA, 'select user_id from public.notification_prefs')).length, 0)
+  await as(s1, `update public.notification_prefs set muted = '{}'`)
+})
+
+await test('öğretmenin okumadığı mesaj için bir kez hatırlatma gider', async () => {
+  await service(`update public.messages set created_at = now() - interval '30 hours' where student_id = $1`, [s1])
+  await service(`delete from public.notifications where user_id = $1 and kind = 'message'`, [teacherA])
+  assert.equal((await service('select public.send_unread_message_reminders() as n'))[0].n, 1)
+  const [n] = await as(teacherA, `select title, body from public.notifications where kind = 'message'`)
+  assert.match(n.title, /okunmamış|okunmadı/)
+  await as(teacherA, `insert into public.message_reads (student_id, channel, last_read_at) values ($1, 'student', now()), ($1, 'parent', now())`, [s1])
+  assert.equal((await service('select public.send_unread_message_reminders() as n'))[0].n, 0)
+  await rejects(as(teacherA, 'select public.send_unread_message_reminders()'), /permission denied/)
+})
+
+await test('şifre sıfırlama isteği öğretmene bir kez düşer, anonim çağıramaz', async () => {
+  await service('select public.request_password_reset($1)', [s1])
+  await service('select public.request_password_reset($1)', [s1])
+  await service('select public.request_password_reset($1)', [parent])
+  const rows = await as(teacherA, `select title, link from public.notifications where kind = 'account' order by id`)
+  assert.equal(rows.length, 2)
+  assert.match(rows[0].link, /tab=ayarlar/)
+  await service('select public.request_password_reset($1)', [teacherA])
+  assert.equal((await as(adminId, `select id from public.notifications where kind = 'account'`)).length, 1)
+  await rejects(as(null, 'select public.request_password_reset($1)', [s1]), /permission denied/)
+})
+
 await test('öğretmen özeti doğru döner', async () => {
   const rows = await as(teacherA, 'select * from public.teacher_overview()')
   const d = rows.find((r) => r.id === s1)
@@ -292,6 +325,9 @@ await test('öğretmen özeti doğru döner', async () => {
 
 await test('arşivlenen öğrenci yer açar, dolu kontenjanda geri alınamaz', async () => {
   await as(teacherA, 'update public.students set archived_at = now() where id = $1', [s2])
+  const [note] = await as(s2, `select title, body from public.notifications where kind = 'account'`)
+  assert.match(note.title, /arşive aldı/)
+  assert.match(note.body, /silinmedi/)
   const [row] = await as(teacherA, `select (public.create_student_invite('Yeni', 'lgs', 8::smallint)).code`)
   assert.ok(row.code)
   await rejects(as(teacherA, 'update public.students set archived_at = null where id = $1', [s2]), /kontenjanı dolu/)

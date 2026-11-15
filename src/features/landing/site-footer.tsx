@@ -140,6 +140,11 @@ export function SiteFooter({ onNavigate }: { onNavigate: (link: SectionLink) => 
                 KVKK aydınlatma metni
               </Link>
             </li>
+            <li>
+              <Link to="/durum" className={linkClass}>
+                Sistem durumu
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

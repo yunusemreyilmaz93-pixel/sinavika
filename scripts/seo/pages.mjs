@@ -18,6 +18,12 @@ export const appPages = [
     description: 'LGS ve YKS öğrencilerinizin haftalık planını, soru ve deneme takibini ücretsiz yönetmek için öğretmen olarak başvurun.',
     sitemap: true,
   },
+  {
+    path: '/durum',
+    title: 'Sistem durumu · İzlek',
+    description: 'İzlek şu an çalışıyor mu? Giriş, kayıtlar, bildirimler ve görüntülü görüşmenin anlık durumu, giriş sorunları için yardım.',
+    sitemap: false,
+  },
   { path: '/giris', title: 'Giriş yap · İzlek', description: 'İzlek hesabınıza giriş yapın.', noindex: true },
   { path: '/katil', title: 'Davet koduyla katıl · İzlek', description: 'Öğretmeninizden aldığınız kodla İzlek\'e katılın.', noindex: true },
   { path: '/test-giris', title: 'Test girişi · İzlek', description: 'İzlek test girişi.', noindex: true },

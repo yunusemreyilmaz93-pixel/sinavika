@@ -19,6 +19,7 @@ export const router = createBrowserRouter([
       { path: 'hakkinda', ...page(() => import('@/features/about/about-page')) },
       { path: 'rapor/:token', ...page(() => import('@/features/report/report-page')) },
       { path: 'kvkk', ...page(() => import('@/features/legal/kvkk-page')) },
+      { path: 'durum', ...page(() => import('@/features/status/status-page')) },
       {
         element: <RedirectIfAuthed />,
         children: [

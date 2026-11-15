@@ -39,12 +39,18 @@ async function vapidKeys(): Promise<Keys> {
   return stored
 }
 
+// Gece sessizliği Türkiye saatiyle 22.00 ile 08.00 arası. Bu sürede telefona gönderilmez, bildirim uygulamada kalır
+function isNight() {
+  const hour = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Istanbul', hour: 'numeric', hourCycle: 'h23' }).format(new Date()))
+  return hour >= 22 || hour < 8
+}
+
 async function dispatch() {
   const db = admin()
   const since = new Date(Date.now() - 60 * 60 * 1000).toISOString()
   const { data: pending } = await db
     .from('notifications')
-    .select('id, user_id, title, body, link')
+    .select('id, user_id, kind, title, body, link')
     .is('pushed_at', null)
     .is('read_at', null)
     .gte('created_at', since)
@@ -55,7 +61,18 @@ async function dispatch() {
   const ids = pending.map((n) => n.id)
   await db.from('notifications').update({ pushed_at: new Date().toISOString() }).in('id', ids).is('pushed_at', null)
 
-  const users = [...new Set(pending.map((n) => n.user_id))]
+  const { data: prefs } = await db
+    .from('notification_prefs')
+    .select('user_id, push_muted, quiet_night')
+    .in('user_id', [...new Set(pending.map((n) => n.user_id))])
+  const night = isNight()
+  const prefOf = new Map((prefs ?? []).map((p) => [p.user_id, p]))
+  const sendable = pending.filter((n) => {
+    const p = prefOf.get(n.user_id)
+    return !p || (!p.push_muted.includes(n.kind) && !(p.quiet_night && night))
+  })
+  const users = [...new Set(sendable.map((n) => n.user_id))]
+  if (!users.length) return 0
   const { data: subs } = await db.from('push_subscriptions').select('endpoint, user_id, p256dh, auth').in('user_id', users)
   if (!subs?.length) return 0
 
@@ -65,7 +82,7 @@ async function dispatch() {
   let sent = 0
   const dead: string[] = []
   await Promise.all(
-    pending.flatMap((n) =>
+    sendable.flatMap((n) =>
       subs
         .filter((s) => s.user_id === n.user_id)
         .map(async (s) => {

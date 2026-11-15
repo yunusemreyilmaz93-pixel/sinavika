@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/field'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth, type Child } from '@/features/auth/session'
+import { useNow } from '@/features/meetings/next-meeting'
 import { cn } from '@/lib/cn'
 import { keys } from '@/lib/data'
 import { fold } from '@/lib/text'
@@ -116,10 +117,13 @@ function TeacherInbox({ userId }: { userId: string }) {
   const q = fold(query)
   const visible = q ? rows.filter((r) => r.search.includes(q)) : rows
   const unread = rows.reduce((sum, r) => sum + r.summary.unread, 0)
+  const now = useNow(60_000)
+  const waiting = rows.filter((r) => waitingHours(r, userId, now) !== null).length
+  const summary = [unread ? `${unread} okunmamış mesaj` : '', waiting ? `${waiting} sohbet cevap bekliyor` : ''].filter(Boolean).join(' · ')
 
   return (
     <div>
-      <PageHeader title="Mesajlar" description={unread ? `${unread} okunmamış mesaj` : undefined} />
+      <PageHeader title="Mesajlar" description={summary || undefined} />
       {inbox.isPending ? (
         <ListSkeleton />
       ) : inbox.isError ? (
@@ -156,7 +160,7 @@ function TeacherInbox({ userId }: { userId: string }) {
               Bu isimle eşleşen sohbet yok.
             </p>
           ) : (
-            <ThreadList rows={visible} userId={userId} />
+            <ThreadList rows={visible} userId={userId} now={now} />
           )}
         </>
       )}
@@ -197,7 +201,15 @@ function ParentInbox({ userId, kids }: { userId: string; kids: Child[] }) {
   )
 }
 
-function ThreadList({ rows, userId }: { rows: Row[]; userId: string }) {
+// Son mesaj karşı taraftansa ve son 7 gün içindeyse sohbet cevap bekler. Öğretmen listesinde gösterilir
+function waitingHours(row: Row, userId: string, now: number) {
+  const last = row.summary.last
+  if (!last || last.sender_id === userId) return null
+  const hours = (now - Date.parse(last.created_at)) / 36e5
+  return hours < 24 * 7 ? hours : null
+}
+
+function ThreadList({ rows, userId, now }: { rows: Row[]; userId: string; now?: number }) {
   return (
     <ul className="overflow-hidden rounded-3xl border border-line bg-surface">
       {rows.map((r, i) => (
@@ -208,17 +220,17 @@ function ThreadList({ rows, userId }: { rows: Row[]; userId: string }) {
           transition={{ duration: 0.2, delay: Math.min(i, 8) * 0.025 }}
           className="border-b border-line last:border-b-0"
         >
-          <ThreadRow row={r} userId={userId} />
+          <ThreadRow row={r} userId={userId} waiting={now === undefined ? null : waitingHours(r, userId, now)} />
         </motion.li>
       ))}
     </ul>
   )
 }
 
-function ThreadRow({ row, userId }: { row: Row; userId: string }) {
+function ThreadRow({ row, userId, waiting }: { row: Row; userId: string; waiting: number | null }) {
   const { last, unread } = row.summary
   const mine = last?.sender_id === userId
-  const prefix = !last ? '' : mine ? 'Sen: ' : row.channel === 'parent' && row.badge ? `${firstName(row.names[last.sender_id] ?? 'Veli')}: ` : ''
+  const prefix = !last ? '' : mine ? 'Siz: ' : row.channel === 'parent' && row.badge ? `${firstName(row.names[last.sender_id] ?? 'Veli')}: ` : ''
 
   return (
     <Link
@@ -237,6 +249,9 @@ function ThreadRow({ row, userId }: { row: Row; userId: string }) {
           )}
         </span>
         {row.subtitle && <span className="block truncate text-xs text-muted">{row.subtitle}</span>}
+        {waiting !== null && waiting >= 24 && (
+          <span className="mt-0.5 block text-xs font-semibold text-warning">{Math.floor(waiting / 24)} gündür cevap bekliyor</span>
+        )}
         <span className="mt-0.5 flex items-center gap-2">
           <span className={cn('min-w-0 flex-1 truncate text-sm', unread ? 'font-medium text-fg' : 'text-muted', !last && 'text-subtle')}>
             {last ? prefix + last.body.replace(/\s+/g, ' ') : 'Henüz mesaj yok'}

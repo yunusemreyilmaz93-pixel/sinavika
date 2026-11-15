@@ -1,12 +1,42 @@
 import { CONTACT_EMAIL } from '@/lib/contact'
-import { GraduationCap, Presentation, X } from 'lucide-react'
+import { CircleCheck, X } from 'lucide-react'
 import { Popover } from 'radix-ui'
+import { useState, type FormEvent } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/field'
+import { callApi } from '@/lib/api'
+import { errorMessage } from '@/lib/supabase'
 
 const contactEmail = CONTACT_EMAIL
 
-export function ForgotPassword() {
+export function ForgotPassword({ identifier = '' }: { identifier?: string }) {
+  const [value, setValue] = useState(identifier)
+  const [state, setState] = useState<'idle' | 'sending' | 'sent'>('idle')
+  const [error, setError] = useState<string | null>(null)
+
+  async function submit(e: FormEvent) {
+    e.preventDefault()
+    if (value.trim().length < 3) return setError('Kullanıcı adınızı ya da e-posta adresinizi yazın')
+    setState('sending')
+    setError(null)
+    try {
+      await callApi('auth', { action: 'reset-request', identifier: value.trim() })
+      setState('sent')
+    } catch (err) {
+      setError(errorMessage(err))
+      setState('idle')
+    }
+  }
+
   return (
-    <Popover.Root>
+    <Popover.Root
+      onOpenChange={(open) => {
+        if (open) {
+          setValue((v) => v || identifier)
+          setState((s) => (s === 'sent' ? 'idle' : s))
+        }
+      }}
+    >
       <Popover.Trigger className="-my-3 -mr-1.5 inline-flex h-11 items-center rounded-lg px-1.5 text-sm font-semibold text-accent underline-offset-4 hover:underline">
         Şifremi unuttum
       </Popover.Trigger>
@@ -27,33 +57,42 @@ export function ForgotPassword() {
               <X className="size-4" />
             </Popover.Close>
           </div>
-          <ul className="mt-2 space-y-3.5 text-sm">
-            <li className="flex gap-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary-soft-fg">
-                <GraduationCap className="size-[18px]" />
-              </span>
-              <div>
-                <p className="font-semibold">Öğrenci ve veliler</p>
-                <p className="mt-0.5 leading-relaxed text-muted">Öğretmene haber verin. Şifreyi sıfırlayıp yenisini iletir.</p>
-              </div>
-            </li>
-            <li className="flex gap-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent-soft-fg">
-                <Presentation className="size-[18px]" />
-              </span>
-              <div>
-                <p className="font-semibold">Öğretmenler</p>
-                <p className="mt-0.5 leading-relaxed text-muted">
-                  Kayıtlı e-posta adresinizden yöneticiye yazın. Şifreyi sıfırlayıp bilgi verir.
-                </p>
-                {contactEmail && (
-                  <a href={`mailto:${contactEmail}`} className="mt-1 inline-flex min-h-9 items-center font-semibold break-all text-accent hover:underline">
+          {state === 'sent' ? (
+            <div className="mt-2 flex gap-3 text-sm">
+              <CircleCheck className="mt-0.5 size-5 shrink-0 text-success" />
+              <p className="leading-relaxed text-muted">
+                İstek iletildi. Öğrenci ve velinin isteği öğretmene, öğretmenin isteği yöneticiye bildirim olarak düşer. Yeni şifre size
+                iletilir.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={submit} noValidate className="mt-2 flex flex-col gap-3 text-sm">
+              <p className="leading-relaxed text-muted">
+                Kullanıcı adınızı ya da e-posta adresinizi yazın. Şifreyi sıfırlayacak kişiye haber gider.
+              </p>
+              <Input
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                aria-label="Kullanıcı adı veya e-posta"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                aria-invalid={error ? true : undefined}
+              />
+              {error && <p className="text-danger">{error}</p>}
+              <Button type="submit" loading={state === 'sending'} className="w-full">
+                Sıfırlama isteği gönder
+              </Button>
+              {contactEmail && (
+                <p className="text-xs text-muted">
+                  Yanıt alamazsanız{' '}
+                  <a href={`mailto:${contactEmail}`} className="font-semibold break-all text-accent hover:underline">
                     {contactEmail}
                   </a>
-                )}
-              </div>
-            </li>
-          </ul>
+                </p>
+              )}
+            </form>
+          )}
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>

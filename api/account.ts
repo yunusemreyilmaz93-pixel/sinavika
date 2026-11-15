@@ -60,6 +60,21 @@ async function deleteStudent(studentId: string) {
   for (const id of orphans) await deleteUser(id)
 }
 
+const DELETE_AFTER_DAYS = 7
+
+// Öğretmen, kullanılmış bir öğrenci hesabını ancak 7 gün arşivde kaldıktan sonra silebilir. Arşiv bildirimiyle öğrenci ve veli
+// verilerini indirmeye zaman bulur. Hiç giriş yapılmamış hesap ya da test hesabı hemen silinir
+async function canDeleteStudent(target: Profile) {
+  if (target.is_test) return true
+  const [{ data: student }, { data: seen }] = await Promise.all([
+    admin().from('students').select('archived_at').eq('id', target.id).maybeSingle(),
+    admin().from('profiles').select('last_seen_at').eq('id', target.id).maybeSingle(),
+  ])
+  if (!seen?.last_seen_at) return true
+  const archivedAt = student?.archived_at ? Date.parse(student.archived_at as string) : null
+  return archivedAt !== null && Date.now() - archivedAt >= DELETE_AFTER_DAYS * 24 * 60 * 60 * 1000
+}
+
 async function hasStudents(teacherId: string) {
   const { count } = await admin()
     .from('students')
@@ -167,6 +182,9 @@ export const POST = handle(async (request) => {
 
   if (input.action === 'delete-student') {
     if (target.role !== 'student') throw new HttpError(400, 'Bu hesap öğrenci değil')
+    if (!(await canDeleteStudent(target))) {
+      throw new HttpError(409, `Kalıcı silme için öğrencinin en az ${DELETE_AFTER_DAYS} gün arşivde kalması gerekiyor`)
+    }
     await deleteStudent(target.id)
     return json({ ok: true })
   }

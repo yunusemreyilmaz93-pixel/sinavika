@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardBody, CardHeader } from '@/components/ui/card'
 import { Confirm } from '@/components/ui/confirm'
 import { Field, Input } from '@/components/ui/field'
+import { useNow } from '@/features/meetings/next-meeting'
 import { callApi } from '@/lib/api'
 import { keys } from '@/lib/data'
+import { formatDate } from '@/lib/dates'
 import { AppError, errorMessage, supabase } from '@/lib/supabase'
 import { isCapacityError } from '../invites'
 import { refreshStudent, type StudentDetail } from './queries'
@@ -67,7 +69,7 @@ export function ArchiveSection({ student }: { student: StudentDetail }) {
         open={confirming}
         onOpenChange={setConfirming}
         title="Arşive alınsın mı?"
-        description={`${student.full_name} öğrenci listenizde arşiv sekmesine taşınır. İstediğiniz zaman geri alabilirsiniz.`}
+        description={`${student.full_name} öğrenci listenizde arşiv sekmesine taşınır. Öğrenci ve velisine bildirim gider, kayıtlar silinmez. İstediğiniz zaman geri alabilirsiniz.`}
         confirmLabel="Arşive alın"
         tone="primary"
         onConfirm={async () => {
@@ -78,7 +80,12 @@ export function ArchiveSection({ student }: { student: StudentDetail }) {
   )
 }
 
+const DELETE_AFTER_DAYS = 7
+
 export function DeleteSection({ student }: { student: StudentDetail }) {
+  const now = useNow(60_000)
+  const opensAt = student.archived_at ? Date.parse(student.archived_at) + DELETE_AFTER_DAYS * 864e5 : null
+  const allowed = !student.last_seen_at || (opensAt !== null && opensAt <= now)
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
@@ -102,17 +109,25 @@ export function DeleteSection({ student }: { student: StudentDetail }) {
     <Card className="border-danger/30">
       <CardHeader title="Kalıcı silme" description="Öğrencinin hesabı ve tüm kayıtları silinir. Geri alınamaz." />
       <CardBody>
-        <Button
-          variant="danger"
-          onClick={() => {
-            setTyped('')
-            setOpen(true)
-          }}
-          className="w-full sm:w-auto"
-        >
-          <Trash2 />
-          Öğrenciyi silin
-        </Button>
+        {!allowed ? (
+          <p className="text-sm text-muted">
+            {opensAt
+              ? `Öğrenci ve velisi verilerini indirebilsin diye silme ${formatDate(new Date(opensAt).toISOString(), 'd MMMM')} tarihinde açılır.`
+              : `Önce öğrenciyi arşive alın. Silme, ${DELETE_AFTER_DAYS} gün arşivde kaldıktan sonra açılır.`}
+          </p>
+        ) : (
+          <Button
+            variant="danger"
+            onClick={() => {
+              setTyped('')
+              setOpen(true)
+            }}
+            className="w-full sm:w-auto"
+          >
+            <Trash2 />
+            Öğrenciyi silin
+          </Button>
+        )}
       </CardBody>
       <Confirm
         open={open}

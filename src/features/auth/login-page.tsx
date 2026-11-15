@@ -100,7 +100,7 @@ export default function LoginPage() {
             <label htmlFor={passwordId} className="text-sm font-semibold">
               Şifre
             </label>
-            <ForgotPassword />
+            <ForgotPassword identifier={identifier} />
           </div>
           <PasswordInput
             ref={passwordRef}

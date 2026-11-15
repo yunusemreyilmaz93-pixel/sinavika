@@ -23,7 +23,23 @@ const joinSchema = z.object({
   consent: z.literal(true),
 })
 
-const schema = z.discriminatedUnion('action', [teacherSchema, joinSchema])
+const resetSchema = z.object({
+  action: z.literal('reset-request'),
+  identifier: z.string().trim().toLowerCase().min(3).max(160),
+})
+
+const schema = z.discriminatedUnion('action', [teacherSchema, joinSchema, resetSchema])
+
+// Kimin şifresi olduğu yanıttan anlaşılmaz. Hesap yoksa da aynı yanıt döner
+async function resetRequest(identifier: string) {
+  const column = identifier.includes('@') ? 'email' : 'username'
+  const { data } = await admin().from('profiles').select('id').eq(column, identifier).maybeSingle()
+  if (data?.id) {
+    const { error } = await admin().rpc('request_password_reset', { p_user: data.id })
+    if (error) await logServerError('Şifre sıfırlama isteği iletilemedi', error.message)
+  }
+  return json({ ok: true })
+}
 
 async function createUser(email: string, password: string, fullName: string) {
   const { data, error } = await admin().auth.admin.createUser({
@@ -108,5 +124,6 @@ async function join(input: z.infer<typeof joinSchema>) {
 export const POST = handle(async (request) => {
   const parsed = schema.safeParse(await readJson(request))
   if (!parsed.success) throw new HttpError(400, 'Bilgileri kontrol edip tekrar deneyin')
+  if (parsed.data.action === 'reset-request') return resetRequest(parsed.data.identifier)
   return parsed.data.action === 'join' ? join(parsed.data) : registerTeacher(parsed.data)
 })
