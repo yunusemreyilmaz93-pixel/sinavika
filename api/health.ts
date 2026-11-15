@@ -22,6 +22,7 @@ export const GET = handle(async () => {
   const ok = Object.values(checks).every(Boolean)
   const lastBackup = checks.service_key ? await admin().from('app_settings').select('value').eq('key', 'last_backup').maybeSingle() : null
   const backupAt = (lastBackup?.data?.value as { at?: string } | undefined)?.at ?? null
+  const dbSize = checks.service_key ? await admin().rpc('db_size_mb') : null
   return json(
     {
       ok,
@@ -32,6 +33,9 @@ export const GET = handle(async () => {
         backup: backupAt !== null && Date.now() - Date.parse(backupAt) < 36 * 60 * 60 * 1000,
       },
       last_backup: backupAt,
+      // Supabase ücretsiz planı 500 MB
+      db_mb: typeof dbSize?.data === 'number' ? dbSize.data : null,
+      db_limit_mb: 500,
       version: (process.env.COMMIT_SHA || process.env.VERCEL_GIT_COMMIT_SHA)?.slice(0, 7) ?? 'local',
     },
     ok ? 200 : 503,

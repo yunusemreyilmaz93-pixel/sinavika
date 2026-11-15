@@ -5,7 +5,15 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/cn'
 
-type Health = { ok: boolean; checks: Record<string, boolean>; optional?: Record<string, boolean>; last_backup?: string | null; version: string }
+type Health = {
+  ok: boolean
+  checks: Record<string, boolean>
+  optional?: Record<string, boolean>
+  last_backup?: string | null
+  db_mb?: number | null
+  db_limit_mb?: number
+  version: string
+}
 
 const labels: Record<string, string> = {
   supabase_url: 'Supabase adresi tanımlı',
@@ -75,6 +83,12 @@ export function SystemHealthCard() {
       {health.data?.optional?.ai_assistant === false && (
         <p className="mt-3 border-t border-line pt-3 text-sm text-muted">
           Yapay zekâ asistanı kapalı. Açmak için Cloudflare'de izlek projesinin Variables and Secrets bölümüne AI_KEY_SECRET gizli değişkenini ekleyin (en az 32 karakter, rastgele).
+        </p>
+      )}
+      {health.data?.db_mb != null && (
+        <p className={cn('mt-3 border-t border-line pt-3 text-sm', health.data.db_mb > 350 ? 'text-warning' : 'text-muted')}>
+          Veritabanı {health.data.db_mb} MB, ücretsiz plan sınırı {health.data.db_limit_mb} MB.
+          {health.data.db_mb > 350 && ' Sınıra yaklaşıldı, eski kayıtların temizlenmesi gerekiyor.'}
         </p>
       )}
       {health.data?.optional?.backup === false && (

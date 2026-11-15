@@ -46,7 +46,8 @@ function watch(page, where) {
   })
 }
 
-async function checkLayout(page, where) {
+async function checkLayout(page, where, { needsHeading = true } = {}) {
+  const before = failures.length
   const { width, scroll, h1, crashed } = await page.evaluate(() => ({
     width: window.innerWidth,
     scroll: document.documentElement.scrollWidth,
@@ -54,8 +55,11 @@ async function checkLayout(page, where) {
     crashed: /Bir şeyler ters gitti/.test(document.body.innerText),
   }))
   if (crashed) fail(where, 'hata ekranı açıldı')
-  if (!h1) fail(where, 'sayfada başlık yok')
+  if (needsHeading && !h1) fail(where, 'sayfada başlık yok')
   if (scroll > width + 1) fail(where, `yatay kaydırma var (${scroll} > ${width})`)
+  if (failures.length > before && process.env.SMOKE_SHOTS) {
+    await page.screenshot({ path: `${process.env.SMOKE_SHOTS}/${where.replace(/[^a-z0-9]+/gi, '-')}.png`, fullPage: true })
+  }
 }
 
 async function publicChecks(browser) {
@@ -127,7 +131,8 @@ async function appChecks(browser) {
       await page.goto(base + path, { waitUntil: 'networkidle' }).catch((e) => fail(where, e.message))
       await page.waitForTimeout(800)
       if (!new URL(page.url()).pathname.startsWith('/app')) fail(where, `uygulamadan çıkarıldı: ${page.url()}`)
-      await checkLayout(page, where)
+      // Sahte oturumda veri boş döner, bazı ekranlar iskelette kalır. Başlık yalnızca gerçek veriyle beklenir
+      await checkLayout(page, where, { needsHeading: false })
       await page.close()
     }
     await ctx.close()

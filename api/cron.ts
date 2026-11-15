@@ -42,6 +42,10 @@ export const GET = handle(async (request) => {
   if (reports.error) console.error('Veli raporları gönderilemedi', reports.error.message)
   if (digests.error) console.error('Öğretmen özetleri gönderilemedi', digests.error.message)
   if (unread.error) console.error('Mesaj hatırlatmaları gönderilemedi', unread.error.message)
+  const size = await db.rpc('db_size_mb')
+  if (typeof size.data === 'number' && size.data > 400) {
+    await db.from('client_errors').insert({ message: `Sunucu: Veritabanı ${size.data} MB, ücretsiz plan sınırı 500 MB`, path: '/api/cron' })
+  }
   const failed = [reminders, reports, digests, unread].map((r) => r.error?.message).filter(Boolean)
   if (failed.length) await db.from('client_errors').insert({ message: `Sunucu: Günlük iş başarısız. ${failed.join(' | ')}`.slice(0, 500), path: '/api/cron' })
 
