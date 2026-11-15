@@ -72,10 +72,10 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
           <ul className="flex items-center gap-0.5">
             <li>
               <a
-                href="/konu-anlatimi"
-                className="inline-flex h-10 items-center rounded-lg px-3 text-[15px] font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-fg"
+                href="/kaynaklar"
+                className="inline-flex h-10 items-center rounded-lg px-3 text-[15px] font-semibold whitespace-nowrap text-muted transition-colors hover:bg-surface-2 hover:text-fg"
               >
-                Konu anlatımları
+                Kaynaklar
               </a>
             </li>
             {sectionLinks.map((link) => (
@@ -87,7 +87,7 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
                     e.preventDefault()
                     onNavigate(link)
                   }}
-                  className="inline-flex h-10 items-center rounded-lg px-3 text-[15px] font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-fg"
+                  className="inline-flex h-10 items-center rounded-lg px-3 text-[15px] font-semibold whitespace-nowrap text-muted transition-colors hover:bg-surface-2 hover:text-fg"
                 >
                   {link.label}
                 </a>
@@ -150,6 +150,12 @@ export function SiteHeader({ onNavigate }: { onNavigate: (link: SectionLink) => 
                     <li>
                       <a href="/konu-anlatimi" className="flex h-13 items-center justify-between text-[17px] font-semibold">
                         Konu anlatımları
+                        <ChevronRight className="size-5 text-subtle" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/kaynaklar" className="flex h-13 items-center justify-between text-[17px] font-semibold">
+                        Kaynaklar
                         <ChevronRight className="size-5 text-subtle" />
                       </a>
                     </li>

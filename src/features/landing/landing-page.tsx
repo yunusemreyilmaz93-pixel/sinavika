@@ -9,6 +9,7 @@ import { scrollToHash, sectionLinks, type Role, type SectionLink } from './primi
 import { RolesSection } from './showcase'
 import { ClosingCta, SiteFooter } from './site-footer'
 import { SiteHeader } from './site-header'
+import { StatsStrip } from './stats-strip'
 import { WhyFree } from './why-free'
 import './landing.css'
 
@@ -84,6 +85,7 @@ export default function LandingPage() {
       <SiteHeader onNavigate={navigate} />
       <main id="icerik" tabIndex={-1} className="relative outline-none">
         <Hero />
+        {ready && <StatsStrip />}
         <Below ready={ready}>
           <ExamsSection />
         </Below>

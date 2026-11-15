@@ -2284,6 +2284,7 @@ export type Database = {
         Returns: undefined;
       };
       invite_state: { Args: { p_code: string }; Returns: string };
+      public_stats: { Args: Record<PropertyKey, never>; Returns: Json };
       preview_invite: {
         Args: { p_code: string };
         Returns: {

@@ -140,6 +140,11 @@ await test('davet kodu ile öğrenci katılır', async () => {
   assert.deepEqual(s, { track: 'yks', grade: 12, field: 'say', teacher_id: teacherA })
 })
 
+await test('ana sayfa sayıları anonim okunur, satır dönmez', async () => {
+  const [row] = await as(null, 'select public.public_stats() as s')
+  for (const key of ['lessons', 'questions', 'tests', 'programs']) assert.equal(typeof row.s[key], 'number')
+})
+
 await test('kod kullanılınca kontenjan dolu kalır', async () => {
   await rejects(as(teacherA, `select public.create_student_invite('X', 'lgs', 8::smallint)`), /kontenjanı dolu/)
 })
