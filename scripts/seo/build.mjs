@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path'
 import { pageHead, siteUrl, withSite } from './html.mjs'
 import { appPages } from './pages.mjs'
 import { buildPublicLessons } from './public/lessons.mjs'
+import { buildBlog } from './public/blog.mjs'
 import { buildDepartments } from './public/departments.mjs'
 import { buildPublicTools, buildResourcesPage } from './public/tools.mjs'
 import { loadEnv } from 'vite'
@@ -55,13 +56,15 @@ async function main() {
   urls.push(...tools.urls)
   const departments = await buildDepartments({ write, shell, cssHref, site, examLinks })
   urls.push(...departments.urls)
+  const blog = await buildBlog({ write, shell, cssHref, site, examLinks, topicUrl: lessons.topicUrl })
+  urls.push(...blog.urls)
   const resources = buildResourcesPage({ write, shell, cssHref, site, examLinks, subjects: lessons.subjects, stats: { ...lessons.stats, ...departments.stats, plans: tools.plans } })
   urls.push(...resources.urls)
 
   write('404.html', pageHead(shell, { path: '/', title: 'Sayfa bulunamadı · İzlek', description: 'Aradığınız sayfa bulunamadı.', noindex: true, site }))
   write('robots.txt', robotsTxt())
   write('sitemap.xml', sitemapXml(urls))
-  console.log(`SEO: ${appPages.length + 1} uygulama sayfası, ${lessons.urls.length} anlatım, ${tools.urls.length} araç ve program, ${departments.urls.length} bölüm sayfası, ${urls.length} adres sitemap'te (${site})`)
+  console.log(`SEO: ${appPages.length + 1} uygulama sayfası, ${lessons.urls.length} anlatım, ${tools.urls.length} araç ve program, ${departments.urls.length} bölüm sayfası, ${blog.count} blog yazısı, ${urls.length} adres sitemap'te (${site})`)
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) await main()

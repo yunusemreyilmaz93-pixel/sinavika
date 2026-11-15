@@ -92,6 +92,7 @@ export const router = createBrowserRouter([
                 children: [
                   { path: 'yonetim', ...page(() => import('@/features/admin/admin-page')) },
                   { path: 'yonetim/anlatim/:topicId', ...page(() => import('@/features/lessons/editor-page')) },
+                  { path: 'yonetim/blog/:postId', ...page(() => import('@/features/blog/post-editor-page')) },
                 ],
               },
             ],

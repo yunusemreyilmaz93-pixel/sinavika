@@ -51,11 +51,11 @@ export async function buildPublicLessons({ write, shell, cssHref, site }) {
   const data = await loadCurriculum()
   if (!data) {
     console.warn('SEO: Supabase anahtarı yok, anlatım sayfaları üretilmedi')
-    return { urls: [], exams: [], subjects: [] }
+    return { urls: [], exams: [], subjects: [], topicUrl: () => null }
   }
   if (!data.lessons.length) {
     console.warn('SEO: yayında anlatım okunamadı (lessons_public_read uygulanmamış olabilir), anlatım sayfaları üretilmedi')
-    return { urls: [], exams: [], subjects: data.subjects }
+    return { urls: [], exams: [], subjects: data.subjects, topicUrl: () => null }
   }
   const parse = await loadTs(join(process.cwd(), 'shared/lesson-parse.ts'))
   const lessonByTopic = new Map(data.lessons.map((l) => [l.topic_id, l]))
@@ -331,5 +331,5 @@ ${ctaBand}</div></main><script>${searchScript}</script>`
   }))
   urls.push({ path: BASE })
 
-  return { urls, exams, subjects: data.subjects, stats: { lessons: total, questions: totalQuestions } }
+  return { urls, exams, subjects: data.subjects, topicUrl, stats: { lessons: total, questions: totalQuestions } }
 }

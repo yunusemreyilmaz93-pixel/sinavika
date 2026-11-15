@@ -300,7 +300,7 @@ ${cta}</div></main>`
 export function buildResourcesPage({ write, shell, cssHref, site, examLinks = [], subjects = [], stats = {} }) {
   const path = '/kaynaklar'
   const trail = [['Ana sayfa', '/'], ['Kaynaklar', path]]
-  const meta = { '/konu-anlatimi': 'LGS, TYT, AYT, YDT', '/araclar/lgs-puan-hesaplama': 'Bilgi amaçlı', '/araclar/yks-puan-hesaplama': 'OGM katsayıları', '/araclar/net-hesaplama': 'LGS, TYT, AYT, YDT', '/calisma-programlari': 'Gün gün', '/yks-bolumleri': 'YÖK Atlas verisi' }
+  const meta = { '/konu-anlatimi': 'LGS, TYT, AYT, YDT', '/araclar/lgs-puan-hesaplama': 'Bilgi amaçlı', '/araclar/yks-puan-hesaplama': 'OGM katsayıları', '/araclar/net-hesaplama': 'LGS, TYT, AYT, YDT', '/calisma-programlari': 'Gün gün', '/yks-bolumleri': 'YÖK Atlas verisi', '/blog': 'Yazılar' }
   const [lessons, ...tools] = resources
   const shown = new Set()
   const chips = subjects.filter((x) => (shown.has(x.color) ? false : shown.add(x.color))).slice(0, 8).map((x) => subjectChip(x, 'sm')).join('')

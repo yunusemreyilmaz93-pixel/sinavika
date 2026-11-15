@@ -257,6 +257,18 @@ await test('görüşme: haftada bir uygulama içi, dış bağlantı sınırsız,
   await rejects(as(teacherA, 'select * from public.meeting_peers'), /permission denied/)
 })
 
+await test('blog: yalnızca yönetici yazar, anonim yalnızca yayındakini okur', async () => {
+  await as(adminId, `insert into public.posts (slug, title, body) values ('taslak-yazi', 'Taslak yazı', 'gövde')`)
+  const [p] = await as(adminId, `insert into public.posts (slug, title, body, published) values ('yayinda-yazi', 'Yayında yazı', 'gövde', true) returning published_at`)
+  assert.ok(p.published_at)
+  assert.deepEqual((await as(null, 'select slug from public.posts order by slug')).map((r) => r.slug), ['yayinda-yazi'])
+  assert.deepEqual((await as(s1, 'select slug from public.posts')).map((r) => r.slug), ['yayinda-yazi'])
+  assert.equal((await as(adminId, 'select slug from public.posts')).length, 2)
+  await rejects(as(teacherA, `insert into public.posts (slug, title) values ('ogretmen', 'Öğretmen yazısı')`), /row-level security/)
+  await rejects(as(adminId, `insert into public.posts (slug, title) values ('Bozuk Slug', 'Başlık')`), /check constraint/)
+  assert.equal((await as(teacherA, `update public.posts set title = 'x' where slug = 'yayinda-yazi' returning id`)).length, 0)
+})
+
 await test('mesaj kanalları ayrıdır', async () => {
   await as(s1, `insert into public.messages (student_id, channel, body) values ($1, 'student', 'Hocam merhaba')`, [s1])
   await as(parent, `insert into public.messages (student_id, channel, body) values ($1, 'parent', 'İyi günler')`, [s1])

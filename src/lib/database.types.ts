@@ -1235,6 +1235,12 @@ export type Database = {
           },
         ];
       };
+      posts: {
+        Row: { audience: string; author_id: string | null; body: string; created_at: string; id: number; published: boolean; published_at: string | null; reading_minutes: number; slug: string; summary: string; title: string; updated_at: string };
+        Insert: { audience?: string; author_id?: string | null; body?: string; created_at?: string; id?: number; published?: boolean; published_at?: string | null; reading_minutes?: number; slug: string; summary?: string; title: string; updated_at?: string };
+        Update: { audience?: string; author_id?: string | null; body?: string; created_at?: string; id?: number; published?: boolean; published_at?: string | null; reading_minutes?: number; slug?: string; summary?: string; title?: string; updated_at?: string };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           accent: string | null;

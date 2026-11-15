@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { BlogSection } from '@/features/blog/blog-section'
 import { useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router'
 import { PageHeader } from '@/components/app/page-header'
@@ -26,6 +27,7 @@ const sections = [
   { value: 'ogretmenler', label: 'Öğretmenler' },
   { value: 'ayarlar', label: 'Ayarlar' },
   { value: 'mufredat', label: 'Müfredat' },
+  { value: 'blog', label: 'Blog' },
   { value: 'bildirimler', label: 'Hata bildirimleri' },
   { value: 'kitaplar', label: 'Kitap önerileri' },
   { value: 'test', label: 'Test hesapları' },
@@ -61,31 +63,40 @@ export default function AdminPage() {
       <PageHeader title="Yönetim" />
       <div ref={tabsRef} className="mb-5">
         <Segmented
-          options={sections.map((s) => (s.value === 'basvurular' ? { ...s, badge: pending } : s.value === 'bildirimler' ? { ...s, badge: reports } : s.value === 'avatarlar' ? { ...s, badge: avatars } : { ...s }))}
+          options={sections.map((s) =>
+            s.value === 'basvurular'
+              ? { ...s, badge: pending }
+              : s.value === 'bildirimler'
+                ? { ...s, badge: reports }
+                : s.value === 'avatarlar'
+                  ? { ...s, badge: avatars }
+                  : { ...s },
+          )}
           value={section}
           onChange={go}
           className="flex-wrap overflow-visible [&>button]:min-w-fit"
         />
       </div>
-        <motion.div
-          key={section}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.16, ease: 'easeOut' }}
-        >
-          {section === 'genel' && <OverviewSection onNavigate={go} />}
-          {section === 'basvurular' && <ApplicationsSection onNavigate={go} />}
-          {section === 'ziyaretciler' && <VisitorsSection />}
-          {section === 'kullanim' && <UsageSection />}
-          {section === 'avatarlar' && <AvatarsSection />}
-          {section === 'ogretmenler' && <TeachersSection />}
-          {section === 'ayarlar' && <AppSettingsSection />}
-          {section === 'mufredat' && <CurriculumSection />}
-          {section === 'bildirimler' && <ReportsSection />}
-          {section === 'kitaplar' && <BookSuggestionsSection />}
-          {section === 'test' && <TestAccountsSection />}
-          {section === 'hatalar' && <ErrorsSection />}
-        </motion.div>
+      <motion.div
+        key={section}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.16, ease: 'easeOut' }}
+      >
+        {section === 'genel' && <OverviewSection onNavigate={go} />}
+        {section === 'basvurular' && <ApplicationsSection onNavigate={go} />}
+        {section === 'ziyaretciler' && <VisitorsSection />}
+        {section === 'kullanim' && <UsageSection />}
+        {section === 'avatarlar' && <AvatarsSection />}
+        {section === 'ogretmenler' && <TeachersSection />}
+        {section === 'ayarlar' && <AppSettingsSection />}
+        {section === 'mufredat' && <CurriculumSection />}
+        {section === 'blog' && <BlogSection />}
+        {section === 'bildirimler' && <ReportsSection />}
+        {section === 'kitaplar' && <BookSuggestionsSection />}
+        {section === 'test' && <TestAccountsSection />}
+        {section === 'hatalar' && <ErrorsSection />}
+      </motion.div>
     </div>
   )
 }

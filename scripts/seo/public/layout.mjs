@@ -46,6 +46,7 @@ export const resources = [
   { href: '/araclar/net-hesaplama', icon: 'Calculator', hue: 'amber', title: 'Net hesaplama', text: 'Ders ders ve toplam net' },
   { href: '/calisma-programlari', icon: 'CalendarDays', hue: 'teal', title: 'Çalışma programları', text: 'Hazır haftalık programlar' },
   { href: '/yks-bolumleri', icon: 'GraduationCap', hue: 'rose', title: 'YKS bölümleri', text: 'YÖK Atlas netleri ve sıralamalar' },
+  { href: '/blog', icon: 'Newspaper', hue: 'sea', title: 'Blog', text: 'Çalışma düzeni ve sınav hazırlığı' },
 ]
 
 export function crumbHtml(items) {

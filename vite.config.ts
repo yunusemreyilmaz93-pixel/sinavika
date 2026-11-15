@@ -55,7 +55,7 @@ export default defineConfig(({ mode }) => {
         workbox: {
           navigateFallback: '/index.html',
           // Statik herkese açık sayfalar ve arama motoru dosyaları servis çalışanının uygulama kabuğuna düşmemeli
-          navigateFallbackDenylist: [/^\/api\//, /^\/(konu-anlatimi|araclar|calisma-programlari|yks-bolumleri|kaynaklar)(\/|$)/, /^\/(robots\.txt|sitemap.*\.xml)$/],
+          navigateFallbackDenylist: [/^\/api\//, /^\/(konu-anlatimi|araclar|calisma-programlari|yks-bolumleri|kaynaklar|blog)(\/|$)/, /^\/(robots\.txt|sitemap.*\.xml)$/],
           importScripts: ['/push-sw.js'],
           globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
           globIgnores: ['**/KaTeX_*', '**/avatars/**', 'retire-sw.js', '**/react-pdf.browser-*.js'],

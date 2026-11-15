@@ -33,3 +33,15 @@ export async function loadCurriculum() {
     return null
   }
 }
+
+// Blog tablosu henüz yoksa ya da okunamazsa derleme durmaz, blog sayfaları üretilmez
+export async function loadPosts() {
+  const config = supabaseConfig()
+  if (!config.url || !config.key) return []
+  try {
+    return await get(config, 'posts?select=slug,title,summary,body,audience,reading_minutes,published_at,updated_at&published=eq.true&order=published_at.desc&limit=500')
+  } catch (error) {
+    console.warn(`SEO: blog yazıları okunamadı (${error.message.slice(0, 120)})`)
+    return []
+  }
+}
