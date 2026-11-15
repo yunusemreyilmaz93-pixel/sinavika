@@ -80,7 +80,7 @@ export function OverviewSection({ onNavigate }: { onNavigate: (section: 'basvuru
         >
           {capacity > 0 && (
             <>
-              <ProgressBar value={o.teachers_active / capacity} tone={free === 0 ? 'warning' : 'primary'} />
+              <ProgressBar label="Öğretmen kontenjanı" value={o.teachers_active / capacity} tone={free === 0 ? 'warning' : 'primary'} />
               <p className="mt-2 text-sm text-muted">{free === 0 ? 'Öğretmen kontenjanı dolu' : `${free} yer boş`}</p>
             </>
           )}

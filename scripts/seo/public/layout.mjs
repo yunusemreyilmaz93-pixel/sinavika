@@ -89,6 +89,7 @@ export const css = `
 .pub{margin:0;background:var(--bg);color:var(--fg);font-family:'Figtree Variable',ui-sans-serif,system-ui,sans-serif;line-height:1.65;-webkit-text-size-adjust:100%}
 .pub *,.pub *::before,.pub *::after{box-sizing:border-box}
 .pub a{color:var(--accent);text-underline-offset:3px}
+.pub p a:not(.btn),.pub article li>a{text-decoration:underline;text-decoration-thickness:1px}
 .pub a:hover{text-decoration-thickness:2px}
 .pub h1,.pub h2,.pub h3{font-family:'Bricolage Grotesque Variable','Figtree Variable',ui-sans-serif,sans-serif;line-height:1.15;font-weight:800;letter-spacing:-0.01em;margin:0}
 .pub svg{flex:none}

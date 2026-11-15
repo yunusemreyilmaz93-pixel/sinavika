@@ -42,7 +42,7 @@ export function GoalLine({ current, target, label }: { current: number; target: 
           <span className="marker font-semibold">Hedefe ulaşıldı</span>
         )}
       </div>
-      <ProgressBar value={target ? current / target : 0} className="mt-2" />
+      <ProgressBar label="Hedef nete yakınlık" value={target ? current / target : 0} className="mt-2" />
     </div>
   )
 }

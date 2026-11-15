@@ -124,7 +124,7 @@ function BookCard({ book, read, canEdit, studentId }: { book: Book; read: number
             )}
           </div>
           <div>
-            {total ? <ProgressBar value={Math.min(1, read / total)} /> : null}
+            {total ? <ProgressBar label="Okunan sayfa" value={Math.min(1, read / total)} /> : null}
             <p className="tabular mt-1.5 text-sm text-muted">
               {read}
               {total ? ` / ${total}` : ''} sayfa

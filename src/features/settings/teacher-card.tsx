@@ -76,6 +76,7 @@ export function TeacherCard() {
           ) : (
             <>
               <ProgressBar
+                label="Öğrenci kontenjanı"
                 className="mt-2"
                 value={(usage.data.students + usage.data.invites) / capacity}
                 tone={usage.data.students + usage.data.invites >= capacity ? 'warning' : 'primary'}

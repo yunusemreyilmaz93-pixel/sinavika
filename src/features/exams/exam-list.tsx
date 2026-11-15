@@ -16,24 +16,22 @@ export function OpenExam({
   exam,
   opener,
   className,
-  label,
   children,
 }: {
   exam: ExamResult
   opener: ExamOpener
   className?: string
-  label?: string
   children: ReactNode
 }) {
   if (opener.href) {
     return (
-      <Link to={opener.href(exam.id)} className={className} aria-label={label}>
+      <Link to={opener.href(exam.id)} className={className}>
         {children}
       </Link>
     )
   }
   return (
-    <button type="button" onClick={() => opener.onOpen?.(exam)} className={cn('w-full text-left', className)} aria-label={label}>
+    <button type="button" onClick={() => opener.onOpen?.(exam)} className={cn('w-full text-left', className)}>
       {children}
     </button>
   )
@@ -87,7 +85,6 @@ export function ExamList({
                 exam={exam}
                 opener={opener}
                 className="flex min-h-16 items-center gap-3 rounded-xl px-2.5 py-2.5 transition-colors hover:bg-surface-2 focus-visible:bg-surface-2"
-                label={`${exam.title}, ${formatDate(exam.taken_on, 'd MMMM yyyy')}, ${formatNet(exam.net)} net`}
               >
                 <span className="flex w-10 shrink-0 flex-col items-center leading-none" aria-hidden>
                   <span className="tabular font-display text-lg font-bold">{formatDate(exam.taken_on, 'd')}</span>

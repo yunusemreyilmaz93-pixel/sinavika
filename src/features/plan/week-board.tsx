@@ -160,7 +160,7 @@ function DayColumn({
           {formatDate(day, 'd')}
           {isToday && <span className="ml-1.5 align-middle font-sans text-xs font-semibold text-primary">Bugün</span>}
         </p>
-        <ProgressBar value={total ? done / total : 0} className={cn('mt-2 h-1', !total && 'opacity-0')} />
+        <ProgressBar label="Günün görev ilerlemesi" value={total ? done / total : 0} className={cn('mt-2 h-1', !total && 'opacity-0')} />
       </header>
       <div className="flex flex-1 flex-col gap-1.5 px-1.5 pb-1.5">
         {loading ? (

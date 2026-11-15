@@ -138,7 +138,7 @@ export function StudentCard({ student }: { student: RankedStudent }) {
             {student.tasks_week ? `${student.tasks_week_done}/${student.tasks_week}` : 'Görev yok'}
           </span>
         </div>
-        <ProgressBar value={ratio} tone={ratio >= 0.5 || !student.tasks_week ? 'primary' : 'warning'} />
+        <ProgressBar label="Haftalık görev ilerlemesi" value={ratio} tone={ratio >= 0.5 || !student.tasks_week ? 'primary' : 'warning'} />
       </div>
 
       <div className="mt-auto flex items-center justify-between gap-2 pt-4 text-xs text-muted">

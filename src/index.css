@@ -10,7 +10,7 @@
   --surface-2: #eef2ec;
   --fg: #0e1a21;
   --fg-muted: #56666d;
-  --fg-subtle: #84928f;
+  --fg-subtle: #646e6c;
   --line: #dfe5df;
   --line-strong: #c8d1ca;
 
@@ -29,11 +29,11 @@
   --brand: #0f6b4f;
   --brand-ink: #ffffff;
   --marker-fg: #3d3200;
-  --danger: #c93b34;
+  --danger: #bd3731;
   --danger-soft: #fbe4e2;
-  --warning: #b7740a;
+  --warning: #945d08;
   --warning-soft: #fdf0d5;
-  --success: #17875f;
+  --success: #147754;
 
   --grid-line: rgb(14 26 33 / 0.05);
   --shadow-color: 150 20% 20%;
@@ -47,7 +47,7 @@
   --surface-2: #17252a;
   --fg: #e6eeea;
   --fg-muted: #9aaba7;
-  --fg-subtle: #6e7f7b;
+  --fg-subtle: #808f8b;
   --line: #1f2f34;
   --line-strong: #2c3f45;
 

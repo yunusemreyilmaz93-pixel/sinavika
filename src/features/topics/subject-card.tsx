@@ -64,7 +64,7 @@ export function SubjectCard({ subject, topics, visible, statusOf, accuracy, comp
                 </Badge>
               )}
             </span>
-            <ProgressBar value={topics.length ? done / topics.length : 0} className="mt-2.5" />
+            <ProgressBar label="Tamamlanan konu" value={topics.length ? done / topics.length : 0} className="mt-2.5" />
           </span>
           <ChevronDown
             aria-hidden

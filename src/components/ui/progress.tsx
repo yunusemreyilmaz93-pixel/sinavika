@@ -44,11 +44,21 @@ export function ProgressRing({
   )
 }
 
-export function ProgressBar({ value, className, tone = 'primary' }: { value: number; className?: string; tone?: 'primary' | 'accent' | 'warning' | 'danger' }) {
+export function ProgressBar({
+  value,
+  label,
+  className,
+  tone = 'primary',
+}: {
+  value: number
+  label: string
+  className?: string
+  tone?: 'primary' | 'accent' | 'warning' | 'danger'
+}) {
   const clamped = Math.max(0, Math.min(1, value))
   const bg = { primary: 'bg-primary', accent: 'bg-accent', warning: 'bg-warning', danger: 'bg-danger' }[tone]
   return (
-    <div className={cn('h-2 overflow-hidden rounded-full bg-surface-2', className)} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(clamped * 100)}>
+    <div className={cn('h-2 overflow-hidden rounded-full bg-surface-2', className)} role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(clamped * 100)}>
       <motion.div
         className={cn('h-full rounded-full', bg)}
         initial={{ width: 0 }}

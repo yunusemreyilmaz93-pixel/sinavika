@@ -108,7 +108,7 @@ export function StartChecklist({ steps, onDismiss }: { steps: Step[]; onDismiss:
           <X />
         </Button>
       </div>
-      <ProgressBar value={done / steps.length} className="mt-3" />
+      <ProgressBar label="Başlangıç adımları" value={done / steps.length} className="mt-3" />
       <ol className="mt-4 space-y-1">
         {steps.map((step) => (
           <li key={step.id}>

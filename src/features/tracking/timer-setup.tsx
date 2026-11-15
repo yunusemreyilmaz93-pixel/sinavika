@@ -144,7 +144,7 @@ export function TodayLine({ studentId, dailyGoal }: { studentId: string; dailyGo
         </span>
         {dailyGoal > 0 && <span className="text-muted">Hedef {formatMinutes(dailyGoal)}</span>}
       </div>
-      {dailyGoal > 0 && <ProgressBar value={minutes / dailyGoal} className="mt-2" />}
+      {dailyGoal > 0 && <ProgressBar label="Günlük çalışma hedefi" value={minutes / dailyGoal} className="mt-2" />}
     </div>
   )
 }

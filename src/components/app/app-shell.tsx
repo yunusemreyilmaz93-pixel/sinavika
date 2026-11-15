@@ -301,8 +301,11 @@ function UserMenu({ profile, wide }: { profile: Profile; wide?: boolean }) {
             <ChevronsUpDown className="size-4 text-muted" />
           </button>
         ) : (
-          <button type="button" aria-label="Hesap menüsü" className="rounded-full p-1">
-            <Avatar name={profile.full_name} userId={profile.id} className="size-8 text-xs" />
+          <button type="button" className="rounded-full p-1">
+            <span className="sr-only">Hesap menüsü</span>
+            <span aria-hidden>
+              <Avatar name={profile.full_name} userId={profile.id} className="size-8 text-xs" />
+            </span>
           </button>
         )}
       </MenuTrigger>

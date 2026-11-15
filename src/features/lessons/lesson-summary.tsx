@@ -74,7 +74,7 @@ export function LessonSummary() {
                   <span className="font-semibold">{c.label}</span>
                   <span className={cn('tabular ml-auto text-sm', c.ok ? 'text-primary' : 'text-muted')}>{c.detail}</span>
                 </div>
-                <ProgressBar value={c.value} tone={c.ok ? 'primary' : 'accent'} className="mt-1.5" />
+                <ProgressBar label={c.label} value={c.value} tone={c.ok ? 'primary' : 'accent'} className="mt-1.5" />
               </li>
             ))}
           </ul>

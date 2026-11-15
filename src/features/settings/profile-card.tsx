@@ -57,10 +57,12 @@ export function ProfileCard() {
         <button
           type="button"
           onClick={() => setAvatarOpen(true)}
-          aria-label="Avatarı değiştir"
           className="relative shrink-0 rounded-full outline-none focus-visible:ring-3 focus-visible:ring-accent/30"
         >
-          <Avatar name={profile.full_name} userId={profile.id} className="size-14 text-lg" />
+          <span className="sr-only">Avatarı değiştir</span>
+          <span aria-hidden>
+            <Avatar name={profile.full_name} userId={profile.id} className="size-14 text-lg" />
+          </span>
           <span className="absolute -right-0.5 -bottom-0.5 grid size-6 place-items-center rounded-full border border-line bg-surface text-muted">
             <Camera className="size-3.5" aria-hidden />
           </span>

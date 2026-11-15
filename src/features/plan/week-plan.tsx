@@ -99,7 +99,7 @@ export function WeekPlan({ studentId, viewer, week: controlledWeek, onWeekChange
       <div className="space-y-3">
         <WeekNav week={week} onChange={changeWeek} />
         <div className="flex items-center gap-3" aria-live="polite">
-          <ProgressBar value={totals.total ? totals.done / totals.total : 0} className="flex-1" />
+          <ProgressBar label="Haftalık görev ilerlemesi" value={totals.total ? totals.done / totals.total : 0} className="flex-1" />
           <div className="tabular shrink-0 text-sm text-muted">
             {loading ? (
               <Skeleton className="h-4 w-24" />
@@ -187,7 +187,6 @@ function DayStrip({
             type="button"
             role="tab"
             aria-selected={active}
-            aria-label={`${weekdayLong[i]} ${formatDate(day, 'd MMMM')}${isToday ? ', bugün' : ''}, ${status}`}
             onClick={() => onSelect(day)}
             className={cn(
               'relative flex h-[4.5rem] min-w-11 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl transition-colors',
@@ -222,6 +221,7 @@ function DayStrip({
                 `${done}/${total}`
               )}
             </span>
+            <span className="sr-only">{`, ${weekdayLong[i]} ${formatDate(day, 'd MMMM')}${isToday ? ', bugün' : ''}, ${status}`}</span>
           </button>
         )
       })}

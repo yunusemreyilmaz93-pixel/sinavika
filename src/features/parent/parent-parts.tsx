@@ -71,7 +71,7 @@ export function WeekSummary({ studentId, className }: { studentId: string; class
                 <span className="text-[0.6em] font-semibold text-muted">/{elapsed.length}</span>
               </span>
             </Tile>
-            <Tile icon={CheckCircle2} label="Görevler" footer={taskList.length ? <ProgressBar value={ratio} className="mt-2 h-1.5" /> : undefined}>
+            <Tile icon={CheckCircle2} label="Görevler" footer={taskList.length ? <ProgressBar label="Görev ilerlemesi" value={ratio} className="mt-2 h-1.5" /> : undefined}>
               {taskList.length ? (
                 <span className="tabular">
                   %{Math.round(ratio * 100)}

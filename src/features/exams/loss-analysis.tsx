@@ -73,7 +73,7 @@ export function LossAnalysis({ examId, studentId, kind, scores, canAssign, assig
                       <span className="font-semibold text-fg">{formatNet(r.total)}</span> net
                     </span>
                   </div>
-                  <ProgressBar value={r.total / top} tone="warning" className="mt-1.5 h-1.5" />
+                  <ProgressBar label="Kaybedilen net" value={r.total / top} tone="warning" className="mt-1.5 h-1.5" />
                 </li>
               )
             })}

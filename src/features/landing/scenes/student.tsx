@@ -237,7 +237,7 @@ export function Pace() {
         <span className="text-muted">Konular</span>
         <span className="tabular font-semibold">{step >= 1 ? '38' : '0'} / 55</span>
       </div>
-      <ProgressBar value={step >= 1 ? 38 / 55 : 0} className="mt-1.5" />
+      <ProgressBar label="Tamamlanan konu" value={step >= 1 ? 38 / 55 : 0} className="mt-1.5" />
       <ul className="mt-3 space-y-1.5">
         {subjects.map(([name, left]) => (
           <li key={name} className="flex justify-between rounded-xl bg-surface-2 px-3 py-2 text-[15px]">
