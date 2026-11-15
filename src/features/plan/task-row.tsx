@@ -133,7 +133,7 @@ export function TaskRow({
       {...dragProps}
       className={cn(
         'group relative flex items-start',
-        compact ? 'gap-2 rounded-xl border border-line bg-surface p-2 shadow-card' : 'gap-3 px-4 py-3',
+        compact ? 'gap-2 rounded-xl border border-line bg-surface p-2' : 'gap-3 px-4 py-3',
         dragProps && 'cursor-grab',
         dragging && 'opacity-40',
         className,

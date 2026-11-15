@@ -2,10 +2,11 @@ import { CalendarDays } from 'lucide-react'
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { Select } from '@/components/ui/field'
 import { Skeleton } from '@/components/ui/skeleton'
+import { SubjectIcon } from '@/components/ui/subject-icon'
 import { cn } from '@/lib/cn'
 import type { Curriculum } from '@/lib/data'
 import { formatDate, shiftDays, todayISO } from '@/lib/dates'
-import { subjectColor, type Subject } from '@/lib/exam'
+import { type Subject } from '@/lib/exam'
 
 export function chipClass(selected: boolean) {
   return cn(
@@ -61,7 +62,7 @@ export function SubjectPicker({
       >
         {subjects.map((s) => (
           <ChoiceChip key={s.id} selected={s.id === value} onClick={() => onChange(s.id)} className="snap-start">
-            <span aria-hidden className="size-2.5 rounded-full" style={{ backgroundColor: subjectColor(s) }} />
+            <SubjectIcon subject={s} size="xs" />
             {s.short}
             {multiExam && <span className="text-[11px] font-bold opacity-60">{s.exam}</span>}
           </ChoiceChip>

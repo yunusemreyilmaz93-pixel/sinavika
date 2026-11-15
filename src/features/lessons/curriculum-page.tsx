@@ -63,7 +63,7 @@ export default function CurriculumPage() {
               const isOpen = search ? true : open.has(subject.id)
               const ready = topics.filter((t) => lessons.data?.get(t.id) !== undefined).length
               return (
-                <li key={subject.id} className="overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
+                <li key={subject.id} className="overflow-hidden rounded-3xl border border-line bg-surface">
                   <h2>
                     <button
                       type="button"

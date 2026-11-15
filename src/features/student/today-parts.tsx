@@ -116,7 +116,7 @@ function Action({
   children: ReactNode
 }) {
   const className =
-    'flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-line bg-surface px-2 py-3 text-center shadow-card transition-[border-color,transform] duration-150 hover:border-line-strong active:scale-[0.97]'
+    'flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-line bg-surface px-2 py-3 text-center transition-[border-color,transform] duration-150 hover:border-line-strong active:scale-[0.97]'
   const content = (
     <>
       <span className={cn('relative grid size-10 place-items-center rounded-xl', tone)} aria-hidden>

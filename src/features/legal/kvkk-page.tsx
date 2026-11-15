@@ -341,7 +341,7 @@ export default function KvkkPage() {
               ve velileri, kişisel verilerinin nasıl işlendiği konusunda bilgilendirmek amacıyla hazırlanmıştır.
             </p>
 
-            <div className="mt-8 rounded-2xl border border-line bg-surface p-5 shadow-card sm:p-6">
+            <div className="mt-8 rounded-3xl border border-line bg-surface p-5 sm:p-6">
               <p className="font-display text-lg font-bold">Kısaca</p>
               <ul className="mt-3 space-y-3">
                 {summary.map((s) => (

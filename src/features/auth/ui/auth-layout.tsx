@@ -14,7 +14,7 @@ export function AuthLayout({ children, aside }: { children: ReactNode; aside: Re
           </Link>
         </header>
         <main className="flex flex-1 justify-center pt-2 pb-8 sm:items-center sm:py-10">
-          <div className="w-full max-w-md sm:rounded-2xl sm:border sm:border-line sm:bg-surface sm:p-8 sm:shadow-card">
+          <div className="w-full max-w-md">
             {children}
           </div>
         </main>
@@ -27,7 +27,7 @@ export function AuthLayout({ children, aside }: { children: ReactNode; aside: Re
           </Link>
         </footer>
       </div>
-      <aside className="grid-paper hidden border-l border-line bg-surface lg:block">
+      <aside className="hidden bg-primary text-primary-fg lg:block">
         <div className="sticky top-0 flex h-dvh items-center overflow-y-auto px-12 py-12 xl:px-20">{aside}</div>
       </aside>
     </div>
@@ -49,17 +49,17 @@ export function ValuePanel({ title, points, footer }: { title: ReactNode; points
             transition={{ duration: 0.3, delay: 0.1 + i * 0.07, ease: 'easeOut' }}
             className="flex gap-4"
           >
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary-soft-fg">
+            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary-fg/12">
               <Icon className="size-5" />
             </span>
             <div className="pt-0.5">
               <p className="font-semibold">{pointTitle}</p>
-              <p className="mt-0.5 text-[15px] leading-relaxed text-muted">{text}</p>
+              <p className="mt-0.5 text-[15px] leading-relaxed opacity-80">{text}</p>
             </div>
           </motion.li>
         ))}
       </ul>
-      {footer && <div className="mt-10 border-t border-line pt-6 text-sm text-muted">{footer}</div>}
+      {footer && <div className="mt-10 border-t border-primary-fg/20 pt-6 text-sm opacity-80">{footer}</div>}
     </div>
   )
 }

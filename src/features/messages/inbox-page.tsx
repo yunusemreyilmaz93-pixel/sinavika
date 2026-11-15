@@ -199,7 +199,7 @@ function ParentInbox({ userId, kids }: { userId: string; kids: Child[] }) {
 
 function ThreadList({ rows, userId }: { rows: Row[]; userId: string }) {
   return (
-    <ul className="overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
+    <ul className="overflow-hidden rounded-3xl border border-line bg-surface">
       {rows.map((r, i) => (
         <motion.li
           key={`${r.studentId}:${r.channel}`}

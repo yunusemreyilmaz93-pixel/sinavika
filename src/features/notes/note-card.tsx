@@ -17,7 +17,7 @@ export function NoteCard({ note, showVisibility, actions }: { note: Note; showVi
   const edited = new Date(note.updated_at).getTime() - new Date(note.created_at).getTime() > 60_000
 
   return (
-    <article className="rounded-2xl border border-line bg-surface p-4 shadow-card sm:p-5">
+    <article className="rounded-3xl border border-line bg-surface p-4 sm:p-5">
       <header className="flex items-start gap-3">
         {meeting ? (
           <div className="grid w-12 shrink-0 overflow-hidden rounded-xl border border-accent/25 text-center" aria-hidden>

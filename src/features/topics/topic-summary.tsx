@@ -16,7 +16,7 @@ export function TopicSummary({
 }) {
   const ratio = counts.total ? counts.done / counts.total : 0
   return (
-    <section aria-label="Konu özeti" className="rounded-2xl border border-line bg-surface p-4 shadow-card sm:p-5">
+    <section aria-label="Konu özeti" className="rounded-3xl border border-line bg-surface p-4 sm:p-5">
       <div className="flex items-center gap-4 sm:gap-6">
         <ProgressRing value={ratio} size={92} stroke={9}>
           <div className="text-center leading-none">

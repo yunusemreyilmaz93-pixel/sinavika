@@ -89,7 +89,7 @@ export default function NotificationsPage() {
           {groups.map((g) => (
             <section key={g.day} aria-label={formatDay(g.day)}>
               <h2 className="mb-2 px-1 font-sans text-xs font-bold tracking-wide text-muted uppercase">{formatDay(g.day)}</h2>
-              <ul className="overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
+              <ul className="overflow-hidden rounded-3xl border border-line bg-surface">
                 <AnimatePresence initial={false}>
                   {g.items.map((n) => (
                     <motion.li

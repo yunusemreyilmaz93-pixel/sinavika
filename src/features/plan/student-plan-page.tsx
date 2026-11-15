@@ -26,7 +26,7 @@ export default function StudentPlanPage() {
         title="Haftalık plan"
         description={viewed.canEdit ? undefined : `${viewed.name} için haftanın planı`}
       />
-      <section aria-label="Haftalık plan" className="sm:rounded-3xl sm:border sm:border-line sm:bg-surface sm:p-5 sm:shadow-card">
+      <section aria-label="Haftalık plan" className="sm:rounded-3xl sm:border sm:border-line sm:bg-surface sm:p-5">
         <WeekPlan key={viewed.studentId} studentId={viewed.studentId} viewer={viewed.canEdit ? 'student' : 'parent'} />
       </section>
     </>

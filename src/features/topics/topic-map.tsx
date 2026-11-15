@@ -1,159 +1,234 @@
-import { motion } from 'motion/react'
-import { BookOpenCheck, CircleAlert, ListChecks, RotateCcw, Search } from 'lucide-react'
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
-import { EmptyState } from '@/components/ui/empty-state'
-import { Input } from '@/components/ui/field'
-import { Segmented } from '@/components/ui/segmented'
-import { Skeleton } from '@/components/ui/skeleton'
-import { useProfile } from '@/features/auth/session'
-import { NextLesson } from '@/features/lessons/next-lesson'
-import { useLessonCompletion } from '@/features/lessons/progress'
-import { useLessonIndex } from '@/features/lessons/queries'
-import { useCurriculum } from '@/lib/data'
-import { examKindsFor, examLabel, subjectsFor, type ExamKind, type Field, type Topic, type Track } from '@/lib/exam'
-import { errorMessage } from '@/lib/supabase'
-import { fold } from '@/lib/text'
-import { matchesFilter, nextStatus, statusMeta, type TopicFilter, type TopicState } from './status'
-import { MasteryPanel } from './mastery-panel'
-import { SubjectCard } from './subject-card'
-import { TopicSummary, type TopicCounts } from './topic-summary'
-import { useSetTopicStatus, useTopicAccuracy, useTopicProgress } from './use-topics'
+import type { ReactNode } from "react";
+import { motion } from "motion/react";
+import {
+  BookOpenCheck,
+  CircleAlert,
+  ListChecks,
+  RotateCcw,
+  Search,
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Input } from "@/components/ui/field";
+import { Segmented } from "@/components/ui/segmented";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useProfile } from "@/features/auth/session";
+import { NextLesson } from "@/features/lessons/next-lesson";
+import { useLessonCompletion } from "@/features/lessons/progress";
+import { useLessonIndex } from "@/features/lessons/queries";
+import { useCurriculum } from "@/lib/data";
+import {
+  examKindsFor,
+  examLabel,
+  subjectsFor,
+  type ExamKind,
+  type Field,
+  type Topic,
+  type Track,
+} from "@/lib/exam";
+import { errorMessage } from "@/lib/supabase";
+import { fold } from "@/lib/text";
+import {
+  matchesFilter,
+  nextStatus,
+  statusMeta,
+  type TopicFilter,
+  type TopicState,
+} from "./status";
+import { MasteryPanel } from "./mastery-panel";
+import { SubjectCard } from "./subject-card";
+import { TopicSummary, type TopicCounts } from "./topic-summary";
+import {
+  useSetTopicStatus,
+  useTopicAccuracy,
+  useTopicProgress,
+} from "./use-topics";
 
 type Props = {
-  studentId: string
-  student: { track: Track; field: Field | null }
-  canEdit: boolean
-}
+  studentId: string;
+  student: { track: Track; field: Field | null };
+  canEdit: boolean;
+  aside?: ReactNode;
+};
 
-const filterEmpty: Record<Exclude<TopicFilter, 'all'>, { title: string; description: string }> = {
-  missing: { title: 'Eksik konu kalmadı', description: 'Bu sınavdaki tüm konular tamam olarak işaretli.' },
-  review: { title: 'Tekrar bekleyen konu yok', description: 'Tekrar lazım olarak işaretlenen konular burada görünür.' },
-}
+const filterEmpty: Record<
+  Exclude<TopicFilter, "all">,
+  { title: string; description: string }
+> = {
+  missing: {
+    title: "Eksik konu kalmadı",
+    description: "Bu sınavdaki tüm konular tamam olarak işaretli.",
+  },
+  review: {
+    title: "Tekrar bekleyen konu yok",
+    description: "Tekrar lazım olarak işaretlenen konular burada görünür.",
+  },
+};
 
 function useRememberedSet(key: string) {
   const [value, setValue] = useState<ReadonlySet<string>>(() => {
     try {
-      return new Set<string>(JSON.parse(sessionStorage.getItem(key) ?? '[]'))
+      return new Set<string>(JSON.parse(sessionStorage.getItem(key) ?? "[]"));
     } catch {
-      return new Set<string>()
+      return new Set<string>();
     }
-  })
-  const update = (next: ReadonlySet<string> | ((prev: ReadonlySet<string>) => ReadonlySet<string>)) => {
-    const resolved = typeof next === 'function' ? next(value) : next
-    setValue(resolved)
+  });
+  const update = (
+    next:
+      | ReadonlySet<string>
+      | ((prev: ReadonlySet<string>) => ReadonlySet<string>),
+  ) => {
+    const resolved = typeof next === "function" ? next(value) : next;
+    setValue(resolved);
     try {
-      sessionStorage.setItem(key, JSON.stringify([...resolved]))
+      sessionStorage.setItem(key, JSON.stringify([...resolved]));
     } catch {
       // oturum depolaması kapalıysa durum yalnızca bu sayfada kalır
     }
-  }
-  return [value, update] as const
+  };
+  return [value, update] as const;
 }
 
 function toggled<T>(set: ReadonlySet<T>, value: T) {
-  const next = new Set(set)
-  if (next.has(value)) next.delete(value)
-  else next.add(value)
-  return next
+  const next = new Set(set);
+  if (next.has(value)) next.delete(value);
+  else next.add(value);
+  return next;
 }
 
-export function TopicMap({ studentId, student, canEdit }: Props) {
-  const curriculum = useCurriculum()
-  const isStudent = useProfile().role === 'student'
-  const progress = useTopicProgress(studentId)
-  const accuracy = useTopicAccuracy(studentId)
-  const completion = useLessonCompletion(studentId)
-  const lessons = useLessonIndex().data
-  const setStatus = useSetTopicStatus(studentId)
+export function TopicMap({ studentId, student, canEdit, aside }: Props) {
+  const curriculum = useCurriculum();
+  const isStudent = useProfile().role === "student";
+  const progress = useTopicProgress(studentId);
+  const accuracy = useTopicAccuracy(studentId);
+  const completion = useLessonCompletion(studentId);
+  const lessons = useLessonIndex().data;
+  const setStatus = useSetTopicStatus(studentId);
 
-  const kinds = examKindsFor(student)
-  const [kindChoice, setKindChoice] = useState<ExamKind>(kinds[0])
-  const kind = kinds.includes(kindChoice) ? kindChoice : kinds[0]
-  const [filter, setFilter] = useState<TopicFilter>('all')
-  const [opened, setOpened] = useRememberedSet(`izlek-konular-acik:${studentId}`)
-  const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(() => new Set())
-  const [touched, setTouched] = useState<ReadonlySet<number>>(() => new Set())
-  const [announcement, setAnnouncement] = useState('')
-  const [query, setQuery] = useState('')
+  const kinds = examKindsFor(student);
+  const [kindChoice, setKindChoice] = useState<ExamKind>(kinds[0]);
+  const kind = kinds.includes(kindChoice) ? kindChoice : kinds[0];
+  const [filter, setFilter] = useState<TopicFilter>("all");
+  const [opened, setOpened] = useRememberedSet(
+    `izlek-konular-acik:${studentId}`,
+  );
+  const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
+  const [touched, setTouched] = useState<ReadonlySet<number>>(() => new Set());
+  const [announcement, setAnnouncement] = useState("");
+  const [query, setQuery] = useState("");
 
-  if (curriculum.isPending || progress.isPending) return <TopicMapSkeleton tabs={kinds.length > 1} />
+  if (curriculum.isPending || progress.isPending)
+    return <TopicMapSkeleton tabs={kinds.length > 1} />;
 
   if (curriculum.isError || progress.isError) {
     return (
-      <div role="alert" className="flex flex-col items-start gap-3 rounded-2xl border border-line bg-surface p-5 shadow-card sm:flex-row sm:items-center">
+      <div
+        role="alert"
+        className="flex flex-col items-start gap-3 rounded-3xl border border-line bg-surface p-5 sm:flex-row sm:items-center"
+      >
         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-danger-soft text-danger">
           <CircleAlert className="size-5" aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
           <p className="font-semibold">Konular yüklenemedi</p>
-          <p className="mt-0.5 text-sm text-muted">{errorMessage(curriculum.error ?? progress.error)}</p>
+          <p className="mt-0.5 text-sm text-muted">
+            {errorMessage(curriculum.error ?? progress.error)}
+          </p>
         </div>
         <Button
           variant="secondary"
           onClick={() => {
-            if (curriculum.isError) void curriculum.refetch()
-            if (progress.isError) void progress.refetch()
+            if (curriculum.isError) void curriculum.refetch();
+            if (progress.isError) void progress.refetch();
           }}
         >
           Tekrar deneyin
         </Button>
       </div>
-    )
+    );
   }
 
-  const statusById = new Map<number, TopicState>(progress.data.map((row) => [row.topic_id, row.status]))
-  const statusOf = (topicId: number) => statusById.get(topicId) ?? 'none'
+  const statusById = new Map<number, TopicState>(
+    progress.data.map((row) => [row.topic_id, row.status]),
+  );
+  const statusOf = (topicId: number) => statusById.get(topicId) ?? "none";
 
   const groups = subjectsFor(curriculum.data.subjects, kind, student.field)
-    .map((subject) => ({ subject, topics: curriculum.data.topicsBySubject.get(subject.id) ?? [] }))
-    .filter((g) => g.topics.length > 0)
+    .map((subject) => ({
+      subject,
+      topics: curriculum.data.topicsBySubject.get(subject.id) ?? [],
+    }))
+    .filter((g) => g.topics.length > 0);
 
-  const counts: TopicCounts = { total: 0, done: 0, learning: 0, review: 0 }
+  const counts: TopicCounts = { total: 0, done: 0, learning: 0, review: 0 };
   for (const g of groups) {
     for (const t of g.topics) {
-      counts.total++
-      const s = statusOf(t.id)
-      if (s !== 'none') counts[s]++
+      counts.total++;
+      const s = statusOf(t.id);
+      if (s !== "none") counts[s]++;
     }
   }
 
-  const hasAccuracy = groups.some((g) => g.topics.some((t) => (accuracy.data?.[t.id]?.total ?? 0) > 0))
+  const hasAccuracy = groups.some((g) =>
+    g.topics.some((t) => (accuracy.data?.[t.id]?.total ?? 0) > 0),
+  );
 
-  const search = fold(query)
+  const search = fold(query);
   const visibleGroups = groups
     .map((g) => {
       const byStatus =
-        filter === 'all' ? g.topics : g.topics.filter((t) => matchesFilter(filter, statusOf(t.id)) || touched.has(t.id))
-      return { ...g, visible: search ? byStatus.filter((t) => fold(t.name).includes(search)) : byStatus }
+        filter === "all"
+          ? g.topics
+          : g.topics.filter(
+              (t) => matchesFilter(filter, statusOf(t.id)) || touched.has(t.id),
+            );
+      return {
+        ...g,
+        visible: search
+          ? byStatus.filter((t) => fold(t.name).includes(search))
+          : byStatus,
+      };
     })
-    .filter((g) => g.visible.length > 0)
+    .filter((g) => g.visible.length > 0);
 
   const changeFilter = (next: TopicFilter) => {
-    setFilter(next)
-    setTouched(new Set())
-    setCollapsed(new Set())
-  }
+    setFilter(next);
+    setTouched(new Set());
+    setCollapsed(new Set());
+  };
 
   const changeKind = (next: ExamKind) => {
-    setKindChoice(next)
-    setTouched(new Set())
-  }
+    setKindChoice(next);
+    setTouched(new Set());
+  };
 
   const cycle = (topic: Topic, topics: Topic[], subjectName: string) => {
-    let next = nextStatus(statusOf(topic.id))
-    if (next === 'done' && isStudent && lessons?.get(topic.id) && !completion.data?.get(topic.id)?.complete) {
-      toast.info('Tamam için konu anlatımındaki ölçütlerin tamamlanması gerekir')
-      next = nextStatus(next)
+    let next = nextStatus(statusOf(topic.id));
+    if (
+      next === "done" &&
+      isStudent &&
+      lessons?.get(topic.id) &&
+      !completion.data?.get(topic.id)?.complete
+    ) {
+      toast.info(
+        "Tamam için konu anlatımındaki ölçütlerin tamamlanması gerekir",
+      );
+      next = nextStatus(next);
     }
-    if (filter !== 'all') setTouched((prev) => new Set(prev).add(topic.id))
-    setStatus.mutate({ topicId: topic.id, status: next })
-    setAnnouncement(`${topic.name}: ${statusMeta[next].label}`)
-    if (next === 'done' && topics.every((t) => t.id === topic.id || statusOf(t.id) === 'done')) {
-      toast.success(`${subjectName} dersindeki tüm konular tamam`)
+    if (filter !== "all") setTouched((prev) => new Set(prev).add(topic.id));
+    setStatus.mutate({ topicId: topic.id, status: next });
+    setAnnouncement(`${topic.name}: ${statusMeta[next].label}`);
+    if (
+      next === "done" &&
+      topics.every((t) => t.id === topic.id || statusOf(t.id) === "done")
+    ) {
+      toast.success(`${subjectName} dersindeki tüm konular tamam`);
     }
-  }
+  };
 
   return (
     <div className="space-y-4 sm:space-y-5">
@@ -177,100 +252,151 @@ export function TopicMap({ studentId, student, canEdit }: Props) {
           description="Konu listesi eklendiğinde burada görünecek."
         />
       ) : (
-        <>
-          {isStudent && <NextLesson studentId={studentId} student={student} />}
-          <TopicSummary counts={counts} canEdit={canEdit} showAccuracyHint={hasAccuracy} />
-          <MasteryPanel studentId={studentId} groups={groups} progress={progress.data} accuracy={accuracy.data} />
-
-          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 pt-1">
-            <h2 className="text-lg font-bold">Dersler</h2>
-            <Segmented
-              size="sm"
-              options={[
-                { value: 'all', label: 'Hepsi' },
-                { value: 'missing', label: 'Eksikler' },
-                { value: 'review', label: 'Tekrar lazım', badge: counts.review || undefined },
-              ]}
-              value={filter}
-              onChange={changeFilter}
-              className="w-full sm:w-auto"
-            />
-          </div>
-
-          <div className="relative">
-            <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted" aria-hidden />
-            <Input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Konu ara"
-              aria-label="Konu ara"
-              className="pl-10"
-            />
-          </div>
-
-          {visibleGroups.length === 0 && search ? (
-            <EmptyState
-              icon={Search}
-              title="Konu bulunamadı"
-              description="Yazımı kontrol edin ya da konunun adından bir parça yazın. Türkçe karakter şart değil."
-              action={
-                <Button variant="secondary" onClick={() => setQuery('')}>
-                  Aramayı temizle
-                </Button>
-              }
-            />
-          ) : visibleGroups.length === 0 && filter !== 'all' ? (
-            <EmptyState
-              icon={filter === 'review' ? RotateCcw : ListChecks}
-              title={filterEmpty[filter].title}
-              description={filterEmpty[filter].description}
-              action={
-                <Button variant="secondary" onClick={() => changeFilter('all')}>
-                  Hepsini göster
-                </Button>
-              }
-            />
-          ) : (
-            <ul className="space-y-3">
-              {visibleGroups.map((g, i) => {
-                const open = search ? true : filter === 'all' ? opened.has(g.subject.id) : !collapsed.has(g.subject.id)
-                return (
-                  <motion.li
-                    key={g.subject.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25, delay: Math.min(i * 0.035, 0.25), ease: 'easeOut' }}
-                  >
-                    <SubjectCard
-                      subject={g.subject}
-                      topics={g.topics}
-                      visible={g.visible}
-                      statusOf={statusOf}
-                      accuracy={accuracy.data}
-                      completion={completion.data}
-                      open={open}
-                      onToggle={() =>
-                        filter === 'all'
-                          ? setOpened((prev) => toggled(prev, g.subject.id))
-                          : setCollapsed((prev) => toggled(prev, g.subject.id))
-                      }
-                      onCycle={canEdit ? (topic) => cycle(topic, g.topics, g.subject.name) : undefined}
-                    />
-                  </motion.li>
-                )
-              })}
-            </ul>
+        <div className="grid gap-4 sm:gap-5 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
+          {isStudent && (
+            <div className="xl:hidden">
+              <NextLesson studentId={studentId} student={student} />
+            </div>
           )}
-        </>
+          <div className="min-w-0 space-y-4 sm:space-y-5">
+            <TopicSummary
+              counts={counts}
+              canEdit={canEdit}
+              showAccuracyHint={hasAccuracy}
+            />
+
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 pt-1">
+              <h2 className="text-lg font-bold">Dersler</h2>
+              <Segmented
+                size="sm"
+                options={[
+                  { value: "all", label: "Hepsi" },
+                  { value: "missing", label: "Eksikler" },
+                  {
+                    value: "review",
+                    label: "Tekrar lazım",
+                    badge: counts.review || undefined,
+                  },
+                ]}
+                value={filter}
+                onChange={changeFilter}
+                className="w-full sm:w-auto"
+              />
+            </div>
+
+            <div className="relative">
+              <Search
+                className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted"
+                aria-hidden
+              />
+              <Input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Konu ara"
+                aria-label="Konu ara"
+                className="pl-10"
+              />
+            </div>
+
+            {visibleGroups.length === 0 && search ? (
+              <EmptyState
+                icon={Search}
+                title="Konu bulunamadı"
+                description="Yazımı kontrol edin ya da konunun adından bir parça yazın. Türkçe karakter şart değil."
+                action={
+                  <Button variant="secondary" onClick={() => setQuery("")}>
+                    Aramayı temizle
+                  </Button>
+                }
+              />
+            ) : visibleGroups.length === 0 && filter !== "all" ? (
+              <EmptyState
+                icon={filter === "review" ? RotateCcw : ListChecks}
+                title={filterEmpty[filter].title}
+                description={filterEmpty[filter].description}
+                action={
+                  <Button
+                    variant="secondary"
+                    onClick={() => changeFilter("all")}
+                  >
+                    Hepsini göster
+                  </Button>
+                }
+              />
+            ) : (
+              <ul className="space-y-3">
+                {visibleGroups.map((g, i) => {
+                  const open = search
+                    ? true
+                    : filter === "all"
+                      ? opened.has(g.subject.id)
+                      : !collapsed.has(g.subject.id);
+                  return (
+                    <motion.li
+                      key={g.subject.id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.25,
+                        delay: Math.min(i * 0.035, 0.25),
+                        ease: "easeOut",
+                      }}
+                    >
+                      <SubjectCard
+                        subject={g.subject}
+                        topics={g.topics}
+                        visible={g.visible}
+                        statusOf={statusOf}
+                        accuracy={accuracy.data}
+                        completion={completion.data}
+                        open={open}
+                        onToggle={() =>
+                          filter === "all"
+                            ? setOpened((prev) => toggled(prev, g.subject.id))
+                            : setCollapsed((prev) =>
+                                toggled(prev, g.subject.id),
+                              )
+                        }
+                        onCycle={
+                          canEdit
+                            ? (topic) => cycle(topic, g.topics, g.subject.name)
+                            : undefined
+                        }
+                      />
+                    </motion.li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+          <div className="flex flex-col gap-4 sm:gap-5 xl:sticky xl:top-20">
+            {isStudent && (
+              <div className="hidden xl:block">
+                <NextLesson studentId={studentId} student={student} />
+              </div>
+            )}
+            {aside}
+            <MasteryPanel
+              studentId={studentId}
+              groups={groups}
+              progress={progress.data}
+              accuracy={accuracy.data}
+            />
+          </div>
+        </div>
       )}
     </div>
-  )
+  );
 }
 
 function TopicMapSkeleton({ tabs }: { tabs: boolean }) {
   return (
-    <div className="space-y-4 sm:space-y-5" aria-busy="true" aria-label="Yükleniyor">
+    <div
+      className="space-y-4 sm:space-y-5"
+      aria-busy="true"
+      aria-label="Yükleniyor"
+    >
       {tabs && <Skeleton className="h-11 sm:max-w-sm" />}
       <Skeleton className="h-48 rounded-2xl sm:h-40" />
       <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
@@ -283,5 +409,5 @@ function TopicMapSkeleton({ tabs }: { tabs: boolean }) {
         ))}
       </div>
     </div>
-  )
+  );
 }

@@ -48,7 +48,7 @@ export function PendingInvites({
             initial="hidden"
             animate="show"
             custom={i}
-            className="flex items-center gap-1 rounded-2xl border border-line bg-surface py-1.5 pr-1.5 pl-1.5 shadow-card"
+            className="flex items-center gap-1 rounded-2xl border border-line bg-surface py-1.5 pr-1.5 pl-1.5"
           >
             <button
               type="button"
@@ -179,7 +179,7 @@ type JoinedProps = {
 
 export function JoinedInvites({ invites, studentName, knownStudents }: JoinedProps) {
   return (
-    <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
+    <ul className="divide-y divide-line overflow-hidden rounded-3xl border border-line bg-surface">
       {invites.map((invite) => {
         const parent = invite.kind === 'parent'
         const name = invite.used?.full_name ?? invite.student_name ?? (parent ? 'Veli' : 'Öğrenci')

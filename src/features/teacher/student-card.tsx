@@ -78,7 +78,7 @@ export function StudentCard({ student }: { student: RankedStudent }) {
     <Link
       to={`/app/ogrenciler/${student.id}`}
       className={cn(
-        'group flex h-full flex-col rounded-2xl border bg-surface p-4 shadow-card transition-[border-color,transform] duration-150 hover:border-line-strong active:scale-[0.99]',
+        'group flex h-full flex-col rounded-3xl border bg-surface p-4 transition-[border-color,transform] duration-150 hover:border-line-strong active:scale-[0.99]',
         !archived && signals.level === 'risk' ? 'border-danger/35' : !archived && signals.level === 'watch' ? 'border-warning/35' : 'border-line',
       )}
     >
