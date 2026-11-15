@@ -85,3 +85,12 @@ describe('YKS bölümleri ve Search Console', () => {
     else process.env.GOOGLE_SITE_VERIFICATION = before
   })
 })
+
+describe('güvenlik başlıkları', () => {
+  it('uygulama içi görüşme için kamera ve mikrofon kendi alan adına açık', () => {
+    const headers = readFileSync(new URL('../public/_headers', import.meta.url), 'utf8')
+    const policy = headers.match(/Permissions-Policy: (.+)/)?.[1] ?? ''
+    expect(policy).toContain('camera=(self)')
+    expect(policy).toContain('microphone=(self)')
+  })
+})
