@@ -724,6 +724,51 @@ export type Database = {
           },
         ];
       };
+      meeting_peers: {
+        Row: { joined_at: string; meeting_id: string; seen_at: string; session_id: string; user_id: string };
+        Insert: { joined_at?: string; meeting_id: string; seen_at?: string; session_id: string; user_id: string };
+        Update: { joined_at?: string; meeting_id?: string; seen_at?: string; session_id?: string; user_id?: string };
+        Relationships: [];
+      };
+      meetings: {
+        Row: {
+          cancelled_at: string | null;
+          created_at: string;
+          ended_at: string | null;
+          id: string;
+          link: string | null;
+          mode: Database["public"]["Enums"]["meeting_mode"];
+          started_at: string | null;
+          starts_at: string;
+          student_id: string;
+          teacher_id: string;
+        };
+        Insert: {
+          cancelled_at?: string | null;
+          created_at?: string;
+          ended_at?: string | null;
+          id?: string;
+          link?: string | null;
+          mode: Database["public"]["Enums"]["meeting_mode"];
+          started_at?: string | null;
+          starts_at: string;
+          student_id: string;
+          teacher_id?: string;
+        };
+        Update: {
+          cancelled_at?: string | null;
+          created_at?: string;
+          ended_at?: string | null;
+          id?: string;
+          link?: string | null;
+          mode?: Database["public"]["Enums"]["meeting_mode"];
+          started_at?: string | null;
+          starts_at?: string;
+          student_id?: string;
+          teacher_id?: string;
+        };
+        Relationships: [];
+      };
       lessons: {
         Row: {
           body: string;
@@ -2385,6 +2430,7 @@ export type Database = {
       exam_track: "lgs" | "yks";
       invite_kind: "student" | "parent";
       message_channel: "student" | "parent";
+      meeting_mode: "app" | "link";
       note_kind: "note" | "meeting";
       note_visibility: "private" | "student" | "parent" | "both";
       task_kind: "study" | "questions" | "reading" | "video" | "review" | "other" | "rest";
@@ -2511,6 +2557,7 @@ export const Constants = {
       exam_track: ["lgs", "yks"],
       invite_kind: ["student", "parent"],
       message_channel: ["student", "parent"],
+      meeting_mode: ["app", "link"],
       note_kind: ["note", "meeting"],
       note_visibility: ["private", "student", "parent", "both"],
       task_kind: ["study", "questions", "reading", "video", "review", "other", "rest"],

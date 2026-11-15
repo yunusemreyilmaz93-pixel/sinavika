@@ -230,6 +230,33 @@ await test('notlar görünürlüğe göre paylaşılır', async () => {
   await rejects(as(teacherB, `insert into public.notes (student_id, body) values ($1, 'x')`, [s1]), /row-level security/)
 })
 
+await test('görüşme: haftada bir uygulama içi, dış bağlantı sınırsız, yalnızca öğretmen planlar', async () => {
+  const monday = `date_trunc('week', now() at time zone 'Europe/Istanbul') at time zone 'Europe/Istanbul' + interval '7 days 10 hours'`
+  const [m] = await as(teacherA, `insert into public.meetings (student_id, mode, starts_at) values ($1, 'app', ${monday}) returning id`, [s1])
+  await rejects(
+    as(teacherA, `insert into public.meetings (student_id, mode, starts_at) values ($1, 'app', ${monday} + interval '2 days') returning id`, [s1]),
+    /Haftada bir uygulama içi görüşme/,
+  )
+  await as(teacherA, `insert into public.meetings (student_id, mode, starts_at) values ($1, 'app', ${monday} + interval '7 days')`, [s1])
+  await as(teacherA, `insert into public.meetings (student_id, mode, starts_at, link) values ($1, 'link', ${monday} + interval '1 day', 'https://meet.google.com/abc-defg-hij')`, [s1])
+  await rejects(as(teacherA, `insert into public.meetings (student_id, mode, starts_at, link) values ($1, 'link', ${monday}, 'javascript:alert(1)')`, [s1]), /check constraint/)
+  await rejects(as(teacherA, `insert into public.meetings (student_id, mode, starts_at) values ($1, 'app', now() - interval '1 day')`, [s1]), /geçmişte/)
+  await rejects(as(s1, `insert into public.meetings (student_id, mode, starts_at) values ($1, 'app', ${monday})`, [s1]), /row-level security/)
+  await rejects(as(teacherB, `insert into public.meetings (student_id, mode, starts_at) values ($1, 'app', ${monday})`, [s1]), /row-level security/)
+  assert.equal((await as(s1, 'select id from public.meetings')).length, 3)
+  assert.equal((await as(parent, 'select id from public.meetings')).length, 3)
+  assert.equal((await as(teacherB, 'select id from public.meetings')).length, 0)
+  await rejects(as(teacherA, `update public.meetings set started_at = now() where id = $1`, [m.id]), /permission denied/)
+  assert.equal((await as(s1, `update public.meetings set cancelled_at = now() where id = $1 returning id`, [m.id])).length, 0)
+  await as(teacherA, `update public.meetings set cancelled_at = now() where id = $1`, [m.id])
+  await as(teacherA, `insert into public.meetings (student_id, mode, starts_at) values ($1, 'app', ${monday} + interval '1 hour')`, [s1])
+  const kinds = (await as(s1, `select title from public.notifications where kind = 'meeting'`)).map((r) => r.title)
+  assert.ok(kinds.length >= 1)
+  await service(`insert into public.meeting_peers (meeting_id, user_id, session_id) values ($1, $2, 'x')`, [m.id, s1])
+  await rejects(as(s1, 'select * from public.meeting_peers'), /permission denied/)
+  await rejects(as(teacherA, 'select * from public.meeting_peers'), /permission denied/)
+})
+
 await test('mesaj kanalları ayrıdır', async () => {
   await as(s1, `insert into public.messages (student_id, channel, body) values ($1, 'student', 'Hocam merhaba')`, [s1])
   await as(parent, `insert into public.messages (student_id, channel, body) values ($1, 'parent', 'İyi günler')`, [s1])

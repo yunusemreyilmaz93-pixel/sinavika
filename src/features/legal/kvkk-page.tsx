@@ -5,7 +5,7 @@ import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/ui/logo'
 
-const UPDATED = '13 Kasım 2026'
+const UPDATED = '15 Kasım 2026'
 
 type Section = { id: string; title: string; body: ReactNode }
 
@@ -126,6 +126,14 @@ const sections: Section[] = [
           Sanal etüt: Öğrenci sayaçla çalışırken ilk adı, çalıştığı ders ve başlama saati aynı öğretmenin diğer öğrencilerine ve
           öğretmenine anlık olarak görünür. Bu bilgi kaydedilmez, sayaç durunca kaybolur. Öğrenci sayaç ekranındaki Etütte görün
           ayarını kapatarak bunu durdurabilir.
+        </p>
+        <p>
+          Görüntülü görüşme: Öğretmen öğrencisiyle uygulama içinde görüntülü görüşme planlayabilir. Görüşmeye yalnızca öğretmen ve
+          öğrenci katılır. Görüntü ve ses Cloudflare Realtime altyapısı üzerinden iki taraf arasında anlık iletilir, kaydedilmez ve
+          saklanmaz. İzlek'te yalnızca görüşmenin planlanan saati, başlama ve bitiş zamanı tutulur. Kamera ve mikrofon izni
+          tarayıcı tarafından sorulur, izin verilmezse görüşmeye katılınmaz. Öğretmenin görüşme sonrası yazdığı not, öğretmenin
+          seçtiği görünürlüğe göre paylaşılır. Öğretmen kendi Google Meet ya da Zoom bağlantısını eklerse görüşme o servisin
+          koşullarıyla yapılır.
         </p>
         <p>
           İzlek'in çalışabilmesi için verileriniz barındırma hizmeti alınan iki sağlayıcıya aktarılır. Bunlar Supabase

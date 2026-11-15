@@ -6,6 +6,7 @@ import * as avatar from '../api/avatar.js'
 import * as cron from '../api/cron.js'
 import * as health from '../api/health.js'
 import * as hit from '../api/hit.js'
+import * as meeting from '../api/meeting.js'
 import * as push from '../api/push.js'
 import * as video from '../api/video.js'
 
@@ -13,7 +14,7 @@ type Handler = (request: Request) => Promise<Response>
 type Env = { ASSETS: { fetch: (request: Request) => Promise<Response> } }
 type Ctx = { waitUntil: (promise: Promise<unknown>) => void }
 
-const routes: Record<string, Record<string, Handler | undefined>> = { account, ai, auth, avatar, cron, health, hit, push, video }
+const routes: Record<string, Record<string, Handler | undefined>> = { account, ai, auth, avatar, cron, health, hit, meeting, push, video }
 const OLD_HOSTS = new Set(['www.izlek.site'])
 const noindex = { 'X-Robots-Tag': 'noindex, nofollow' }
 

@@ -6,6 +6,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { Modal } from '@/components/ui/modal'
 import { useAuth, useViewedStudent } from '@/features/auth/session'
 import { NextLesson } from '@/features/lessons/next-lesson'
+import { NextMeetingCard } from '@/features/meetings/next-meeting'
 import { TodayTasks } from '@/features/plan/today-tasks'
 import { QuestionLogForm } from '@/features/tracking/question-log-form'
 import { StudyRoomCard } from '@/features/tracking/study-room-provider'
@@ -76,6 +77,9 @@ export default function TodayPage() {
         <div className="space-y-4 sm:space-y-5">
           <Reveal index={1} className="hidden xl:block">
             <NextLesson studentId={studentId} student={student} />
+          </Reveal>
+          <Reveal index={4}>
+            <NextMeetingCard />
           </Reveal>
           <Reveal index={5}>
             <PaceCard studentId={studentId} student={student} compact topicsHref="/app/konular" />

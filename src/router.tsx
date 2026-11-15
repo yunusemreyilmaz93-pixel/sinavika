@@ -60,6 +60,8 @@ export const router = createBrowserRouter([
                 children: [
                   { path: 'testler', ...page(() => import('@/features/tests/tests-page')) },
                   { path: 'testler/:setId', ...page(() => import('@/features/tests/test-page')) },
+                  { path: 'gorusmeler', ...page(() => import('@/features/meetings/meetings-page')) },
+                  { path: 'gorusme/:meetingId', ...page(() => import('@/features/meetings/room-page')) },
                 ],
               },
               {

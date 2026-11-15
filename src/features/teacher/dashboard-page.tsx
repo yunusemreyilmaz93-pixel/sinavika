@@ -1,3 +1,4 @@
+import { NextMeetingCard } from '@/features/meetings/next-meeting'
 import { Archive, ClipboardList, Clock3, ListChecks, TriangleAlert, UserPlus, UsersRound } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useMemo } from 'react'
@@ -115,10 +116,18 @@ export default function DashboardPage() {
                   hue="sea"
                   label="Çalışma, 7 gün"
                   value={formatMinutes(totals.minutes)}
-                  aside={totals.minutesDelta != null ? <Trend up={totals.minutesDelta >= 0}>%{Math.abs(totals.minutesDelta)}</Trend> : undefined}
+                  aside={
+                    totals.minutesDelta != null ? <Trend up={totals.minutesDelta >= 0}>%{Math.abs(totals.minutesDelta)}</Trend> : undefined
+                  }
                 />
                 <StatTile icon={<ListChecks />} hue="violet" label="Soru, 7 gün" value={totals.questions.toLocaleString('tr-TR')} />
-                <StatTile icon={<TriangleAlert />} hue="orange" label="Dikkat isteyen" value={totals.attention} aside={totals.attention ? 'öğrenci' : 'herkes yolunda'} />
+                <StatTile
+                  icon={<TriangleAlert />}
+                  hue="orange"
+                  label="Dikkat isteyen"
+                  value={totals.attention}
+                  aside={totals.attention ? 'öğrenci' : 'herkes yolunda'}
+                />
               </>
             )}
           </div>
@@ -128,103 +137,107 @@ export default function DashboardPage() {
       {start.visible && <StartChecklist steps={start.steps} onDismiss={start.dismiss} />}
 
       <div className="grid gap-4 sm:gap-5 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
-      <div className="min-w-0">
-      {overview.isPending ? (
-        <CardsSkeleton />
-      ) : overview.isError ? (
-        <div role="alert" className="flex flex-col items-start gap-3 rounded-2xl border border-line bg-surface p-5 sm:flex-row sm:items-center">
-          <p className="flex-1 text-sm text-danger">{errorMessage(overview.error)}</p>
-          <Button variant="secondary" size="sm" onClick={() => void overview.refetch()}>
-            Tekrar deneyin
-          </Button>
-        </div>
-      ) : noStudents && start.visible ? null : noStudents ? (
-        <EmptyState
-          icon={UserPlus}
-          className="py-14 sm:py-20 [&_h3]:text-xl"
-          title="Henüz öğrenciniz yok"
-          description={
-            capacity.pending
-              ? `${capacity.pending} davet katılım bekliyor. Öğrenciniz kodu girdiğinde burada görünür.`
-              : 'Davet kodu oluşturup öğrencinize gönderin. Katıldığında çalışmasını, görevlerini ve denemelerini buradan takip edersiniz.'
-          }
-          action={
-            <Button size="lg" asChild>
-              <Link to="/app/davetler?yeni=1">
-                <UserPlus />
-                İlk öğrencinizi davet edin
-              </Link>
-            </Button>
-          }
-        />
-      ) : (
-        <section aria-labelledby="students-title">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 id="students-title" className="text-lg font-bold">
-              Öğrenciler <span className="tabular text-sm font-semibold text-muted">{shown.length}</span>
-            </h2>
-            <Segmented
-              size="sm"
-              className="w-full sm:w-56"
-              value={filter}
-              onChange={setFilter}
-              options={[
-                { value: 'aktif', label: `Aktif ${active.length}` },
-                { value: 'arsiv', label: `Arşiv ${archived.length}` },
-              ]}
-            />
-          </div>
-
-          {shown.length ? (
-            <motion.ul
-              key={filter}
-              variants={list}
-              initial="hidden"
-              animate="show"
-              className="grid gap-3 sm:grid-cols-2 sm:gap-4 2xl:grid-cols-3"
+        <div className="min-w-0">
+          {overview.isPending ? (
+            <CardsSkeleton />
+          ) : overview.isError ? (
+            <div
+              role="alert"
+              className="flex flex-col items-start gap-3 rounded-2xl border border-line bg-surface p-5 sm:flex-row sm:items-center"
             >
-              {shown.map((student) => (
-                <motion.li key={student.id} variants={card} className="min-w-0">
-                  <StudentCard student={student} />
-                </motion.li>
-              ))}
-            </motion.ul>
-          ) : filter === 'arsiv' ? (
-            <EmptyState
-              icon={Archive}
-              title="Arşiv boş"
-              description="Öğrenci sayfasından arşive aldığınız öğrenciler burada durur. Arşivdeki öğrenci kontenjana sayılmaz."
-              action={
-                <Button variant="secondary" onClick={() => setFilter('aktif')}>
-                  Aktif öğrencilere dön
-                </Button>
-              }
-            />
-          ) : (
+              <p className="flex-1 text-sm text-danger">{errorMessage(overview.error)}</p>
+              <Button variant="secondary" size="sm" onClick={() => void overview.refetch()}>
+                Tekrar deneyin
+              </Button>
+            </div>
+          ) : noStudents && start.visible ? null : noStudents ? (
             <EmptyState
               icon={UserPlus}
-              title="Aktif öğrenciniz yok"
-              description="Yeni bir öğrenci davet edebilir ya da arşivdeki bir öğrenciyi geri alabilirsiniz."
+              className="py-14 sm:py-20 [&_h3]:text-xl"
+              title="Henüz öğrenciniz yok"
+              description={
+                capacity.pending
+                  ? `${capacity.pending} davet katılım bekliyor. Öğrenciniz kodu girdiğinde burada görünür.`
+                  : 'Davet kodu oluşturup öğrencinize gönderin. Katıldığında çalışmasını, görevlerini ve denemelerini buradan takip edersiniz.'
+              }
               action={
-                <Button asChild>
+                <Button size="lg" asChild>
                   <Link to="/app/davetler?yeni=1">
                     <UserPlus />
-                    Öğrenci davet edin
+                    İlk öğrencinizi davet edin
                   </Link>
                 </Button>
               }
             />
+          ) : (
+            <section aria-labelledby="students-title">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h2 id="students-title" className="text-lg font-bold">
+                  Öğrenciler <span className="tabular text-sm font-semibold text-muted">{shown.length}</span>
+                </h2>
+                <Segmented
+                  size="sm"
+                  className="w-full sm:w-56"
+                  value={filter}
+                  onChange={setFilter}
+                  options={[
+                    { value: 'aktif', label: `Aktif ${active.length}` },
+                    { value: 'arsiv', label: `Arşiv ${archived.length}` },
+                  ]}
+                />
+              </div>
+
+              {shown.length ? (
+                <motion.ul
+                  key={filter}
+                  variants={list}
+                  initial="hidden"
+                  animate="show"
+                  className="grid gap-3 sm:grid-cols-2 sm:gap-4 2xl:grid-cols-3"
+                >
+                  {shown.map((student) => (
+                    <motion.li key={student.id} variants={card} className="min-w-0">
+                      <StudentCard student={student} />
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              ) : filter === 'arsiv' ? (
+                <EmptyState
+                  icon={Archive}
+                  title="Arşiv boş"
+                  description="Öğrenci sayfasından arşive aldığınız öğrenciler burada durur. Arşivdeki öğrenci kontenjana sayılmaz."
+                  action={
+                    <Button variant="secondary" onClick={() => setFilter('aktif')}>
+                      Aktif öğrencilere dön
+                    </Button>
+                  }
+                />
+              ) : (
+                <EmptyState
+                  icon={UserPlus}
+                  title="Aktif öğrenciniz yok"
+                  description="Yeni bir öğrenci davet edebilir ya da arşivdeki bir öğrenciyi geri alabilirsiniz."
+                  action={
+                    <Button asChild>
+                      <Link to="/app/davetler?yeni=1">
+                        <UserPlus />
+                        Öğrenci davet edin
+                      </Link>
+                    </Button>
+                  }
+                />
+              )}
+            </section>
           )}
-        </section>
-      )}
-      </div>
-      {!noStudents && (
-        <aside className="space-y-4 sm:space-y-5">
-          <StudyRoomCard forTeacher />
-          <ClassWeakTopics students={active} />
-          <TopStudents students={active} />
-        </aside>
-      )}
+        </div>
+        {!noStudents && (
+          <aside className="space-y-4 sm:space-y-5">
+            <NextMeetingCard nameOf={(m) => active.find((s) => s.id === m.student_id)?.full_name ?? 'Öğrenci'} />
+            <StudyRoomCard forTeacher />
+            <ClassWeakTopics students={active} />
+            <TopStudents students={active} />
+          </aside>
+        )}
       </div>
     </div>
   )

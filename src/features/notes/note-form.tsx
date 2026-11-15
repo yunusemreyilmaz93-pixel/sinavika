@@ -20,17 +20,19 @@ export function NoteForm({
   studentId,
   note,
   parentCount,
+  defaults,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   studentId: string
   note: Note | null
   parentCount: number
+  defaults?: { kind: NoteKind; metOn: string }
 }) {
   const formId = useId()
   const queryClient = useQueryClient()
-  const [kind, setKind] = useState<NoteKind>(note?.kind ?? 'note')
-  const [metOn, setMetOn] = useState(note?.met_on ?? todayISO())
+  const [kind, setKind] = useState<NoteKind>(note?.kind ?? defaults?.kind ?? 'note')
+  const [metOn, setMetOn] = useState(note?.met_on ?? defaults?.metOn ?? todayISO())
   const [body, setBody] = useState(note?.body ?? '')
   const [visibility, setVisibility] = useState<NoteVisibility>(note?.visibility ?? 'private')
   const [error, setError] = useState<string | null>(null)

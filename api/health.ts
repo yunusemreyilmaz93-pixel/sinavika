@@ -1,3 +1,4 @@
+import { realtimeConfig } from './_lib/meeting.js'
 import { isConfigured } from './_lib/ai/crypto.js'
 import { admin, handle, json } from './_lib/server.js'
 
@@ -23,7 +24,7 @@ export const GET = handle(async () => {
     {
       ok,
       checks,
-      optional: { ai_assistant: isConfigured() },
+      optional: { ai_assistant: isConfigured(), meetings: realtimeConfig() !== null },
       version: (process.env.COMMIT_SHA || process.env.VERCEL_GIT_COMMIT_SHA)?.slice(0, 7) ?? 'local',
     },
     ok ? 200 : 503,

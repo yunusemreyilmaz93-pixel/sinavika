@@ -1,14 +1,14 @@
-import { UserRound } from "lucide-react";
-import { Link } from "react-router";
-import { PageHeader } from "@/components/app/page-header";
-import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
-import { useViewedStudent } from "@/features/auth/session";
-import { PaceCard } from "./pace-card";
-import { TopicMap } from "./topic-map";
+import { UserRound } from 'lucide-react'
+import { Link } from 'react-router'
+import { PageHeader } from '@/components/app/page-header'
+import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
+import { useViewedStudent } from '@/features/auth/session'
+import { PaceCard } from './pace-card'
+import { TopicMap } from './topic-map'
 
 export default function TopicsPage() {
-  const viewed = useViewedStudent();
+  const viewed = useViewedStudent()
 
   if (!viewed) {
     return (
@@ -25,28 +25,22 @@ export default function TopicsPage() {
           }
         />
       </>
-    );
+    )
   }
 
   return (
     <>
       <PageHeader
         title="Konular"
-        description={
-          viewed.canEdit
-            ? "Soldaki simgeye dokununca konunun durumu değişir."
-            : `${viewed.name} için konu durumları.`
-        }
+        description={viewed.canEdit ? 'Soldaki simgeye dokununca konunun durumu değişir.' : `${viewed.name} için konu durumları.`}
       />
       <TopicMap
         key={viewed.studentId}
         studentId={viewed.studentId}
         student={viewed.student}
         canEdit={viewed.canEdit}
-        aside={
-          <PaceCard studentId={viewed.studentId} student={viewed.student} />
-        }
+        aside={<PaceCard studentId={viewed.studentId} student={viewed.student} />}
       />
     </>
-  );
+  )
 }
