@@ -128,8 +128,8 @@ export default function StatusPage() {
             <Link to="/giris" className={link}>
               giriş sayfasındaki
             </Link>{' '}
-            "Şifremi unuttum" bağlantısından istek gönderin. Öğrenci ve velinin isteği öğretmene, öğretmenin isteği yöneticiye
-            bildirim olarak düşer.
+            "Şifremi unuttum" bağlantısından istek gönderin. Öğretmenlere e-postayla yenileme bağlantısı gider. Öğrenci ve
+            velinin isteği öğretmene bildirim olarak düşer.
           </p>
           {CONTACT_EMAIL && (
             <p>

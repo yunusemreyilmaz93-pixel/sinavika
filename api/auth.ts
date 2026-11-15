@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { PASSWORD_MAX, passwordIssueMessage, passwordProblem, USERNAME_PATTERN, usernameToEmail } from '../shared/accounts.js'
+import { PASSWORD_MAX, passwordIssueMessage, passwordProblem, USERNAME_EMAIL_DOMAIN, USERNAME_PATTERN, usernameToEmail } from '../shared/accounts.js'
 import { admin, adminEmail, dbMessage, handle, HttpError, json, readJson } from './_lib/server.js'
 
 const teacherSchema = z.object({
@@ -30,10 +30,16 @@ const resetSchema = z.object({
 
 const schema = z.discriminatedUnion('action', [teacherSchema, joinSchema, resetSchema])
 
-// Kimin şifresi olduğu yanıttan anlaşılmaz. Hesap yoksa da aynı yanıt döner
+// Kimin şifresi olduğu yanıttan anlaşılmaz. Hesap yoksa da aynı yanıt döner. Öğretmene e-postayla yenileme bağlantısı gider
+// (Supabase Auth, özel SMTP ile). E-posta gönderilemezse istek yöneticiye bildirim olarak düşer
 async function resetRequest(identifier: string) {
   const column = identifier.includes('@') ? 'email' : 'username'
-  const { data } = await admin().from('profiles').select('id').eq(column, identifier).maybeSingle()
+  const { data } = await admin().from('profiles').select('id, role, email').eq(column, identifier).maybeSingle()
+  if (data?.role === 'teacher' && data.email && !data.email.endsWith(`@${USERNAME_EMAIL_DOMAIN}`)) {
+    const { error } = await admin().auth.resetPasswordForEmail(data.email)
+    if (!error) return json({ ok: true })
+    await logServerError('Şifre yenileme e-postası gönderilemedi', error.message)
+  }
   if (data?.id) {
     const { error } = await admin().rpc('request_password_reset', { p_user: data.id })
     if (error) await logServerError('Şifre sıfırlama isteği iletilemedi', error.message)

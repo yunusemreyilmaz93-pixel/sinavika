@@ -61,8 +61,9 @@ export function ForgotPassword({ identifier = '' }: { identifier?: string }) {
             <div className="mt-2 flex gap-3 text-sm">
               <CircleCheck className="mt-0.5 size-5 shrink-0 text-success" />
               <p className="leading-relaxed text-muted">
-                İstek iletildi. Öğrenci ve velinin isteği öğretmene, öğretmenin isteği yöneticiye bildirim olarak düşer. Yeni şifre size
-                iletilir.
+                {value.includes('@')
+                  ? 'Hesap varsa e-posta adresinize şifre yenileme bağlantısı gönderildi. Gelen kutusunda yoksa istenmeyen klasörüne bakın.'
+                  : 'İstek öğretmene iletildi. Öğretmen yeni şifreyi belirleyip size iletir.'}
               </p>
             </div>
           ) : (

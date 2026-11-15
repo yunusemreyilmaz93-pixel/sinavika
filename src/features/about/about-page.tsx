@@ -9,7 +9,7 @@ const principles = [
   ['Ücretsiz', 'Öğrenci, veli ve öğretmen için ücret yok.'],
   ['Reklam yok', 'Sayfalarda reklam göstermiyorum.'],
   ['Veri satılmıyor', 'Öğrenci verisi üçüncü kişilere satılmaz ve reklam için kullanılmaz.'],
-  ['Puan tahmini yok', 'Denemelerde net gösteriyorum. Tahmini LGS ya da YKS puanı vermiyorum, çünkü yanlış bir sayı öğrenciyi gereksiz yere rahatlatır ya da korkutur.'],
+  ['Önce net', 'Denemelerde asıl bilgi net. Yaklaşık puanı da gösteriyorum ama önceki yılların katsayılarıyla hesaplanır, bilgi amaçlıdır ve her yıl değişir.'],
   ['Sıralama yok', 'Öğrenciler birbiriyle karşılaştırılmaz. Rozet ve seri yalnızca öğrencinin kendi ekranında görünür, kaçırılan gün için uyarı çıkmaz.'],
 ] as const
 

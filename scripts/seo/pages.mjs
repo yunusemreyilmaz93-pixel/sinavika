@@ -26,5 +26,6 @@ export const appPages = [
   },
   { path: '/giris', title: 'Giriş yap · İzlek', description: 'İzlek hesabınıza giriş yapın.', noindex: true },
   { path: '/katil', title: 'Davet koduyla katıl · İzlek', description: 'Öğretmeninizden aldığınız kodla İzlek\'e katılın.', noindex: true },
+  { path: '/sifre-yenile', title: 'Şifre yenile · İzlek', description: 'İzlek hesabınız için yeni şifre belirleyin.', noindex: true },
   { path: '/test-giris', title: 'Test girişi · İzlek', description: 'İzlek test girişi.', noindex: true },
 ]

@@ -29,6 +29,7 @@ export const router = createBrowserRouter([
       },
       { path: 'katil', ...page(() => import('@/features/auth/join-page')) },
       { path: 'test-giris', ...page(() => import('@/features/auth/test-login-page')) },
+      { path: 'sifre-yenile', ...page(() => import('@/features/auth/reset-password-page')) },
       {
         path: 'app',
         element: <RequireAuth />,
