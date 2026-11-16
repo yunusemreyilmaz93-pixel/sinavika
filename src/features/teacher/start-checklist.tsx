@@ -110,7 +110,9 @@ export function StartChecklist({ steps, onDismiss }: { steps: Step[]; onDismiss:
       </div>
       <ProgressBar label="Başlangıç adımları" value={done / steps.length} className="mt-3" />
       <ol className="mt-4 space-y-1">
-        {steps.map((step) => (
+        {steps
+          .filter((step) => !step.done)
+          .map((step) => (
           <li key={step.id}>
             <Link
               to={step.to}
@@ -136,7 +138,7 @@ export function StartChecklist({ steps, onDismiss }: { steps: Step[]; onDismiss:
               {!step.done && <ChevronRight className="size-5 shrink-0 text-subtle" />}
             </Link>
           </li>
-        ))}
+          ))}
       </ol>
     </Card>
   )

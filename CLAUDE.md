@@ -24,7 +24,7 @@ LGS ve YKS koçluğu için ücretsiz web uygulaması. Öğretmen, öğrenci ve v
 3. Şema değiştiyse migration canlıya uygulanır, sonra `node scripts/schema-fingerprint.mjs --summary` ile `--summary-sql` sorgusunun canlıdaki sonucu aynı olmalı
 4. Onaydan sonra `main` fast-forward edilir, yayından sonra `node scripts/smoke.mjs` canlıda tekrar çalışır
 5. Sorun olursa: `npx wrangler deployments list`, sonra `npx wrangler rollback <önceki sürüm>`. Veritabanı geri alınmaz, bu yüzden migration'lar eski kodla da çalışacak biçimde (önce ekle, sonra kaldır) yazılır
-6. Ayda bir `node scripts/backup/drill.mjs`: son gece dökümünü boş veritabanına yükler, satır sayılarını karşılaştırır
+6. Ayda bir `node scripts/backup/drill.mjs`: son gece dökümünü boş veritabanına yükler, satır sayılarını karşılaştırır (bulut oturumunda `NODE_USE_ENV_PROXY=1` ile, yerelde `CLOUDFLARE_API_TOKEN` ile)
 
 ## Metin kuralları (arayüz, landing, e-posta, commit mesajı)
 

@@ -32,6 +32,28 @@ export function Trend({ up, children, className }: { up?: boolean; children: Rea
   )
 }
 
+export type StripItem = { label: ReactNode; value: ReactNode; aside?: ReactNode; tone?: 'warning' }
+
+// Ana sayfalardaki ince sayı şeridi. Sayılar destek bilgisidir, ekranın ana öğesi değildir. Telefonda da tek satır
+export function StatStrip({ items, caption, className }: { items: StripItem[]; caption?: ReactNode; className?: string }) {
+  return (
+    <div className={cn('rounded-2xl bg-bg px-3 py-2.5 sm:px-4 sm:py-3', className)}>
+      {caption && <p className="mb-1.5 text-xs font-semibold text-muted">{caption}</p>}
+      <dl className="grid grid-cols-4 gap-2 sm:gap-4">
+        {items.map((item, i) => (
+          <div key={i} className="min-w-0">
+            <dt className="truncate text-xs text-muted sm:text-[13px]">{item.label}</dt>
+            <dd className="flex min-w-0 flex-wrap items-center gap-x-1.5">
+              <span className={cn('tabular truncate font-display text-lg leading-tight font-extrabold sm:text-xl', item.tone === 'warning' && 'text-warning')}>{item.value}</span>
+              {item.aside && <span className="hidden sm:inline-flex">{item.aside}</span>}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  )
+}
+
 // Karşılama kartlarındaki sayı kutusu
 export function StatTile({ icon, hue, label, value, aside, className }: { icon: ReactNode; hue: Hue; label: ReactNode; value: ReactNode; aside?: ReactNode; className?: string }) {
   return (

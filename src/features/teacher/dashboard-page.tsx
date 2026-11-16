@@ -1,11 +1,10 @@
 import { NextMeetingCard } from '@/features/meetings/next-meeting'
-import { Archive, ClipboardList, Clock3, ListChecks, TriangleAlert, UserPlus, UsersRound } from 'lucide-react'
+import { Archive, ClipboardList, UserPlus } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
-import { ProgressRing } from '@/components/ui/progress'
-import { StatTile, Trend } from '@/components/ui/stat'
+import { StatStrip, Trend } from '@/components/ui/stat'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Segmented } from '@/components/ui/segmented'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -91,47 +90,33 @@ export default function DashboardPage() {
             </Button>
           </div>
         </div>
-        {!noStudents && (
-          <div className="mt-5 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-            {overview.isPending || !capacity.ready ? (
-              [0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-28 rounded-2xl" />)
-            ) : (
-              <>
-                <Link to="/app/davetler" className="rounded-2xl transition-colors hover:bg-surface-2">
-                  <StatTile
-                    icon={<UsersRound />}
-                    hue="pine"
-                    label="Aktif öğrenci"
-                    value={
-                      <>
-                        {capacity.used}
-                        <span className="text-base text-muted">/{capacity.capacity}</span>
-                      </>
-                    }
-                    aside={<ProgressRing value={capacity.capacity ? capacity.used / capacity.capacity : 0} size={30} stroke={4} />}
-                  />
-                </Link>
-                <StatTile
-                  icon={<Clock3 />}
-                  hue="sea"
-                  label="Çalışma, 7 gün"
-                  value={formatMinutes(totals.minutes)}
-                  aside={
-                    totals.minutesDelta != null ? <Trend up={totals.minutesDelta >= 0}>%{Math.abs(totals.minutesDelta)}</Trend> : undefined
-                  }
-                />
-                <StatTile icon={<ListChecks />} hue="violet" label="Soru, 7 gün" value={totals.questions.toLocaleString('tr-TR')} />
-                <StatTile
-                  icon={<TriangleAlert />}
-                  hue="orange"
-                  label="Dikkat isteyen"
-                  value={totals.attention}
-                  aside={totals.attention ? 'öğrenci' : 'herkes yolunda'}
-                />
-              </>
-            )}
-          </div>
-        )}
+        {!noStudents &&
+          (overview.isPending || !capacity.ready ? (
+            <Skeleton className="mt-5 h-20 rounded-2xl" />
+          ) : (
+            <StatStrip
+              className="mt-5"
+              caption="Son 7 gün"
+              items={[
+                {
+                  label: 'Öğrenci',
+                  value: (
+                    <Link to="/app/davetler" className="hover:underline">
+                      {capacity.used}
+                      <span className="text-base text-muted">/{capacity.capacity}</span>
+                    </Link>
+                  ),
+                },
+                {
+                  label: 'Çalışma',
+                  value: formatMinutes(totals.minutes),
+                  aside: totals.minutesDelta != null ? <Trend up={totals.minutesDelta >= 0}>%{Math.abs(totals.minutesDelta)}</Trend> : undefined,
+                },
+                { label: 'Soru', value: totals.questions.toLocaleString('tr-TR') },
+                { label: 'Dikkat', value: totals.attention, tone: totals.attention ? 'warning' : undefined },
+              ]}
+            />
+          ))}
       </section>
 
       {start.visible && <StartChecklist steps={start.steps} onDismiss={start.dismiss} />}

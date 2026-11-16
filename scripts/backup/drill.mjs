@@ -16,7 +16,7 @@ async function latestDump() {
   const headers = process.env.CLOUDFLARE_API_TOKEN ? { authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}` } : {}
   const list = await (await fetch(`${base}?prefix=db/&per_page=1000`, { headers })).json()
   const keys = (list.result ?? []).map((o) => o.key).sort()
-  if (!keys.length) throw new Error('R2 kovasında döküm yok')
+  if (!keys.length) throw new Error(`R2 kovasında döküm yok ${JSON.stringify(list.errors ?? list).slice(0, 200)}`)
   const key = keys.at(-1)
   const res = await fetch(`${base}/${encodeURIComponent(key)}`, { headers })
   if (!res.ok) throw new Error(`${key} indirilemedi: ${res.status}`)

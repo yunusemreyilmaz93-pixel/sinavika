@@ -48,13 +48,13 @@ export default function TodayPage() {
 
       <div className="grid gap-4 sm:gap-5 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
         <div className="space-y-4 sm:space-y-5">
-          <Reveal index={1} className="xl:hidden">
+          <Reveal index={1}>
+            <TodayTasks studentId={studentId} canEdit />
+          </Reveal>
+          <Reveal index={2} className="xl:hidden">
             <NextLesson studentId={studentId} student={student} />
           </Reveal>
           <div className="grid gap-4 sm:gap-5 2xl:grid-cols-2 2xl:items-start">
-            <Reveal index={2}>
-              <TodayTasks studentId={studentId} canEdit />
-            </Reveal>
             <Reveal index={3}>
               <WeekCard studentId={studentId} goalMinutes={student.daily_minutes_goal} />
             </Reveal>

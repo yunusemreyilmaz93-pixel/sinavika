@@ -37,7 +37,7 @@ function useNewBadgeToast(studentId: string, m: Milestones | undefined) {
 
 export function StreakChip({ studentId }: { studentId: string }) {
   const { data } = useMilestones(studentId)
-  if (!data || data.streak < 2) return null
+  if (!data || !(Number(data.streak) >= 2)) return null
   return (
     <Badge tone="marker" className="py-1 text-[13px]">
       <Flame aria-hidden />

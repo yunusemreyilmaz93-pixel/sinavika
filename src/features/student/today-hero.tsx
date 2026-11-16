@@ -1,4 +1,4 @@
-import { BookOpen, Check, CirclePlay, ListChecks, Target, Timer, Trophy } from 'lucide-react'
+import { CirclePlay, ListChecks, Trophy } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { Avatar } from '@/components/ui/avatar'
@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { MiniBars, StatTile, Trend } from '@/components/ui/stat'
+import { MiniBars, StatStrip, Trend } from '@/components/ui/stat'
 import { useTasks } from '@/features/plan/queries'
 import { accuracyOf, emptyDay, useStudyActivity, type StudyActivity } from '@/features/tracking/stats'
 import { cn } from '@/lib/cn'
@@ -62,11 +62,16 @@ export function StudentHero({ student, name, mode, onAddQuestions }: { student: 
             <div className="mt-2 flex flex-wrap items-center gap-1.5">
               <Badge>{studentLabel(student)}</Badge>
               <StreakChip studentId={student.id} />
+              {exam && daysLeft != null && daysLeft >= 0 && (
+                <Badge tone="primary" className="sm:hidden">
+                  {daysLeft === 0 ? `${trackLabel[student.track]} bugün` : `${trackLabel[student.track]}'ye ${daysLeft} gün`}
+                </Badge>
+              )}
             </div>
           </div>
         </div>
         {exam && daysLeft != null && daysLeft >= 0 && (
-          <div className="flex items-center gap-3 rounded-2xl bg-primary-soft px-4 py-3 text-primary-soft-fg sm:flex-col sm:items-end sm:gap-0 sm:px-5">
+          <div className="hidden rounded-2xl bg-primary-soft px-5 py-3 text-primary-soft-fg sm:flex sm:flex-col sm:items-end">
             <p className="tabular font-display text-4xl leading-none font-extrabold">{daysLeft === 0 ? 'Bugün' : daysLeft}</p>
             <p className="text-sm font-semibold">
               {daysLeft === 0 ? trackLabel[student.track] : 'gün kaldı'} <span className="font-normal opacity-80">· {trackLabel[student.track]}, {formatDate(exam.date, 'd MMMM')}{exam.official ? '' : ', tahmini'}</span>
@@ -75,60 +80,48 @@ export function StudentHero({ student, name, mode, onAddQuestions }: { student: 
         )}
       </div>
 
-      {activity.isPending ? (
-        <div className="mt-5 grid grid-cols-2 gap-2.5 lg:grid-cols-4">{[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-28 rounded-2xl" />)}</div>
-      ) : (
-        <div className="mt-5 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-          <StatTile
-            icon={<Timer />}
-            hue="pine"
-            label="Bugün çalışma"
-            value={formatMinutes(activity.data?.todayMinutes ?? 0)}
-            aside={goal ? `Hedef ${formatMinutes(goal)}` : undefined}
-          />
-          <StatTile
-            icon={<ListChecks />}
-            hue="sea"
-            label="Soru, son 7 gün"
-            value={last?.questions ?? 0}
-            aside={qDelta != null ? <Trend up={qDelta >= 0}>%{Math.abs(qDelta)}</Trend> : undefined}
-          />
-          <StatTile
-            icon={<Target />}
-            hue="violet"
-            label="Doğruluk, son 7 gün"
-            value={percent(last?.accuracy ?? null)}
-            aside={accDelta ? <Trend up={accDelta > 0}>{Math.abs(accDelta)} puan</Trend> : undefined}
-          />
-          <StatTile icon={<Check />} hue="amber" label="Haftanın görevleri" value={`${done}/${total}`} aside={total ? `${total - done} kaldı` : undefined} />
-        </div>
-      )}
-
       {mode === 'student' && (
-        <div className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
-          <Button asChild className="shrink-0">
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:flex">
+          <Button asChild size="lg" className="col-span-2 sm:col-span-1">
             <Link to="/app/sayac">
               <CirclePlay />
               Sayacı başlat
             </Link>
           </Button>
-          <Button variant="secondary" className="shrink-0" onClick={onAddQuestions}>
+          <Button variant="secondary" size="lg" onClick={onAddQuestions}>
             <ListChecks />
             Soru ekle
           </Button>
-          <Button variant="secondary" className="shrink-0" asChild>
+          <Button variant="secondary" size="lg" asChild>
             <Link to="/app/deneme-ekle">
               <Trophy />
               Deneme ekle
             </Link>
           </Button>
-          <Button variant="secondary" className="shrink-0" asChild>
-            <Link to="/app/konular">
-              <BookOpen />
-              Konu anlatımı
-            </Link>
-          </Button>
         </div>
+      )}
+
+      {activity.isPending ? (
+        <Skeleton className="mt-4 h-20 rounded-2xl" />
+      ) : (
+        <StatStrip
+          className="mt-4"
+          caption={goal ? `Son 7 gün · günlük hedef ${formatMinutes(goal)}` : 'Son 7 gün'}
+          items={[
+            { label: 'Bugün', value: formatMinutes(activity.data?.todayMinutes ?? 0) },
+            {
+              label: 'Soru',
+              value: last?.questions ?? 0,
+              aside: qDelta != null ? <Trend up={qDelta >= 0}>%{Math.abs(qDelta)}</Trend> : undefined,
+            },
+            {
+              label: 'Doğruluk',
+              value: percent(last?.accuracy ?? null),
+              aside: accDelta ? <Trend up={accDelta > 0}>{Math.abs(accDelta)} puan</Trend> : undefined,
+            },
+            { label: 'Görev', value: `${done}/${total}` },
+          ]}
+        />
       )}
     </section>
   )

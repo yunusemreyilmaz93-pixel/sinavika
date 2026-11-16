@@ -48,7 +48,7 @@ export default function AssistantPage() {
           description={status.data?.configured === false ? 'Asistan henüz kurulmadı.' : 'Anahtarınızı Ayarlar bölümünden ekleyebilirsiniz.'}
           action={
             <Button asChild className="min-h-11">
-              <Link to="/app/ayarlar">
+              <Link to="/app/ayarlar?bolum=uygulama">
                 <Settings />
                 Ayarlara git
               </Link>

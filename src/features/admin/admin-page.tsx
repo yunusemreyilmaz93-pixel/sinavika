@@ -114,13 +114,13 @@ function MfaWarning() {
   if (factors.isPending || factors.data?.some((f) => f.status === 'verified')) return null
   return (
     <Link
-      to="/app/ayarlar"
+      to="/app/ayarlar?bolum=hesap"
       className="mb-5 flex min-h-14 items-center gap-3 rounded-2xl border border-warning/40 bg-warning-soft px-4 py-3 text-sm hover:border-warning"
     >
       <ShieldAlert className="size-5 shrink-0 text-warning" />
       <span>
         <b className="block">İki adımlı doğrulama kapalı</b>
-        Şifreniz ele geçirilirse yönetim paneline girilebilir. Ayarlar sayfasından açın.
+        Şifreniz ele geçirilirse yönetim paneline girilebilir. Ayarlar sayfasının Hesap bölümünden açın.
       </span>
     </Link>
   )

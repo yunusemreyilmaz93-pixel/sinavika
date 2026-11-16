@@ -1,9 +1,9 @@
-import { ArrowLeft, Check, Clock3, ListChecks, MessageCircle, Target, Timer, TrendingUp, UsersRound } from 'lucide-react'
+import { ArrowLeft, Clock3, MessageCircle, Target, UsersRound } from 'lucide-react'
 import { Link } from 'react-router'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { StatTile, Trend } from '@/components/ui/stat'
+import { StatStrip, Trend } from '@/components/ui/stat'
 import { threadLink } from '@/features/messages/lib'
 import { WeeklyReportButton } from '@/features/report/weekly-report-button'
 import { cn } from '@/lib/cn'
@@ -61,19 +61,19 @@ export function StudentHeader({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 sm:shrink-0">
-          <WeeklyReportButton student={{ ...student, name: student.full_name }} viewer="teacher" className="flex-1 sm:flex-none" />
-          <Button variant="secondary" className="flex-1 sm:flex-none" asChild>
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0 sm:flex-wrap">
+          <WeeklyReportButton student={{ ...student, name: student.full_name }} viewer="teacher" className="px-3 sm:px-4" />
+          <Button variant="secondary" className="px-3 sm:px-4" asChild>
             <Link to={threadLink(student.id, 'student')}>
               <MessageCircle />
-              Öğrenciye yazın
+              Mesaj
             </Link>
           </Button>
           {parentCount > 0 && (
-            <Button variant="secondary" className="flex-1 sm:flex-none" asChild>
+            <Button variant="secondary" className="col-span-2 sm:col-span-1" asChild>
               <Link to={threadLink(student.id, 'parent')}>
                 <UsersRound />
-                Velilere yazın
+                Velilere mesaj
               </Link>
             </Button>
           )}
@@ -106,23 +106,23 @@ function DetailStats({ row }: { row: OverviewRow }) {
   const delta = prev ? Math.round(((row.minutes_7d - prev) / prev) * 100) : null
   const netDelta = row.last_net != null && row.prev_net != null ? Math.round((row.last_net - row.prev_net) * 100) / 100 : null
   return (
-    <div className="mt-5 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-      <StatTile icon={<Timer />} hue="pine" label="Çalışma, 7 gün" value={formatMinutes(row.minutes_7d)} aside={delta != null ? <Trend up={delta >= 0}>%{Math.abs(delta)}</Trend> : undefined} />
-      <StatTile icon={<ListChecks />} hue="sea" label="Soru, 7 gün" value={row.questions_7d.toLocaleString('tr-TR')} />
-      <StatTile
-        icon={<Check />}
-        hue="amber"
-        label="Haftanın görevleri"
-        value={`${row.tasks_week_done}/${row.tasks_week}`}
-        aside={row.tasks_overdue ? <span className="font-semibold text-warning">{row.tasks_overdue} gecikmiş</span> : undefined}
-      />
-      <StatTile
-        icon={<TrendingUp />}
-        hue="violet"
-        label={row.last_exam_kind ? `Son ${row.last_exam_kind} neti` : 'Son deneme'}
-        value={row.last_net != null ? formatNet(row.last_net) : '-'}
-        aside={netDelta ? <Trend up={netDelta > 0}>{formatNet(Math.abs(netDelta))}</Trend> : undefined}
-      />
-    </div>
+    <StatStrip
+      className="mt-5"
+      caption="Son 7 gün"
+      items={[
+        { label: 'Çalışma', value: formatMinutes(row.minutes_7d), aside: delta != null ? <Trend up={delta >= 0}>%{Math.abs(delta)}</Trend> : undefined },
+        { label: 'Soru', value: row.questions_7d.toLocaleString('tr-TR') },
+        {
+          label: row.tasks_overdue ? `Görev, ${row.tasks_overdue} gecikmiş` : 'Görev',
+          value: `${row.tasks_week_done}/${row.tasks_week}`,
+          tone: row.tasks_overdue ? 'warning' : undefined,
+        },
+        {
+          label: row.last_exam_kind ? `Son ${row.last_exam_kind}` : 'Son deneme',
+          value: row.last_net != null ? formatNet(row.last_net) : '-',
+          aside: netDelta ? <Trend up={netDelta > 0}>{formatNet(Math.abs(netDelta))}</Trend> : undefined,
+        },
+      ]}
+    />
   )
 }

@@ -1,6 +1,5 @@
 import {
   BarChart3,
-  Bell,
   BookMarked,
   BookOpenCheck,
   CalendarRange,
@@ -48,7 +47,6 @@ export function navFor(profile: Profile): NavItem[] {
       { to: '/app/mesajlar', label: 'Mesajlar', icon: MessageCircle, group: 'İletişim' },
       { to: '/app/gorusmeler', label: 'Görüşmeler', icon: Video, group: 'İletişim' },
       { to: '/app/duyurular', label: 'Duyurular', icon: Megaphone, group: 'İletişim' },
-      { to: '/app/bildirimler', label: 'Bildirimler', icon: Bell, group: 'İletişim' },
       { to: '/app/ayarlar', label: 'Ayarlar', icon: Settings, group: 'Hesap' },
     ]
   }
@@ -64,7 +62,6 @@ export function navFor(profile: Profile): NavItem[] {
       { to: '/app/notlar', label: 'Notlar', icon: NotebookPen, group: 'İletişim' },
       { to: '/app/mesajlar', label: 'Mesajlar', icon: MessageCircle, mobile: true, group: 'İletişim' },
       { to: '/app/duyurular', label: 'Duyurular', icon: Megaphone, group: 'İletişim' },
-      { to: '/app/bildirimler', label: 'Bildirimler', icon: Bell, group: 'İletişim' },
       { to: '/app/ayarlar', label: 'Ayarlar', icon: Settings, group: 'Hesap' },
     ]
   }
@@ -76,12 +73,11 @@ export function navFor(profile: Profile): NavItem[] {
     { to: '/app/mufredat', label: 'Müfredat', icon: Library, group: 'Planlama' },
     { to: '/app/testler', label: 'Testler', icon: ListChecks, group: 'Planlama' },
     { to: '/app/mesajlar', label: 'Mesajlar', icon: MessageCircle, mobile: true, group: 'İletişim' },
-    { to: '/app/gorusmeler', label: 'Görüşmeler', icon: Video, group: 'İletişim' },
+    { to: '/app/gorusmeler', label: 'Görüşmeler', icon: Video, mobile: true, group: 'İletişim' },
     { to: '/app/duyurular', label: 'Duyurular', icon: Megaphone, group: 'İletişim' },
-    { to: '/app/davetler', label: 'Davetler', icon: UserPlus, mobile: true, group: 'İletişim' },
-    { to: '/app/bildirimler', label: 'Bildirimler', icon: Bell, group: 'İletişim' },
+    { to: '/app/davetler', label: 'Davetler', icon: UserPlus, group: 'Takip' },
   ]
-  if (profile.status === 'active') items.splice(9, 0, { to: '/app/asistan', label: 'Asistan', icon: Sparkles, group: 'Araçlar' })
+  if (profile.status === 'active') items.splice(items.length, 0, { to: '/app/asistan', label: 'Asistan', icon: Sparkles, group: 'Araçlar' })
   if (profile.is_admin) items.push({ to: '/app/yonetim', label: 'Yönetim', icon: ShieldCheck, group: 'Araçlar' })
   items.push({ to: '/app/ayarlar', label: 'Ayarlar', icon: Settings, group: 'Hesap' })
   return items
