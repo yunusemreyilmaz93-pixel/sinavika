@@ -1,4 +1,4 @@
-// Eski adreste (yolumnet.vercel.app) kalan uygulama önbelleğini kaldırır ve açık sekmeleri izlek.site'a taşır.
+// Eski adreslerde (yolumnet.vercel.app, sinavika-app.vercel.app) kalan uygulama önbelleğini kaldırır ve açık sekmeleri izlek.site'a taşır.
 // Vercel derlemesi bu dosyayı sw.js olarak sunar (vercel.json). izlek.site'ta kullanılmaz.
 self.addEventListener('install', () => self.skipWaiting())
 self.addEventListener('activate', (event) => {

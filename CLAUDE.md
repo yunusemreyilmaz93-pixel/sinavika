@@ -57,7 +57,7 @@ LGS ve YKS koçluğu için ücretsiz web uygulaması. Öğretmen, öğrenci ve v
 
 ## Kod kuralları
 
-- Uygulamanın adı İzlek (izlek.site). Önceki adları Sınavika ve Yolumnet'ti, eski adresler (yolumnet.vercel.app) yeni adrese yönlendirilir. `hesap.sinavika.app` giriş alan adı, `sinavika-auth` ve diğer `sinavika-*` tarayıcı anahtarları bilerek değiştirilmedi. Değişirse mevcut hesaplar giriş yapamaz ya da herkesin oturumu kapanır
+- Uygulamanın adı İzlek (izlek.site). Önceki adları Sınavika ve Yolumnet'ti, eski adresler (yolumnet.vercel.app, sinavika-app.vercel.app) Vercel'deki `yolumnet` projesinde durur, her isteği yeni adrese yönlendirir ve eski önbelleği `public/retire-sw.js` ile kaldırır. Vercel projesi yeniden adlandırılırsa ya da silinirse eski adresten ana ekrana ekleyenler sunucuya ulaşamaz. `hesap.sinavika.app` giriş alan adı, `sinavika-auth` ve diğer `sinavika-*` tarayıcı anahtarları bilerek değiştirilmedi. Değişirse mevcut hesaplar giriş yapamaz ya da herkesin oturumu kapanır
 
 - Konu anlatımları kod dosyası değil, `lessons` tablosunda Markdown olarak durur. Yönetim > Müfredat'ta konunun yanındaki "Anlatım yaz" ile yazılır. Blok söz dizimi `src/features/lessons/markdown/parse.ts` ve editördeki "Yazım rehberi" içindedir
 - Yorum yazma, kod kendini anlatmıyorsa kısa bir yorum yeter

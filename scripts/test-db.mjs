@@ -460,6 +460,16 @@ await test('öğretmen dikkat özeti bir kez gider, gecikmiş görevi söyler, �
   await rejects(as(teacherA, 'select public.send_teacher_digests()'), /permission denied/)
 })
 
+await test('öğretmen dikkat özeti hiç kaydı olmayan öğrenciyi söyler', async () => {
+  const [row] = await as(teacherB, `select (public.create_student_invite('Sessiz', 'lgs', 8::smallint)).code`)
+  const quiet = await redeem(row.code, 'Sessiz Öğrenci', 'sessiz')
+  await service(`update public.students set created_at = now() - interval '5 days' where id = $1`, [quiet])
+  await service('select public.send_teacher_digests()')
+  const [note] = await as(teacherB, `select body from public.notifications where dedupe_key like 'teacher-digest:%'`)
+  assert.match(note.body, /Sessiz: henüz kayıt yok/)
+  await service('update public.students set archived_at = now() where id = $1', [quiet])
+})
+
 await test('günlük hatırlatma bugünkü görevleri söyler, arşivdekine gitmez, öğrenci tetikleyemez', async () => {
   await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'Paragraf', private.today())`, [s1])
   await as(teacherA, `insert into public.tasks (student_id, title, due_on) values ($1, 'Problemler', private.today())`, [s2])
