@@ -24,11 +24,11 @@ export function cspPolicy(hashes, supabaseUrl) {
   const supabase = supabaseUrl ? new URL(supabaseUrl).host : '*.supabase.co'
   return [
     "default-src 'self'",
-    `script-src 'self' 'wasm-unsafe-eval' ${[...hashes].sort().join(' ')} https://www.youtube.com https://s.ytimg.com`,
+    `script-src 'self' 'wasm-unsafe-eval' ${[...hashes].sort().join(' ')} https://www.youtube.com https://s.ytimg.com https://static.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline'",
     `img-src 'self' data: blob: https://${supabase} https://i.ytimg.com`,
     "font-src 'self' data:",
-    `connect-src 'self' https://${supabase} wss://${supabase}`,
+    `connect-src 'self' https://${supabase} wss://${supabase} https://cloudflareinsights.com`,
     "media-src 'self' blob:",
     'frame-src https://www.youtube-nocookie.com https://www.youtube.com',
     "worker-src 'self' blob:",
